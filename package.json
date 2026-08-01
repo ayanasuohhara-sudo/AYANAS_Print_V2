@@ -1,0 +1,12 @@
+{
+  "name": "ayanas-print-v2",
+  "version": "1.0.0",
+  "description": "AYANAS Print Plugin",
+  "private": true,
+  "scripts": {
+    "pack": "npx cli-kintone plugin pack --input manifest.json --private-key private.ppk"
+  },
+  "devDependencies": {
+    "@kintone/cli": "^1.21.0"
+  }
+}

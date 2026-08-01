@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>受注票</title>
+
+<link rel="stylesheet" href="../css/print.css">
+
+<script src="../lib/JsBarcode.all.min.js"></script>
+<script src="../js/barcode.js"></script>
+<script src="../js/print.js"></script>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="title">
+        <h1>受 注 票</h1>
+    </div>
+
+    <table class="header-table">
+
+        <tr>
+            <th>管理番号</th>
+            <td id="manage_no"></td>
+
+            <td rowspan="4" class="barcode-cell">
+                <svg id="barcode"></svg>
+            </td>
+        </tr>
+
+        <tr>
+            <th>受注日</th>
+            <td id="order_date"></td>
+        </tr>
+
+        <tr>
+            <th>納期</th>
+            <td id="delivery_date"></td>
+        </tr>
+
+        <tr>
+            <th>顧客コード</th>
+            <td id="customer_code"></td>
+        </tr>
+
+        <tr>
+            <th>顧客名</th>
+            <td colspan="2" id="customer_name"></td>
+        </tr>
+
+        <tr>
+            <th>お客様名</th>
+            <td colspan="2" id="client_name"></td>
+        </tr>
+
+        <tr>
+            <th>得意先伝票番号</th>
+            <td id="slip_no"></td>
+
+            <th>担当</th>
+            <td id="in_charge"></td>
+        </tr>
+
+        <tr>
+            <th>着物種類</th>
+            <td id="kimono_type"></td>
+
+            <th>仕様</th>
+            <td id="kimono_spec"></td>
+        </tr>
+
+    </table>
+
+    <br>
+
+    <table class="detail-table">
+
+        <thead>
+
+        <tr>
+
+            <th width="120">商品コード</th>
+
+            <th>商品名</th>
+
+            <th width="90">単価</th>
+
+            <th width="70">数量</th>
+
+            <th width="120">金額</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody id="detail-body">
+
+        </tbody>
+
+        <tfoot>
+
+        <tr>
+
+            <th colspan="4">
+
+                合計
+
+            </th>
+
+            <th id="total_amount">
+
+            </th>
+
+        </tr>
+
+        </tfoot>
+
+    </table>
+
+    <div class="buttons">
+
+        <button onclick="window.print()">
+
+            印刷
+
+        </button>
+
+        <button onclick="window.close()">
+
+            閉じる
+
+        </button>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,121 @@
+@page {
+    size: A4 landscape;
+    margin: 10mm;
+}
+
+*{
+    box-sizing:border-box;
+    font-family:"Yu Gothic","Meiryo",sans-serif;
+}
+
+body{
+    margin:0;
+    padding:0;
+    background:#ffffff;
+    color:#000;
+    font-size:11pt;
+}
+
+.page{
+    width:277mm;
+    min-height:190mm;
+    margin:auto;
+    padding:8mm;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:8mm;
+}
+
+.title h1{
+    margin:0;
+    font-size:24pt;
+    letter-spacing:10px;
+}
+
+.header-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:8mm;
+}
+
+.header-table th{
+    width:120px;
+    border:1px solid #000;
+    background:#f2f2f2;
+    text-align:left;
+    padding:6px;
+}
+
+.header-table td{
+    border:1px solid #000;
+    padding:6px;
+}
+
+.barcode-cell{
+    width:260px;
+    text-align:center;
+    vertical-align:middle;
+}
+
+#barcode{
+    width:240px;
+    height:60px;
+}
+
+.detail-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.detail-table th{
+    border:1px solid #000;
+    background:#f2f2f2;
+    padding:6px;
+}
+
+.detail-table td{
+    border:1px solid #000;
+    padding:6px;
+    height:28px;
+}
+
+.detail-table tfoot th{
+    text-align:right;
+}
+
+#total_amount{
+    text-align:right;
+    font-weight:bold;
+}
+
+.buttons{
+    margin-top:10mm;
+    text-align:center;
+}
+
+.buttons button{
+    width:130px;
+    height:40px;
+    margin:0 10px;
+    font-size:14px;
+    cursor:pointer;
+}
+
+@media print{
+
+    .buttons{
+        display:none;
+    }
+
+    body{
+        margin:0;
+    }
+
+    .page{
+        width:100%;
+        padding:0;
+    }
+
+}
