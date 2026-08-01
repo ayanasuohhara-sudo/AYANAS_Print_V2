@@ -1,33 +1,101 @@
-(function () {
-  'use strict';
+(() => {
+    'use strict';
 
-  kintone.events.on('app.record.detail.show', function (event) {
+    /**
+     * AYANAS Print V2
+     * desktop.js
+     *
+     * kintone レコード詳細画面に印刷ボタンを配置し、
+     * Record.get() でデータ取得 → Preview.open() でプレビュー表示を行う。
+     */
 
-    if (document.getElementById('ayanas-print-btn')) {
-      return event;
-    }
+    /** 印刷ボタンの DOM id（二重生成防止用） */
+    const BUTTON_ID = 'ayanas-print-button';
 
-    const space = kintone.app.record.getHeaderMenuSpaceElement();
+    /** 印刷ボタンの CSS クラス名 */
+    const BUTTON_CLASS = 'ayanas-print-button';
 
-    if (!space) {
-      return event;
-    }
+    /**
+     * Record モジュールの読み込みを確認する
+     * @throws {Error} Record が未読込の場合
+     */
+    const assertRecordLoaded = () => {
 
-    const button = document.createElement('button');
-    button.id = 'ayanas-print-btn';
-    button.textContent = '印刷';
+        if (typeof Record === 'undefined' || typeof Record.get !== 'function') {
+            throw new Error('Record モジュールが読み込まれていません。');
+        }
 
-    button.style.padding = '8px 16px';
-    button.style.marginLeft = '10px';
-    button.style.cursor = 'pointer';
-
-    button.onclick = function () {
-      alert('AYANAS Print 起動');
     };
 
-    space.appendChild(button);
+    /**
+     * Preview モジュールの読み込みを確認する
+     * @throws {Error} Preview が未読込の場合
+     */
+    const assertPreviewLoaded = () => {
 
-    return event;
-  });
+        if (typeof Preview === 'undefined' || typeof Preview.open !== 'function') {
+            throw new Error('Preview モジュールが読み込まれていません。');
+        }
+
+    };
+
+    /**
+     * レコード詳細画面表示時に印刷ボタンを追加する
+     */
+    kintone.events.on('app.record.detail.show', (event) => {
+
+        // 既にボタンが存在する場合は何もしない
+        if (document.getElementById(BUTTON_ID)) {
+            return event;
+        }
+
+        const space = kintone.app.record.getHeaderMenuSpaceElement();
+
+        if (!space) {
+            return event;
+        }
+
+        const button = document.createElement('button');
+
+        button.id = BUTTON_ID;
+        button.type = 'button';
+        button.className = BUTTON_CLASS;
+        button.textContent = '受注票印刷';
+
+        button.addEventListener('click', () => {
+
+            try {
+
+                // Record モジュールの読み込み確認
+                assertRecordLoaded();
+
+                // レコードデータ取得
+                const data = Record.get();
+
+                // Preview モジュールの読み込み確認
+                assertPreviewLoaded();
+
+                // 印刷プレビュー表示
+                Preview.open(data);
+
+            } catch (error) {
+
+                console.error('[AYANAS Print]', error);
+
+                const message = error instanceof Error
+                    ? error.message
+                    : '不明なエラーが発生しました。';
+
+                alert(`印刷エラー\n\n${message}`);
+
+            }
+
+        });
+
+        space.appendChild(button);
+
+        return event;
+
+    });
 
 })();

@@ -10,77 +10,119 @@
     const Record = {};
 
     /**
-     * 現在表示中のレコードを取得
+     * 数値変換
+     */
+    function toNumber(value) {
+
+        if (value === null || value === undefined || value === "") {
+            return 0;
+        }
+
+        return Number(value);
+
+    }
+
+    /**
+     * 値取得
+     */
+    function getValue(record, fieldCode) {
+
+        if (!record[fieldCode]) {
+            return "";
+        }
+
+        return record[fieldCode].value;
+
+    }
+
+    /**
+     * レコード取得
      */
     Record.get = function () {
 
-        const record = kintone.app.record.get().record;
+        const current = kintone.app.record.get();
 
-        // ヘッダー情報
+        if (!current) {
+            throw new Error("レコードを取得できません。");
+        }
+
+        const record = current.record;
+
+        //--------------------------------
+        // ヘッダー
+        //--------------------------------
+
         const header = {
-            manage_no: record.manage_no ? record.manage_no.value : "",
-            order_date: record.order_date ? record.order_date.value : "",
-            deadline: record.deadline ? record.deadline.value : "",
-            customer_code: record.customer_code ? record.customer_code.value : "",
-            customer_name: record.customer_name ? record.customer_name.value : "",
-            client_name: record.client_name ? record.client_name.value : "",
-            slip_no: record.slip_no ? record.slip_no.value : "",
-            in_charge: record.in_charge ? record.in_charge.value : "",
-            kimono_type: record.kimono_type ? record.kimono_type.value : "",
-            kimono_spec: record.kimono_spec ? record.kimono_spec.value : ""
+
+            manage_no: getValue(record, "manage_no"),
+
+            order_date: getValue(record, "order_date"),
+
+            deadline: getValue(record, "deadline"),
+
+            customer_code: getValue(record, "customer_code"),
+
+            customer_name: getValue(record, "customer_name"),
+
+            client_name: getValue(record, "client_name"),
+
+            slip_no: getValue(record, "slip_no"),
+
+            in_charge: getValue(record, "in_charge"),
+
+            kimono_type: getValue(record, "kimono_type"),
+
+            kimono_spec: getValue(record, "kimono_spec")
+
         };
 
+        //--------------------------------
         // 明細
+        //--------------------------------
+
         const details = [];
 
+        let totalQty = 0;
         let totalAmount = 0;
 
-        if (record.detail_table && record.detail_table.value) {
+        const table = record.detail_table
+            ? record.detail_table.value
+            : [];
 
-            record.detail_table.value.forEach(function (row) {
+        table.forEach(function (row, index) {
 
-                const detail = {
+            const detail = {
 
-                    item_code:
-                        row.value.item_code ?
-                        row.value.item_code.value :
-                        "",
+                rowNo: index + 1,
 
-                    item_name:
-                        row.value.item_name ?
-                        row.value.item_name.value :
-                        "",
+                item_code: getValue(row.value, "item_code"),
 
-                    unit_price:
-                        Number(
-                            row.value.unit_price ?
-                            row.value.unit_price.value :
-                            0
-                        ),
+                item_name: getValue(row.value, "item_name"),
 
-                    qty:
-                        Number(
-                            row.value.qty ?
-                            row.value.qty.value :
-                            0
-                        ),
+                unit_price: toNumber(
+                    getValue(row.value, "unit_price")
+                ),
 
-                    amount:
-                        Number(
-                            row.value.amount ?
-                            row.value.amount.value :
-                            0
-                        )
+                qty: toNumber(
+                    getValue(row.value, "qty")
+                ),
 
-                };
+                amount: toNumber(
+                    getValue(row.value, "amount")
+                )
 
-                totalAmount += detail.amount;
+            };
 
-                details.push(detail);
+            totalQty += detail.qty;
+            totalAmount += detail.amount;
 
-            });
+            details.push(detail);
 
-        }
+        });
+
+        //--------------------------------
+        // 戻り値
+        //--------------------------------
 
         return {
 
@@ -88,7 +130,15 @@
 
             details: details,
 
-            totalAmount: totalAmount
+            summary: {
+
+                count: details.length,
+
+                totalQty: totalQty,
+
+                totalAmount: totalAmount
+
+            }
 
         };
 

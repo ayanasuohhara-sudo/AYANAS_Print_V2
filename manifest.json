@@ -16,16 +16,14 @@
 
   "desktop": {
     "js": [
-      "js/desktop.js"
+       "js/record.js",
+    "js/barcode.js",
+    "js/preview.js",
+    "js/desktop.js"
     ]
   },
 
-  "config": {
-    "html": "html/config.html",
-    "js": [
-      "js/config.js"
-    ]
-  },
+
 
   "icon": "image/icon.png"
 }
