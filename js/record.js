@@ -1,117 +1,142 @@
-(function (window) {
+(() => {
     'use strict';
 
     /**
      * AYANAS Print V2
      * record.js
-     * kintoneレコード取得モジュール
+     *
+     * kintone レコードから帳票用データを取得する。
+     * HTML 生成・DOM 操作・Format.js の利用は行わない。
      */
 
     const Record = {};
 
-    /**
-     * 数値変換
-     */
-    function toNumber(value) {
+    /** ヘッダーフィールドコード一覧 */
+    const HEADER_FIELDS = [
+        'manage_no',
+        'order_date',
+        'deadline',
+        'customer_code',
+        'customer_name',
+        'client_name',
+        'slip_no',
+        'in_charge',
+        'kimono_type',
+        'kimono_spec',
+    ];
 
-        if (value === null || value === undefined || value === "") {
+    /** 明細フィールドコード一覧 */
+    const DETAIL_FIELDS = {
+        string: ['item_code', 'item_name'],
+        number: ['unit_price', 'qty', 'amount'],
+    };
+
+    /** 明細テーブルフィールドコード */
+    const DETAIL_TABLE_CODE = 'detail_table';
+
+    /**
+     * フィールド値を加工せず取得する
+     * @param {Object|null|undefined} fields - kintone フィールドオブジェクト
+     * @param {string} fieldCode - フィールドコード
+     * @returns {string|number|Array|Object} フィールド値（未設定時は空文字）
+     */
+    const getFieldValue = (fields, fieldCode) => {
+
+        if (!fields || typeof fields !== 'object') {
+            return '';
+        }
+
+        const field = fields[fieldCode];
+
+        if (!field || field.value === null || field.value === undefined) {
+            return '';
+        }
+
+        return field.value;
+
+    };
+
+    /**
+     * 数値フィールドを Number 型に変換する
+     * @param {*} value - 変換対象
+     * @returns {number} 変換後の数値
+     * @throws {Error} 数値変換に失敗した場合
+     */
+    const toNumber = (value) => {
+
+        if (value === null || value === undefined || value === '') {
             return 0;
         }
 
-        return Number(value);
+        const number = Number(value);
 
-    }
-
-    /**
-     * 値取得
-     */
-    function getValue(record, fieldCode) {
-
-        if (!record[fieldCode]) {
-            return "";
+        if (Number.isNaN(number)) {
+            throw new Error(`数値に変換できません。（${value}）`);
         }
 
-        return record[fieldCode].value;
+        return number;
 
-    }
+    };
 
     /**
-     * レコード取得
+     * ヘッダーデータを取得する
+     * @param {Object} record - kintone レコード
+     * @returns {Object} ヘッダー情報
      */
-    Record.get = function () {
+    const buildHeader = (record) => {
 
-        const current = kintone.app.record.get();
+        const header = {};
 
-        if (!current) {
-            throw new Error("レコードを取得できません。");
-        }
+        HEADER_FIELDS.forEach((fieldCode) => {
+            header[fieldCode] = getFieldValue(record, fieldCode);
+        });
 
-        const record = current.record;
+        return header;
 
-        //--------------------------------
-        // ヘッダー
-        //--------------------------------
+    };
 
-        const header = {
+    /**
+     * 明細1行を取得する
+     * @param {Object} row - サブテーブル行
+     * @returns {Object} 明細データ
+     */
+    const buildDetailRow = (row) => {
 
-            manage_no: getValue(record, "manage_no"),
+        const rowFields = row?.value ?? {};
 
-            order_date: getValue(record, "order_date"),
+        const detail = {};
 
-            deadline: getValue(record, "deadline"),
+        DETAIL_FIELDS.string.forEach((fieldCode) => {
+            detail[fieldCode] = getFieldValue(rowFields, fieldCode);
+        });
 
-            customer_code: getValue(record, "customer_code"),
+        DETAIL_FIELDS.number.forEach((fieldCode) => {
+            detail[fieldCode] = toNumber(getFieldValue(rowFields, fieldCode));
+        });
 
-            customer_name: getValue(record, "customer_name"),
+        return detail;
 
-            client_name: getValue(record, "client_name"),
+    };
 
-            slip_no: getValue(record, "slip_no"),
+    /**
+     * 明細データと集計情報を取得する
+     * @param {Object} record - kintone レコード
+     * @returns {{ details: Array<Object>, summary: Object }} 明細と集計
+     */
+    const buildDetails = (record) => {
 
-            in_charge: getValue(record, "in_charge"),
-
-            kimono_type: getValue(record, "kimono_type"),
-
-            kimono_spec: getValue(record, "kimono_spec")
-
-        };
-
-        //--------------------------------
-        // 明細
-        //--------------------------------
+        const tableField = record[DETAIL_TABLE_CODE];
+        const rows = Array.isArray(tableField?.value) ? tableField.value : [];
 
         const details = [];
-
         let totalQty = 0;
         let totalAmount = 0;
 
-        const table = record.detail_table
-            ? record.detail_table.value
-            : [];
+        rows.forEach((row, index) => {
 
-        table.forEach(function (row, index) {
+            const detail = buildDetailRow(row);
 
-            const detail = {
-
-                rowNo: index + 1,
-
-                item_code: getValue(row.value, "item_code"),
-
-                item_name: getValue(row.value, "item_name"),
-
-                unit_price: toNumber(
-                    getValue(row.value, "unit_price")
-                ),
-
-                qty: toNumber(
-                    getValue(row.value, "qty")
-                ),
-
-                amount: toNumber(
-                    getValue(row.value, "amount")
-                )
-
-            };
+            detail.rowNo = index + 1;
 
             totalQty += detail.qty;
             totalAmount += detail.amount;
@@ -120,30 +145,66 @@
 
         });
 
-        //--------------------------------
-        // 戻り値
-        //--------------------------------
-
         return {
-
-            header: header,
-
-            details: details,
-
+            details,
             summary: {
-
                 count: details.length,
+                totalCount: details.length,
+                totalQty,
+                totalAmount,
+            },
+        };
 
-                totalQty: totalQty,
+    };
 
-                totalAmount: totalAmount
+    /**
+     * kintone レコードから帳票用データを取得する
+     * @returns {{
+     *   header: Object,
+     *   details: Array<Object>,
+     *   summary: { count: number, totalQty: number, totalAmount: number }
+     * }} 帳票用データ
+     * @throws {Error} レコード取得またはデータ変換に失敗した場合
+     */
+    Record.get = () => {
 
+        try {
+
+            const current = kintone.app.record.get();
+
+            if (!current || !current.record) {
+                throw new Error('レコードを取得できません。');
             }
 
-        };
+            const record = current.record;
+            const header = buildHeader(record);
+            const { details, summary } = buildDetails(record);
+
+            return {
+                header,
+                details,
+                summary,
+            };
+
+        } catch (error) {
+
+            if (error instanceof Error && (
+                error.message === 'レコードを取得できません。'
+                || error.message.startsWith('数値に変換できません。')
+            )) {
+                throw error;
+            }
+
+            const message = error instanceof Error
+                ? error.message
+                : '不明なエラー';
+
+            throw new Error(`Record.get: データ取得に失敗しました。（${message}）`);
+
+        }
 
     };
 
     window.Record = Record;
 
-})(window);
+})();
