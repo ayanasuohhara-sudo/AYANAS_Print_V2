@@ -3,27 +3,29 @@
   "manifest_version": 1,
   "version": 1,
   "type": "APP",
-
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
-
   "description": {
     "ja": "AYANAS専用帳票印刷プラグイン",
     "en": "AYANAS Print Plugin"
   },
-
   "desktop": {
     "js": [
-       "js/record.js",
-    "js/barcode.js",
-    "js/preview.js",
-    "js/desktop.js"
+      "js/format.js",
+      "js/record.js",
+      "js/template.js",
+      "js/barcode.js",
+      "js/preview.js",
+      "js/desktop.js"
     ]
   },
-
-
-
+  "config": {
+    "html": "html/config.html",
+    "js": [
+      "js/config.js"
+    ]
+  },
   "icon": "image/icon.png"
 }
