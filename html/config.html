@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>AYANAS Print V2 設定</title>
+</head>
+<body>
+
+    <header>
+        <h1>AYANAS Print V2</h1>
+        <h2>設定</h2>
+    </header>
+
+    <main>
+
+        <form id="ayanas-print-config-form" action="#" method="post">
+
+            <div class="config-group">
+                <h2>帳票設定</h2>
+
+                <div class="config-item">
+                    <label for="report-title">帳票タイトル</label>
+                    <input
+                        type="text"
+                        id="report-title"
+                        name="report_title"
+                        value="受注票"
+                        autocomplete="off"
+                    >
+                </div>
+
+                <div class="config-item">
+                    <label for="barcode-type">バーコード種類</label>
+                    <select id="barcode-type" name="barcode_type">
+                        <option value="CODE39" selected>Code39</option>
+                        <option value="CODE128">Code128</option>
+                    </select>
+                </div>
+
+                <div class="config-item">
+                    <span id="barcode-display-label">バーコード表示</span>
+                    <input
+                        type="checkbox"
+                        id="barcode-visible"
+                        name="barcode_visible"
+                        value="1"
+                        checked
+                        aria-labelledby="barcode-display-label barcode-visible-label"
+                    >
+                    <label for="barcode-visible" id="barcode-visible-label">表示する</label>
+                </div>
+            </div>
+
+            <div class="config-group">
+                <h2>印刷設定</h2>
+
+                <div class="config-item">
+                    <label for="print-orientation">印刷方向</label>
+                    <select id="print-orientation" name="print_orientation">
+                        <option value="landscape" selected>横</option>
+                        <option value="portrait">縦</option>
+                    </select>
+                </div>
+
+                <div class="config-item">
+                    <label for="paper-size">用紙サイズ</label>
+                    <select id="paper-size" name="paper_size">
+                        <option value="A4" selected>A4</option>
+                        <option value="A5">A5</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 将来追加予定: 会社ロゴ -->
+            <!-- 将来追加予定: 住所 -->
+            <!-- 将来追加予定: 電話番号 -->
+            <!-- 将来追加予定: FAX -->
+            <!-- 将来追加予定: インボイス番号 -->
+            <!-- 将来追加予定: フッター -->
+            <!-- 将来追加予定: 余白設定 -->
+
+            <div class="config-actions">
+                <button type="submit" id="save-button" name="save">保存</button>
+                <button type="button" id="cancel-button" name="cancel">キャンセル</button>
+            </div>
+
+        </form>
+
+    </main>
+
+</body>
+</html>
