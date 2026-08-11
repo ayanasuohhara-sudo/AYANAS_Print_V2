@@ -1,55 +1,117 @@
-(function (window) {
+(() => {
     'use strict';
 
     /**
      * AYANAS Print V2
      * barcode.js
-     * Code39バーコード生成
+     *
+     * Code39 バーコードを SVG 要素へ描画する。
+     * HTML 生成・印刷・Record.get()・Template.render()・kintone API は使用しない。
      */
 
     const Barcode = {};
 
+    /** Code39 描画オプション */
+    const BARCODE_OPTIONS = {
+        format: 'CODE39',
+        displayValue: true,
+        textAlign: 'center',
+        height: 40,
+        width: 2,
+        margin: 8,
+        fontSize: 16,
+        background: '#ffffff',
+        lineColor: '#000000',
+    };
+
     /**
-     * バーコード描画
-     * @param {String} value
+     * JsBarcode ライブラリの読み込みを確認する
+     * @throws {Error} JsBarcode が未読込の場合
      */
-    Barcode.render = function (value) {
+    const assertJsBarcodeLoaded = () => {
 
-        const svg = document.getElementById("barcode");
-
-        if (!svg) {
-            return;
+        if (typeof JsBarcode !== 'function') {
+            throw new Error('JsBarcode ライブラリが読み込まれていません。');
         }
 
-        if (!value) {
-            svg.innerHTML = "";
-            return;
+    };
+
+    /**
+     * SVG 要素の妥当性を検証する
+     * @param {*} svgElement - SVG 要素
+     * @throws {Error} SVG 要素が取得できない場合
+     */
+    const assertSvgElement = (svgElement) => {
+
+        if (svgElement === null || svgElement === undefined) {
+            throw new Error('SVG 要素が取得できません。');
         }
 
-        JsBarcode(svg, String(value), {
+        if (!(svgElement instanceof SVGElement)) {
+            throw new Error('SVG 要素が不正です。');
+        }
 
-            format: "CODE39",
+    };
 
-            displayValue: true,
+    /**
+     * バーコード値の妥当性を検証する
+     * @param {*} value - バーコード文字列
+     * @returns {string} 検証済みバーコード文字列
+     * @throws {Error} 値が未指定または空の場合
+     */
+    const assertValue = (value) => {
 
-            fontSize: 16,
+        if (value === null || value === undefined) {
+            throw new Error('バーコード値が指定されていません。');
+        }
 
-            height: 50,
+        const text = String(value).trim();
 
-            width: 2,
+        if (text === '') {
+            throw new Error('バーコード値が空です。');
+        }
 
-            margin: 0,
+        return text;
 
-            textMargin: 5,
+    };
 
-            background: "#ffffff",
+    /**
+     * Code39 バーコードを SVG 要素へ描画する
+     * @param {SVGElement} svgElement - 描画先 SVG 要素
+     * @param {string} value - バーコード文字列
+     * @throws {Error} JsBarcode 未読込・SVG 未取得・値未指定時
+     */
+    Barcode.draw = (svgElement, value) => {
 
-            lineColor: "#000000"
+        try {
 
-        });
+            assertJsBarcodeLoaded();
+            assertSvgElement(svgElement);
+
+            const barcodeValue = assertValue(value);
+
+            JsBarcode(svgElement, barcodeValue, BARCODE_OPTIONS);
+
+        } catch (error) {
+
+            if (error instanceof Error && (
+                error.message.includes('JsBarcode')
+                || error.message.includes('SVG')
+                || error.message.includes('バーコード値')
+            )) {
+                throw error;
+            }
+
+            const message = error instanceof Error
+                ? error.message
+                : '不明なエラー';
+
+            throw new Error(`Barcode.draw: 描画に失敗しました。（${message}）`);
+
+        }
 
     };
 
     window.Barcode = Barcode;
 
-})(window);
+})();
