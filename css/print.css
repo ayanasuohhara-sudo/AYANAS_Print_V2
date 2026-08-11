@@ -3,119 +3,140 @@
     margin: 10mm;
 }
 
-*{
-    box-sizing:border-box;
-    font-family:"Yu Gothic","Meiryo",sans-serif;
+.page {
+    box-sizing: border-box;
+    width: 277mm;
+    min-height: 190mm;
+    margin: 10px auto;
+    padding: 10mm;
+    background: #ffffff;
+    color: #000000;
+    font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS Mincho", serif;
+    font-size: 11pt;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
 }
 
-body{
-    margin:0;
-    padding:0;
-    background:#ffffff;
-    color:#000;
-    font-size:11pt;
+.header {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8mm;
 }
 
-.page{
-    width:277mm;
-    min-height:190mm;
-    margin:auto;
-    padding:8mm;
+.header th,
+.header td {
+    border: 1px solid #000000;
+    padding: 6px 8px;
+    vertical-align: middle;
 }
 
-.title{
-    text-align:center;
-    margin-bottom:8mm;
+.header th {
+    width: 100px;
+    background: #f3f3f3;
+    text-align: left;
+    white-space: nowrap;
 }
 
-.title h1{
-    margin:0;
-    font-size:24pt;
-    letter-spacing:10px;
+.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8mm;
 }
 
-.header-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-bottom:8mm;
+.detail-table th,
+.detail-table td {
+    border: 1px solid #000000;
+    padding: 6px;
 }
 
-.header-table th{
-    width:120px;
-    border:1px solid #000;
-    background:#f2f2f2;
-    text-align:left;
-    padding:6px;
+.detail-table thead th {
+    background: #efefef;
+    text-align: center;
 }
 
-.header-table td{
-    border:1px solid #000;
-    padding:6px;
+.detail-table tbody td:nth-child(1),
+.detail-table tbody td:nth-child(4),
+.detail-table tbody td:nth-child(5),
+.detail-table tbody td:nth-child(6) {
+    text-align: right;
 }
 
-.barcode-cell{
-    width:260px;
-    text-align:center;
-    vertical-align:middle;
+.detail-table tbody td:nth-child(2),
+.detail-table tbody td:nth-child(3) {
+    text-align: left;
 }
 
-#barcode{
-    width:240px;
-    height:60px;
+.detail-table tfoot th {
+    background: #f8f8f8;
+    text-align: center;
 }
 
-.detail-table{
-    width:100%;
-    border-collapse:collapse;
+.summary {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5mm;
 }
 
-.detail-table th{
-    border:1px solid #000;
-    background:#f2f2f2;
-    padding:6px;
+.summary th,
+.summary td {
+    border: 1px solid #000000;
+    padding: 6px 8px;
 }
 
-.detail-table td{
-    border:1px solid #000;
-    padding:6px;
-    height:28px;
+.summary th {
+    background: #f3f3f3;
+    white-space: nowrap;
 }
 
-.detail-table tfoot th{
-    text-align:right;
+.summary td {
+    text-align: right;
 }
 
-#total_amount{
-    text-align:right;
-    font-weight:bold;
+.barcode {
+    text-align: right;
+    margin-bottom: 8mm;
 }
 
-.buttons{
-    margin-top:10mm;
-    text-align:center;
+.barcode svg {
+    width: 260px;
+    height: auto;
 }
 
-.buttons button{
-    width:130px;
-    height:40px;
-    margin:0 10px;
-    font-size:14px;
-    cursor:pointer;
+.buttons {
+    margin-top: 12mm;
+    text-align: center;
 }
 
-@media print{
+.buttons button {
+    margin: 0 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    cursor: pointer;
+}
 
-    .buttons{
-        display:none;
+@media print {
+
+    html,
+    body {
+        background: #ffffff;
     }
 
-    body{
-        margin:0;
+    .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
     }
 
-    .page{
-        width:100%;
-        padding:0;
+    .buttons {
+        display: none !important;
+    }
+
+    table,
+    tr,
+    td,
+    th {
+        page-break-inside: avoid;
     }
 
 }
