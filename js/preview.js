@@ -1,251 +1,220 @@
-(function (window) {
+(() => {
     'use strict';
 
     /**
      * AYANAS Print V2
      * preview.js
-     * Part1
-     * 印刷プレビュー生成
+     *
+     * Template.render() で取得した HTML を別ウィンドウでプレビュー表示する。
+     * Record.get() は呼び出さない。
      */
 
     const Preview = {};
 
+    /** プレビューウィンドウのサイズ */
+    const PREVIEW_WINDOW_FEATURES = 'width=1200,height=900';
+
+    /** print.css のパス */
+    const PRINT_CSS_PATH = 'css/print.css';
+
+    /** JsBarcode ライブラリのパス */
+    const JSBARCODE_PATH = 'lib/JsBarcode.all.min.js';
+
+    /** barcode.js のパス */
+    const BARCODE_JS_PATH = 'js/barcode.js';
+
     /**
-     * プレビューを開く
+     * Template モジュールの読み込みを確認する
+     * @throws {Error} Template が未読込の場合
      */
-    Preview.open = function (data) {
+    const assertTemplateLoaded = () => {
 
-        const printWindow = window.open(
-            "",
-            "_blank",
-            "width=1200,height=900"
-        );
-
-        if (!printWindow) {
-
-            alert("印刷ウィンドウを開けません。");
-
-            return;
-
+        if (typeof Template === 'undefined') {
+            throw new Error('Template モジュールが読み込まれていません。');
         }
 
-        const html = createHtml(data);
-
-        printWindow.document.open();
-
-        printWindow.document.write(html);
-
-        printWindow.document.close();
+        if (typeof Template.render !== 'function') {
+            throw new Error('Template.render が利用できません。');
+        }
 
     };
 
     /**
-     * HTML生成
+     * 帳票データの妥当性を検証する
+     * @param {*} data - 帳票データ
+     * @throws {Error} データが不正な場合
      */
-    function createHtml(data) {
+    const validateData = (data) => {
 
-        return `
-<!DOCTYPE html>
+        if (!data || typeof data !== 'object') {
+            throw new Error('帳票データが指定されていません。');
+        }
 
-<html lang="ja">
+        if (!data.header || typeof data.header !== 'object') {
+            throw new Error('header が不正です。');
+        }
 
-<head>
+    };
 
-<meta charset="UTF-8">
+    /**
+     * プラグインリソースの URL を取得する
+     * @param {string} filePath - プラグイン内ファイルパス
+     * @returns {string} リソース URL
+     * @throws {Error} URL を取得できない場合
+     */
+    const getPluginResourceUrl = (filePath) => {
 
-<title>AYANAS Print</title>
+        if (typeof kintone === 'undefined') {
+            throw new Error('kintone が読み込まれていません。');
+        }
 
-<style>
+        if (!kintone.$PLUGIN_ID) {
+            throw new Error('プラグイン ID を取得できません。');
+        }
 
-body{
+        return `/k/plugin/${kintone.$PLUGIN_ID}/${filePath}`;
 
-    margin:20px;
+    };
 
-    font-family:
-    "Yu Gothic",
-    Meiryo,
-    sans-serif;
+    /**
+     * バーコード描画用文字列を取得する
+     * @param {Object} data - 帳票データ
+     * @returns {string} バーコード値
+     */
+    const getBarcodeValue = (data) => String(data.header.manage_no ?? '');
 
-}
+    /**
+     * 印刷・閉じるボタン HTML を生成する
+     * @returns {string} ボタン HTML
+     */
+    const buildButtonsHtml = () => `
 
-.page{
+    <div class="buttons">
+        <button type="button" id="ayanas-print-btn">印刷</button>
+        <button type="button" id="ayanas-close-btn">閉じる</button>
+    </div>`;
 
-    width:277mm;
+    /**
+     * プレビュー用スクリプト HTML を生成する
+     * @param {string} barcodeValue - バーコード値
+     * @returns {string} スクリプト HTML
+     */
+    const buildScriptHtml = (barcodeValue) => `
 
-    margin:auto;
+<script src="${getPluginResourceUrl(JSBARCODE_PATH)}"><\/script>
+<script src="${getPluginResourceUrl(BARCODE_JS_PATH)}"><\/script>
+<script>
+window.addEventListener('load', function () {
 
-}
+    try {
 
-h1{
+        var svg = document.getElementById('barcode');
 
-    text-align:center;
+        Barcode.draw(svg, ${JSON.stringify(barcodeValue)});
 
-}
+    } catch (error) {
 
-table{
+        console.error('[AYANAS Print]', error);
 
-    width:100%;
+        var message = error instanceof Error
+            ? error.message
+            : '不明なエラーが発生しました。';
 
-    border-collapse:collapse;
-
-}
-
-th{
-
-    background:#eeeeee;
-
-}
-
-th,td{
-
-    border:1px solid #000;
-
-    padding:6px;
-
-}
-
-.header{
-
-    margin-bottom:20px;
-
-}
-
-.detail{
-
-    margin-top:15px;
-
-}
-
-tfoot th{
-
-    text-align:right;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="page">
-
-<h1>
-
-受 注 票
-
-</h1>
-
-<table class="header">
-
-<tr>
-
-<th>管理番号</th>
-
-<td>${data.header.manage_no}</td>
-
-<th>受注日</th>
-
-<td>${data.header.order_date}</td>
-
-</tr>
-
-<tr>
-
-<th>納期</th>
-
-<td>${data.header.deadline}</td>
-
-<th>顧客コード</th>
-
-<td>${data.header.customer_code}</td>
-
-</tr>
-
-<tr>
-
-<th>顧客名</th>
-
-<td colspan="3">
-
-${data.header.customer_name}
-
-</td>
-
-</tr>
-
-<tr>
-
-<th>お客様名</th>
-
-<td colspan="3">
-
-${data.header.client_name}
-
-</td>
-
-</tr>
-
-</table>
-
-<table class="detail">
-
-<thead>
-
-<tr>
-
-<th>商品コード</th>
-
-<th>商品名</th>
-
-<th>単価</th>
-
-<th>数量</th>
-
-<th>金額</th>
-
-</tr>
-
-</thead>
-
-<tbody id="detailBody">
-
-<!-- Part2で生成 -->
-
-</tbody>
-
-<tfoot>
-
-<tr>
-
-<th colspan="4">
-
-合計
-
-</th>
-
-<th>
-
-<!-- Part2 -->
-
-</th>
-
-</tr>
-
-</tfoot>
-
-</table>
-
-</div>
-
-</body>
-
-</html>
-
-`;
+        alert('バーコード描画エラー\\n\\n' + message);
 
     }
 
+    document.getElementById('ayanas-print-btn').addEventListener('click', function () {
+        window.print();
+    });
+
+    document.getElementById('ayanas-close-btn').addEventListener('click', function () {
+        window.close();
+    });
+
+});
+<\/script>`;
+
+    /**
+     * プレビュー用 HTML を組み立てる
+     * @param {Object} data - 帳票データ
+     * @returns {string} プレビュー HTML
+     */
+    const buildPreviewHtml = (data) => {
+
+        const barcodeValue = getBarcodeValue(data);
+        let html = Template.render(data);
+
+        html = html.replace(
+            '</head>',
+            `<link rel="stylesheet" href="${getPluginResourceUrl(PRINT_CSS_PATH)}">\n</head>`
+        );
+
+        html = html.replace(
+            /<\/div>\s*<\/body>/,
+            `${buildButtonsHtml()}\n</div>\n</body>`
+        );
+
+        html = html.replace(
+            '</body>',
+            `${buildScriptHtml(barcodeValue)}\n</body>`
+        );
+
+        return html;
+
+    };
+
+    /**
+     * 印刷プレビューを別ウィンドウで開く
+     * @param {{
+     *   header: Object,
+     *   details: Array<Object>,
+     *   summary: Object
+     * }} data - 帳票データ
+     * @throws {Error} プレビュー表示に失敗した場合
+     */
+    Preview.open = (data) => {
+
+        try {
+
+            assertTemplateLoaded();
+            validateData(data);
+
+            const printWindow = window.open('', '_blank', PREVIEW_WINDOW_FEATURES);
+
+            if (!printWindow) {
+                throw new Error('印刷ウィンドウを開けません。');
+            }
+
+            const html = buildPreviewHtml(data);
+
+            printWindow.document.open();
+            printWindow.document.write(html);
+            printWindow.document.close();
+
+        } catch (error) {
+
+            if (error instanceof Error && (
+                error.message.includes('Template')
+                || error.message.includes('帳票データ')
+                || error.message.includes('header')
+                || error.message.includes('印刷ウィンドウ')
+                || error.message.includes('kintone')
+                || error.message.includes('プラグイン ID')
+            )) {
+                throw error;
+            }
+
+            const message = error instanceof Error
+                ? error.message
+                : '不明なエラー';
+
+            throw new Error(`Preview.open: プレビュー表示に失敗しました。（${message}）`);
+
+        }
+
+    };
+
     window.Preview = Preview;
 
-})(window);
+})();
