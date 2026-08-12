@@ -149,6 +149,64 @@
 
     };
 
+    const isEmptyDeliveryDetailRow = (detail) => {
+
+        const itemName = String(detail.item_name ?? '').trim();
+
+        if (itemName !== '') {
+            return false;
+        }
+
+        if (detail.qty !== 0) {
+            return false;
+        }
+
+        if (detail.amount !== 0) {
+            return false;
+        }
+
+        return true;
+
+    };
+
+    const buildDeliveryDetails = (record) => {
+
+        const tableField = record[DELIVERY_DETAIL_TABLE_CODE];
+        const rows = Array.isArray(tableField?.value) ? tableField.value : [];
+
+        const details = [];
+        let totalQty = 0;
+        let totalAmount = 0;
+
+        rows.forEach((row) => {
+
+            const detail = buildDetailRow(row, DELIVERY_DETAIL_FIELDS);
+
+            if (isEmptyDeliveryDetailRow(detail)) {
+                return;
+            }
+
+            detail.rowNo = details.length + 1;
+
+            totalQty += detail.qty;
+            totalAmount += detail.amount;
+
+            details.push(detail);
+
+        });
+
+        return {
+            details,
+            summary: {
+                count: details.length,
+                totalCount: details.length,
+                totalQty,
+                totalAmount,
+            },
+        };
+
+    };
+
     const buildDetails = (record, tableCode, detailFields) => {
 
         const tableField = record[tableCode];
@@ -201,11 +259,7 @@
 
     const buildDeliveryReportData = (record) => {
 
-        const { details, summary } = buildDetails(
-            record,
-            DELIVERY_DETAIL_TABLE_CODE,
-            DELIVERY_DETAIL_FIELDS
-        );
+        const { details, summary } = buildDeliveryDetails(record);
 
         const header = buildDeliveryHeader(record);
 

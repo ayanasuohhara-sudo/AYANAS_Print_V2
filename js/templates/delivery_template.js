@@ -10,11 +10,11 @@
      */
 
     const DEFAULT_COMPANY = {
-        name: '株式会社ayanas',
-        address: '〒000-0000 東京都',
-        tel: 'TEL 00-0000-0000',
-        fax: 'FAX 00-0000-0000',
-        registrationNo: '登録番号 T0000000000000',
+        name: '株式会社ayanasu',
+        postalCode: '〒631-0078',
+        address: '奈良県奈良市富雄元町1-13-41',
+        tel: 'TEL 0742-47-8390',
+        fax: 'FAX 0742-47-8391',
     };
 
     const esc = (value) => Format.escapeHtml(value);
@@ -25,10 +25,10 @@
 
         return {
             name: source.name ?? DEFAULT_COMPANY.name,
+            postalCode: source.postalCode ?? DEFAULT_COMPANY.postalCode,
             address: source.address ?? DEFAULT_COMPANY.address,
             tel: source.tel ?? DEFAULT_COMPANY.tel,
             fax: source.fax ?? DEFAULT_COMPANY.fax,
-            registrationNo: source.registrationNo ?? DEFAULT_COMPANY.registrationNo,
         };
 
     };
@@ -50,6 +50,14 @@
                 <dt>納品日</dt>
                 <dd>${esc(Format.formatDate(header.delivery_date))}</dd>
             </div>
+            <div class="delivery-meta__item">
+                <dt>取引先コード</dt>
+                <dd>${esc(header.customer_code)}</dd>
+            </div>
+            <div class="delivery-meta__item">
+                <dt>取引先名</dt>
+                <dd>${esc(header.customer_name)}</dd>
+            </div>
         </dl>
     </div>
     <div class="delivery-header__aside">
@@ -58,10 +66,9 @@
         </div>
         <div class="delivery-header__company">
             <p class="company-name">${esc(company.name)}</p>
-            <p class="company-address">${esc(company.address)}</p>
+            <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
             <p class="company-contact">${esc(company.tel)}</p>
             <p class="company-contact">${esc(company.fax)}</p>
-            <p class="company-registration">${esc(company.registrationNo)}</p>
         </div>
     </div>
 </header>`;

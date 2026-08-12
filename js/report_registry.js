@@ -156,11 +156,11 @@
     };
 
     const DELIVERY_COMPANY = {
-        name: '株式会社ayanas',
-        address: '〒000-0000 東京都',
-        tel: 'TEL 00-0000-0000',
-        fax: 'FAX 00-0000-0000',
-        registrationNo: '登録番号 T0000000000000',
+        name: '株式会社ayanasu',
+        postalCode: '〒631-0078',
+        address: '奈良県奈良市富雄元町1-13-41',
+        tel: 'TEL 0742-47-8390',
+        fax: 'FAX 0742-47-8391',
     };
 
     ReportRegistry.register({
