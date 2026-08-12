@@ -304,7 +304,14 @@ ${buildButtonScriptHtml()}
 
     }
 
-    window.addEventListener('load', function () {
+    function runPreview() {
+
+        console.log('[Preview]');
+        console.log('window.Barcode =', window.Barcode);
+        console.log('window.opener =', window.opener);
+        console.log('window.opener.Barcode =', window.opener ? window.opener.Barcode : null);
+        console.log('window.JsBarcode =', window.JsBarcode);
+        console.log('window.opener.JsBarcode =', window.opener ? window.opener.JsBarcode : null);
 
         try {
 
@@ -325,6 +332,12 @@ ${buildButtonScriptHtml()}
         }
 
         initButtons();
+
+    }
+
+    window.addEventListener('load', function () {
+
+        runPreview();
 
     });
 
