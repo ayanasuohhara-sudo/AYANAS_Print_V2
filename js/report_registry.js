@@ -168,7 +168,7 @@
         title: '納品書',
         template: DeliveryTemplate,
         pageClass: 'report-delivery',
-        barcodeField: 'manage_no',
+        barcodeField: 'barcode_manage_no',
         paperSize: 'A4',
         orientation: 'landscape',
         buttonLabel: '納品書印刷',

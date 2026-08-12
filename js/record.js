@@ -13,7 +13,8 @@
 
     const DELIVERY_APP_ID = 19;
 
-    const HEADER_FIELDS = [
+    /** 受注票（App 16）ヘッダーフィールド */
+    const ORDER_HEADER_FIELDS = [
         'manage_no',
         'order_date',
         'deadline',
@@ -26,12 +27,42 @@
         'kimono_spec',
     ];
 
-    const DETAIL_FIELDS = {
+    /** 受注票（App 16）明細フィールド */
+    const ORDER_DETAIL_FIELDS = {
         string: ['item_code', 'item_name'],
         number: ['unit_price', 'qty', 'amount'],
     };
 
-    const DETAIL_TABLE_CODE = 'detail_table';
+    /** 受注票（App 16）明細テーブル */
+    const ORDER_DETAIL_TABLE_CODE = 'detail_table';
+
+    /**
+     * 納品管理（App 19）フィールドマッピング
+     * kintone フィールドコード → 帳票データキー
+     */
+    const DELIVERY_HEADER_MAP = {
+        delivery_no: 'delivery_no',
+        delivery_date: 'delivery_date',
+        customer_name: 'customer_name',
+        customer_code: 'customer_code',
+    };
+
+    /** 納品管理（App 19）明細テーブル */
+    const DELIVERY_DETAIL_TABLE_CODE = 'delivery_detail';
+
+    /** 納品管理（App 19）明細フィールド */
+    const DELIVERY_DETAIL_FIELDS = {
+        string: [
+            'manage_no',
+            'client_name',
+            'item_name',
+            'kimono_type',
+            'kimono_spec',
+            'slip_no',
+            'in_charge',
+        ],
+        number: ['qty', 'unit_price', 'amount'],
+    };
 
     const getFieldValue = (fields, fieldCode) => {
 
@@ -77,11 +108,11 @@
 
     };
 
-    const buildHeader = (record) => {
+    const buildOrderHeader = (record) => {
 
         const header = {};
 
-        HEADER_FIELDS.forEach((fieldCode) => {
+        ORDER_HEADER_FIELDS.forEach((fieldCode) => {
             header[fieldCode] = getFieldValue(record, fieldCode);
         });
 
@@ -89,16 +120,28 @@
 
     };
 
-    const buildDetailRow = (row) => {
+    const buildDeliveryHeader = (record) => {
+
+        const header = {};
+
+        Object.entries(DELIVERY_HEADER_MAP).forEach(([dataKey, fieldCode]) => {
+            header[dataKey] = getFieldValue(record, fieldCode);
+        });
+
+        return header;
+
+    };
+
+    const buildDetailRow = (row, detailFields) => {
 
         const rowFields = row?.value ?? {};
         const detail = {};
 
-        DETAIL_FIELDS.string.forEach((fieldCode) => {
+        detailFields.string.forEach((fieldCode) => {
             detail[fieldCode] = getFieldValue(rowFields, fieldCode);
         });
 
-        DETAIL_FIELDS.number.forEach((fieldCode) => {
+        detailFields.number.forEach((fieldCode) => {
             detail[fieldCode] = toNumber(getFieldValue(rowFields, fieldCode));
         });
 
@@ -106,9 +149,9 @@
 
     };
 
-    const buildDetails = (record) => {
+    const buildDetails = (record, tableCode, detailFields) => {
 
-        const tableField = record[DETAIL_TABLE_CODE];
+        const tableField = record[tableCode];
         const rows = Array.isArray(tableField?.value) ? tableField.value : [];
 
         const details = [];
@@ -117,7 +160,7 @@
 
         rows.forEach((row, index) => {
 
-            const detail = buildDetailRow(row);
+            const detail = buildDetailRow(row, detailFields);
 
             detail.rowNo = index + 1;
 
@@ -140,12 +183,38 @@
 
     };
 
-    const buildStandardReportData = (record) => {
+    const buildOrderReportData = (record) => {
 
-        const { details, summary } = buildDetails(record);
+        const { details, summary } = buildDetails(
+            record,
+            ORDER_DETAIL_TABLE_CODE,
+            ORDER_DETAIL_FIELDS
+        );
 
         return {
-            header: buildHeader(record),
+            header: buildOrderHeader(record),
+            details,
+            summary,
+        };
+
+    };
+
+    const buildDeliveryReportData = (record) => {
+
+        const { details, summary } = buildDetails(
+            record,
+            DELIVERY_DETAIL_TABLE_CODE,
+            DELIVERY_DETAIL_FIELDS
+        );
+
+        const header = buildDeliveryHeader(record);
+
+        if (details.length > 0 && details[0].manage_no) {
+            header.barcode_manage_no = details[0].manage_no;
+        }
+
+        return {
+            header,
             details,
             summary,
         };
@@ -176,7 +245,7 @@
 
         try {
 
-            return buildStandardReportData(getCurrentRecord());
+            return buildOrderReportData(getCurrentRecord());
 
         } catch (error) {
 
@@ -194,7 +263,11 @@
 
         try {
 
-            return buildStandardReportData(getCurrentRecord());
+            const data = buildDeliveryReportData(getCurrentRecord());
+
+            console.log(data.details);
+
+            return data;
 
         } catch (error) {
 

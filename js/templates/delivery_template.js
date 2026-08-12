@@ -44,11 +44,11 @@
         <dl class="delivery-meta">
             <div class="delivery-meta__item">
                 <dt>納品番号</dt>
-                <dd>${esc(header.manage_no)}</dd>
+                <dd>${esc(header.delivery_no)}</dd>
             </div>
             <div class="delivery-meta__item">
                 <dt>納品日</dt>
-                <dd>${esc(Format.formatDate(header.deadline))}</dd>
+                <dd>${esc(Format.formatDate(header.delivery_date))}</dd>
             </div>
         </dl>
     </div>
@@ -68,7 +68,7 @@
 
     };
 
-    const buildDetailRowsHtml = (details, header) => {
+    const buildDetailRowsHtml = (details) => {
 
         if (details.length === 0) {
             return '<tr class="detail-row detail-row--primary"><td colspan="6">明細はありません</td></tr>';
@@ -76,25 +76,24 @@
 
         return details.map((detail) => (
             `<tr class="detail-row detail-row--primary">`
-            + `<td>${esc(header.manage_no)}</td>`
-            + `<td>${esc(header.client_name)}</td>`
+            + `<td>${esc(detail.manage_no)}</td>`
+            + `<td>${esc(detail.client_name)}</td>`
             + `<td>${esc(detail.item_name)}</td>`
             + `<td class="num">${esc(Format.formatMoney(detail.unit_price))}</td>`
             + `<td class="num">${esc(detail.qty)}</td>`
             + `<td class="num">${esc(Format.formatMoney(detail.amount))}</td>`
             + `</tr>`
             + `<tr class="detail-row detail-row--secondary">`
-            + `<td>${esc(header.kimono_type)}</td>`
-            + `<td>${esc(header.kimono_spec)}</td>`
-            + `<td>${esc(detail.item_code)}</td>`
-            + `<td>${esc(header.slip_no)}</td>`
-            + `<td colspan="2">${esc(header.in_charge)}</td>`
+            + `<td>${esc(detail.kimono_type)}</td>`
+            + `<td>${esc(detail.kimono_spec)}</td>`
+            + `<td colspan="2">${esc(detail.slip_no)}</td>`
+            + `<td colspan="2">${esc(detail.in_charge)}</td>`
             + `</tr>`
         )).join('');
 
     };
 
-    const buildDetailTableHtml = (details, header) => `
+    const buildDetailTableHtml = (details) => `
 
 <table class="delivery-detail-table">
     <thead>
@@ -109,13 +108,12 @@
         <tr class="detail-head detail-head--secondary">
             <th>着物種類</th>
             <th>仕様</th>
-            <th>商品コード</th>
-            <th>得意先伝票番号</th>
+            <th colspan="2">得意先伝票番号</th>
             <th colspan="2">担当者</th>
         </tr>
     </thead>
     <tbody>
-${buildDetailRowsHtml(details, header)}
+${buildDetailRowsHtml(details)}
     </tbody>
 </table>`;
 
@@ -171,7 +169,7 @@ ${buildDetailRowsHtml(details, header)}
             bodyClass: Common.getBodyClass(layout),
             content: `
     ${buildHeaderHtml(header, layout)}
-    ${buildDetailTableHtml(details, header)}
+    ${buildDetailTableHtml(details)}
     ${buildSummaryHtml(summary)}`,
         });
 
