@@ -72,12 +72,40 @@
      * @param {Object} header - ヘッダーデータ
      * @returns {string} ヘッダー HTML
      */
-    const buildHeaderHtml = (header) => {
+    /**
+     * バーコード表示有無を判定する
+     * @param {Object} config - プラグイン設定
+     * @returns {boolean} 表示する場合 true
+     */
+    const isBarcodeVisible = (config) => config.barcode_visible !== '0';
+
+    /**
+     * 帳票タイトルを取得する
+     * @param {Object} config - プラグイン設定
+     * @returns {string} 帳票タイトル
+     */
+    const getReportTitle = (config) => {
+
+        const title = config.report_title;
+
+        if (typeof title === 'string' && title.trim() !== '') {
+            return title.trim();
+        }
+
+        return '受注票';
+
+    };
+
+    const buildHeaderHtml = (header, config = {}) => {
+
+        const barcodeHtml = isBarcodeVisible(config)
+            ? `<div class="barcode">
+    <svg id="barcode" class="barcode"></svg>
+</div>`
+            : '';
 
         return `
-<div class="barcode">
-    <svg id="barcode" class="barcode"></svg>
-</div>
+${barcodeHtml}
 <table class="header">
     <tr>
         <th>管理番号</th>
@@ -205,7 +233,7 @@ ${buildDetailRowsHtml(details)}
      * @returns {string} 受注票 HTML 文字列
      * @throws {Error} データ不正または HTML 生成失敗時
      */
-    Template.render = (data) => {
+    Template.render = (data, config = {}) => {
 
         try {
 
@@ -213,6 +241,7 @@ ${buildDetailRowsHtml(details)}
             validateData(data);
 
             const { header, details, summary } = data;
+            const reportTitle = esc(getReportTitle(config));
 
             return `<!DOCTYPE html>
 <html lang="ja">
@@ -222,8 +251,8 @@ ${buildDetailRowsHtml(details)}
 </head>
 <body>
 <div class="page">
-    <h1>受 注 票</h1>
-    ${buildHeaderHtml(header)}
+    <h1>${reportTitle}</h1>
+    ${buildHeaderHtml(header, config)}
     ${buildDetailTableHtml(details)}
     ${buildSummaryHtml(summary)}
 </div>

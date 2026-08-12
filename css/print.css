@@ -16,6 +16,13 @@
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
 }
 
+.page h1 {
+    margin: 0 0 8mm;
+    text-align: center;
+    font-size: 18pt;
+    letter-spacing: 0.5em;
+}
+
 .header {
     width: 100%;
     border-collapse: collapse;

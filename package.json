@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "AYANAS Print Plugin",
   "private": true,
+  "license": "MIT",
   "scripts": {
-    "pack": "npx cli-kintone plugin pack --input manifest.json --private-key private.ppk"
+    "pack": "npx @kintone/plugin-packer . --ppk private.ppk --out plugin.zip"
   },
   "devDependencies": {
-    "@kintone/cli": "^1.21.0"
+    "@kintone/plugin-packer": "^9.1.2"
   }
 }

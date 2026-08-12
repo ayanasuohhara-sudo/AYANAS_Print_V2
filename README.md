@@ -35,8 +35,8 @@ CAYANAS_PRINT_V2/
 ## 使用方法
 
 1. `npm install`
-2. `plugin pack`
-3. `plugin.zip` を kintone へアップロード
+2. `npm run pack`
+3. 生成された `plugin.zip` を kintone へアップロード
 
 ## アーキテクチャ
 

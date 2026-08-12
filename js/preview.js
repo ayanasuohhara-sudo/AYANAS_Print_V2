@@ -57,6 +57,43 @@
     };
 
     /**
+     * プラグインベース URL を取得する
+     * @returns {string} ベース URL（末尾スラッシュ付き）
+     * @throws {Error} ベース URL を取得できない場合
+     */
+    const getPluginBaseUrl = () => {
+
+        const scriptSelectors = [
+            'script[src*="js/preview.js"]',
+            'script[src*="js/desktop.js"]',
+            'script[src*="/plugin/"]',
+        ];
+
+        for (const selector of scriptSelectors) {
+
+            const script = document.querySelector(selector);
+
+            if (!script?.src) {
+                continue;
+            }
+
+            const matched = script.src.match(/^(.*\/plugin\/[^/]+\/)/);
+
+            if (matched) {
+                return matched[1];
+            }
+
+        }
+
+        if (typeof kintone !== 'undefined' && kintone.$PLUGIN_ID) {
+            return `/k/plugin/${kintone.$PLUGIN_ID}/`;
+        }
+
+        throw new Error('プラグインリソース URL を取得できません。');
+
+    };
+
+    /**
      * プラグインリソースの URL を取得する
      * @param {string} filePath - プラグイン内ファイルパス
      * @returns {string} リソース URL
@@ -64,15 +101,9 @@
      */
     const getPluginResourceUrl = (filePath) => {
 
-        if (typeof kintone === 'undefined') {
-            throw new Error('kintone が読み込まれていません。');
-        }
+        const normalizedPath = filePath.replace(/^\//, '');
 
-        if (!kintone.$PLUGIN_ID) {
-            throw new Error('プラグイン ID を取得できません。');
-        }
-
-        return `/k/plugin/${kintone.$PLUGIN_ID}/${filePath}`;
+        return `${getPluginBaseUrl()}${normalizedPath}`;
 
     };
 
@@ -95,34 +126,31 @@
     </div>`;
 
     /**
-     * プレビュー用スクリプト HTML を生成する
-     * @param {string} barcodeValue - バーコード値
+     * バーコード表示有無を判定する
+     * @param {Object} config - プラグイン設定
+     * @returns {boolean} 表示する場合 true
+     */
+    const isBarcodeVisible = (config) => config.barcode_visible !== '0';
+
+    /**
+     * 印刷用 @page スタイル HTML を生成する
+     * @param {Object} config - プラグイン設定
+     * @returns {string} スタイル HTML
+     */
+    const buildPrintStyleHtml = (config = {}) => {
+
+        const paperSize = config.paper_size === 'A5' ? 'A5' : 'A4';
+        const orientation = config.print_orientation === 'portrait' ? 'portrait' : 'landscape';
+
+        return `<style>@page { size: ${paperSize} ${orientation}; margin: 10mm; }</style>`;
+
+    };
+
+    /**
+     * 印刷・閉じるボタンのイベント登録スクリプト
      * @returns {string} スクリプト HTML
      */
-    const buildScriptHtml = (barcodeValue) => `
-
-<script src="${getPluginResourceUrl(JSBARCODE_PATH)}"><\/script>
-<script src="${getPluginResourceUrl(BARCODE_JS_PATH)}"><\/script>
-<script>
-window.addEventListener('load', function () {
-
-    try {
-
-        var svg = document.getElementById('barcode');
-
-        Barcode.draw(svg, ${JSON.stringify(barcodeValue)});
-
-    } catch (error) {
-
-        console.error('[AYANAS Print]', error);
-
-        var message = error instanceof Error
-            ? error.message
-            : '不明なエラーが発生しました。';
-
-        alert('バーコード描画エラー\\n\\n' + message);
-
-    }
+    const buildButtonScriptHtml = () => `
 
     document.getElementById('ayanas-print-btn').addEventListener('click', function () {
         window.print();
@@ -130,24 +158,144 @@ window.addEventListener('load', function () {
 
     document.getElementById('ayanas-close-btn').addEventListener('click', function () {
         window.close();
-    });
+    });`;
 
-});
+    /**
+     * プレビュー用スクリプト HTML を生成する
+     * @param {string} barcodeValue - バーコード値
+     * @param {Object} config - プラグイン設定
+     * @returns {string} スクリプト HTML
+     */
+    const buildScriptHtml = (barcodeValue, config = {}) => {
+
+        const jsBarcodeUrl = getPluginResourceUrl(JSBARCODE_PATH);
+        const barcodeJsUrl = getPluginResourceUrl(BARCODE_JS_PATH);
+        const barcodeType = config.barcode_type === 'CODE128' ? 'CODE128' : 'CODE39';
+        const drawEnabled = isBarcodeVisible(config);
+
+        if (!drawEnabled) {
+
+            return `
+
+<script>
+(function () {
+${buildButtonScriptHtml()}
+})();
 <\/script>`;
+
+        }
+
+        return `
+
+<script src="${jsBarcodeUrl}"><\/script>
+<script src="${barcodeJsUrl}"><\/script>
+<script>
+(function () {
+
+    var barcodeValue = ${JSON.stringify(barcodeValue)};
+    var barcodeType = ${JSON.stringify(barcodeType)};
+
+    function initButtons() {
+${buildButtonScriptHtml()}
+    }
+
+    function applyOpenerGlobals() {
+
+        if (!window.opener) {
+            return false;
+        }
+
+        if (typeof window.opener.JsBarcode === 'function') {
+            window.JsBarcode = window.opener.JsBarcode;
+        }
+
+        if (window.opener.Barcode && typeof window.opener.Barcode.draw === 'function') {
+            window.Barcode = window.opener.Barcode;
+        }
+
+        return typeof window.JsBarcode === 'function'
+            && window.Barcode
+            && typeof window.Barcode.draw === 'function';
+
+    }
+
+    function assertBarcodeGlobals() {
+
+        if (typeof window.JsBarcode !== 'function') {
+            throw new Error('JsBarcode ライブラリが読み込まれていません。');
+        }
+
+        if (typeof window.Barcode === 'undefined' || typeof window.Barcode.draw !== 'function') {
+            throw new Error('Barcode モジュールが読み込まれていません。');
+        }
+
+    }
+
+    function drawBarcode() {
+
+        if (!barcodeValue) {
+            return;
+        }
+
+        assertBarcodeGlobals();
+
+        var svg = document.getElementById('barcode');
+
+        window.Barcode.draw(svg, barcodeValue, { format: barcodeType });
+
+    }
+
+    function onPreviewReady() {
+
+        try {
+
+            if (!applyOpenerGlobals()) {
+                assertBarcodeGlobals();
+            }
+
+            drawBarcode();
+
+        } catch (error) {
+
+            console.error('[AYANAS Print]', error);
+
+            var message = error instanceof Error
+                ? error.message
+                : '不明なエラーが発生しました。';
+
+            alert('バーコード描画エラー\\n\\n' + message);
+
+        }
+
+        initButtons();
+
+    }
+
+    if (document.readyState === 'complete') {
+        onPreviewReady();
+    } else {
+        window.addEventListener('load', onPreviewReady);
+    }
+
+})();
+<\/script>`;
+
+    };
 
     /**
      * プレビュー用 HTML を組み立てる
      * @param {Object} data - 帳票データ
      * @returns {string} プレビュー HTML
      */
-    const buildPreviewHtml = (data) => {
+    const buildPreviewHtml = (data, config = {}) => {
 
         const barcodeValue = getBarcodeValue(data);
-        let html = Template.render(data);
+        let html = Template.render(data, config);
 
         html = html.replace(
             '</head>',
-            `<link rel="stylesheet" href="${getPluginResourceUrl(PRINT_CSS_PATH)}">\n</head>`
+            `<link rel="stylesheet" href="${getPluginResourceUrl(PRINT_CSS_PATH)}">\n`
+            + `${buildPrintStyleHtml(config)}\n</head>`
         );
 
         html = html.replace(
@@ -157,7 +305,7 @@ window.addEventListener('load', function () {
 
         html = html.replace(
             '</body>',
-            `${buildScriptHtml(barcodeValue)}\n</body>`
+            `${buildScriptHtml(barcodeValue, config)}\n</body>`
         );
 
         return html;
@@ -171,9 +319,10 @@ window.addEventListener('load', function () {
      *   details: Array<Object>,
      *   summary: Object
      * }} data - 帳票データ
+     * @param {Object} [config={}] - プラグイン設定
      * @throws {Error} プレビュー表示に失敗した場合
      */
-    Preview.open = (data) => {
+    Preview.open = (data, config = {}) => {
 
         try {
 
@@ -186,7 +335,7 @@ window.addEventListener('load', function () {
                 throw new Error('印刷ウィンドウを開けません。');
             }
 
-            const html = buildPreviewHtml(data);
+            const html = buildPreviewHtml(data, config);
 
             printWindow.document.open();
             printWindow.document.write(html);
@@ -200,7 +349,7 @@ window.addEventListener('load', function () {
                 || error.message.includes('header')
                 || error.message.includes('印刷ウィンドウ')
                 || error.message.includes('kintone')
-                || error.message.includes('プラグイン ID')
+                || error.message.includes('プラグインリソース URL')
             )) {
                 throw error;
             }

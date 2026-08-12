@@ -81,7 +81,7 @@
      * @param {string} value - バーコード文字列
      * @throws {Error} JsBarcode 未読込・SVG 未取得・値未指定時
      */
-    Barcode.draw = (svgElement, value) => {
+    Barcode.draw = (svgElement, value, options = {}) => {
 
         try {
 
@@ -90,7 +90,12 @@
 
             const barcodeValue = assertValue(value);
 
-            JsBarcode(svgElement, barcodeValue, BARCODE_OPTIONS);
+            const drawOptions = {
+                ...BARCODE_OPTIONS,
+                ...options,
+            };
+
+            JsBarcode(svgElement, barcodeValue, drawOptions);
 
         } catch (error) {
 

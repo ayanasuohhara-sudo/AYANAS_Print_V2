@@ -16,9 +16,13 @@
       "js/format.js",
       "js/record.js",
       "js/template.js",
+      "lib/JsBarcode.all.min.js",
       "js/barcode.js",
       "js/preview.js",
       "js/desktop.js"
+    ],
+    "css": [
+      "css/print.css"
     ]
   },
   "config": {

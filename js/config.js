@@ -40,6 +40,10 @@
             throw new Error('kintone プラグイン API が利用できません。');
         }
 
+        if (!kintone.$PLUGIN_ID) {
+            throw new Error('プラグイン ID が取得できません。');
+        }
+
     };
 
     /**
@@ -69,7 +73,7 @@
 
             assertKintonePluginApi();
 
-            const config = kintone.plugin.app.getConfig();
+            const config = kintone.plugin.app.getConfig(kintone.$PLUGIN_ID);
 
             if (!config || typeof config !== 'object') {
                 return;
