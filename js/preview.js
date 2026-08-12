@@ -307,15 +307,6 @@ ${buildButtonScriptHtml()}
 
     }
 
-    function hasOpenerBarcodeModule() {
-
-        return window.opener
-            && typeof window.opener.JsBarcode === 'function'
-            && window.opener.Barcode
-            && typeof window.opener.Barcode.draw === 'function';
-
-    }
-
     function drawBarcode() {
 
         if (!barcodeValue) {
@@ -325,19 +316,22 @@ ${buildButtonScriptHtml()}
         logBarcodeGlobals();
 
         var svg = document.getElementById('barcode');
+
+        console.log(svg);
+        console.log(svg && svg.tagName);
+        console.log(svg instanceof SVGElement);
+
+        if (!svg || String(svg.tagName).toLowerCase() !== 'svg') {
+            return;
+        }
+
+        if (!hasLocalBarcodeModule()) {
+            throw new Error('Barcode モジュールが読み込まれていません。');
+        }
+
         var drawOptions = { format: barcodeType, barcode_type: barcodeType };
 
-        if (hasLocalBarcodeModule()) {
-            window.Barcode.draw(svg, barcodeValue, drawOptions);
-            return;
-        }
-
-        if (hasOpenerBarcodeModule()) {
-            window.opener.Barcode.draw(svg, barcodeValue, drawOptions);
-            return;
-        }
-
-        throw new Error('Barcode モジュールが読み込まれていません。');
+        window.Barcode.draw(svg, barcodeValue, drawOptions);
 
     }
 
@@ -380,13 +374,15 @@ ${buildButtonScriptHtml()}
 
         } catch (error) {
 
-            console.error('[AYANAS Print]', error);
+            console.error(error);
+            console.error(error.stack);
 
-            var message = error instanceof Error
-                ? error.message
-                : '不明なエラーが発生しました。';
-
-            alert('バーコード描画エラー\\n\\n' + message);
+            alert(
+                'バーコード描画エラー\\n\\n'
+                + String(error)
+                + '\\n\\n'
+                + (error && error.stack ? error.stack : '')
+            );
 
         }
 
@@ -396,27 +392,29 @@ ${buildButtonScriptHtml()}
 
     function start() {
 
-        if (hasLocalBarcodeModule() || hasOpenerBarcodeModule()) {
-            runPreview();
+        if (!hasLocalBarcodeModule()) {
+            loadBarcodeModules()
+                .then(function () {
+                    runPreview();
+                })
+                .catch(function (error) {
+
+                    console.error(error);
+                    console.error(error.stack);
+
+                    alert(
+                        'バーコード読み込みエラー\\n\\n'
+                        + String(error)
+                        + '\\n\\n'
+                        + (error && error.stack ? error.stack : '')
+                    );
+                    initButtons();
+
+                });
             return;
         }
 
-        loadBarcodeModules()
-            .then(function () {
-                runPreview();
-            })
-            .catch(function (error) {
-
-                console.error('[AYANAS Print]', error);
-
-                var message = error instanceof Error
-                    ? error.message
-                    : '不明なエラーが発生しました。';
-
-                alert('バーコード読み込みエラー\\n\\n' + message);
-                initButtons();
-
-            });
+        runPreview();
 
     }
 
