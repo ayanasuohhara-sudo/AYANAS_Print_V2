@@ -57,15 +57,15 @@ body {
     min-height: 190mm;
     max-height: 190mm;
     margin: 10px auto;
-    padding: 6mm 8mm;
+    padding: 4mm 6mm;
     background: #ffffff;
     font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS Mincho", serif;
-    font-size: 10pt;
-    line-height: 1.4;
+    font-size: 9pt;
+    line-height: 1.25;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
     display: grid;
     grid-template-columns: 1fr 240px;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: auto auto auto auto;
     grid-template-areas:
         "title title"
         "header barcode"
@@ -86,12 +86,13 @@ body {
 
 .page h1 {
     grid-area: title;
-    margin: 0 0 4mm;
+    margin: 0 0 2mm;
     padding: 0;
     text-align: center;
-    font-size: 16pt;
+    font-size: 14pt;
     font-weight: bold;
     letter-spacing: 0.4em;
+    line-height: 1.2;
 }
 
 .barcode {
@@ -116,15 +117,17 @@ body {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    margin-bottom: 4mm;
+    margin-bottom: 2mm;
 }
 
 .header th,
 .header td {
     border: 1px solid #000000;
-    padding: 4px 6px;
+    padding: 2px 4px;
     vertical-align: middle;
     word-break: break-word;
+    font-size: 8.5pt;
+    line-height: 1.2;
 }
 
 .header th {
@@ -145,16 +148,18 @@ body {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    margin-bottom: 3mm;
+    margin-bottom: 1mm;
     align-self: start;
 }
 
 .detail-table th,
 .detail-table td {
     border: 1px solid #000000;
-    padding: 3px 5px;
+    padding: 1px 3px;
     vertical-align: middle;
     word-break: break-word;
+    font-size: 8pt;
+    line-height: 1.15;
 }
 
 .detail-table thead th {
@@ -207,18 +212,20 @@ body {
     grid-area: summary;
     width: 52%;
     margin-left: auto;
-    margin-top: auto;
+    margin-top: 0;
     border-collapse: collapse;
     table-layout: fixed;
-    align-self: end;
+    align-self: start;
     justify-self: end;
 }
 
 .summary th,
 .summary td {
     border: 1px solid #000000;
-    padding: 5px 8px;
+    padding: 2px 6px;
     vertical-align: middle;
+    font-size: 8.5pt;
+    line-height: 1.2;
 }
 
 .summary th {
@@ -268,7 +275,7 @@ body {
 
     .page {
         margin: 0;
-        padding: 6mm 8mm;
+        padding: 4mm 6mm;
         box-shadow: none;
         overflow: hidden;
         page-break-after: avoid;
