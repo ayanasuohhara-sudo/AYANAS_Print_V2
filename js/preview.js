@@ -279,6 +279,8 @@ ${buildButtonScriptHtml()}
 <script>
 (function () {
 
+    console.log('[1] preview script start');
+
     var barcodeValue = ${JSON.stringify(barcodeValue)};
     var barcodeType = ${JSON.stringify(barcodeType)};
     var jsBarcodeUrl = ${JSON.stringify(jsBarcodeUrl)};
@@ -289,6 +291,8 @@ ${buildButtonScriptHtml()}
     }
 
     function drawBarcode() {
+
+        console.log('[4] drawBarcode');
 
         if (typeof window.JsBarcode !== 'function') {
             return;
@@ -310,7 +314,12 @@ ${buildButtonScriptHtml()}
 
         try {
 
+            console.log(window.JsBarcode);
+            console.log(window.Barcode);
+
             window.Barcode.draw(svg, barcodeValue, { barcode_type: barcodeType });
+
+            console.log('[5] Barcode.draw finished');
 
         } catch (error) {
 
@@ -332,8 +341,12 @@ ${buildButtonScriptHtml()}
         script.src = barcodeJsUrl;
 
         script.onload = function () {
+
+            console.log('[3] Barcode module loaded');
+
             drawBarcode();
             initButtons();
+
         };
 
         script.onerror = function () {
@@ -351,7 +364,13 @@ ${buildButtonScriptHtml()}
 
         script.src = jsBarcodeUrl;
 
-        script.onload = loadBarcodeJs;
+        script.onload = function () {
+
+            console.log('[2] JsBarcode loaded');
+
+            loadBarcodeJs();
+
+        };
 
         script.onerror = function () {
             console.error('JsBarcode.all.min.js の読み込みに失敗しました。', jsBarcodeUrl);
