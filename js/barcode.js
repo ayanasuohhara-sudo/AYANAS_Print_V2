@@ -78,14 +78,24 @@
     /**
      * バーコード種類を解決する
      * @param {Object} config - プラグイン設定または描画オプション
-     * @returns {'CODE39'|'CODE128'} バーコード種類
+     * @returns {'CODE39'|'CODE128'|'EAN13'} バーコード種類
      */
-    Barcode.resolveFormat = (config = {}) => (
-        config.barcode_type === 'CODE128' ? 'CODE128' : 'CODE39'
-    );
+    Barcode.resolveFormat = (config = {}) => {
+
+        if (config.barcode_type === 'CODE128') {
+            return 'CODE128';
+        }
+
+        if (config.barcode_type === 'EAN13') {
+            return 'EAN13';
+        }
+
+        return 'CODE39';
+
+    };
 
     /**
-     * Code39 / Code128 バーコードを SVG 要素へ描画する
+     * Code39 / Code128 / EAN13 バーコードを SVG 要素へ描画する
      * @param {SVGElement} svgElement - 描画先 SVG 要素
      * @param {string} value - バーコード文字列
      * @param {Object} [options={}] - 描画オプション（format / barcode_type）

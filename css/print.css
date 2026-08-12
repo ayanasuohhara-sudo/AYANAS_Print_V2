@@ -8,12 +8,424 @@
    ======================================== */
 .report-order .page {
     display: grid;
+    grid-template-columns: 1fr 240px;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+        "title title"
+        "header barcode"
+        "detail detail"
+        "summary summary";
+    gap: 0 6mm;
+}
+
+.report-order .page:not(:has(.barcode)) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "title"
+        "header"
+        "detail"
+        "summary";
+}
+
+.report-order .page h1 {
+    grid-area: title;
+    margin: 0 0 2mm;
+    padding: 0;
+    text-align: center;
+    font-size: 14pt;
+    font-weight: bold;
+    letter-spacing: 0.4em;
+    line-height: 1.2;
+}
+
+.report-order .barcode {
+    grid-area: barcode;
+    align-self: start;
+    justify-self: end;
+    margin: 0;
+    padding: 0;
+    text-align: right;
+}
+
+.report-order .barcode svg {
+    display: block;
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    margin-left: auto;
+}
+
+.report-order .header {
+    grid-area: header;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 2mm;
+}
+
+.report-order .header th,
+.report-order .header td {
+    border: 1px solid #000000;
+    padding: 2px 4px;
+    vertical-align: middle;
+    word-break: break-word;
+    font-size: 8.5pt;
+    line-height: 1.2;
+}
+
+.report-order .header th {
+    width: 12%;
+    background: #f3f3f3;
+    text-align: left;
+    white-space: nowrap;
+    font-weight: normal;
+}
+
+.report-order .header td {
+    width: 38%;
+    text-align: left;
+}
+
+.report-order .detail-table {
+    grid-area: detail;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 1mm;
+    align-self: start;
+}
+
+.report-order .detail-table th,
+.report-order .detail-table td {
+    border: 1px solid #000000;
+    padding: 1px 3px;
+    vertical-align: middle;
+    word-break: break-word;
+    font-size: 8pt;
+    line-height: 1.15;
+}
+
+.report-order .detail-table thead th {
+    background: #efefef;
+    font-weight: normal;
+}
+
+.report-order .detail-table th:nth-child(1),
+.report-order .detail-table td:nth-child(1) {
+    width: 8%;
+    text-align: right;
+}
+
+.report-order .detail-table th:nth-child(2),
+.report-order .detail-table td:nth-child(2) {
+    width: 15%;
+    text-align: left;
+}
+
+.report-order .detail-table th:nth-child(3),
+.report-order .detail-table td:nth-child(3) {
+    width: 37%;
+    text-align: left;
+}
+
+.report-order .detail-table th:nth-child(4),
+.report-order .detail-table td:nth-child(4) {
+    width: 13%;
+    text-align: right;
+}
+
+.report-order .detail-table th:nth-child(5),
+.report-order .detail-table td:nth-child(5) {
+    width: 10%;
+    text-align: right;
+}
+
+.report-order .detail-table th:nth-child(6),
+.report-order .detail-table td:nth-child(6) {
+    width: 17%;
+    text-align: right;
+}
+
+.report-order .detail-table tfoot th {
+    background: #f8f8f8;
+    text-align: center;
+}
+
+.report-order .summary {
+    grid-area: summary;
+    width: 52%;
+    margin-left: auto;
+    margin-top: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+    align-self: start;
+    justify-self: end;
+}
+
+.report-order .summary th,
+.report-order .summary td {
+    border: 1px solid #000000;
+    padding: 2px 6px;
+    vertical-align: middle;
+    font-size: 8.5pt;
+    line-height: 1.2;
+}
+
+.report-order .summary th {
+    width: 22%;
+    background: #f3f3f3;
+    text-align: left;
+    white-space: nowrap;
+    font-weight: normal;
+}
+
+.report-order .summary td {
+    width: 11%;
+    text-align: right;
+    font-weight: bold;
 }
 
 /* ========================================
-   帳票種別: 納品書 (delivery) - 将来追加
+   帳票種別: 納品書 (delivery)
    ======================================== */
-/* .report-delivery .page { } */
+.report-delivery .page {
+    display: flex;
+    flex-direction: column;
+    gap: 5mm;
+    grid-template-columns: unset;
+    grid-template-rows: unset;
+    grid-template-areas: unset;
+    font-size: 10pt;
+    line-height: 1.7;
+}
+
+.report-delivery .delivery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10mm;
+    padding-bottom: 4mm;
+    border-bottom: 0.5px solid #333333;
+}
+
+.report-delivery .delivery-header__main {
+    flex: 1;
+    min-width: 0;
+}
+
+.report-delivery .delivery-title {
+    margin: 0 0 5mm;
+    padding: 0;
+    font-size: 22pt;
+    font-weight: bold;
+    letter-spacing: 0.55em;
+    line-height: 1.25;
+}
+
+.report-delivery .delivery-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2mm 8mm;
+    margin: 0;
+}
+
+.report-delivery .delivery-meta__item {
+    display: flex;
+    align-items: baseline;
+    gap: 3mm;
+    margin: 0;
+}
+
+.report-delivery .delivery-meta dt {
+    margin: 0;
+    font-size: 10pt;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.report-delivery .delivery-meta dt::after {
+    content: '：';
+}
+
+.report-delivery .delivery-meta dd {
+    margin: 0;
+    font-size: 11pt;
+    font-weight: bold;
+}
+
+.report-delivery .delivery-header__aside {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2mm;
+    max-width: 80mm;
+}
+
+.report-delivery .delivery-barcode {
+    margin: 0;
+    padding: 0;
+    text-align: right;
+}
+
+.report-delivery .delivery-barcode svg {
+    display: block;
+    width: 200px;
+    max-width: 100%;
+    height: auto;
+    margin-left: auto;
+}
+
+.report-delivery .delivery-header__company {
+    flex: 0 0 auto;
+    width: 100%;
+    margin: 0;
+    padding-left: 5mm;
+    border-left: 0.5px solid #666666;
+    text-align: right;
+    font-size: 9pt;
+    line-height: 1.75;
+}
+
+.report-delivery .company-name {
+    margin: 0 0 2mm;
+    font-size: 11pt;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+}
+
+.report-delivery .company-address,
+.report-delivery .company-contact,
+.report-delivery .company-registration {
+    margin: 0;
+}
+
+.report-delivery .company-registration {
+    margin-top: 1.5mm;
+    font-size: 8pt;
+}
+
+.report-delivery .delivery-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    flex: 1 1 auto;
+}
+
+.report-delivery .delivery-detail-table th,
+.report-delivery .delivery-detail-table td {
+    border: 0.5px solid #333333;
+    padding: 5px 7px;
+    vertical-align: middle;
+    word-break: break-word;
+    font-size: 10pt;
+    line-height: 1.7;
+}
+
+.report-delivery .delivery-detail-table thead th {
+    background: #f0f0f0;
+    font-weight: normal;
+    text-align: center;
+    font-size: 9.5pt;
+}
+
+.report-delivery .detail-head--secondary th {
+    background: #f7f7f7;
+    font-size: 9pt;
+}
+
+.report-delivery .detail-row--primary td {
+    padding-top: 7px;
+    background: #ffffff;
+}
+
+.report-delivery .detail-row--secondary td {
+    padding-bottom: 8px;
+    background: #fafafa;
+    font-size: 9.5pt;
+    color: #222222;
+}
+
+.report-delivery .delivery-detail-table .num {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.report-delivery .delivery-detail-table th:nth-child(1),
+.report-delivery .delivery-detail-table td:nth-child(1) {
+    width: 13%;
+}
+
+.report-delivery .delivery-detail-table th:nth-child(2),
+.report-delivery .delivery-detail-table td:nth-child(2) {
+    width: 16%;
+}
+
+.report-delivery .delivery-detail-table th:nth-child(3),
+.report-delivery .delivery-detail-table td:nth-child(3) {
+    width: 28%;
+}
+
+.report-delivery .delivery-detail-table th:nth-child(4),
+.report-delivery .delivery-detail-table td:nth-child(4) {
+    width: 13%;
+}
+
+.report-delivery .delivery-detail-table th:nth-child(5),
+.report-delivery .delivery-detail-table td:nth-child(5) {
+    width: 10%;
+}
+
+.report-delivery .delivery-detail-table th:nth-child(6),
+.report-delivery .delivery-detail-table td:nth-child(6) {
+    width: 20%;
+}
+
+.report-delivery .delivery-footer {
+    margin-top: auto;
+    padding-top: 2mm;
+}
+
+.report-delivery .delivery-summary {
+    width: 62mm;
+    margin-left: auto;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.report-delivery .delivery-summary th,
+.report-delivery .delivery-summary td {
+    border: 0.5px solid #333333;
+    padding: 5px 10px;
+    vertical-align: middle;
+    font-size: 10pt;
+    line-height: 1.65;
+}
+
+.report-delivery .delivery-summary th {
+    width: 42%;
+    background: #f0f0f0;
+    text-align: left;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.report-delivery .delivery-summary td {
+    text-align: right;
+    font-weight: bold;
+}
+
+.report-delivery .delivery-summary__total th,
+.report-delivery .delivery-summary__total td {
+    background: #ececec;
+    font-size: 10.5pt;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.report-delivery .delivery-summary__total td {
+    font-size: 12pt;
+}
 
 /* ========================================
    帳票種別: 請求書 (bill) - 将来追加
@@ -87,183 +499,7 @@ body {
     font-size: 9pt;
     line-height: 1.25;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-    display: grid;
-    grid-template-columns: 1fr 240px;
-    grid-template-rows: auto auto auto auto;
-    grid-template-areas:
-        "title title"
-        "header barcode"
-        "detail detail"
-        "summary summary";
-    gap: 0 6mm;
     overflow: hidden;
-}
-
-.page:not(:has(.barcode)) {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-        "title"
-        "header"
-        "detail"
-        "summary";
-}
-
-.page h1 {
-    grid-area: title;
-    margin: 0 0 2mm;
-    padding: 0;
-    text-align: center;
-    font-size: 14pt;
-    font-weight: bold;
-    letter-spacing: 0.4em;
-    line-height: 1.2;
-}
-
-.barcode {
-    grid-area: barcode;
-    align-self: start;
-    justify-self: end;
-    margin: 0;
-    padding: 0;
-    text-align: right;
-}
-
-.barcode svg {
-    display: block;
-    width: 220px;
-    max-width: 100%;
-    height: auto;
-    margin-left: auto;
-}
-
-.header {
-    grid-area: header;
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    margin-bottom: 2mm;
-}
-
-.header th,
-.header td {
-    border: 1px solid #000000;
-    padding: 2px 4px;
-    vertical-align: middle;
-    word-break: break-word;
-    font-size: 8.5pt;
-    line-height: 1.2;
-}
-
-.header th {
-    width: 12%;
-    background: #f3f3f3;
-    text-align: left;
-    white-space: nowrap;
-    font-weight: normal;
-}
-
-.header td {
-    width: 38%;
-    text-align: left;
-}
-
-.detail-table {
-    grid-area: detail;
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    margin-bottom: 1mm;
-    align-self: start;
-}
-
-.detail-table th,
-.detail-table td {
-    border: 1px solid #000000;
-    padding: 1px 3px;
-    vertical-align: middle;
-    word-break: break-word;
-    font-size: 8pt;
-    line-height: 1.15;
-}
-
-.detail-table thead th {
-    background: #efefef;
-    font-weight: normal;
-}
-
-.detail-table th:nth-child(1),
-.detail-table td:nth-child(1) {
-    width: 8%;
-    text-align: right;
-}
-
-.detail-table th:nth-child(2),
-.detail-table td:nth-child(2) {
-    width: 15%;
-    text-align: left;
-}
-
-.detail-table th:nth-child(3),
-.detail-table td:nth-child(3) {
-    width: 37%;
-    text-align: left;
-}
-
-.detail-table th:nth-child(4),
-.detail-table td:nth-child(4) {
-    width: 13%;
-    text-align: right;
-}
-
-.detail-table th:nth-child(5),
-.detail-table td:nth-child(5) {
-    width: 10%;
-    text-align: right;
-}
-
-.detail-table th:nth-child(6),
-.detail-table td:nth-child(6) {
-    width: 17%;
-    text-align: right;
-}
-
-.detail-table tfoot th {
-    background: #f8f8f8;
-    text-align: center;
-}
-
-.summary {
-    grid-area: summary;
-    width: 52%;
-    margin-left: auto;
-    margin-top: 0;
-    border-collapse: collapse;
-    table-layout: fixed;
-    align-self: start;
-    justify-self: end;
-}
-
-.summary th,
-.summary td {
-    border: 1px solid #000000;
-    padding: 2px 6px;
-    vertical-align: middle;
-    font-size: 8.5pt;
-    line-height: 1.2;
-}
-
-.summary th {
-    width: 22%;
-    background: #f3f3f3;
-    text-align: left;
-    white-space: nowrap;
-    font-weight: normal;
-}
-
-.summary td {
-    width: 11%;
-    text-align: right;
-    font-weight: bold;
 }
 
 .buttons {
@@ -334,13 +570,16 @@ body {
         display: none !important;
     }
 
-    .header,
-    .detail-table,
-    .summary {
+    .report-order .header,
+    .report-order .detail-table,
+    .report-order .summary,
+    .report-delivery .delivery-detail-table,
+    .report-delivery .delivery-summary {
         page-break-inside: avoid;
     }
 
-    .detail-table tbody tr {
+    .report-order .detail-table tbody tr,
+    .report-delivery .delivery-detail-table tbody tr {
         page-break-inside: avoid;
     }
 

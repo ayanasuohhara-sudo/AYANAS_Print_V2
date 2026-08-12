@@ -11,7 +11,8 @@
 
     const Record = {};
 
-    /** ヘッダーフィールドコード一覧 */
+    const DELIVERY_APP_ID = 19;
+
     const HEADER_FIELDS = [
         'manage_no',
         'order_date',
@@ -25,21 +26,13 @@
         'kimono_spec',
     ];
 
-    /** 明細フィールドコード一覧 */
     const DETAIL_FIELDS = {
         string: ['item_code', 'item_name'],
         number: ['unit_price', 'qty', 'amount'],
     };
 
-    /** 明細テーブルフィールドコード */
     const DETAIL_TABLE_CODE = 'detail_table';
 
-    /**
-     * フィールド値を加工せず取得する
-     * @param {Object|null|undefined} fields - kintone フィールドオブジェクト
-     * @param {string} fieldCode - フィールドコード
-     * @returns {string|number|Array|Object} フィールド値（未設定時は空文字）
-     */
     const getFieldValue = (fields, fieldCode) => {
 
         if (!fields || typeof fields !== 'object') {
@@ -56,12 +49,6 @@
 
     };
 
-    /**
-     * 数値フィールドを Number 型に変換する
-     * @param {*} value - 変換対象
-     * @returns {number} 変換後の数値
-     * @throws {Error} 数値変換に失敗した場合
-     */
     const toNumber = (value) => {
 
         if (value === null || value === undefined || value === '') {
@@ -78,11 +65,18 @@
 
     };
 
-    /**
-     * ヘッダーデータを取得する
-     * @param {Object} record - kintone レコード
-     * @returns {Object} ヘッダー情報
-     */
+    const getCurrentRecord = () => {
+
+        const current = kintone.app.record.get();
+
+        if (!current || !current.record) {
+            throw new Error('レコードを取得できません。');
+        }
+
+        return current.record;
+
+    };
+
     const buildHeader = (record) => {
 
         const header = {};
@@ -95,15 +89,9 @@
 
     };
 
-    /**
-     * 明細1行を取得する
-     * @param {Object} row - サブテーブル行
-     * @returns {Object} 明細データ
-     */
     const buildDetailRow = (row) => {
 
         const rowFields = row?.value ?? {};
-
         const detail = {};
 
         DETAIL_FIELDS.string.forEach((fieldCode) => {
@@ -118,11 +106,6 @@
 
     };
 
-    /**
-     * 明細データと集計情報を取得する
-     * @param {Object} record - kintone レコード
-     * @returns {{ details: Array<Object>, summary: Object }} 明細と集計
-     */
     const buildDetails = (record) => {
 
         const tableField = record[DETAIL_TABLE_CODE];
@@ -157,49 +140,131 @@
 
     };
 
+    const buildStandardReportData = (record) => {
+
+        const { details, summary } = buildDetails(record);
+
+        return {
+            header: buildHeader(record),
+            details,
+            summary,
+        };
+
+    };
+
+    const wrapRecordError = (error, methodName) => {
+
+        if (error instanceof Error && (
+            error.message === 'レコードを取得できません。'
+            || error.message.startsWith('数値に変換できません。')
+            || error.message.includes('未実装')
+        )) {
+            throw error;
+        }
+
+        const message = error instanceof Error ? error.message : '不明なエラー';
+
+        throw new Error(`${methodName}: データ取得に失敗しました。（${message}）`);
+
+    };
+
     /**
-     * kintone レコードから帳票用データを取得する
-     * @returns {{
-     *   header: Object,
-     *   details: Array<Object>,
-     *   summary: { count: number, totalQty: number, totalAmount: number }
-     * }} 帳票用データ
-     * @throws {Error} レコード取得またはデータ変換に失敗した場合
+     * 受注票データを取得する
+     * @returns {Object} 帳票データ
+     */
+    Record.getOrderData = () => {
+
+        try {
+
+            return buildStandardReportData(getCurrentRecord());
+
+        } catch (error) {
+
+            wrapRecordError(error, 'Record.getOrderData');
+
+        }
+
+    };
+
+    /**
+     * 納品書データを取得する
+     * @returns {Object} 帳票データ
+     */
+    Record.getDeliveryData = () => {
+
+        try {
+
+            return buildStandardReportData(getCurrentRecord());
+
+        } catch (error) {
+
+            wrapRecordError(error, 'Record.getDeliveryData');
+
+        }
+
+    };
+
+    /**
+     * 請求書データを取得する
+     * @returns {Object} 帳票データ
+     */
+    Record.getInvoiceData = () => {
+        throw new Error('Record.getInvoiceData: 請求書データ取得は未実装です。');
+    };
+
+    /**
+     * 見積書データを取得する
+     * @returns {Object} 帳票データ
+     */
+    Record.getEstimateData = () => {
+        throw new Error('Record.getEstimateData: 見積書データ取得は未実装です。');
+    };
+
+    /**
+     * インボイスデータを取得する
+     * @returns {Object} 帳票データ
+     */
+    Record.getInvoiceExportData = () => {
+        throw new Error('Record.getInvoiceExportData: インボイスデータ取得は未実装です。');
+    };
+
+    /**
+     * 外注伝票データを取得する
+     * @returns {Object} 帳票データ
+     */
+    Record.getPurchaseData = () => {
+        throw new Error('Record.getPurchaseData: 外注伝票データ取得は未実装です。');
+    };
+
+    /**
+     * ラベルデータを取得する
+     * @returns {Object} 帳票データ
+     */
+    Record.getLabelData = () => {
+        throw new Error('Record.getLabelData: ラベルデータ取得は未実装です。');
+    };
+
+    /**
+     * 現在のアプリに応じた帳票データを取得する
+     * @returns {Object} 帳票データ
      */
     Record.get = () => {
 
         try {
 
-            const current = kintone.app.record.get();
+            const appId = typeof kintone !== 'undefined' && typeof kintone.app?.getId === 'function'
+                ? kintone.app.getId()
+                : null;
 
-            if (!current || !current.record) {
-                throw new Error('レコードを取得できません。');
+            if (appId === DELIVERY_APP_ID) {
+                return Record.getDeliveryData();
             }
 
-            const record = current.record;
-            const header = buildHeader(record);
-            const { details, summary } = buildDetails(record);
-
-            return {
-                header,
-                details,
-                summary,
-            };
+            return Record.getOrderData();
 
         } catch (error) {
 
-            if (error instanceof Error && (
-                error.message === 'レコードを取得できません。'
-                || error.message.startsWith('数値に変換できません。')
-            )) {
-                throw error;
-            }
-
-            const message = error instanceof Error
-                ? error.message
-                : '不明なエラー';
-
-            throw new Error(`Record.get: データ取得に失敗しました。（${message}）`);
+            wrapRecordError(error, 'Record.get');
 
         }
 
