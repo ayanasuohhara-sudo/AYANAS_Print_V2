@@ -76,9 +76,19 @@
     };
 
     /**
-     * Code39 バーコードを SVG 要素へ描画する
+     * バーコード種類を解決する
+     * @param {Object} config - プラグイン設定または描画オプション
+     * @returns {'CODE39'|'CODE128'} バーコード種類
+     */
+    Barcode.resolveFormat = (config = {}) => (
+        config.barcode_type === 'CODE128' ? 'CODE128' : 'CODE39'
+    );
+
+    /**
+     * Code39 / Code128 バーコードを SVG 要素へ描画する
      * @param {SVGElement} svgElement - 描画先 SVG 要素
      * @param {string} value - バーコード文字列
+     * @param {Object} [options={}] - 描画オプション（format / barcode_type）
      * @throws {Error} JsBarcode 未読込・SVG 未取得・値未指定時
      */
     Barcode.draw = (svgElement, value, options = {}) => {
@@ -93,6 +103,7 @@
             const drawOptions = {
                 ...BARCODE_OPTIONS,
                 ...options,
+                format: options.format ?? Barcode.resolveFormat(options),
             };
 
             window.JsBarcode(svgElement, barcodeValue, drawOptions);

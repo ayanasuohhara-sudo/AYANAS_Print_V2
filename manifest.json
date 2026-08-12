@@ -16,6 +16,7 @@
       "js/format.js",
       "js/record.js",
       "js/template.js",
+      "js/layout.js",
       "lib/JsBarcode.all.min.js",
       "js/barcode.js",
       "js/preview.js",

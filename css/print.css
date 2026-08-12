@@ -3,73 +3,199 @@
     margin: 10mm;
 }
 
-.page {
-    box-sizing: border-box;
+/* ========================================
+   帳票種別: 受注票 (order)
+   ======================================== */
+.report-order .page {
+    display: grid;
+}
+
+/* ========================================
+   帳票種別: 納品書 (delivery) - 将来追加
+   ======================================== */
+/* .report-delivery .page { } */
+
+/* ========================================
+   帳票種別: 請求書 (bill) - 将来追加
+   ======================================== */
+/* .report-bill .page { } */
+
+/* ========================================
+   帳票種別: インボイス (invoice) - 将来追加
+   ======================================== */
+/* .report-invoice .page { } */
+
+/* 用紙方向は preview.js が config.print_orientation に応じて @page を上書きする */
+.page--landscape {
     width: 277mm;
     min-height: 190mm;
-    margin: 10px auto;
-    padding: 10mm;
+    max-height: 190mm;
+}
+
+.page--portrait {
+    width: 190mm;
+    min-height: 277mm;
+    max-height: 277mm;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
     background: #ffffff;
     color: #000000;
+}
+
+.page {
+    width: 277mm;
+    min-height: 190mm;
+    max-height: 190mm;
+    margin: 10px auto;
+    padding: 6mm 8mm;
+    background: #ffffff;
     font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS Mincho", serif;
-    font-size: 11pt;
+    font-size: 10pt;
+    line-height: 1.4;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+        "title title"
+        "header barcode"
+        "detail detail"
+        "summary summary";
+    gap: 0 6mm;
+    overflow: hidden;
+}
+
+.page:not(:has(.barcode)) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "title"
+        "header"
+        "detail"
+        "summary";
 }
 
 .page h1 {
-    margin: 0 0 8mm;
+    grid-area: title;
+    margin: 0 0 4mm;
+    padding: 0;
     text-align: center;
-    font-size: 18pt;
-    letter-spacing: 0.5em;
+    font-size: 16pt;
+    font-weight: bold;
+    letter-spacing: 0.4em;
+}
+
+.barcode {
+    grid-area: barcode;
+    align-self: start;
+    justify-self: end;
+    margin: 0;
+    padding: 0;
+    text-align: right;
+}
+
+.barcode svg {
+    display: block;
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    margin-left: auto;
 }
 
 .header {
+    grid-area: header;
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 8mm;
+    table-layout: fixed;
+    margin-bottom: 4mm;
 }
 
 .header th,
 .header td {
     border: 1px solid #000000;
-    padding: 6px 8px;
+    padding: 4px 6px;
     vertical-align: middle;
+    word-break: break-word;
 }
 
 .header th {
-    width: 100px;
+    width: 12%;
     background: #f3f3f3;
     text-align: left;
     white-space: nowrap;
+    font-weight: normal;
+}
+
+.header td {
+    width: 38%;
+    text-align: left;
 }
 
 .detail-table {
+    grid-area: detail;
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 8mm;
+    table-layout: fixed;
+    margin-bottom: 3mm;
+    align-self: start;
 }
 
 .detail-table th,
 .detail-table td {
     border: 1px solid #000000;
-    padding: 6px;
+    padding: 3px 5px;
+    vertical-align: middle;
+    word-break: break-word;
 }
 
 .detail-table thead th {
     background: #efefef;
-    text-align: center;
+    font-weight: normal;
 }
 
-.detail-table tbody td:nth-child(1),
-.detail-table tbody td:nth-child(4),
-.detail-table tbody td:nth-child(5),
-.detail-table tbody td:nth-child(6) {
+.detail-table th:nth-child(1),
+.detail-table td:nth-child(1) {
+    width: 8%;
     text-align: right;
 }
 
-.detail-table tbody td:nth-child(2),
-.detail-table tbody td:nth-child(3) {
+.detail-table th:nth-child(2),
+.detail-table td:nth-child(2) {
+    width: 15%;
     text-align: left;
+}
+
+.detail-table th:nth-child(3),
+.detail-table td:nth-child(3) {
+    width: 37%;
+    text-align: left;
+}
+
+.detail-table th:nth-child(4),
+.detail-table td:nth-child(4) {
+    width: 13%;
+    text-align: right;
+}
+
+.detail-table th:nth-child(5),
+.detail-table td:nth-child(5) {
+    width: 10%;
+    text-align: right;
+}
+
+.detail-table th:nth-child(6),
+.detail-table td:nth-child(6) {
+    width: 17%;
+    text-align: right;
 }
 
 .detail-table tfoot th {
@@ -78,38 +204,39 @@
 }
 
 .summary {
-    width: 100%;
+    grid-area: summary;
+    width: 52%;
+    margin-left: auto;
+    margin-top: auto;
     border-collapse: collapse;
-    margin-top: 5mm;
+    table-layout: fixed;
+    align-self: end;
+    justify-self: end;
 }
 
 .summary th,
 .summary td {
     border: 1px solid #000000;
-    padding: 6px 8px;
+    padding: 5px 8px;
+    vertical-align: middle;
 }
 
 .summary th {
+    width: 22%;
     background: #f3f3f3;
+    text-align: left;
     white-space: nowrap;
+    font-weight: normal;
 }
 
 .summary td {
+    width: 11%;
     text-align: right;
-}
-
-.barcode {
-    text-align: right;
-    margin-bottom: 8mm;
-}
-
-.barcode svg {
-    width: 260px;
-    height: auto;
+    font-weight: bold;
 }
 
 .buttons {
-    margin-top: 12mm;
+    margin-top: 8mm;
     text-align: center;
 }
 
@@ -127,22 +254,38 @@
         background: #ffffff;
     }
 
+    .page--landscape {
+        width: 277mm;
+        min-height: 190mm;
+        max-height: 190mm;
+    }
+
+    .page--portrait {
+        width: 190mm;
+        min-height: 277mm;
+        max-height: 277mm;
+    }
+
     .page {
-        width: auto;
-        min-height: auto;
         margin: 0;
-        padding: 0;
+        padding: 6mm 8mm;
         box-shadow: none;
+        overflow: hidden;
+        page-break-after: avoid;
+        page-break-inside: avoid;
     }
 
     .buttons {
         display: none !important;
     }
 
-    table,
-    tr,
-    td,
-    th {
+    .header,
+    .detail-table,
+    .summary {
+        page-break-inside: avoid;
+    }
+
+    .detail-table tbody tr {
         page-break-inside: avoid;
     }
 

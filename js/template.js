@@ -84,7 +84,7 @@
      * @param {Object} config - プラグイン設定
      * @returns {string} 帳票タイトル
      */
-    const getReportTitle = (config) => {
+    const getReportTitle = (config = {}) => {
 
         const title = config.report_title;
 
@@ -225,31 +225,24 @@ ${buildDetailRowsHtml(details)}
 
     /**
      * 受注票 HTML を生成する
-     * @param {{
-     *   header: Object,
-     *   details: Array<Object>,
-     *   summary: Object
-     * }} data - Record.get() の戻り値
-     * @returns {string} 受注票 HTML 文字列
-     * @throws {Error} データ不正または HTML 生成失敗時
+     * @param {Object} data - 帳票データ
+     * @param {Object} config - プラグイン設定
+     * @param {Object} layout - レイアウト情報
+     * @returns {string} HTML 文字列
      */
-    Template.render = (data, config = {}) => {
+    const renderOrder = (data, config, layout) => {
 
-        try {
+        const { header, details, summary } = data;
+        const reportTitle = esc(getReportTitle(config));
+        const bodyClass = esc(layout.pageClass || 'report-order');
 
-            assertFormatLoaded();
-            validateData(data);
-
-            const { header, details, summary } = data;
-            const reportTitle = esc(getReportTitle(config));
-
-            return `<!DOCTYPE html>
+        return `<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <title>AYANAS Print</title>
 </head>
-<body>
+<body class="${bodyClass}">
 <div class="page">
     <h1>${reportTitle}</h1>
     ${buildHeaderHtml(header, config)}
@@ -259,6 +252,58 @@ ${buildDetailRowsHtml(details)}
 </body>
 </html>`;
 
+    };
+
+    /** テンプレート名と描画関数の対応 */
+    const TEMPLATE_RENDERERS = {
+        order: renderOrder,
+    };
+
+    /**
+     * レイアウト情報の妥当性を検証する
+     * @param {Object} layout - レイアウト情報
+     * @throws {Error} レイアウトが不正な場合
+     */
+    const validateLayout = (layout) => {
+
+        if (!layout || typeof layout !== 'object') {
+            throw new Error('レイアウト情報が指定されていません。');
+        }
+
+        if (!layout.templateName || typeof layout.templateName !== 'string') {
+            throw new Error('templateName が不正です。');
+        }
+
+        if (!TEMPLATE_RENDERERS[layout.templateName]) {
+            throw new Error(`未対応の帳票種類です。（${layout.templateName}）`);
+        }
+
+    };
+
+    /**
+     * 帳票 HTML を生成する
+     * @param {{
+     *   header: Object,
+     *   details: Array<Object>,
+     *   summary: Object
+     * }} data - Record.get() の戻り値
+     * @param {Object} config - プラグイン設定
+     * @param {Object} layout - レイアウト情報
+     * @returns {string} 帳票 HTML 文字列
+     * @throws {Error} データ不正または HTML 生成失敗時
+     */
+    Template.render = (data, config = {}, layout = {}) => {
+
+        try {
+
+            assertFormatLoaded();
+            validateData(data);
+            validateLayout(layout);
+
+            const renderer = TEMPLATE_RENDERERS[layout.templateName];
+
+            return renderer(data, config, layout);
+
         } catch (error) {
 
             if (error instanceof Error && (
@@ -267,6 +312,9 @@ ${buildDetailRowsHtml(details)}
                 || error.message.includes('details')
                 || error.message.includes('summary')
                 || error.message.includes('帳票データ')
+                || error.message.includes('レイアウト')
+                || error.message.includes('templateName')
+                || error.message.includes('未対応の帳票種類')
             )) {
                 throw error;
             }

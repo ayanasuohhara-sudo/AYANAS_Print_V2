@@ -23,6 +23,83 @@
     /** barcode.js のパス */
     const BARCODE_JS_PATH = 'js/barcode.js';
 
+    /** プラグイン設定のデフォルト値 */
+    const DEFAULT_CONFIG = {
+        report_title: '受注票',
+        barcode_type: 'CODE39',
+        barcode_visible: '1',
+        print_orientation: 'landscape',
+        paper_size: 'A4',
+    };
+
+    /**
+     * プラグイン設定を正規化する
+     * @param {Object} saved - 保存済み設定
+     * @returns {Object} 正規化済み設定
+     */
+    const normalizeConfig = (saved) => {
+
+        const config = { ...DEFAULT_CONFIG };
+
+        if (!saved || typeof saved !== 'object') {
+            return config;
+        }
+
+        if (typeof saved.report_title === 'string' && saved.report_title.trim() !== '') {
+            config.report_title = saved.report_title.trim();
+        }
+
+        config.barcode_type = saved.barcode_type === 'CODE128' ? 'CODE128' : 'CODE39';
+        config.barcode_visible = saved.barcode_visible === '0' ? '0' : '1';
+        config.print_orientation = saved.print_orientation === 'portrait' ? 'portrait' : 'landscape';
+        config.paper_size = 'A4';
+
+        return config;
+
+    };
+
+    /**
+     * kintone からプラグイン設定を取得する
+     * @returns {Object} プラグイン設定
+     */
+    const loadPluginConfig = () => {
+
+        try {
+
+            if (typeof kintone === 'undefined') {
+                return { ...DEFAULT_CONFIG };
+            }
+
+            if (!kintone.plugin?.app?.getConfig || !kintone.$PLUGIN_ID) {
+                return { ...DEFAULT_CONFIG };
+            }
+
+            const saved = kintone.plugin.app.getConfig(kintone.$PLUGIN_ID);
+
+            return normalizeConfig(saved);
+
+        } catch (error) {
+
+            console.error('[AYANAS Print]', error);
+
+            return { ...DEFAULT_CONFIG };
+
+        }
+
+    };
+
+    /**
+     * Layout モジュールの読み込みを確認する
+     * @throws {Error} Layout が未読込の場合
+     */
+    const assertLayoutLoaded = () => {
+
+        if (typeof Layout === 'undefined' || typeof Layout.resolve !== 'function') {
+            throw new Error('Layout モジュールが読み込まれていません。');
+        }
+
+    };
+
     /**
      * Template モジュールの読み込みを確認する
      * @throws {Error} Template が未読込の場合
@@ -142,7 +219,7 @@
      * @param {Object} config - プラグイン設定
      * @returns {string} スタイル HTML
      */
-    const buildPrintStyleHtml = (config = {}) => {
+    const buildPrintStyleHtml = (config) => {
 
         const paperSize = config.paper_size === 'A5' ? 'A5' : 'A4';
         const orientation = config.print_orientation === 'portrait' ? 'portrait' : 'landscape';
@@ -150,6 +227,15 @@
         return `<style>@page { size: ${paperSize} ${orientation}; margin: 10mm; }</style>`;
 
     };
+
+    /**
+     * 用紙方向に応じた page クラス名を取得する
+     * @param {Object} config - プラグイン設定
+     * @returns {string} クラス名
+     */
+    const getPageClassName = (config) => (
+        config.print_orientation === 'portrait' ? 'page page--portrait' : 'page page--landscape'
+    );
 
     /**
      * 印刷・閉じるボタンのイベント登録スクリプト
@@ -239,7 +325,7 @@ ${buildButtonScriptHtml()}
         logBarcodeGlobals();
 
         var svg = document.getElementById('barcode');
-        var drawOptions = { format: barcodeType };
+        var drawOptions = { format: barcodeType, barcode_type: barcodeType };
 
         if (hasLocalBarcodeModule()) {
             window.Barcode.draw(svg, barcodeValue, drawOptions);
@@ -350,10 +436,15 @@ ${buildButtonScriptHtml()}
      * @param {Object} data - 帳票データ
      * @returns {string} プレビュー HTML
      */
-    const buildPreviewHtml = (data, config = {}) => {
+    const buildPreviewHtml = (data, config, layout) => {
 
         const barcodeValue = getBarcodeValue(data);
-        let html = Template.render(data, config);
+        let html = Template.render(data, config, layout);
+
+        html = html.replace(
+            '<div class="page">',
+            `<div class="${getPageClassName(config)}">`
+        );
 
         html = html.replace(
             '</head>',
@@ -382,15 +473,18 @@ ${buildButtonScriptHtml()}
      *   details: Array<Object>,
      *   summary: Object
      * }} data - 帳票データ
-     * @param {Object} [config={}] - プラグイン設定
      * @throws {Error} プレビュー表示に失敗した場合
      */
-    Preview.open = (data, config = {}) => {
+    Preview.open = (data) => {
 
         try {
 
             assertTemplateLoaded();
+            assertLayoutLoaded();
             validateData(data);
+
+            const config = loadPluginConfig();
+            const layout = Layout.resolve(data, config);
 
             const printWindow = window.open('', '_blank', PREVIEW_WINDOW_FEATURES);
 
@@ -398,7 +492,7 @@ ${buildButtonScriptHtml()}
                 throw new Error('印刷ウィンドウを開けません。');
             }
 
-            const html = buildPreviewHtml(data, config);
+            const html = buildPreviewHtml(data, config, layout);
 
             printWindow.document.open();
             printWindow.document.write(html);
@@ -408,6 +502,7 @@ ${buildButtonScriptHtml()}
 
             if (error instanceof Error && (
                 error.message.includes('Template')
+                || error.message.includes('Layout')
                 || error.message.includes('帳票データ')
                 || error.message.includes('header')
                 || error.message.includes('印刷ウィンドウ')
