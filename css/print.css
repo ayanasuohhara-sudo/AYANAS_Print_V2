@@ -191,7 +191,7 @@
 .report-delivery .page {
     display: flex;
     flex-direction: column;
-    gap: 2mm;
+    gap: 1mm;
     grid-template-columns: unset;
     grid-template-rows: unset;
     grid-template-areas: unset;
@@ -206,7 +206,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 8mm;
     align-items: start;
-    padding: 0 135px 2mm 0;
+    padding: 0 135px 1.5mm 0;
     border-bottom: 0.5px solid #333333;
     flex: 0 0 auto;
     position: relative;
@@ -216,7 +216,7 @@
     grid-column: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.5mm;
+    gap: 0;
     min-width: 0;
 }
 
@@ -226,29 +226,31 @@
     flex-direction: column;
     gap: 2mm;
     align-items: flex-end;
-    text-align: right;
 }
 
 .report-delivery .delivery-title {
-    margin: 0;
-    padding: 0;
+    margin: 0 0 4mm;
+    padding: 0 0 1.5mm;
     font-size: 21pt;
     font-weight: bold;
     letter-spacing: 0.45em;
     line-height: 1.2;
+    border-bottom: 0.5px solid #333333;
+    display: inline-block;
+    align-self: flex-start;
 }
 
 .report-delivery .delivery-meta {
     display: flex;
     flex-direction: column;
     gap: 1mm;
-    margin: 0;
+    margin: 0 0 1.5mm;
 }
 
 .report-delivery .delivery-customer-name {
     margin: 0;
     padding: 0;
-    font-size: 9pt;
+    font-size: 14pt;
     font-weight: bold;
     line-height: 1.35;
 }
@@ -258,11 +260,13 @@
     padding: 0;
     font-size: 8pt;
     line-height: 1.35;
+    text-align: left;
 }
 
 .report-delivery .delivery-header__company {
     margin: 0;
     padding: 0;
+    text-align: left;
 }
 
 .report-delivery .delivery-meta__item {
@@ -335,24 +339,29 @@
 .report-delivery .delivery-detail-table th,
 .report-delivery .delivery-detail-table td {
     border: 0.5px solid #333333;
-    padding: 1px 4px;
+    padding: 0 2px;
     vertical-align: middle;
     word-break: break-word;
-    font-size: 8.5pt;
-    line-height: 1.2;
+    font-size: 7.5pt;
+    line-height: 1.05;
 }
 
 .report-delivery .delivery-detail-table thead th {
     background: #f0f0f0;
     font-weight: normal;
     text-align: center;
-    font-size: 8pt;
-    padding: 2px 4px;
+    font-size: 7pt;
+    padding: 1px 2px;
+    line-height: 1.1;
+}
+
+.report-delivery .delivery-detail-table tbody tr {
+    height: 5.4mm;
 }
 
 .report-delivery .delivery-detail-table tbody .detail-row--primary td {
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding-top: 0;
+    padding-bottom: 0;
     background: #ffffff;
 }
 
@@ -361,9 +370,9 @@
 }
 
 .report-delivery .delivery-detail-table tbody .detail-row--secondary td {
-    padding: 5px 4px;
+    padding: 0 2px;
     background: #ffffff;
-    font-size: 8pt;
+    font-size: 7pt;
     color: #222222;
     vertical-align: middle;
 }
@@ -375,7 +384,7 @@
 
 .report-delivery .delivery-detail-table tbody .detail-row--secondary td.detail-cell--kimono,
 .report-delivery .delivery-detail-table tbody .detail-row--secondary td.detail-cell--spec {
-    line-height: 1.3;
+    line-height: 1.05;
 }
 
 .report-delivery .delivery-detail-table tbody .detail-row--secondary td:nth-child(4) {

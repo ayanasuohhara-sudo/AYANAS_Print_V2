@@ -35,6 +35,8 @@
 
     };
 
+    const formatCustomerName = (name) => `${String(name ?? '').trim()}様`;
+
     const buildHeaderHtml = (header, layout) => {
 
         const company = getCompanyInfo(layout);
@@ -48,11 +50,11 @@
         <h1 class="delivery-title">納 品 書</h1>
         <dl class="delivery-meta">
             <div class="delivery-meta__item">
-                <dt>得意様コード</dt>
+                <dt>取引先コード</dt>
                 <dd>${esc(header.customer_code)}</dd>
             </div>
         </dl>
-        <p class="delivery-customer-name">${esc(header.customer_name)}様</p>
+        <p class="delivery-customer-name">${esc(formatCustomerName(header.customer_name))}</p>
     </div>
     <div class="delivery-header__right">
         <div class="delivery-header__doc">
