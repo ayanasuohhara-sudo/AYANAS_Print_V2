@@ -43,7 +43,8 @@
         const kimonoSpec = String(spec ?? '').trim();
 
         if (kimonoType && kimonoSpec) {
-            return `${esc(kimonoType)}<br>${esc(kimonoSpec)}`;
+            return `<span class="detail-kimono-type">${esc(kimonoType)}</span>`
+                + `<span class="detail-kimono-spec">${esc(kimonoSpec)}</span>`;
         }
 
         return esc(kimonoType || kimonoSpec);
