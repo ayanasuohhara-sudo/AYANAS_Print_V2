@@ -25,7 +25,31 @@
    ======================================== */
 /* .report-invoice .page { } */
 
-/* 用紙方向は preview.js が config.print_orientation に応じて @page を上書きする */
+/* 用紙サイズ・方向は preview.js が config に応じて @page と page クラスを設定する */
+.page--a4.page--landscape {
+    width: 277mm;
+    min-height: 190mm;
+    max-height: 190mm;
+}
+
+.page--a4.page--portrait {
+    width: 190mm;
+    min-height: 277mm;
+    max-height: 277mm;
+}
+
+.page--a5.page--landscape {
+    width: 190mm;
+    min-height: 128mm;
+    max-height: 128mm;
+}
+
+.page--a5.page--portrait {
+    width: 128mm;
+    min-height: 190mm;
+    max-height: 190mm;
+}
+
 .page--landscape {
     width: 277mm;
     min-height: 190mm;
@@ -259,6 +283,30 @@ body {
     html,
     body {
         background: #ffffff;
+    }
+
+    .page--a4.page--landscape {
+        width: 277mm;
+        min-height: 190mm;
+        max-height: 190mm;
+    }
+
+    .page--a4.page--portrait {
+        width: 190mm;
+        min-height: 277mm;
+        max-height: 277mm;
+    }
+
+    .page--a5.page--landscape {
+        width: 190mm;
+        min-height: 128mm;
+        max-height: 128mm;
+    }
+
+    .page--a5.page--portrait {
+        width: 128mm;
+        min-height: 190mm;
+        max-height: 190mm;
     }
 
     .page--landscape {

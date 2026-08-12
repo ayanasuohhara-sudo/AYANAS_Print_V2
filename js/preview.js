@@ -82,7 +82,7 @@
         config.barcode_type = saved.barcode_type === 'CODE128' ? 'CODE128' : 'CODE39';
         config.barcode_visible = saved.barcode_visible === '0' ? '0' : '1';
         config.print_orientation = saved.print_orientation === 'portrait' ? 'portrait' : 'landscape';
-        config.paper_size = 'A4';
+        config.paper_size = saved.paper_size === 'A5' ? 'A5' : 'A4';
 
         return config;
 
@@ -353,9 +353,16 @@
      * @param {Object} config - プラグイン設定
      * @returns {string} クラス名
      */
-    const getPageClassName = (config) => (
-        config.print_orientation === 'portrait' ? 'page page--portrait' : 'page page--landscape'
-    );
+    const getPageClassName = (config) => {
+
+        const paperClass = config.paper_size === 'A5' ? 'page--a5' : 'page--a4';
+        const orientationClass = config.print_orientation === 'portrait'
+            ? 'page--portrait'
+            : 'page--landscape';
+
+        return `page ${paperClass} ${orientationClass}`;
+
+    };
 
     /**
      * 印刷・閉じるボタンのイベント登録スクリプト
