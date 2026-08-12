@@ -9,7 +9,7 @@
      * DOM 操作・印刷・Barcode 描画は行わない。
      */
 
-    const DETAIL_COLUMN_COUNT = 8;
+    const DETAIL_COLUMN_COUNT = 7;
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -85,7 +85,6 @@
             + `<td class="detail-cell--stack">${esc(detail.client_name)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
             + `<td>${esc(detail.slip_no)}</td>`
-            + `<td>${esc(detail.in_charge)}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
@@ -94,8 +93,7 @@
             + `<td class="detail-cell--stack detail-cell--kimono">${esc(detail.kimono_type)}</td>`
             + `<td class="detail-cell--stack detail-cell--spec">${esc(detail.kimono_spec)}</td>`
             + `<td class="detail-cell--stack"></td>`
-            + `<td></td>`
-            + `<td></td>`
+            + `<td>${esc(detail.in_charge)}</td>`
             + `</tr>`
         )).join('');
 
@@ -105,23 +103,14 @@
 
 <table class="delivery-detail-table">
     <thead>
-        <tr class="detail-head detail-head--primary">
+        <tr class="detail-head">
             <th>管理番号</th>
             <th>お客様名</th>
             <th>加工内容</th>
-            <th>得意先伝票番号</th>
-            <th>担当</th>
+            <th>伝票番号 / 係</th>
             <th>単価</th>
             <th>数量</th>
             <th>金額</th>
-        </tr>
-        <tr class="detail-head detail-head--secondary">
-            <th>着物種類</th>
-            <th>仕様</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th colspan="3"></th>
         </tr>
     </thead>
     <tbody>
