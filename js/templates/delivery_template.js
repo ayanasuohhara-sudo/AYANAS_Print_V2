@@ -6,51 +6,97 @@
      * templates/delivery_template.js
      */
 
-    const DEFAULT_COMPANY = {
-        name: '株式会社ayanas',
-        address: '〒000-0000 東京都',
-        tel: 'TEL 00-0000-0000',
-        fax: 'FAX 00-0000-0000',
-        registrationNo: '登録番号 T0000000000000',
+    const getDefinition = (layout) => {
+
+        if (!layout?.definition) {
+            throw new Error('DeliveryTemplate: 帳票定義が指定されていません。');
+        }
+
+        return layout.definition;
+
     };
 
-    const getCompanyInfo = (layout = {}, config = {}) => {
+    const formatValue = (value, format) => {
 
-        const source = layout.company ?? config.company ?? DEFAULT_COMPANY;
+        if (format === 'date') {
+            return Format.formatDate(value);
+        }
+
+        if (format === 'money') {
+            return Format.formatMoney(value);
+        }
+
+        return value;
+
+    };
+
+    const resolveSummaryField = (summary, field) => {
+
+        if (field === 'totalCount') {
+            return summary.totalCount ?? summary.count ?? 0;
+        }
+
+        return summary[field];
+
+    };
+
+    const buildWidthStyle = (width) => {
+
+        if (typeof width === 'number' && width > 0) {
+            return ` style="width:${width}px"`;
+        }
+
+        return '';
+
+    };
+
+    const getCompanyInfo = (definition, layout = {}, config = {}) => {
+
+        const source = layout.company ?? config.company ?? definition.company ?? {};
 
         return {
-            name: source.name ?? DEFAULT_COMPANY.name,
-            address: source.address ?? DEFAULT_COMPANY.address,
-            tel: source.tel ?? DEFAULT_COMPANY.tel,
-            fax: source.fax ?? DEFAULT_COMPANY.fax,
-            registrationNo: source.registrationNo ?? DEFAULT_COMPANY.registrationNo,
+            name: source.name ?? '',
+            address: source.address ?? '',
+            tel: source.tel ?? '',
+            fax: source.fax ?? '',
+            registrationNo: source.registrationNo ?? '',
         };
 
     };
 
-    const buildHeaderHtml = (header, layout = {}, config = {}) => {
+    const buildHeaderHtml = (definition, header, layout, config) => {
 
-        const company = getCompanyInfo(layout, config);
+        const headerDef = definition.header ?? {};
+        const company = getCompanyInfo(definition, layout, config);
+        const displayTitle = headerDef.displayTitle ?? definition.title;
+
+        const metaHtml = (headerDef.meta ?? []).map((item) => {
+
+            const value = formatValue(header[item.field], item.format);
+
+            return `
+            <div class="delivery-meta__item">
+                <dt>${Common.esc(item.label)}</dt>
+                <dd>${Common.esc(value)}</dd>
+            </div>`;
+
+        }).join('');
+
+        const barcodeHtml = headerDef.showBarcode
+            ? `<div class="delivery-barcode">
+            <svg id="barcode" class="barcode"></svg>
+        </div>`
+            : '';
 
         return `
 <header class="delivery-header">
     <div class="delivery-header__main">
-        <h1 class="delivery-title">納 品 書</h1>
-        <dl class="delivery-meta">
-            <div class="delivery-meta__item">
-                <dt>納品番号</dt>
-                <dd>${Common.esc(header.manage_no)}</dd>
-            </div>
-            <div class="delivery-meta__item">
-                <dt>納品日</dt>
-                <dd>${Common.esc(Format.formatDate(header.deadline))}</dd>
-            </div>
+        <h1 class="delivery-title">${Common.esc(displayTitle)}</h1>
+        <dl class="delivery-meta">${metaHtml}
         </dl>
     </div>
     <div class="delivery-header__aside">
-        <div class="delivery-barcode">
-            <svg id="barcode" class="barcode"></svg>
-        </div>
+        ${barcodeHtml}
         <div class="delivery-header__company">
             <p class="company-name">${Common.esc(company.name)}</p>
             <p class="company-address">${Common.esc(company.address)}</p>
@@ -63,88 +109,120 @@
 
     };
 
-    const buildDetailRowsHtml = (details, header) => {
+    const buildColumnHeaderHtml = (columnGroup) => (columnGroup.columns ?? []).map((column) => {
 
-        if (details.length === 0) {
-            return '<tr class="detail-row detail-row--primary"><td colspan="6">明細はありません</td></tr>';
-        }
+        const colspan = column.colspan ? ` colspan="${column.colspan}"` : '';
 
-        return details.map((detail) => (
-            `<tr class="detail-row detail-row--primary">`
-            + `<td>${Common.esc(header.manage_no)}</td>`
-            + `<td>${Common.esc(header.client_name)}</td>`
-            + `<td>${Common.esc(detail.item_name)}</td>`
-            + `<td class="num">${Common.esc(Format.formatMoney(detail.unit_price))}</td>`
-            + `<td class="num">${Common.esc(detail.qty)}</td>`
-            + `<td class="num">${Common.esc(Format.formatMoney(detail.amount))}</td>`
-            + `</tr>`
-            + `<tr class="detail-row detail-row--secondary">`
-            + `<td>${Common.esc(header.kimono_type)}</td>`
-            + `<td>${Common.esc(header.kimono_spec)}</td>`
-            + `<td>${Common.esc(detail.item_code)}</td>`
-            + `<td>${Common.esc(header.slip_no)}</td>`
-            + `<td colspan="2">${Common.esc(header.in_charge)}</td>`
-            + `</tr>`
-        )).join('');
+        return `<th${colspan}${buildWidthStyle(column.width)}>${Common.esc(column.title)}</th>`;
+
+    }).join('');
+
+    const buildDetailCellHtml = (column, sources) => {
+
+        const { header, detail } = sources;
+        const source = column.source === 'header' ? header : detail;
+        const rawValue = source?.[column.field] ?? '';
+        const value = formatValue(rawValue, column.format);
+        const className = column.className ? ` class="${column.className}"` : '';
+        const colspan = column.colspan ? ` colspan="${column.colspan}"` : '';
+
+        return `<td${className}${colspan}>${Common.esc(value)}</td>`;
 
     };
 
-    const buildDetailTableHtml = (details, header) => `
+    const buildDetailRowsHtml = (definition, details, header) => {
 
-<table class="delivery-detail-table">
+        const columnGroups = definition.detailTables ?? [];
+        const emptyColspan = definition.detailTable?.emptyColspan ?? columnGroups[0]?.columns?.length ?? 1;
+
+        if (details.length === 0) {
+            return `<tr class="${Common.esc(columnGroups[0]?.rowClass ?? 'detail-row')}"><td colspan="${emptyColspan}">${Common.esc(definition.detailTable?.emptyMessage ?? '')}</td></tr>`;
+        }
+
+        return details.map((detail) => columnGroups.map((columnGroup) => {
+
+            const cellsHtml = (columnGroup.columns ?? []).map((column) => (
+                buildDetailCellHtml(column, { header, detail })
+            )).join('');
+
+            const rowClass = columnGroup.rowClass ? ` class="${columnGroup.rowClass}"` : '';
+
+            return `<tr${rowClass}>${cellsHtml}</tr>`;
+
+        }).join('')).join('');
+
+    };
+
+    const buildDetailTableHtml = (definition, details, header) => {
+
+        const columnGroups = definition.detailTables ?? [];
+        const tableClass = definition.detailTable?.tableClass ?? 'delivery-detail-table';
+
+        const headHtml = columnGroups.map((columnGroup) => {
+
+            const headClass = columnGroup.headClass ? ` class="${columnGroup.headClass}"` : '';
+
+            return `<tr${headClass}>${buildColumnHeaderHtml(columnGroup)}</tr>`;
+
+        }).join('\n        ');
+
+        return `
+<table class="${tableClass}">
     <thead>
-        <tr class="detail-head detail-head--primary">
-            <th>管理番号</th>
-            <th>お客様名</th>
-            <th>加工内容</th>
-            <th>単価</th>
-            <th>数量</th>
-            <th>金額</th>
-        </tr>
-        <tr class="detail-head detail-head--secondary">
-            <th>着物種類</th>
-            <th>仕様</th>
-            <th>商品コード</th>
-            <th>得意先伝票番号</th>
-            <th colspan="2">担当者</th>
-        </tr>
+        ${headHtml}
     </thead>
     <tbody>
-${buildDetailRowsHtml(details, header)}
+${buildDetailRowsHtml(definition, details, header)}
     </tbody>
 </table>`;
 
-    const buildSummaryHtml = (summary) => {
+    };
 
-        const count = summary.totalCount ?? summary.count ?? 0;
+    const buildSummaryHtml = (definition, summary) => {
+
+        const summaryDef = definition.summary ?? {};
+        const tableClass = summaryDef.tableClass ?? 'delivery-summary';
+        const wrapperClass = summaryDef.wrapperClass ?? 'delivery-footer';
         const subtotal = summary.totalAmount ?? 0;
-        const tax = Math.floor(subtotal * 0.1);
+        const taxRate = summaryDef.taxRate ?? 0;
+        const tax = Math.floor(subtotal * taxRate);
         const total = subtotal + tax;
 
+        const computedValues = {
+            subtotal,
+            tax,
+            total,
+        };
+
+        const rowsHtml = (summaryDef.items ?? []).map((item) => {
+
+            let rawValue = '';
+
+            if (item.role === 'tax') {
+                rawValue = computedValues.tax;
+            } else if (item.role === 'total') {
+                rawValue = computedValues.total;
+            } else if (item.role === 'subtotal') {
+                rawValue = computedValues.subtotal;
+            } else if (item.source === 'summary') {
+                rawValue = resolveSummaryField(summary, item.field);
+            }
+
+            const value = formatValue(rawValue, item.format);
+            const rowClass = item.role === 'total' ? ` class="${summaryDef.totalRowClass ?? ''}"` : '';
+
+            return `
+            <tr${rowClass}>
+                <th>${Common.esc(item.label)}</th>
+                <td>${Common.esc(value)}</td>
+            </tr>`;
+
+        }).join('');
+
         return `
-<footer class="delivery-footer">
-    <table class="delivery-summary">
-        <tbody>
-            <tr>
-                <th>点数</th>
-                <td>${Common.esc(count)}</td>
-            </tr>
-            <tr>
-                <th>数量合計</th>
-                <td>${Common.esc(summary.totalQty)}</td>
-            </tr>
-            <tr>
-                <th>税抜</th>
-                <td>${Common.esc(Format.formatMoney(subtotal))}</td>
-            </tr>
-            <tr>
-                <th>消費税</th>
-                <td>${Common.esc(Format.formatMoney(tax))}</td>
-            </tr>
-            <tr class="delivery-summary__total">
-                <th>税込</th>
-                <td>${Common.esc(Format.formatMoney(total))}</td>
-            </tr>
+<footer class="${wrapperClass}">
+    <table class="${tableClass}">
+        <tbody>${rowsHtml}
         </tbody>
     </table>
 </footer>`;
@@ -156,16 +234,17 @@ ${buildDetailRowsHtml(details, header)}
         Common.assertFormatLoaded();
         Validation.assertDetailReportData(data);
 
+        const definition = getDefinition(layout);
         const { header, details, summary } = data;
-        const reportTitle = Common.getTitle(layout, config, '納品書');
+        const reportTitle = Common.getTitle(layout, config, definition.title);
 
         return Common.buildDocumentHtml({
             title: reportTitle,
             bodyClass: Common.getBodyClass(layout),
             content: `
-    ${buildHeaderHtml(header, layout, config)}
-    ${buildDetailTableHtml(details, header)}
-    ${buildSummaryHtml(summary)}`,
+    ${buildHeaderHtml(definition, header, layout, config)}
+    ${buildDetailTableHtml(definition, details, header)}
+    ${buildSummaryHtml(definition, summary)}`,
         });
 
     });

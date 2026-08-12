@@ -8,45 +8,10 @@
 
     const Layout = {};
 
-    const DELIVERY_APP_ID = 19;
-
-    const DELIVERY_COMPANY = {
-        name: '株式会社ayanas',
-        address: '〒000-0000 東京都',
-        tel: 'TEL 00-0000-0000',
-        fax: 'FAX 00-0000-0000',
-        registrationNo: '登録番号 T0000000000000',
+    const REPORT_DEFINITIONS = {
+        order: OrderDefinition,
+        delivery: DeliveryDefinition,
     };
-
-    const REPORT_REGISTRY = [
-        {
-            reportType: 'delivery',
-            title: '納品書',
-            template: () => DeliveryTemplate,
-            pageClass: 'report-delivery',
-            barcodeField: 'header.manage_no',
-            paperSize: 'A4',
-            orientation: 'landscape',
-            buttonLabel: '納品書印刷',
-            appIds: [DELIVERY_APP_ID],
-            company: { ...DELIVERY_COMPANY },
-            configDefaults: {
-                barcode_type: 'CODE39',
-                barcode_visible: '1',
-            },
-        },
-        {
-            reportType: 'order',
-            title: '受注票',
-            template: () => OrderTemplate,
-            pageClass: 'report-order',
-            barcodeField: 'header.manage_no',
-            paperSize: 'A4',
-            orientation: 'landscape',
-            buttonLabel: '受注票印刷',
-            appIds: null,
-        },
-    ];
 
     const getCurrentAppId = () => {
 
@@ -66,56 +31,78 @@
 
     };
 
-    const resolveDefinition = () => {
+    const normalizeBarcodeField = (barcodeField) => {
 
-        const appId = getCurrentAppId();
-
-        const matched = REPORT_REGISTRY.find((definition) => (
-            Array.isArray(definition.appIds) && definition.appIds.includes(appId)
-        ));
-
-        if (matched) {
-            return matched;
+        if (typeof barcodeField !== 'string' || barcodeField === '') {
+            return 'header.manage_no';
         }
 
-        return REPORT_REGISTRY.find((definition) => definition.appIds === null);
+        if (barcodeField.includes('.')) {
+            return barcodeField;
+        }
+
+        return `header.${barcodeField}`;
 
     };
 
-    const buildLayout = (definition) => {
+    const getReportDefinition = (reportType) => {
 
-        Validation.assertModule(definition.template(), definition.title);
+        const definition = REPORT_DEFINITIONS[reportType];
+
+        if (!definition) {
+            throw new Error(`Layout: 帳票定義が見つかりません。（${reportType}）`);
+        }
+
+        return definition;
+
+    };
+
+    const buildLayout = (registryDefinition) => {
+
+        const definition = getReportDefinition(registryDefinition.reportType);
 
         const layout = {
-            reportType: definition.reportType,
+            reportType: registryDefinition.reportType,
             title: definition.title,
-            template: definition.template(),
+            template: registryDefinition.template,
             pageClass: definition.pageClass,
-            barcodeField: definition.barcodeField,
-            paperSize: definition.paperSize,
+            barcodeField: normalizeBarcodeField(definition.barcodeField),
+            paperSize: definition.paper,
             orientation: definition.orientation,
+            definition,
         };
 
         if (definition.company) {
             layout.company = definition.company;
+        } else if (registryDefinition.company) {
+            layout.company = registryDefinition.company;
         }
 
-        if (definition.configDefaults) {
-            layout.configDefaults = definition.configDefaults;
+        if (registryDefinition.configDefaults) {
+            layout.configDefaults = registryDefinition.configDefaults;
         }
 
         return layout;
 
     };
 
-    Layout.getButtonLabel = () => resolveDefinition().buttonLabel;
+    Layout.getButtonLabel = () => {
+
+        const reportType = ReportRegistry.resolveReportType(getCurrentAppId());
+        const definition = ReportRegistry.get(reportType);
+
+        return definition.buttonLabel ?? `${getReportDefinition(reportType).title}印刷`;
+
+    };
 
     Layout.resolve = (data, config) => {
 
         Validation.assertObject(data, '帳票データ');
         Validation.assertObject(config, 'プラグイン設定');
 
-        return buildLayout(resolveDefinition());
+        const reportType = ReportRegistry.resolveReportType(getCurrentAppId());
+
+        return buildLayout(ReportRegistry.get(reportType));
 
     };
 
