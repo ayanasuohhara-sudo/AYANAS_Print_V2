@@ -224,8 +224,28 @@
     grid-column: 2;
     display: flex;
     flex-direction: column;
-    gap: 2mm;
     align-items: flex-end;
+}
+
+.report-delivery .delivery-header__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2mm;
+    text-align: left;
+    width: max-content;
+    max-width: 100%;
+}
+
+.report-delivery .delivery-header__doc {
+    margin: 0;
+    padding: 0;
+    font-size: 8pt;
+    line-height: 1.35;
+}
+
+.report-delivery .delivery-header__company {
+    margin: 0;
+    padding: 0;
 }
 
 .report-delivery .delivery-title {
@@ -253,20 +273,6 @@
     font-size: 14pt;
     font-weight: bold;
     line-height: 1.35;
-}
-
-.report-delivery .delivery-header__doc {
-    margin: 0;
-    padding: 0;
-    font-size: 8pt;
-    line-height: 1.35;
-    text-align: left;
-}
-
-.report-delivery .delivery-header__company {
-    margin: 0;
-    padding: 0;
-    text-align: left;
 }
 
 .report-delivery .delivery-meta__item {
@@ -356,7 +362,7 @@
 }
 
 .report-delivery .delivery-detail-table tbody tr {
-    height: 5.4mm;
+    height: 3.6mm;
 }
 
 .report-delivery .delivery-detail-table tbody .detail-row--primary td {
@@ -379,15 +385,16 @@
 
 .report-delivery .delivery-detail-table tbody .detail-row--secondary td.detail-cell--stack {
     border-top: none !important;
-    text-align: center;
 }
 
-.report-delivery .delivery-detail-table tbody .detail-row--secondary td.detail-cell--kimono,
-.report-delivery .delivery-detail-table tbody .detail-row--secondary td.detail-cell--spec {
+.report-delivery .delivery-detail-table tbody .detail-row--secondary td.detail-cell--item-sub {
+    text-align: left;
+    font-size: 6.5pt;
     line-height: 1.05;
+    vertical-align: top;
 }
 
-.report-delivery .delivery-detail-table tbody .detail-row--secondary td:nth-child(4) {
+.report-delivery .delivery-detail-table tbody .detail-row--secondary td:nth-child(2) {
     text-align: center;
 }
 

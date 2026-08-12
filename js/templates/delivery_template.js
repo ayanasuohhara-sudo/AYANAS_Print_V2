@@ -37,6 +37,19 @@
 
     const formatCustomerName = (name) => `${String(name ?? '').trim()}様`;
 
+    const formatKimonoSubHtml = (type, spec) => {
+
+        const kimonoType = String(type ?? '').trim();
+        const kimonoSpec = String(spec ?? '').trim();
+
+        if (kimonoType && kimonoSpec) {
+            return `${esc(kimonoType)}<br>${esc(kimonoSpec)}`;
+        }
+
+        return esc(kimonoType || kimonoSpec);
+
+    };
+
     const buildHeaderHtml = (header, layout) => {
 
         const company = getCompanyInfo(layout);
@@ -57,15 +70,17 @@
         <p class="delivery-customer-name">${esc(formatCustomerName(header.customer_name))}</p>
     </div>
     <div class="delivery-header__right">
-        <div class="delivery-header__doc">
-            <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
-            <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
-        </div>
-        <div class="delivery-header__company">
-            <p class="company-name">${esc(company.name)}</p>
-            <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
-            <p class="company-contact">${esc(company.tel)}</p>
-            <p class="company-contact">${esc(company.fax)}</p>
+        <div class="delivery-header__info">
+            <div class="delivery-header__doc">
+                <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
+                <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
+            </div>
+            <div class="delivery-header__company">
+                <p class="company-name">${esc(company.name)}</p>
+                <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
+                <p class="company-contact">${esc(company.tel)}</p>
+                <p class="company-contact">${esc(company.fax)}</p>
+            </div>
         </div>
     </div>
 </header>`;
@@ -80,8 +95,8 @@
 
         return details.map((detail) => (
             `<tr class="detail-row detail-row--primary">`
-            + `<td class="detail-cell--stack">${esc(detail.manage_no)}</td>`
-            + `<td class="detail-cell--stack">${esc(detail.client_name)}</td>`
+            + `<td class="detail-cell--merged" rowspan="2">${esc(detail.manage_no)}</td>`
+            + `<td class="detail-cell--merged" rowspan="2">${esc(detail.client_name)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.slip_no)}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
@@ -89,9 +104,7 @@
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
             + `</tr>`
             + `<tr class="detail-row detail-row--secondary">`
-            + `<td class="detail-cell--stack detail-cell--kimono">${esc(detail.kimono_type)}</td>`
-            + `<td class="detail-cell--stack detail-cell--spec">${esc(detail.kimono_spec)}</td>`
-            + `<td class="detail-cell--stack"></td>`
+            + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.in_charge)}</td>`
             + `</tr>`
         )).join('');
