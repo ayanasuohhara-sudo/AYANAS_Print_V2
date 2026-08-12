@@ -173,12 +173,33 @@
 
         assertPluginBaseUrlInitialized();
 
-        const resourceUrl = new URL(pluginBaseUrl);
         const normalizedPath = filePath.replace(/^\//, '');
+        const resourceUrl = new URL(pluginBaseUrl);
 
         if (resourceUrl.searchParams.has('file')) {
             resourceUrl.searchParams.set('file', normalizedPath);
             return resourceUrl.href;
+        }
+
+        if (typeof kintone !== 'undefined' && kintone.$PLUGIN_ID) {
+
+            if (typeof kintone.api?.url === 'function') {
+                return kintone.api.url(
+                    `/k/plugin/public/${kintone.$PLUGIN_ID}/${normalizedPath}`,
+                    true
+                );
+            }
+
+            return `${location.origin}/k/plugin/public/${kintone.$PLUGIN_ID}/${normalizedPath}`;
+
+        }
+
+        const pluginIdMatch = pluginBaseUrl.match(/\/plugin\/(?:public\/)?([a-z0-9]+)\//i);
+
+        if (pluginIdMatch) {
+
+            return `${resourceUrl.origin}/k/plugin/public/${pluginIdMatch[1]}/${normalizedPath}`;
+
         }
 
         const pluginRootUrl = new URL('../', resourceUrl);
