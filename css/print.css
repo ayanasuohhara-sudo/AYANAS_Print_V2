@@ -226,9 +226,9 @@
 }
 
 .report-delivery .delivery-meta {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1mm 8mm;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5mm;
     margin: 0;
 }
 
@@ -266,24 +266,24 @@
     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 1.5mm;
-    max-width: 78mm;
+    max-width: 85mm;
 }
 
 .report-delivery .delivery-header__doc {
     width: 100%;
     margin: 0;
-    padding-left: 4mm;
-    border-left: 0.5px solid #666666;
-    text-align: right;
-    font-size: 9pt;
-    line-height: 1.5;
+    padding: 0;
+    border-left: none;
+    text-align: left;
+    font-size: 7.5pt;
+    line-height: 1.4;
 }
 
 .report-delivery .delivery-doc-item {
     margin: 0;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .report-delivery .delivery-barcode {
@@ -304,16 +304,16 @@
     flex: 0 0 auto;
     width: 100%;
     margin: 0;
-    padding-left: 4mm;
-    border-left: 0.5px solid #666666;
-    text-align: right;
-    font-size: 8pt;
-    line-height: 1.35;
+    padding: 0;
+    border-left: none;
+    text-align: left;
+    font-size: 10pt;
+    line-height: 1.45;
 }
 
 .report-delivery .company-name {
     margin: 0 0 1mm;
-    font-size: 9pt;
+    font-size: 11pt;
     font-weight: bold;
     letter-spacing: 0.06em;
 }
