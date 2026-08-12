@@ -200,6 +200,63 @@
     ];
 
     /**
+     * DOM 上に読み込み済みのプラグインリソース URL を探す
+     * @param {string} filePath - プラグイン内ファイルパス
+     * @returns {string|null} リソース URL
+     */
+    const findLoadedPluginResourceUrl = (filePath) => {
+
+        const normalizedPath = filePath.replace(/^\//, '');
+
+        for (const link of document.querySelectorAll('link[href]')) {
+
+            if (link.href.includes(normalizedPath)) {
+                return link.href;
+            }
+
+        }
+
+        for (const script of document.querySelectorAll('script[src]')) {
+
+            if (script.src.includes(normalizedPath)) {
+                return script.src;
+            }
+
+        }
+
+        return null;
+
+    };
+
+    /**
+     * download.do 形式のプラグインリソース URL を生成する
+     * @param {string} filePath - プラグイン内ファイルパス
+     * @param {string} baseScriptUrl - 基準 script URL
+     * @returns {string|null} リソース URL
+     */
+    const buildDownloadDoResourceUrl = (filePath, baseScriptUrl) => {
+
+        if (!baseScriptUrl.includes('download.do')) {
+            return null;
+        }
+
+        const normalizedPath = filePath.replace(/^\//, '');
+        const resourceUrl = new URL(baseScriptUrl);
+        const pluginId = resourceUrl.searchParams.get('pluginId');
+
+        if (!pluginId) {
+            return null;
+        }
+
+        resourceUrl.searchParams.set('pluginId', pluginId);
+        resourceUrl.searchParams.delete('contentId');
+        resourceUrl.searchParams.set('file', normalizedPath);
+
+        return resourceUrl.href;
+
+    };
+
+    /**
      * プラグインリソースの URL を取得する
      * kintone が manifest 経由で読み込んだ script URL を基準に file を差し替える
      * @param {string} filePath - プラグイン内ファイルパス
@@ -210,6 +267,19 @@
 
         const normalizedPath = filePath.replace(/^\//, '');
         const baseScriptUrl = getPluginBaseUrl();
+
+        const loadedUrl = findLoadedPluginResourceUrl(normalizedPath);
+
+        if (loadedUrl) {
+            return loadedUrl;
+        }
+
+        const downloadDoUrl = buildDownloadDoResourceUrl(normalizedPath, baseScriptUrl);
+
+        if (downloadDoUrl) {
+            return downloadDoUrl;
+        }
+
         const resourceUrl = new URL(baseScriptUrl);
 
         if (resourceUrl.searchParams.has('file')) {
