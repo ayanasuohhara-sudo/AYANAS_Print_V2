@@ -47,7 +47,7 @@
             throw new Error('SVG 要素が取得できません。');
         }
 
-        if (!(svgElement instanceof SVGElement)) {
+        if (String(svgElement.tagName).toLowerCase() !== 'svg') {
             throw new Error('SVG 要素が不正です。');
         }
 

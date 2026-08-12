@@ -61,11 +61,6 @@
     };
 
     assertPreviewLoaded();
-
-    console.log('[Desktop]');
-    console.log('window.Barcode =', window.Barcode);
-    console.log('window.JsBarcode =', window.JsBarcode);
-
     Preview.initialize(getPluginBaseUrl());
 
     /**

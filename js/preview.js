@@ -17,6 +17,12 @@
     /** print.css のパス */
     const PRINT_CSS_PATH = 'css/print.css';
 
+    /** JsBarcode ライブラリのパス */
+    const JSBARCODE_PATH = 'lib/JsBarcode.all.min.js';
+
+    /** barcode.js のパス */
+    const BARCODE_JS_PATH = 'js/barcode.js';
+
     /** プラグインリソースの基準 URL */
     let pluginBaseUrl = '';
 
@@ -244,6 +250,15 @@
     });`;
 
     /**
+     * バーコード描画用 script タグ HTML を生成する
+     * @returns {string} script タグ HTML
+     */
+    const buildBarcodeScriptTagsHtml = () => `
+
+<script src="${getPluginResourceUrl(JSBARCODE_PATH)}"></script>
+<script src="${getPluginResourceUrl(BARCODE_JS_PATH)}"></script>`;
+
+    /**
      * プレビュー用スクリプト HTML を生成する
      * @param {string} barcodeValue - バーコード値
      * @param {Object} config - プラグイン設定
@@ -252,9 +267,8 @@
     const buildScriptHtml = (barcodeValue, config = {}) => {
 
         const barcodeType = config.barcode_type === 'CODE128' ? 'CODE128' : 'CODE39';
-        const drawEnabled = isBarcodeVisible(config);
 
-        if (!drawEnabled) {
+        if (!isBarcodeVisible(config)) {
 
             return `
 
@@ -267,6 +281,7 @@ ${buildButtonScriptHtml()}
         }
 
         return `
+${buildBarcodeScriptTagsHtml()}
 
 <script>
 (function () {
@@ -274,73 +289,30 @@ ${buildButtonScriptHtml()}
     var barcodeValue = ${JSON.stringify(barcodeValue)};
     var barcodeType = ${JSON.stringify(barcodeType)};
 
-    function initButtons() {
+    try {
+
+        if (barcodeValue) {
+
+            var svg = document.getElementById('barcode');
+
+            if (svg) {
+                Barcode.draw(svg, barcodeValue, { barcode_type: barcodeType });
+            }
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            'バーコード描画エラー\\n\\n'
+            + String(error)
+        );
+
+    }
+
 ${buildButtonScriptHtml()}
-    }
-
-    function drawBarcode() {
-
-        if (!barcodeValue) {
-            return;
-        }
-
-        if (!window.Barcode && window.opener && window.opener.Barcode) {
-            window.Barcode = window.opener.Barcode;
-        }
-
-        var svg = document.getElementById('barcode');
-
-        if (!svg || String(svg.tagName).toLowerCase() !== 'svg') {
-            return;
-        }
-
-        if (!window.Barcode || typeof window.Barcode.draw !== 'function') {
-            throw new Error('Barcode モジュールが読み込まれていません。');
-        }
-
-        window.Barcode.draw(svg, barcodeValue, {
-            barcode_type: barcodeType,
-        });
-
-    }
-
-    function runPreview() {
-
-        console.log('[Preview]');
-        console.log('window.Barcode =', window.Barcode);
-        console.log('window.opener =', window.opener);
-        console.log('window.opener.Barcode =', window.opener ? window.opener.Barcode : null);
-        console.log('window.JsBarcode =', window.JsBarcode);
-        console.log('window.opener.JsBarcode =', window.opener ? window.opener.JsBarcode : null);
-
-        try {
-
-            drawBarcode();
-
-        } catch (error) {
-
-            console.error(error);
-            console.error(error.stack);
-
-            alert(
-                'バーコード描画エラー\\n\\n'
-                + String(error)
-                + '\\n\\n'
-                + (error && error.stack ? error.stack : '')
-            );
-
-        }
-
-        initButtons();
-
-    }
-
-    window.addEventListener('load', function () {
-
-        runPreview();
-
-    });
-
 })();
 <\/script>`;
 

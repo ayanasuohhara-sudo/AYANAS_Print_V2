@@ -13,12 +13,10 @@
   },
   "desktop": {
     "js": [
-      "lib/JsBarcode.all.min.js",
       "js/format.js",
       "js/record.js",
       "js/template.js",
       "js/layout.js",
-      "js/barcode.js",
       "js/preview.js",
       "js/desktop.js"
     ],
