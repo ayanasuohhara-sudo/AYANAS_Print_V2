@@ -126,34 +126,29 @@ ${buildDetailRowsHtml(details)}
 
     const buildSummaryHtml = (summary) => {
 
-        const count = summary.totalCount ?? summary.count ?? 0;
+        if (typeof Format.formatNumber !== 'function') {
+            Format.formatNumber = Format.formatMoney;
+        }
+
         const subtotal = summary.totalAmount ?? 0;
-        const tax = Math.floor(subtotal * 0.1);
+        const tax = Math.round(subtotal * 0.10);
         const total = subtotal + tax;
 
         return `
-<footer class="delivery-footer">
-    <table class="delivery-summary">
+<footer class="delivery-footer delivery-footer--totals">
+    <table class="delivery-summary delivery-summary--totals">
         <tbody>
             <tr>
-                <th>点数</th>
-                <td>${esc(count)}</td>
+                <th>税抜合計</th>
+                <td>${esc(Format.formatNumber(subtotal))}</td>
             </tr>
             <tr>
-                <th>数量合計</th>
-                <td>${esc(summary.totalQty)}</td>
-            </tr>
-            <tr>
-                <th>税抜</th>
-                <td>${esc(Format.formatMoney(subtotal))}</td>
-            </tr>
-            <tr>
-                <th>消費税</th>
-                <td>${esc(Format.formatMoney(tax))}</td>
+                <th>消費税（10％）</th>
+                <td>${esc(Format.formatNumber(tax))}</td>
             </tr>
             <tr class="delivery-summary__total">
-                <th>税込</th>
-                <td>${esc(Format.formatMoney(total))}</td>
+                <th>税込合計</th>
+                <td>${esc(Format.formatNumber(total))}</td>
             </tr>
         </tbody>
     </table>

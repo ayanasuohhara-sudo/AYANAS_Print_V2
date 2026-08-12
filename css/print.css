@@ -197,6 +197,8 @@
     grid-template-areas: unset;
     font-size: 9pt;
     line-height: 1.3;
+    min-height: 277mm;
+    position: relative;
 }
 
 .report-delivery .delivery-header {
@@ -382,6 +384,13 @@
     margin-top: auto;
     padding-top: 1mm;
     flex: 0 0 auto;
+    align-self: flex-end;
+    width: 100%;
+}
+
+.report-delivery .delivery-footer--totals {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .report-delivery .delivery-summary {
@@ -501,8 +510,12 @@ body {
 }
 
 .buttons {
-    margin-top: 8mm;
-    text-align: center;
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    margin: 0;
+    text-align: left;
+    z-index: 100;
 }
 
 .buttons button {
@@ -565,7 +578,7 @@ body {
     }
 
     .buttons {
-        display: none !important;
+        display: none;
     }
 
     .report-order .header,

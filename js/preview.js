@@ -226,6 +226,23 @@
 
     };
 
+    const buildPreviewButtonsHtml = () => `
+
+<div class="buttons">
+    <button type="button" id="ayanas-print-btn">印刷</button>
+    <button type="button" id="ayanas-close-btn">閉じる</button>
+</div>`;
+
+    const buildButtonScriptBody = () => `
+
+    document.getElementById('ayanas-print-btn').addEventListener('click', function () {
+        window.print();
+    });
+
+    document.getElementById('ayanas-close-btn').addEventListener('click', function () {
+        window.close();
+    });`;
+
     const buildScriptHtml = (barcodeValue, config = {}, resourceUrls = {}) => {
 
         const barcodeType = Barcode.resolveFormat(config);
@@ -236,7 +253,7 @@
 
 <script>
 (function () {
-${Dom.buildButtonScriptBody()}
+${buildButtonScriptBody()}
 })();
 <\/script>`;
 
@@ -256,7 +273,7 @@ ${Dom.buildButtonScriptBody()}
     var barcodeJsUrl = ${JSON.stringify(barcodeJsUrl)};
 
     function initButtons() {
-${Dom.buildButtonScriptBody()}
+${buildButtonScriptBody()}
     }
 
     function drawBarcode() {
@@ -331,6 +348,12 @@ ${Dom.buildButtonScriptBody()}
     const buildPreviewHtml = (data, config, layout) => {
 
         const previewConfig = buildPreviewConfig(config, layout);
+
+        if (layout.reportType === 'delivery') {
+            previewConfig.print_orientation = 'portrait';
+            previewConfig.paper_size = 'A4';
+        }
+
         const barcodeValue = getBarcodeValue(data, layout);
         let html = layout.template.render(data, previewConfig, layout);
 
@@ -350,13 +373,9 @@ ${Dom.buildButtonScriptBody()}
         );
 
         html = html.replace(
-            /<\/div>\s*<\/body>/,
-            `${Dom.buildButtonsHtml()}\n</div>\n</body>`
-        );
-
-        html = html.replace(
             '</body>',
-            `${buildScriptHtml(barcodeValue, previewConfig, { jsBarcodeUrl, barcodeJsUrl })}\n</body>`
+            `${buildPreviewButtonsHtml()}\n`
+            + `${buildScriptHtml(barcodeValue, previewConfig, { jsBarcodeUrl, barcodeJsUrl })}\n</body>`
         );
 
         return html;
