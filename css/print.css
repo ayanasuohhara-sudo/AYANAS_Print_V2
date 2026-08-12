@@ -206,7 +206,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 8mm;
     align-items: start;
-    padding: 0 135px 1.5mm 0;
+    padding: 0 0 1.5mm;
     border-bottom: 0.5px solid #333333;
     flex: 0 0 auto;
     position: relative;
@@ -222,18 +222,23 @@
 
 .report-delivery .delivery-header__right {
     grid-column: 2;
+    justify-self: end;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    margin-right: 0;
+    max-width: 100%;
 }
 
 .report-delivery .delivery-header__info {
     display: flex;
     flex-direction: column;
-    gap: 2mm;
+    gap: 1.5mm;
     text-align: left;
     width: max-content;
     max-width: 100%;
+    margin-left: auto;
+    padding-top: 24px;
 }
 
 .report-delivery .delivery-header__doc {
@@ -315,7 +320,7 @@
 
 .report-delivery .delivery-barcode svg {
     display: block;
-    width: 130px;
+    width: 110px;
     max-width: 100%;
     height: auto;
 }
@@ -345,24 +350,24 @@
 .report-delivery .delivery-detail-table th,
 .report-delivery .delivery-detail-table td {
     border: 0.5px solid #333333;
-    padding: 0 2px;
+    padding: 0 1px;
     vertical-align: middle;
     word-break: break-word;
-    font-size: 7.5pt;
-    line-height: 1.05;
+    font-size: 7pt;
+    line-height: 1;
 }
 
 .report-delivery .delivery-detail-table thead th {
     background: #f0f0f0;
     font-weight: normal;
     text-align: center;
-    font-size: 7pt;
-    padding: 1px 2px;
-    line-height: 1.1;
+    font-size: 6.5pt;
+    padding: 0 1px;
+    line-height: 1;
 }
 
 .report-delivery .delivery-detail-table tbody tr {
-    height: 3.6mm;
+    height: 2.8mm;
 }
 
 .report-delivery .delivery-detail-table tbody .detail-row--primary td {
@@ -376,9 +381,9 @@
 }
 
 .report-delivery .delivery-detail-table tbody .detail-row--secondary td {
-    padding: 0 2px;
+    padding: 0 1px;
     background: #ffffff;
-    font-size: 7pt;
+    font-size: 6.5pt;
     color: #222222;
     vertical-align: middle;
 }
@@ -389,8 +394,8 @@
 
 .report-delivery .delivery-detail-table tbody .detail-row--secondary td.detail-cell--item-sub {
     text-align: left;
-    font-size: 6.5pt;
-    line-height: 1.05;
+    font-size: 6pt;
+    line-height: 1;
     vertical-align: top;
 }
 
