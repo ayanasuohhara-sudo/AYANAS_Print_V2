@@ -174,64 +174,50 @@
             return pluginBaseUrl;
         }
 
-        const scriptSelectors = [
-            'script[src*="js/desktop.js"]',
-            'script[src*="js/preview.js"]',
-        ];
+        const jsUrls = getLoadedPluginResourceUrls('DESKTOP_JS');
+        const desktopIndex = PLUGIN_JS_FILES.indexOf('js/desktop.js');
 
-        for (const selector of scriptSelectors) {
-
-            const script = document.querySelector(selector);
-
-            if (script?.src) {
-                return script.src;
-            }
-
+        if (desktopIndex >= 0 && jsUrls[desktopIndex]) {
+            return jsUrls[desktopIndex];
         }
 
         throw new Error('プラグイン script URL を取得できません。');
 
     };
 
-    /** manifest 読み込み済み script（URL 差し替えの基準） */
-    const PLUGIN_ENTRY_FILES = [
-        'js/desktop.js',
+    /** manifest.json desktop.js の読み込み順（contentId URL マッピング用） */
+    const PLUGIN_JS_FILES = [
+        'lib/JsBarcode.all.min.js',
+        'js/format.js',
+        'js/record.js',
+        'js/template.js',
+        'js/layout.js',
+        'js/barcode.js',
         'js/preview.js',
+        'js/desktop.js',
+    ];
+
+    /** manifest.json desktop.css の読み込み順（contentId URL マッピング用） */
+    const PLUGIN_CSS_FILES = [
+        'css/print.css',
     ];
 
     /**
-     * DOM 上に読み込み済みのプラグインリソース URL を探す
-     * @param {string} filePath - プラグイン内ファイルパス
-     * @returns {string|null} リソース URL
+     * 基準 script URL から pluginId を取得する
+     * @returns {string|null} pluginId
      */
-    const findLoadedPluginResourceUrl = (filePath) => {
+    const getPluginId = () => {
 
-        const normalizedPath = filePath.replace(/^\//, '');
-
-        for (const link of document.querySelectorAll('link[href]')) {
-
-            if (link.href.includes(normalizedPath)) {
-                return link.href;
-            }
-
+        if (pluginBaseUrl) {
+            return new URL(pluginBaseUrl).searchParams.get('pluginId');
         }
 
-        for (const script of document.querySelectorAll('script[src]')) {
+        for (const script of document.querySelectorAll('script[src*="download.do"]')) {
 
-            if (script.src.includes(normalizedPath)) {
-                return script.src;
-            }
+            const pluginId = new URL(script.src).searchParams.get('pluginId');
 
-        }
-
-        if (normalizedPath === PRINT_CSS_PATH) {
-
-            for (const link of document.querySelectorAll('link[href*="download.do"]')) {
-
-                if (link.href.includes('DESKTOP_CSS')) {
-                    return link.href;
-                }
-
+            if (pluginId) {
+                return pluginId;
             }
 
         }
@@ -241,57 +227,48 @@
     };
 
     /**
-     * download.do の type パラメータをファイル種別から解決する
-     * @param {string} filePath - プラグイン内ファイルパス
-     * @returns {'DESKTOP_CSS'|'DESKTOP_JS'|null} type 値
+     * kintone が manifest 経由で読み込んだリソース URL 一覧を取得する
+     * @param {'DESKTOP_CSS'|'DESKTOP_JS'} downloadType - download.do の type
+     * @returns {string[]} リソース URL 一覧（manifest 読み込み順）
      */
-    const resolveDownloadDoType = (filePath) => {
+    const getLoadedPluginResourceUrls = (downloadType) => {
 
-        if (filePath.endsWith('.css')) {
-            return 'DESKTOP_CSS';
-        }
+        const pluginId = getPluginId();
+        const isCss = downloadType === 'DESKTOP_CSS';
+        const selector = isCss ? 'link[href*="download.do"]' : 'script[src*="download.do"]';
+        const attribute = isCss ? 'href' : 'src';
 
-        if (filePath.endsWith('.js')) {
-            return 'DESKTOP_JS';
-        }
-
-        return null;
+        return Array.from(document.querySelectorAll(selector))
+            .map((element) => element[attribute])
+            .filter((url) => url.includes(downloadType) && (!pluginId || url.includes(pluginId)));
 
     };
 
     /**
-     * download.do 形式のプラグインリソース URL を生成する
+     * manifest 読み込み順からリソース URL を取得する
      * @param {string} filePath - プラグイン内ファイルパス
-     * @param {string} baseScriptUrl - 基準 script URL
+     * @param {string[]} manifestFiles - manifest ファイル一覧
+     * @param {'DESKTOP_CSS'|'DESKTOP_JS'} downloadType - download.do の type
      * @returns {string|null} リソース URL
      */
-    const buildDownloadDoResourceUrl = (filePath, baseScriptUrl) => {
-
-        if (!baseScriptUrl.includes('download.do')) {
-            return null;
-        }
+    const getManifestMappedResourceUrl = (filePath, manifestFiles, downloadType) => {
 
         const normalizedPath = filePath.replace(/^\//, '');
-        const resourceUrl = new URL(baseScriptUrl);
-        const pluginId = resourceUrl.searchParams.get('pluginId');
-        const downloadType = resolveDownloadDoType(normalizedPath);
+        const fileIndex = manifestFiles.indexOf(normalizedPath);
 
-        if (!pluginId || !downloadType) {
+        if (fileIndex < 0) {
             return null;
         }
 
-        resourceUrl.searchParams.set('pluginId', pluginId);
-        resourceUrl.searchParams.delete('contentId');
-        resourceUrl.searchParams.set('type', downloadType);
-        resourceUrl.searchParams.set('file', normalizedPath);
+        const resourceUrls = getLoadedPluginResourceUrls(downloadType);
 
-        return resourceUrl.href;
+        return resourceUrls[fileIndex] ?? null;
 
     };
 
     /**
      * プラグインリソースの URL を取得する
-     * kintone が manifest 経由で読み込んだ script URL を基準に file を差し替える
+     * kintone が manifest 経由で割り当てた contentId URL を使用する
      * @param {string} filePath - プラグイン内ファイルパス
      * @returns {string} リソース URL
      * @throws {Error} URL を取得できない場合
@@ -299,41 +276,36 @@
     const getPluginResourceUrl = (filePath) => {
 
         const normalizedPath = filePath.replace(/^\//, '');
-        const baseScriptUrl = getPluginBaseUrl();
 
-        const loadedUrl = findLoadedPluginResourceUrl(normalizedPath);
+        if (normalizedPath.endsWith('.css')) {
 
-        if (loadedUrl) {
-            return loadedUrl;
-        }
+            const cssUrl = getManifestMappedResourceUrl(
+                normalizedPath,
+                PLUGIN_CSS_FILES,
+                'DESKTOP_CSS'
+            );
 
-        const downloadDoUrl = buildDownloadDoResourceUrl(normalizedPath, baseScriptUrl);
-
-        if (downloadDoUrl) {
-            return downloadDoUrl;
-        }
-
-        const resourceUrl = new URL(baseScriptUrl);
-
-        if (resourceUrl.searchParams.has('file')) {
-            resourceUrl.searchParams.set('file', normalizedPath);
-            return resourceUrl.href;
-        }
-
-        for (const entryFile of PLUGIN_ENTRY_FILES) {
-
-            const entryPattern = entryFile.replace('/', '\\/');
-
-            if (new RegExp(`${entryPattern}(?=[?#]|$)`).test(baseScriptUrl)) {
-                return baseScriptUrl.replace(
-                    new RegExp(`${entryPattern}(?=[?#]|$)`),
-                    normalizedPath
-                );
+            if (cssUrl) {
+                return cssUrl;
             }
 
         }
 
-        throw new Error(`プラグインリソース URL を生成できません。（${normalizedPath}）`);
+        if (normalizedPath.endsWith('.js')) {
+
+            const jsUrl = getManifestMappedResourceUrl(
+                normalizedPath,
+                PLUGIN_JS_FILES,
+                'DESKTOP_JS'
+            );
+
+            if (jsUrl) {
+                return jsUrl;
+            }
+
+        }
+
+        throw new Error(`プラグインリソース URL を取得できません。（${normalizedPath}）`);
 
     };
 
