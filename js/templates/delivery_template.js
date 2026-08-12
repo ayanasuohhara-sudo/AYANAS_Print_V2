@@ -9,6 +9,8 @@
      * DOM 操作・印刷・Barcode 描画は行わない。
      */
 
+    const DETAIL_COLUMN_COUNT = 8;
+
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
         postalCode: '〒631-0078',
@@ -43,18 +45,10 @@
         <h1 class="delivery-title">納 品 書</h1>
         <dl class="delivery-meta">
             <div class="delivery-meta__item">
-                <dt>納品番号</dt>
-                <dd>${esc(header.delivery_no)}</dd>
-            </div>
-            <div class="delivery-meta__item">
-                <dt>納品日</dt>
-                <dd>${esc(Format.formatDate(header.delivery_date))}</dd>
-            </div>
-            <div class="delivery-meta__item">
                 <dt>取引先コード</dt>
                 <dd>${esc(header.customer_code)}</dd>
             </div>
-            <div class="delivery-meta__item">
+            <div class="delivery-meta__item delivery-meta__item--customer-name">
                 <dt>取引先名</dt>
                 <dd>${esc(header.customer_name)}</dd>
             </div>
@@ -63,6 +57,10 @@
     <div class="delivery-header__aside">
         <div class="delivery-barcode">
             <svg id="barcode" class="barcode"></svg>
+        </div>
+        <div class="delivery-header__doc">
+            <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
+            <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
         </div>
         <div class="delivery-header__company">
             <p class="company-name">${esc(company.name)}</p>
@@ -78,7 +76,7 @@
     const buildDetailRowsHtml = (details) => {
 
         if (details.length === 0) {
-            return '<tr class="detail-row detail-row--primary"><td colspan="6">明細はありません</td></tr>';
+            return `<tr class="detail-row detail-row--primary"><td colspan="${DETAIL_COLUMN_COUNT}">明細はありません</td></tr>`;
         }
 
         return details.map((detail) => (
@@ -86,15 +84,15 @@
             + `<td>${esc(detail.manage_no)}</td>`
             + `<td>${esc(detail.client_name)}</td>`
             + `<td>${esc(detail.item_name)}</td>`
+            + `<td>${esc(detail.slip_no)}</td>`
+            + `<td>${esc(detail.in_charge)}</td>`
             + `<td class="num">${esc(Format.formatMoney(detail.unit_price))}</td>`
             + `<td class="num">${esc(detail.qty)}</td>`
             + `<td class="num">${esc(Format.formatMoney(detail.amount))}</td>`
             + `</tr>`
             + `<tr class="detail-row detail-row--secondary">`
-            + `<td>${esc(detail.kimono_type)}</td>`
-            + `<td>${esc(detail.kimono_spec)}</td>`
-            + `<td colspan="2">${esc(detail.slip_no)}</td>`
-            + `<td colspan="2">${esc(detail.in_charge)}</td>`
+            + `<td colspan="4" class="detail-cell--kimono">${esc(detail.kimono_type)}</td>`
+            + `<td colspan="4" class="detail-cell--spec">${esc(detail.kimono_spec)}</td>`
             + `</tr>`
         )).join('');
 
@@ -108,15 +106,15 @@
             <th>管理番号</th>
             <th>お客様名</th>
             <th>加工内容</th>
+            <th>得意先伝票番号</th>
+            <th>担当</th>
             <th>単価</th>
             <th>数量</th>
             <th>金額</th>
         </tr>
         <tr class="detail-head detail-head--secondary">
-            <th>着物種類</th>
-            <th>仕様</th>
-            <th colspan="2">得意先伝票番号</th>
-            <th colspan="2">担当者</th>
+            <th colspan="4">着物種類</th>
+            <th colspan="4">仕様</th>
         </tr>
     </thead>
     <tbody>
