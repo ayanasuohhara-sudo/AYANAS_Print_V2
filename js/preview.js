@@ -86,7 +86,7 @@
         }
 
         if (typeof kintone !== 'undefined' && kintone.$PLUGIN_ID) {
-            return `/k/plugin/${kintone.$PLUGIN_ID}/`;
+            return `${window.location.origin}/k/plugin/${kintone.$PLUGIN_ID}/`;
         }
 
         throw new Error('プラグインリソース URL を取得できません。');
@@ -96,14 +96,19 @@
     /**
      * プラグインリソースの URL を取得する
      * @param {string} filePath - プラグイン内ファイルパス
-     * @returns {string} リソース URL
+     * @returns {string} 絶対 URL
      * @throws {Error} URL を取得できない場合
      */
     const getPluginResourceUrl = (filePath) => {
 
         const normalizedPath = filePath.replace(/^\//, '');
+        let baseUrl = getPluginBaseUrl();
 
-        return `${getPluginBaseUrl()}${normalizedPath}`;
+        if (baseUrl.startsWith('/')) {
+            baseUrl = `${window.location.origin}${baseUrl}`;
+        }
+
+        return `${baseUrl}${normalizedPath}`;
 
     };
 
@@ -192,6 +197,8 @@ ${buildButtonScriptHtml()}
 <script>
 (function () {
 
+    var jsBarcodeUrl = ${JSON.stringify(jsBarcodeUrl)};
+    var barcodeJsUrl = ${JSON.stringify(barcodeJsUrl)};
     var barcodeValue = ${JSON.stringify(barcodeValue)};
     var barcodeType = ${JSON.stringify(barcodeType)};
 
@@ -199,19 +206,14 @@ ${buildButtonScriptHtml()}
 ${buildButtonScriptHtml()}
     }
 
-    function applyOpenerGlobals() {
+    function logBarcodeGlobals() {
 
-        if (!window.opener) {
-            return false;
-        }
+        console.log('[AYANAS Print] window.Barcode', window.Barcode);
+        console.log('[AYANAS Print] window.JsBarcode', window.JsBarcode);
 
-        if (typeof window.opener.JsBarcode === 'function') {
-            window.JsBarcode = window.opener.JsBarcode;
-        }
+    }
 
-        if (window.opener.Barcode && typeof window.opener.Barcode.draw === 'function') {
-            window.Barcode = window.opener.Barcode;
-        }
+    function hasLocalBarcodeModule() {
 
         return typeof window.JsBarcode === 'function'
             && window.Barcode
@@ -219,15 +221,12 @@ ${buildButtonScriptHtml()}
 
     }
 
-    function assertBarcodeGlobals() {
+    function hasOpenerBarcodeModule() {
 
-        if (typeof window.JsBarcode !== 'function') {
-            throw new Error('JsBarcode ライブラリが読み込まれていません。');
-        }
-
-        if (typeof window.Barcode === 'undefined' || typeof window.Barcode.draw !== 'function') {
-            throw new Error('Barcode モジュールが読み込まれていません。');
-        }
+        return window.opener
+            && typeof window.opener.JsBarcode === 'function'
+            && window.opener.Barcode
+            && typeof window.opener.Barcode.draw === 'function';
 
     }
 
@@ -237,21 +236,59 @@ ${buildButtonScriptHtml()}
             return;
         }
 
-        assertBarcodeGlobals();
+        logBarcodeGlobals();
 
         var svg = document.getElementById('barcode');
+        var drawOptions = { format: barcodeType };
 
-        window.Barcode.draw(svg, barcodeValue, { format: barcodeType });
+        if (hasLocalBarcodeModule()) {
+            window.Barcode.draw(svg, barcodeValue, drawOptions);
+            return;
+        }
+
+        if (hasOpenerBarcodeModule()) {
+            window.opener.Barcode.draw(svg, barcodeValue, drawOptions);
+            return;
+        }
+
+        throw new Error('Barcode モジュールが読み込まれていません。');
 
     }
 
-    function onPreviewReady() {
+    function loadScript(url) {
+
+        return new Promise(function (resolve, reject) {
+
+            var script = document.createElement('script');
+
+            script.src = url;
+            script.onload = function () {
+                resolve();
+            };
+            script.onerror = function () {
+                reject(new Error('スクリプトの読み込みに失敗しました。（' + url + '）'));
+            };
+            document.head.appendChild(script);
+
+        });
+
+    }
+
+    function loadBarcodeModules() {
+
+        if (typeof window.JsBarcode === 'function') {
+            return loadScript(barcodeJsUrl);
+        }
+
+        return loadScript(jsBarcodeUrl).then(function () {
+            return loadScript(barcodeJsUrl);
+        });
+
+    }
+
+    function runPreview() {
 
         try {
-
-            if (!applyOpenerGlobals()) {
-                assertBarcodeGlobals();
-            }
 
             drawBarcode();
 
@@ -271,10 +308,36 @@ ${buildButtonScriptHtml()}
 
     }
 
+    function start() {
+
+        if (hasLocalBarcodeModule() || hasOpenerBarcodeModule()) {
+            runPreview();
+            return;
+        }
+
+        loadBarcodeModules()
+            .then(function () {
+                runPreview();
+            })
+            .catch(function (error) {
+
+                console.error('[AYANAS Print]', error);
+
+                var message = error instanceof Error
+                    ? error.message
+                    : '不明なエラーが発生しました。';
+
+                alert('バーコード読み込みエラー\\n\\n' + message);
+                initButtons();
+
+            });
+
+    }
+
     if (document.readyState === 'complete') {
-        onPreviewReady();
+        start();
     } else {
-        window.addEventListener('load', onPreviewReady);
+        window.addEventListener('load', start);
     }
 
 })();

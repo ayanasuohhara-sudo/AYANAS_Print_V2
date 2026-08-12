@@ -30,7 +30,7 @@
      */
     const assertJsBarcodeLoaded = () => {
 
-        if (typeof JsBarcode !== 'function') {
+        if (typeof window.JsBarcode !== 'function') {
             throw new Error('JsBarcode ライブラリが読み込まれていません。');
         }
 
@@ -95,7 +95,7 @@
                 ...options,
             };
 
-            JsBarcode(svgElement, barcodeValue, drawOptions);
+            window.JsBarcode(svgElement, barcodeValue, drawOptions);
 
         } catch (error) {
 
