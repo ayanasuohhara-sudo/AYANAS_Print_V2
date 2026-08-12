@@ -272,10 +272,10 @@ ${buildButtonScriptHtml()}
 
         return `
 
-<script src="${barcodeJsUrl}"><\/script>
 <script>
 (function () {
 
+    var barcodeJsUrl = ${JSON.stringify(barcodeJsUrl)};
     var barcodeValue = ${JSON.stringify(barcodeValue)};
     var barcodeType = ${JSON.stringify(barcodeType)};
 
@@ -324,35 +324,56 @@ ${buildButtonScriptHtml()}
 
     }
 
-    function runPreview() {
+    function loadBarcodeModule(callback) {
 
-        try {
-
-            drawBarcode();
-
-        } catch (error) {
-
-            console.error(error);
-            console.error(error.stack);
-
-            alert(
-                'バーコード描画エラー\\n\\n'
-                + String(error)
-                + '\\n\\n'
-                + (error && error.stack ? error.stack : '')
-            );
-
+        if (window.Barcode) {
+            callback();
+            return;
         }
 
-        initButtons();
+        var script = document.createElement('script');
+
+        script.src = barcodeJsUrl;
+
+        script.onload = function () {
+            callback();
+        };
+
+        script.onerror = function () {
+            alert('barcode.js の読込に失敗しました。');
+        };
+
+        document.head.appendChild(script);
 
     }
 
-    if (document.readyState === 'complete') {
-        runPreview();
-    } else {
-        window.addEventListener('load', runPreview);
-    }
+    window.addEventListener('load', function () {
+
+        loadBarcodeModule(function () {
+
+            try {
+
+                drawBarcode();
+
+            } catch (error) {
+
+                console.error(error);
+                console.error(error.stack);
+
+                alert(
+                    'バーコード描画エラー\\n\\n'
+                    + String(error)
+                    + '\\n\\n'
+                    + (error && error.stack ? error.stack : '')
+                );
+
+            }
+
+            initButtons();
+
+        });
+
+    });
 
 })();
 <\/script>`;
