@@ -292,6 +292,9 @@ ${buildButtonScriptHtml()}
 
     function drawBarcode() {
 
+        console.log(document.getElementById('barcode'));
+        console.log(document.getElementById('barcode')?.outerHTML);
+
         console.log('[4] drawBarcode');
 
         if (typeof window.JsBarcode !== 'function') {
@@ -318,6 +321,8 @@ ${buildButtonScriptHtml()}
             console.log(window.Barcode);
 
             window.Barcode.draw(svg, barcodeValue, { barcode_type: barcodeType });
+
+            console.log(document.getElementById('barcode').outerHTML);
 
             console.log('[5] Barcode.draw finished');
 
