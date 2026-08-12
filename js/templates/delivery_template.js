@@ -10,7 +10,9 @@
      */
 
     const DETAIL_COLUMN_COUNT = 7;
-    const DETAILS_PER_PAGE = 30;
+    const DETAILS_PER_PAGE = 20;
+
+    const EMPTY_DETAIL = null;
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -52,28 +54,35 @@
 
     };
 
-    const buildHeaderHtml = (header, layout) => {
+    const buildHeaderHtml = (header, layout, pageMeta = {}) => {
 
         const company = getCompanyInfo(layout);
+        const pageNumber = pageMeta.pageNumber ?? 1;
+        const totalPages = pageMeta.totalPages ?? 1;
+        const showBarcode = pageNumber === 1;
+        const infoClass = showBarcode
+            ? 'delivery-header__info'
+            : 'delivery-header__info delivery-header__info--no-barcode';
 
         return `
 <header class="delivery-header">
-    <div class="delivery-barcode">
+    ${showBarcode ? `<div class="delivery-barcode">
         <svg id="barcode" class="barcode"></svg>
-    </div>
+    </div>` : ''}
     <div class="delivery-header__left">
         <h1 class="delivery-title">納 品 書</h1>
         <dl class="delivery-meta">
             <div class="delivery-meta__item">
-                <dt>取引先コード</dt>
+                <dt>お得意様コード</dt>
                 <dd>${esc(header.customer_code)}</dd>
             </div>
         </dl>
         <p class="delivery-customer-name">${esc(formatCustomerName(header.customer_name))}</p>
     </div>
     <div class="delivery-header__right">
-        <div class="delivery-header__info">
+        <div class="${infoClass}">
             <div class="delivery-header__doc">
+                <p class="delivery-page-no">${pageNumber} / ${totalPages}</p>
                 <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
                 <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
             </div>
@@ -89,14 +98,29 @@
 
     };
 
-    const buildDetailRowsHtml = (details) => {
+    const buildEmptyDetailPairHtml = () => (
+        `<tr class="detail-row detail-row--primary detail-row--empty">`
+        + `<td class="detail-cell--merged" rowspan="2"></td>`
+        + `<td class="detail-cell--merged" rowspan="2"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `<td class="num detail-cell--merged" rowspan="2"></td>`
+        + `<td class="num detail-cell--merged" rowspan="2"></td>`
+        + `<td class="num detail-cell--merged" rowspan="2"></td>`
+        + `</tr>`
+        + `<tr class="detail-row detail-row--secondary detail-row--empty">`
+        + `<td class="detail-cell--stack detail-cell--item-sub"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `</tr>`
+    );
 
-        if (details.length === 0) {
-            return `<tr class="detail-row detail-row--primary"><td colspan="${DETAIL_COLUMN_COUNT}">明細はありません</td></tr>`;
+    const buildDetailPairHtml = (detail) => {
+
+        if (!detail) {
+            return buildEmptyDetailPairHtml();
         }
 
-        return details.map((detail) => (
-            `<tr class="detail-row detail-row--primary">`
+        return `<tr class="detail-row detail-row--primary">`
             + `<td class="detail-cell--merged" rowspan="2">${esc(detail.manage_no)}</td>`
             + `<td class="detail-cell--merged" rowspan="2">${esc(detail.client_name)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
@@ -108,10 +132,11 @@
             + `<tr class="detail-row detail-row--secondary">`
             + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.in_charge)}</td>`
-            + `</tr>`
-        )).join('');
+            + `</tr>`;
 
     };
+
+    const buildDetailRowsHtml = (details) => details.map((detail) => buildDetailPairHtml(detail)).join('');
 
     const buildDetailTableHtml = (details) => `
 
@@ -132,16 +157,28 @@ ${buildDetailRowsHtml(details)}
     </tbody>
 </table>`;
 
-    const chunkDetails = (details, size) => {
+    const padPageDetails = (pageDetails, size) => {
 
-        if (!details.length) {
-            return [[]];
+        const padded = pageDetails.slice(0, size);
+
+        while (padded.length < size) {
+            padded.push(EMPTY_DETAIL);
         }
 
+        return padded;
+
+    };
+
+    const buildDetailPages = (details, size) => {
+
+        const totalPages = Math.max(1, Math.ceil(details.length / size));
         const pages = [];
 
-        for (let index = 0; index < details.length; index += size) {
-            pages.push(details.slice(index, index + size));
+        for (let pageIndex = 0; pageIndex < totalPages; pageIndex += 1) {
+            const start = pageIndex * size;
+            const pageDetails = details.slice(start, start + size);
+
+            pages.push(padPageDetails(pageDetails, size));
         }
 
         return pages;
@@ -150,10 +187,14 @@ ${buildDetailRowsHtml(details)}
 
     const buildPageHtml = (header, pageDetails, summary, layout, options = {}) => {
 
-        const { showSummary = false } = options;
+        const {
+            showSummary = false,
+            pageNumber = 1,
+            totalPages = 1,
+        } = options;
 
         return `
-    ${buildHeaderHtml(header, layout)}
+    ${buildHeaderHtml(header, layout, { pageNumber, totalPages })}
     ${buildDetailTableHtml(pageDetails)}
     ${showSummary ? buildSummaryHtml(summary) : ''}`;
 
@@ -200,14 +241,19 @@ ${buildDetailRowsHtml(details)}
         Validation.assertDetailReportData(data);
 
         const { header, details, summary } = data;
-        const detailPages = chunkDetails(details, DETAILS_PER_PAGE);
+        const detailPages = buildDetailPages(details, DETAILS_PER_PAGE);
+        const totalPages = detailPages.length;
         const pagesHtml = detailPages.map((pageDetails, index) => (
             `<div class="page">${buildPageHtml(
                 header,
                 pageDetails,
                 summary,
                 layout,
-                { showSummary: index === detailPages.length - 1 }
+                {
+                    showSummary: index === totalPages - 1,
+                    pageNumber: index + 1,
+                    totalPages,
+                }
             )}
 </div>`
         )).join('\n');
