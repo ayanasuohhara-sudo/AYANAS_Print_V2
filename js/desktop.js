@@ -6,8 +6,10 @@
      * desktop.js
      *
      * kintone レコード詳細画面に印刷ボタンを配置し、
-     * Record.get() でデータ取得 → Preview.open() でプレビュー表示を行う。
+     * Record.get() → Preview.open() でプレビュー表示を行う。
      */
+
+    const DELIVERY_APP_ID = 19;
 
     const BUTTON_ID = 'ayanas-print-button';
     const BUTTON_CLASS = 'ayanas-print-button';
@@ -31,6 +33,24 @@
 
     };
 
+    const getAppId = () => {
+
+        try {
+
+            if (typeof kintone === 'undefined' || typeof kintone.app?.getId !== 'function') {
+                return null;
+            }
+
+            return kintone.app.getId();
+
+        } catch (error) {
+
+            return null;
+
+        }
+
+    };
+
     const getPluginBaseUrl = () => {
 
         const script = document.currentScript;
@@ -40,6 +60,20 @@
         }
 
         return script.src;
+
+    };
+
+    const getButtonLabel = () => {
+
+        if (getAppId() === DELIVERY_APP_ID) {
+            return '納品書印刷';
+        }
+
+        if (typeof Layout !== 'undefined' && typeof Layout.getButtonLabel === 'function') {
+            return Layout.getButtonLabel();
+        }
+
+        return '受注票印刷';
 
     };
 
@@ -99,7 +133,7 @@
             return event;
         }
 
-        space.appendChild(createPrintButton(Layout.getButtonLabel()));
+        space.appendChild(createPrintButton(getButtonLabel()));
 
         return event;
 
