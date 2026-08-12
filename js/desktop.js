@@ -37,7 +37,31 @@
             throw new Error('Preview モジュールが読み込まれていません。');
         }
 
+        if (typeof Preview.initialize !== 'function') {
+            throw new Error('Preview.initialize が利用できません。');
+        }
+
     };
+
+    /**
+     * desktop.js の script URL から pluginBaseUrl を取得する
+     * @returns {string} pluginBaseUrl
+     * @throws {Error} 取得に失敗した場合
+     */
+    const getPluginBaseUrl = () => {
+
+        const script = document.currentScript;
+
+        if (!(script instanceof HTMLScriptElement) || !script.src) {
+            throw new Error('pluginBaseUrl を取得できません。');
+        }
+
+        return script.src;
+
+    };
+
+    assertPreviewLoaded();
+    Preview.initialize(getPluginBaseUrl());
 
     /**
      * レコード詳細画面表示時に印刷ボタンを追加する

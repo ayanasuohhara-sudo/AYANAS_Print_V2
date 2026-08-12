@@ -23,6 +23,36 @@
     /** barcode.js のパス */
     const BARCODE_JS_PATH = 'js/barcode.js';
 
+    /** プラグインリソースの基準 URL */
+    let pluginBaseUrl = '';
+
+    /**
+     * Preview モジュールを初期化する
+     * @param {string} baseUrl - プラグイン script の URL
+     * @throws {Error} baseUrl が不正な場合
+     */
+    Preview.initialize = (baseUrl) => {
+
+        if (typeof baseUrl !== 'string' || baseUrl.trim() === '') {
+            throw new Error('pluginBaseUrl が不正です。');
+        }
+
+        pluginBaseUrl = baseUrl;
+
+    };
+
+    /**
+     * pluginBaseUrl の初期化を確認する
+     * @throws {Error} 未初期化の場合
+     */
+    const assertPluginBaseUrlInitialized = () => {
+
+        if (!pluginBaseUrl) {
+            throw new Error('pluginBaseUrl が初期化されていません');
+        }
+
+    };
+
     /** プラグイン設定のデフォルト値 */
     const DEFAULT_CONFIG = {
         report_title: '受注票',
@@ -134,36 +164,6 @@
     };
 
     /**
-     * プラグイン script 要素を取得する
-     * @returns {HTMLScriptElement} script 要素
-     * @throws {Error} script 要素を取得できない場合
-     */
-    const getPluginScriptElement = () => {
-
-        if (document.currentScript instanceof HTMLScriptElement && document.currentScript.src) {
-            return document.currentScript;
-        }
-
-        const scriptSelectors = [
-            'script[src*="js/preview.js"]',
-            'script[src*="js/desktop.js"]',
-        ];
-
-        for (const selector of scriptSelectors) {
-
-            const script = document.querySelector(selector);
-
-            if (script instanceof HTMLScriptElement && script.src) {
-                return script;
-            }
-
-        }
-
-        throw new Error('プラグイン script 要素を取得できません。');
-
-    };
-
-    /**
      * プラグインリソースの URL を取得する
      * @param {string} filePath - プラグイン内ファイルパス
      * @returns {string} リソース URL
@@ -171,8 +171,9 @@
      */
     const getPluginResourceUrl = (filePath) => {
 
-        const script = getPluginScriptElement();
-        const resourceUrl = new URL(script.src);
+        assertPluginBaseUrlInitialized();
+
+        const resourceUrl = new URL(pluginBaseUrl);
         const normalizedPath = filePath.replace(/^\//, '');
 
         if (resourceUrl.searchParams.has('file')) {
@@ -474,6 +475,7 @@ ${buildButtonScriptHtml()}
 
         try {
 
+            assertPluginBaseUrlInitialized();
             assertTemplateLoaded();
             assertLayoutLoaded();
             validateData(data);
@@ -502,7 +504,7 @@ ${buildButtonScriptHtml()}
                 || error.message.includes('header')
                 || error.message.includes('印刷ウィンドウ')
                 || error.message.includes('kintone')
-                || error.message.includes('プラグインリソース URL')
+                || error.message.includes('pluginBaseUrl')
             )) {
                 throw error;
             }
