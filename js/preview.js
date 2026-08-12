@@ -17,9 +17,6 @@
     /** print.css のパス */
     const PRINT_CSS_PATH = 'css/print.css';
 
-    /** JsBarcode ライブラリのパス */
-    const JSBARCODE_PATH = 'lib/JsBarcode.all.min.js';
-
     /** barcode.js のパス */
     const BARCODE_JS_PATH = 'js/barcode.js';
 
@@ -257,7 +254,6 @@
      */
     const buildScriptHtml = (barcodeValue, config = {}) => {
 
-        const jsBarcodeUrl = getPluginResourceUrl(JSBARCODE_PATH);
         const barcodeJsUrl = getPluginResourceUrl(BARCODE_JS_PATH);
         const barcodeType = config.barcode_type === 'CODE128' ? 'CODE128' : 'CODE39';
         const drawEnabled = isBarcodeVisible(config);
@@ -276,13 +272,10 @@ ${buildButtonScriptHtml()}
 
         return `
 
-<script src="${jsBarcodeUrl}"><\/script>
 <script src="${barcodeJsUrl}"><\/script>
 <script>
 (function () {
 
-    var jsBarcodeUrl = ${JSON.stringify(jsBarcodeUrl)};
-    var barcodeJsUrl = ${JSON.stringify(barcodeJsUrl)};
     var barcodeValue = ${JSON.stringify(barcodeValue)};
     var barcodeType = ${JSON.stringify(barcodeType)};
 
@@ -290,18 +283,15 @@ ${buildButtonScriptHtml()}
 ${buildButtonScriptHtml()}
     }
 
-    function logBarcodeGlobals() {
+    function ensureJsBarcode() {
 
-        console.log('[AYANAS Print] window.Barcode', window.Barcode);
-        console.log('[AYANAS Print] window.JsBarcode', window.JsBarcode);
+        if (typeof window.JsBarcode === 'function') {
+            return;
+        }
 
-    }
-
-    function hasLocalBarcodeModule() {
-
-        return typeof window.JsBarcode === 'function'
-            && window.Barcode
-            && typeof window.Barcode.draw === 'function';
+        if (window.opener && typeof window.opener.JsBarcode === 'function') {
+            window.JsBarcode = window.opener.JsBarcode;
+        }
 
     }
 
@@ -311,55 +301,25 @@ ${buildButtonScriptHtml()}
             return;
         }
 
-        logBarcodeGlobals();
+        ensureJsBarcode();
 
         var svg = document.getElementById('barcode');
-
-        console.log(svg);
-        console.log(svg && svg.tagName);
-        console.log(svg instanceof SVGElement);
 
         if (!svg || String(svg.tagName).toLowerCase() !== 'svg') {
             return;
         }
 
-        if (!hasLocalBarcodeModule()) {
+        if (typeof window.JsBarcode !== 'function') {
+            throw new Error('JsBarcode ライブラリが読み込まれていません。');
+        }
+
+        if (!window.Barcode || typeof window.Barcode.draw !== 'function') {
             throw new Error('Barcode モジュールが読み込まれていません。');
         }
 
-        var drawOptions = { format: barcodeType, barcode_type: barcodeType };
-
-        window.Barcode.draw(svg, barcodeValue, drawOptions);
-
-    }
-
-    function loadScript(url) {
-
-        return new Promise(function (resolve, reject) {
-
-            var script = document.createElement('script');
-
-            script.src = url;
-            script.onload = function () {
-                resolve();
-            };
-            script.onerror = function () {
-                reject(new Error('スクリプトの読み込みに失敗しました。（' + url + '）'));
-            };
-            document.head.appendChild(script);
-
-        });
-
-    }
-
-    function loadBarcodeModules() {
-
-        if (typeof window.JsBarcode === 'function') {
-            return loadScript(barcodeJsUrl);
-        }
-
-        return loadScript(jsBarcodeUrl).then(function () {
-            return loadScript(barcodeJsUrl);
+        window.Barcode.draw(svg, barcodeValue, {
+            format: barcodeType,
+            barcode_type: barcodeType,
         });
 
     }
@@ -388,38 +348,10 @@ ${buildButtonScriptHtml()}
 
     }
 
-    function start() {
-
-        if (!hasLocalBarcodeModule()) {
-            loadBarcodeModules()
-                .then(function () {
-                    runPreview();
-                })
-                .catch(function (error) {
-
-                    console.error(error);
-                    console.error(error.stack);
-
-                    alert(
-                        'バーコード読み込みエラー\\n\\n'
-                        + String(error)
-                        + '\\n\\n'
-                        + (error && error.stack ? error.stack : '')
-                    );
-                    initButtons();
-
-                });
-            return;
-        }
-
-        runPreview();
-
-    }
-
     if (document.readyState === 'complete') {
-        start();
+        runPreview();
     } else {
-        window.addEventListener('load', start);
+        window.addEventListener('load', runPreview);
     }
 
 })();
