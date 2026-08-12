@@ -164,47 +164,73 @@
     };
 
     /**
+     * kintone が読み込んだプラグイン script の URL を取得する
+     * @returns {string} desktop.js または preview.js の URL
+     * @throws {Error} 取得に失敗した場合
+     */
+    const getPluginBaseUrl = () => {
+
+        if (pluginBaseUrl) {
+            return pluginBaseUrl;
+        }
+
+        const scriptSelectors = [
+            'script[src*="js/desktop.js"]',
+            'script[src*="js/preview.js"]',
+        ];
+
+        for (const selector of scriptSelectors) {
+
+            const script = document.querySelector(selector);
+
+            if (script?.src) {
+                return script.src;
+            }
+
+        }
+
+        throw new Error('プラグイン script URL を取得できません。');
+
+    };
+
+    /** manifest 読み込み済み script（URL 差し替えの基準） */
+    const PLUGIN_ENTRY_FILES = [
+        'js/desktop.js',
+        'js/preview.js',
+    ];
+
+    /**
      * プラグインリソースの URL を取得する
+     * kintone が manifest 経由で読み込んだ script URL を基準に file を差し替える
      * @param {string} filePath - プラグイン内ファイルパス
      * @returns {string} リソース URL
      * @throws {Error} URL を取得できない場合
      */
     const getPluginResourceUrl = (filePath) => {
 
-        assertPluginBaseUrlInitialized();
-
         const normalizedPath = filePath.replace(/^\//, '');
-        const resourceUrl = new URL(pluginBaseUrl);
+        const baseScriptUrl = getPluginBaseUrl();
+        const resourceUrl = new URL(baseScriptUrl);
 
         if (resourceUrl.searchParams.has('file')) {
             resourceUrl.searchParams.set('file', normalizedPath);
             return resourceUrl.href;
         }
 
-        if (typeof kintone !== 'undefined' && kintone.$PLUGIN_ID) {
+        for (const entryFile of PLUGIN_ENTRY_FILES) {
 
-            if (typeof kintone.api?.url === 'function') {
-                return kintone.api.url(
-                    `/k/plugin/public/${kintone.$PLUGIN_ID}/${normalizedPath}`,
-                    true
+            const entryPattern = entryFile.replace('/', '\\/');
+
+            if (new RegExp(`${entryPattern}(?=[?#]|$)`).test(baseScriptUrl)) {
+                return baseScriptUrl.replace(
+                    new RegExp(`${entryPattern}(?=[?#]|$)`),
+                    normalizedPath
                 );
             }
 
-            return `${location.origin}/k/plugin/public/${kintone.$PLUGIN_ID}/${normalizedPath}`;
-
         }
 
-        const pluginIdMatch = pluginBaseUrl.match(/\/plugin\/(?:public\/)?([a-z0-9]+)\//i);
-
-        if (pluginIdMatch) {
-
-            return `${resourceUrl.origin}/k/plugin/public/${pluginIdMatch[1]}/${normalizedPath}`;
-
-        }
-
-        const pluginRootUrl = new URL('../', resourceUrl);
-
-        return new URL(normalizedPath, pluginRootUrl).href;
+        throw new Error(`プラグインリソース URL を生成できません。（${normalizedPath}）`);
 
     };
 
@@ -424,6 +450,14 @@ ${buildButtonScriptHtml()}
         const barcodeValue = getBarcodeValue(data);
         let html = Template.render(data, config, layout);
 
+        const printCssUrl = getPluginResourceUrl(PRINT_CSS_PATH);
+        const jsBarcodeUrl = getPluginResourceUrl(JSBARCODE_PATH);
+        const barcodeJsUrl = getPluginResourceUrl(BARCODE_JS_PATH);
+
+        console.log('[AYANAS Print] print.css', printCssUrl);
+        console.log('[AYANAS Print] JsBarcode.all.min.js', jsBarcodeUrl);
+        console.log('[AYANAS Print] barcode.js', barcodeJsUrl);
+
         html = html.replace(
             '<div class="page">',
             `<div class="${getPageClassName(config)}">`
@@ -431,7 +465,7 @@ ${buildButtonScriptHtml()}
 
         html = html.replace(
             '</head>',
-            `<link rel="stylesheet" href="${getPluginResourceUrl(PRINT_CSS_PATH)}">\n`
+            `<link rel="stylesheet" href="${printCssUrl}">\n`
             + `${buildPrintStyleHtml(config)}\n</head>`
         );
 
