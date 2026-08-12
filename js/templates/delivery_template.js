@@ -41,33 +41,29 @@
 
         return `
 <header class="delivery-header">
-    <div class="delivery-header__main">
-        <h1 class="delivery-title">納 品 書</h1>
-        <dl class="delivery-meta">
-            <div class="delivery-meta__item">
-                <dt>取引先コード</dt>
-                <dd>${esc(header.customer_code)}</dd>
-            </div>
-            <div class="delivery-meta__item delivery-meta__item--customer-name">
-                <dt>取引先名</dt>
-                <dd>${esc(header.customer_name)}</dd>
-            </div>
-        </dl>
+    <div class="delivery-barcode">
+        <svg id="barcode" class="barcode"></svg>
     </div>
-    <div class="delivery-header__aside">
-        <div class="delivery-barcode">
-            <svg id="barcode" class="barcode"></svg>
+    <h1 class="delivery-title">納 品 書</h1>
+    <div class="delivery-header__doc">
+        <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
+        <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
+    </div>
+    <dl class="delivery-meta">
+        <div class="delivery-meta__item">
+            <dt>取引先コード</dt>
+            <dd>${esc(header.customer_code)}</dd>
         </div>
-        <div class="delivery-header__doc">
-            <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
-            <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
+        <div class="delivery-meta__item delivery-meta__item--customer-name">
+            <dt>取引先名</dt>
+            <dd>${esc(header.customer_name)}</dd>
         </div>
-        <div class="delivery-header__company">
-            <p class="company-name">${esc(company.name)}</p>
-            <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
-            <p class="company-contact">${esc(company.tel)}</p>
-            <p class="company-contact">${esc(company.fax)}</p>
-        </div>
+    </dl>
+    <div class="delivery-header__company">
+        <p class="company-name">${esc(company.name)}</p>
+        <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
+        <p class="company-contact">${esc(company.tel)}</p>
+        <p class="company-contact">${esc(company.fax)}</p>
     </div>
 </header>`;
 
@@ -84,7 +80,7 @@
             + `<td class="detail-cell--stack">${esc(detail.manage_no)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.client_name)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
-            + `<td>${esc(detail.slip_no)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.slip_no)}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
@@ -93,7 +89,7 @@
             + `<td class="detail-cell--stack detail-cell--kimono">${esc(detail.kimono_type)}</td>`
             + `<td class="detail-cell--stack detail-cell--spec">${esc(detail.kimono_spec)}</td>`
             + `<td class="detail-cell--stack"></td>`
-            + `<td>${esc(detail.in_charge)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.in_charge)}</td>`
             + `</tr>`
         )).join('');
 
