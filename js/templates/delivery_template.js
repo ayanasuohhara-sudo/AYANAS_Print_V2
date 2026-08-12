@@ -10,6 +10,7 @@
      */
 
     const DETAIL_COLUMN_COUNT = 7;
+    const DETAILS_PER_PAGE = 30;
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -131,6 +132,33 @@ ${buildDetailRowsHtml(details)}
     </tbody>
 </table>`;
 
+    const chunkDetails = (details, size) => {
+
+        if (!details.length) {
+            return [[]];
+        }
+
+        const pages = [];
+
+        for (let index = 0; index < details.length; index += size) {
+            pages.push(details.slice(index, index + size));
+        }
+
+        return pages;
+
+    };
+
+    const buildPageHtml = (header, pageDetails, summary, layout, options = {}) => {
+
+        const { showSummary = false } = options;
+
+        return `
+    ${buildHeaderHtml(header, layout)}
+    ${buildDetailTableHtml(pageDetails)}
+    ${showSummary ? buildSummaryHtml(summary) : ''}`;
+
+    };
+
     const buildSummaryHtml = (summary) => {
 
         if (typeof Format.formatNumber !== 'function') {
@@ -172,14 +200,23 @@ ${buildDetailRowsHtml(details)}
         Validation.assertDetailReportData(data);
 
         const { header, details, summary } = data;
+        const detailPages = chunkDetails(details, DETAILS_PER_PAGE);
+        const pagesHtml = detailPages.map((pageDetails, index) => (
+            `<div class="page">${buildPageHtml(
+                header,
+                pageDetails,
+                summary,
+                layout,
+                { showSummary: index === detailPages.length - 1 }
+            )}
+</div>`
+        )).join('\n');
 
         return Common.buildDocumentHtml({
             title: '納品書',
             bodyClass: Common.getBodyClass(layout),
-            content: `
-    ${buildHeaderHtml(header, layout)}
-    ${buildDetailTableHtml(details)}
-    ${buildSummaryHtml(summary)}`,
+            content: pagesHtml,
+            multiPage: true,
         });
 
     });

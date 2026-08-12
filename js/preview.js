@@ -361,10 +361,7 @@ ${buildButtonScriptBody()}
         const jsBarcodeUrl = getPluginResourceUrl(JSBARCODE_PATH);
         const barcodeJsUrl = getPluginResourceUrl(BARCODE_JS_PATH);
 
-        html = html.replace(
-            '<div class="page">',
-            `<div class="${Dom.getPageClassName(previewConfig)}">`
-        );
+        html = html.split('<div class="page">').join(`<div class="${Dom.getPageClassName(previewConfig)}">`);
 
         html = html.replace(
             '</head>',

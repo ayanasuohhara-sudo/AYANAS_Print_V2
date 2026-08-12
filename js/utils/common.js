@@ -118,10 +118,13 @@
      * @param {string} options.content - 本文 HTML
      * @returns {string} HTML 文字列
      */
-    Common.buildDocumentHtml = ({ title, bodyClass, content }) => {
+    Common.buildDocumentHtml = ({ title, bodyClass, content, multiPage = false }) => {
 
         const safeTitle = Common.esc(title);
         const safeBodyClass = Common.esc(bodyClass);
+        const bodyInner = multiPage
+            ? content
+            : `<div class="page">\n${content}\n</div>`;
 
         return `<!DOCTYPE html>
 <html lang="ja">
@@ -130,9 +133,7 @@
 <title>${safeTitle}</title>
 </head>
 <body class="${safeBodyClass}">
-<div class="page">
-${content}
-</div>
+${bodyInner}
 </body>
 </html>`;
 
