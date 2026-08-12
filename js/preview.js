@@ -250,15 +250,6 @@
     });`;
 
     /**
-     * バーコード描画用 script タグ HTML を生成する
-     * @returns {string} script タグ HTML
-     */
-    const buildBarcodeScriptTagsHtml = () => `
-
-<script src="${getPluginResourceUrl(JSBARCODE_PATH)}"></script>
-<script src="${getPluginResourceUrl(BARCODE_JS_PATH)}"></script>`;
-
-    /**
      * プレビュー用スクリプト HTML を生成する
      * @param {string} barcodeValue - バーコード値
      * @param {Object} config - プラグイン設定
@@ -280,39 +271,104 @@ ${buildButtonScriptHtml()}
 
         }
 
+        const jsBarcodeUrl = getPluginResourceUrl(JSBARCODE_PATH);
+        const barcodeJsUrl = getPluginResourceUrl(BARCODE_JS_PATH);
+
         return `
-${buildBarcodeScriptTagsHtml()}
 
 <script>
 (function () {
 
     var barcodeValue = ${JSON.stringify(barcodeValue)};
     var barcodeType = ${JSON.stringify(barcodeType)};
+    var jsBarcodeUrl = ${JSON.stringify(jsBarcodeUrl)};
+    var barcodeJsUrl = ${JSON.stringify(barcodeJsUrl)};
 
-    try {
+    function initButtons() {
+${buildButtonScriptHtml()}
+    }
 
-        if (barcodeValue) {
+    function drawBarcode() {
 
-            var svg = document.getElementById('barcode');
+        if (!window.Barcode || typeof window.Barcode.draw !== 'function') {
+            return;
+        }
 
-            if (svg) {
-                Barcode.draw(svg, barcodeValue, { barcode_type: barcodeType });
-            }
+        if (!barcodeValue) {
+            return;
+        }
+
+        var svg = document.getElementById('barcode');
+
+        if (!svg) {
+            return;
+        }
+
+        try {
+
+            window.Barcode.draw(svg, barcodeValue, { barcode_type: barcodeType });
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                'バーコード描画エラー\\n\\n'
+                + String(error)
+            );
 
         }
 
-    } catch (error) {
+    }
 
-        console.error(error);
+    function loadBarcodeJs() {
 
-        alert(
-            'バーコード描画エラー\\n\\n'
-            + String(error)
-        );
+        var script = document.createElement('script');
+
+        script.src = barcodeJsUrl;
+
+        script.onload = function () {
+
+            if (window.Barcode && typeof window.Barcode.draw === 'function') {
+                drawBarcode();
+            }
+
+            initButtons();
+
+        };
+
+        script.onerror = function () {
+
+            console.error('barcode.js の読み込みに失敗しました。');
+            initButtons();
+
+        };
+
+        document.head.appendChild(script);
 
     }
 
-${buildButtonScriptHtml()}
+    function loadJsBarcode() {
+
+        var script = document.createElement('script');
+
+        script.src = jsBarcodeUrl;
+
+        script.onload = loadBarcodeJs;
+
+        script.onerror = function () {
+
+            console.error('JsBarcode の読み込みに失敗しました。');
+            initButtons();
+
+        };
+
+        document.head.appendChild(script);
+
+    }
+
+    loadJsBarcode();
+
 })();
 <\/script>`;
 
