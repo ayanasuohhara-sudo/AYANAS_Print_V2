@@ -81,18 +81,21 @@
 
         return details.map((detail) => (
             `<tr class="detail-row detail-row--primary">`
-            + `<td>${esc(detail.manage_no)}</td>`
-            + `<td>${esc(detail.client_name)}</td>`
-            + `<td>${esc(detail.item_name)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.manage_no)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.client_name)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
             + `<td>${esc(detail.slip_no)}</td>`
             + `<td>${esc(detail.in_charge)}</td>`
-            + `<td class="num">${esc(Format.formatMoney(detail.unit_price))}</td>`
-            + `<td class="num">${esc(detail.qty)}</td>`
-            + `<td class="num">${esc(Format.formatMoney(detail.amount))}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
             + `</tr>`
             + `<tr class="detail-row detail-row--secondary">`
-            + `<td colspan="4" class="detail-cell--kimono">${esc(detail.kimono_type)}</td>`
-            + `<td colspan="4" class="detail-cell--spec">${esc(detail.kimono_spec)}</td>`
+            + `<td class="detail-cell--stack detail-cell--kimono">${esc(detail.kimono_type)}</td>`
+            + `<td class="detail-cell--stack detail-cell--spec">${esc(detail.kimono_spec)}</td>`
+            + `<td class="detail-cell--stack"></td>`
+            + `<td></td>`
+            + `<td></td>`
             + `</tr>`
         )).join('');
 
@@ -113,8 +116,12 @@
             <th>金額</th>
         </tr>
         <tr class="detail-head detail-head--secondary">
-            <th colspan="4">着物種類</th>
-            <th colspan="4">仕様</th>
+            <th>着物種類</th>
+            <th>仕様</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th colspan="3"></th>
         </tr>
     </thead>
     <tbody>
