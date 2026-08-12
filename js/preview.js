@@ -276,15 +276,23 @@ ${buildButtonScriptHtml()}
 
         return `
 
-<script src="${jsBarcodeUrl}"></script>
-<script src="${barcodeJsUrl}"></script>
 <script>
 (function () {
 
     var barcodeValue = ${JSON.stringify(barcodeValue)};
     var barcodeType = ${JSON.stringify(barcodeType)};
+    var jsBarcodeUrl = ${JSON.stringify(jsBarcodeUrl)};
+    var barcodeJsUrl = ${JSON.stringify(barcodeJsUrl)};
+
+    function initButtons() {
+${buildButtonScriptHtml()}
+    }
 
     function drawBarcode() {
+
+        if (typeof window.JsBarcode !== 'function') {
+            return;
+        }
 
         if (!window.Barcode || typeof window.Barcode.draw !== 'function') {
             return;
@@ -317,8 +325,45 @@ ${buildButtonScriptHtml()}
 
     }
 
-    drawBarcode();
-${buildButtonScriptHtml()}
+    function loadBarcodeJs() {
+
+        var script = document.createElement('script');
+
+        script.src = barcodeJsUrl;
+
+        script.onload = function () {
+            drawBarcode();
+            initButtons();
+        };
+
+        script.onerror = function () {
+            console.error('barcode.js の読み込みに失敗しました。', barcodeJsUrl);
+            initButtons();
+        };
+
+        document.head.appendChild(script);
+
+    }
+
+    function loadJsBarcode() {
+
+        var script = document.createElement('script');
+
+        script.src = jsBarcodeUrl;
+
+        script.onload = loadBarcodeJs;
+
+        script.onerror = function () {
+            console.error('JsBarcode.all.min.js の読み込みに失敗しました。', jsBarcodeUrl);
+            initButtons();
+        };
+
+        document.head.appendChild(script);
+
+    }
+
+    loadJsBarcode();
+
 })();
 <\/script>`;
 
