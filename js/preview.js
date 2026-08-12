@@ -134,58 +134,55 @@
     };
 
     /**
-     * プラグインベース URL を取得する
-     * @returns {string} ベース URL（末尾スラッシュ付き）
-     * @throws {Error} ベース URL を取得できない場合
+     * プラグイン script 要素を取得する
+     * @returns {HTMLScriptElement} script 要素
+     * @throws {Error} script 要素を取得できない場合
      */
-    const getPluginBaseUrl = () => {
+    const getPluginScriptElement = () => {
+
+        if (document.currentScript instanceof HTMLScriptElement && document.currentScript.src) {
+            return document.currentScript;
+        }
 
         const scriptSelectors = [
             'script[src*="js/preview.js"]',
             'script[src*="js/desktop.js"]',
-            'script[src*="/plugin/"]',
         ];
 
         for (const selector of scriptSelectors) {
 
             const script = document.querySelector(selector);
 
-            if (!script?.src) {
-                continue;
-            }
-
-            const matched = script.src.match(/^(.*\/plugin\/[^/]+\/)/);
-
-            if (matched) {
-                return matched[1];
+            if (script instanceof HTMLScriptElement && script.src) {
+                return script;
             }
 
         }
 
-        if (typeof kintone !== 'undefined' && kintone.$PLUGIN_ID) {
-            return `${window.location.origin}/k/plugin/${kintone.$PLUGIN_ID}/`;
-        }
-
-        throw new Error('プラグインリソース URL を取得できません。');
+        throw new Error('プラグイン script 要素を取得できません。');
 
     };
 
     /**
      * プラグインリソースの URL を取得する
      * @param {string} filePath - プラグイン内ファイルパス
-     * @returns {string} 絶対 URL
+     * @returns {string} リソース URL
      * @throws {Error} URL を取得できない場合
      */
     const getPluginResourceUrl = (filePath) => {
 
+        const script = getPluginScriptElement();
+        const resourceUrl = new URL(script.src);
         const normalizedPath = filePath.replace(/^\//, '');
-        let baseUrl = getPluginBaseUrl();
 
-        if (baseUrl.startsWith('/')) {
-            baseUrl = `${window.location.origin}${baseUrl}`;
+        if (resourceUrl.searchParams.has('file')) {
+            resourceUrl.searchParams.set('file', normalizedPath);
+            return resourceUrl.href;
         }
 
-        return `${baseUrl}${normalizedPath}`;
+        const pluginRootUrl = new URL('../', resourceUrl);
+
+        return new URL(normalizedPath, pluginRootUrl).href;
 
     };
 
