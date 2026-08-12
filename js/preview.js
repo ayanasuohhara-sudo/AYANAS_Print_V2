@@ -224,6 +224,37 @@
 
         }
 
+        if (normalizedPath === PRINT_CSS_PATH) {
+
+            for (const link of document.querySelectorAll('link[href*="download.do"]')) {
+
+                if (link.href.includes('DESKTOP_CSS')) {
+                    return link.href;
+                }
+
+            }
+
+        }
+
+        return null;
+
+    };
+
+    /**
+     * download.do の type パラメータをファイル種別から解決する
+     * @param {string} filePath - プラグイン内ファイルパス
+     * @returns {'DESKTOP_CSS'|'DESKTOP_JS'|null} type 値
+     */
+    const resolveDownloadDoType = (filePath) => {
+
+        if (filePath.endsWith('.css')) {
+            return 'DESKTOP_CSS';
+        }
+
+        if (filePath.endsWith('.js')) {
+            return 'DESKTOP_JS';
+        }
+
         return null;
 
     };
@@ -243,13 +274,15 @@
         const normalizedPath = filePath.replace(/^\//, '');
         const resourceUrl = new URL(baseScriptUrl);
         const pluginId = resourceUrl.searchParams.get('pluginId');
+        const downloadType = resolveDownloadDoType(normalizedPath);
 
-        if (!pluginId) {
+        if (!pluginId || !downloadType) {
             return null;
         }
 
         resourceUrl.searchParams.set('pluginId', pluginId);
         resourceUrl.searchParams.delete('contentId');
+        resourceUrl.searchParams.set('type', downloadType);
         resourceUrl.searchParams.set('file', normalizedPath);
 
         return resourceUrl.href;
