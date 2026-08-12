@@ -11,6 +11,16 @@
 
     const DELIVERY_APP_ID = 19;
 
+    const getInvoiceAppId = () => {
+
+        if (typeof InvoiceCreate !== 'undefined' && typeof InvoiceCreate.getInvoiceAppId === 'function') {
+            return InvoiceCreate.getInvoiceAppId();
+        }
+
+        return null;
+
+    };
+
     const BUTTON_ID = 'ayanas-print-button';
     const BUTTON_CLASS = 'ayanas-print-button';
 
@@ -122,6 +132,10 @@
     Preview.initialize(getPluginBaseUrl());
 
     kintone.events.on('app.record.detail.show', (event) => {
+
+        if (getAppId() === getInvoiceAppId()) {
+            return event;
+        }
 
         if (document.getElementById(BUTTON_ID)) {
             return event;

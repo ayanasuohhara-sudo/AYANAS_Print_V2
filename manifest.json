@@ -19,6 +19,7 @@
       "js/utils/common.js",
       "js/utils/dom.js",
       "js/record.js",
+      "js/invoice_create.js",
       "js/reports/order_definition.js",
       "js/reports/delivery_definition.js",
       "js/templates/template_interface.js",
@@ -33,6 +34,7 @@
       "js/layout.js",
       "js/barcode.js",
       "js/preview.js",
+      "js/invoice_desktop.js",
       "js/desktop.js"
     ],
     "css": [
