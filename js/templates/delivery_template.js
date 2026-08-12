@@ -44,26 +44,27 @@
     <div class="delivery-barcode">
         <svg id="barcode" class="barcode"></svg>
     </div>
-    <h1 class="delivery-title">納 品 書</h1>
-    <div class="delivery-header__doc">
-        <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
-        <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
+    <div class="delivery-header__left">
+        <h1 class="delivery-title">納 品 書</h1>
+        <dl class="delivery-meta">
+            <div class="delivery-meta__item">
+                <dt>得意様コード</dt>
+                <dd>${esc(header.customer_code)}</dd>
+            </div>
+        </dl>
+        <p class="delivery-customer-name">${esc(header.customer_name)}様</p>
     </div>
-    <dl class="delivery-meta">
-        <div class="delivery-meta__item">
-            <dt>取引先コード</dt>
-            <dd>${esc(header.customer_code)}</dd>
+    <div class="delivery-header__right">
+        <div class="delivery-header__doc">
+            <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
+            <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
         </div>
-        <div class="delivery-meta__item delivery-meta__item--customer-name">
-            <dt>取引先名</dt>
-            <dd>${esc(header.customer_name)}</dd>
+        <div class="delivery-header__company">
+            <p class="company-name">${esc(company.name)}</p>
+            <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
+            <p class="company-contact">${esc(company.tel)}</p>
+            <p class="company-contact">${esc(company.fax)}</p>
         </div>
-    </dl>
-    <div class="delivery-header__company">
-        <p class="company-name">${esc(company.name)}</p>
-        <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
-        <p class="company-contact">${esc(company.tel)}</p>
-        <p class="company-contact">${esc(company.fax)}</p>
     </div>
 </header>`;
 

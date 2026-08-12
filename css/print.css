@@ -204,9 +204,7 @@
 .report-delivery .delivery-header {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto;
     column-gap: 8mm;
-    row-gap: 2mm;
     align-items: start;
     padding: 0 135px 2mm 0;
     border-bottom: 0.5px solid #333333;
@@ -214,46 +212,57 @@
     position: relative;
 }
 
-.report-delivery .delivery-title {
+.report-delivery .delivery-header__left {
     grid-column: 1;
-    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5mm;
+    min-width: 0;
+}
+
+.report-delivery .delivery-header__right {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2mm;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.report-delivery .delivery-title {
     margin: 0;
     padding: 0;
-    font-size: 18pt;
+    font-size: 21pt;
     font-weight: bold;
     letter-spacing: 0.45em;
     line-height: 1.2;
 }
 
 .report-delivery .delivery-meta {
-    grid-column: 1;
-    grid-row: 2;
     display: flex;
     flex-direction: column;
-    gap: 1.5mm;
+    gap: 1mm;
     margin: 0;
+}
+
+.report-delivery .delivery-customer-name {
+    margin: 0;
+    padding: 0;
+    font-size: 9pt;
+    font-weight: bold;
+    line-height: 1.35;
 }
 
 .report-delivery .delivery-header__doc {
-    grid-column: 2;
-    grid-row: 1;
     margin: 0;
     padding: 0;
-    text-align: left;
     font-size: 8pt;
     line-height: 1.35;
-    align-self: start;
 }
 
 .report-delivery .delivery-header__company {
-    grid-column: 2;
-    grid-row: 2;
     margin: 0;
     padding: 0;
-    text-align: left;
-    font-size: 11pt;
-    line-height: 1.45;
-    align-self: start;
 }
 
 .report-delivery .delivery-meta__item {
@@ -265,7 +274,7 @@
 
 .report-delivery .delivery-meta dt {
     margin: 0;
-    font-size: 10pt;
+    font-size: 8.5pt;
     font-weight: normal;
     white-space: nowrap;
 }
@@ -276,14 +285,8 @@
 
 .report-delivery .delivery-meta dd {
     margin: 0;
-    font-size: 10.5pt;
+    font-size: 9pt;
     font-weight: bold;
-}
-
-.report-delivery .delivery-meta__item--customer-name dd {
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 1.35;
 }
 
 .report-delivery .delivery-doc-item {
@@ -317,6 +320,8 @@
 .report-delivery .company-address,
 .report-delivery .company-contact {
     margin: 0;
+    font-size: 8.5pt;
+    line-height: 1.4;
 }
 
 .report-delivery .delivery-detail-table {
