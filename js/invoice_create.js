@@ -13,6 +13,7 @@
 
     const DELIVERY_APP_ID = 19;
     const INVOICE_APP_ID = 35;
+    const CUSTOMER_APP_ID = 17;
     const TAX_RATE = 0.10;
     const INVOICE_FLAG_VALUE = '請求済';
     const UNINVOICED_STATUS = '未請求';
@@ -45,6 +46,12 @@
     const COLLECTION_STATUS_UNCOLLECTED = '未回収';
     const COLLECTION_STATUS_PARTIAL = '一部回収';
     const COLLECTION_STATUS_COLLECTED = '回収済';
+
+    const CUSTOMER_FIELDS = {
+        customerCode: 'customer_code',
+        customerName: 'customer_name',
+        closingDay: 'closing_day',
+    };
 
     const DELIVERY_FIELDS = {
         deliveryNo: 'delivery_no',
@@ -176,97 +183,129 @@
 
     const getLastDayOfMonth = (year, month) => new Date(year, month, 0).getDate();
 
-    /** 締日ドロップダウン選択肢 */
-    const CLOSING_DATE_LABELS = [
-        '10日',
-        '15日',
-        '20日',
-        '30日',
-        '月末',
-        '都度払い',
-        '10.20.月末',
-    ];
+    const shiftMonth = (year, month, delta) => {
 
-    const normalizeClosingLabel = (label) => String(label ?? '')
-        .trim()
-        .replace(/[０-９]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0xFEE0));
-
-    const parseReferenceDay = (referenceDate, year, month) => {
-
-        const normalized = String(referenceDate ?? '').trim();
-
-        if (!normalized) {
-            return getLastDayOfMonth(year, month);
-        }
-
-        const match = normalized.match(/^(\d{4})-(\d{2})-(\d{2})/);
-
-        if (!match) {
-            return getLastDayOfMonth(year, month);
-        }
-
-        const refYear = Number(match[1]);
-        const refMonth = Number(match[2]);
-        const refDay = Number(match[3]);
-
-        if (refYear === year && refMonth === month) {
-            return refDay;
-        }
-
-        return getLastDayOfMonth(year, month);
-
-    };
-
-    const clampDayToMonth = (year, month, day) => Math.min(day, getLastDayOfMonth(year, month));
-
-    const resolveFixedDayPeriod = (year, month, day) => {
-
-        const lastDay = getLastDayOfMonth(year, month);
-        const clampedDay = Math.min(Math.max(day, 1), lastDay);
+        const date = new Date(year, month - 1 + delta, 1);
 
         return {
-            periodStart: formatDate(year, month, 1),
-            periodEnd: formatDate(year, month, clampedDay),
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
         };
 
     };
 
-    const resolveMultiClosingPeriod = (year, month, referenceDay) => {
+    const addDaysToDate = (year, month, day, delta) => {
+
+        const date = new Date(year, month - 1, day);
+
+        date.setDate(date.getDate() + delta);
+
+        return {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate(),
+        };
+
+    };
+
+    /** 月次請求処理の締日選択肢（請求書 closing_date） */
+    const CLOSING_EXECUTION_LABELS = [
+        '10日締め',
+        '15日締め',
+        '20日締め',
+        '30日締め',
+        '月末締め',
+        '都度払い',
+    ];
+
+    /** 顧客管理 closing_day 選択肢 */
+    const CUSTOMER_CLOSING_DAY_LABELS = [
+        '10日締め',
+        '15日締め',
+        '20日締め',
+        '30日締め',
+        '月末締め',
+        '都度払い',
+        '10・20・月末締め',
+    ];
+
+    const CLOSING_EXECUTION_TARGETS = {
+        '10日締め': ['10日締め', '10・20・月末締め'],
+        '15日締め': ['15日締め'],
+        '20日締め': ['20日締め', '10・20・月末締め'],
+        '30日締め': ['30日締め'],
+        '月末締め': ['月末締め', '10・20・月末締め'],
+        '都度払い': ['都度払い'],
+    };
+
+    const normalizeClosingLabel = (label) => String(label ?? '')
+        .trim()
+        .replace(/[０-９]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0xFEE0))
+        .replace(/10\.20\.月末/g, '10・20・月末')
+        .replace(/10\.20\.月末締め/g, '10・20・月末締め');
+
+    const clampDayToMonth = (year, month, day) => Math.min(day, getLastDayOfMonth(year, month));
+
+    const resolveTenClosingPeriod = (year, month) => {
+
+        const prev = shiftMonth(year, month, -1);
+
+        return {
+            periodStart: formatDate(prev.year, prev.month, clampDayToMonth(prev.year, prev.month, 11)),
+            periodEnd: formatDate(year, month, clampDayToMonth(year, month, 10)),
+        };
+
+    };
+
+    const resolveFifteenClosingPeriod = (year, month) => {
+
+        const prev = shiftMonth(year, month, -1);
+
+        return {
+            periodStart: formatDate(prev.year, prev.month, clampDayToMonth(prev.year, prev.month, 16)),
+            periodEnd: formatDate(year, month, clampDayToMonth(year, month, 15)),
+        };
+
+    };
+
+    const resolveTwentyClosingPeriod = (year, month) => ({
+        periodStart: formatDate(year, month, clampDayToMonth(year, month, 11)),
+        periodEnd: formatDate(year, month, clampDayToMonth(year, month, 20)),
+    });
+
+    const resolveThirtyClosingPeriod = (year, month) => {
+
+        const prev = shiftMonth(year, month, -1);
+        const prevClosingDay = clampDayToMonth(prev.year, prev.month, 30);
+        const start = addDaysToDate(prev.year, prev.month, prevClosingDay, 1);
+
+        return {
+            periodStart: formatDate(start.year, start.month, start.day),
+            periodEnd: formatDate(year, month, clampDayToMonth(year, month, 30)),
+        };
+
+    };
+
+    const resolveMonthEndClosingPeriod = (year, month) => {
 
         const lastDay = getLastDayOfMonth(year, month);
 
-        if (referenceDay <= 10) {
-            return {
-                periodStart: formatDate(year, month, 1),
-                periodEnd: formatDate(year, month, clampDayToMonth(year, month, 10)),
-            };
-        }
-
-        if (referenceDay <= 20) {
-            return {
-                periodStart: formatDate(year, month, 11),
-                periodEnd: formatDate(year, month, clampDayToMonth(year, month, 20)),
-            };
-        }
-
         return {
-            periodStart: formatDate(year, month, 21),
+            periodStart: formatDate(year, month, clampDayToMonth(year, month, 21)),
             periodEnd: formatDate(year, month, lastDay),
         };
 
     };
 
     /**
-     * 締日ドロップダウンと請求締年月から集計期間を算出する
-     * @param {string} closingYm - YYYY-MM
-     * @param {string} closingDateLabel - 締日（10日/15日/20日/30日/月末/都度払い/10.20.月末）
-     * @param {string} [referenceDate] - 基準日（10.20.月末 の区間判定に invoice_date を使用）
-     * @returns {{ periodStart: string|null, periodEnd: string|null, closingYm: string, adHoc: boolean }}
+     * 月次請求処理の締日と請求締年月から請求期間を算出する
+     * @param {string} closingYm - YYYY-MM（処理対象月）
+     * @param {string} executionLabel - 10日締め / 15日締め / … / 都度払い
      */
-    InvoiceCreate.resolveClosingPeriod = (closingYm, closingDateLabel, referenceDate) => {
+    InvoiceCreate.resolveClosingPeriod = (closingYm, executionLabel) => {
 
         const { year, month } = parseClosingYm(closingYm);
-        const label = normalizeClosingLabel(closingDateLabel);
+        const label = normalizeClosingLabel(executionLabel);
 
         if (!label) {
             throw new Error('締日（closing_date）を選択してください。');
@@ -279,51 +318,114 @@
                 periodStart: null,
                 periodEnd: null,
                 closingYm: closingYmFormatted,
+                executionLabel: label,
                 adHoc: true,
+                singleDelivery: true,
             };
         }
 
-        if (label === '月末') {
-            const lastDay = getLastDayOfMonth(year, month);
+        let period;
 
-            return {
-                periodStart: formatDate(year, month, 1),
-                periodEnd: formatDate(year, month, lastDay),
-                closingYm: closingYmFormatted,
-                adHoc: false,
-            };
+        switch (label) {
+            case '10日締め':
+                period = resolveTenClosingPeriod(year, month);
+                break;
+            case '15日締め':
+                period = resolveFifteenClosingPeriod(year, month);
+                break;
+            case '20日締め':
+                period = resolveTwentyClosingPeriod(year, month);
+                break;
+            case '30日締め':
+                period = resolveThirtyClosingPeriod(year, month);
+                break;
+            case '月末締め':
+                period = resolveMonthEndClosingPeriod(year, month);
+                break;
+            default:
+                throw new Error(
+                    `締日（closing_date）が不正です。選択肢: ${CLOSING_EXECUTION_LABELS.join(' / ')}`
+                );
         }
 
-        if (label === '10.20.月末') {
-            const referenceDay = parseReferenceDay(referenceDate, year, month);
-            const period = resolveMultiClosingPeriod(year, month, referenceDay);
-
-            return {
-                ...period,
-                closingYm: closingYmFormatted,
-                adHoc: false,
-            };
-        }
-
-        const dayMatch = label.match(/^(\d{1,2})日?$/);
-
-        if (dayMatch) {
-            const period = resolveFixedDayPeriod(year, month, Number(dayMatch[1]));
-
-            return {
-                ...period,
-                closingYm: closingYmFormatted,
-                adHoc: false,
-            };
-        }
-
-        throw new Error(
-            `締日（closing_date）が不正です。選択肢: ${CLOSING_DATE_LABELS.join(' / ')}`
-        );
+        return {
+            ...period,
+            closingYm: closingYmFormatted,
+            executionLabel: label,
+            adHoc: false,
+            singleDelivery: false,
+        };
 
     };
 
-    InvoiceCreate.CLOSING_DATE_LABELS = CLOSING_DATE_LABELS;
+    InvoiceCreate.getExecutionTargetClosingDays = (executionLabel) => {
+
+        const label = normalizeClosingLabel(executionLabel);
+
+        return CLOSING_EXECUTION_TARGETS[label] || [];
+
+    };
+
+    InvoiceCreate.fetchCustomerByCode = async (customerCode) => {
+
+        const code = String(customerCode ?? '').trim();
+
+        if (!code) {
+            throw new Error('請求先コード（customer_code）を入力してください。');
+        }
+
+        const query = `${CUSTOMER_FIELDS.customerCode} = "${escapeQueryValue(code)}" limit 1`;
+        const response = await kintoneApi(
+            kintone.api.url('/k/v1/records', true),
+            'GET',
+            {
+                app: CUSTOMER_APP_ID,
+                query,
+                fields: [
+                    CUSTOMER_FIELDS.customerCode,
+                    CUSTOMER_FIELDS.customerName,
+                    CUSTOMER_FIELDS.closingDay,
+                ],
+            }
+        );
+
+        if (response.records.length === 0) {
+            throw new Error(`請求先コード ${code} の顧客が見つかりません。`);
+        }
+
+        return response.records[0];
+
+    };
+
+    InvoiceCreate.validateCustomerClosingDay = async (customerCode, executionLabel) => {
+
+        const customer = await InvoiceCreate.fetchCustomerByCode(customerCode);
+        const customerClosingDay = normalizeClosingLabel(
+            getFieldValue(customer, CUSTOMER_FIELDS.closingDay)
+        );
+        const targets = InvoiceCreate.getExecutionTargetClosingDays(executionLabel).map(normalizeClosingLabel);
+
+        if (!customerClosingDay) {
+            throw new Error('顧客管理の締日（closing_day）が未設定です。');
+        }
+
+        if (!targets.includes(customerClosingDay)) {
+            throw new Error(
+                `この請求先は「${customerClosingDay}」のため、「${normalizeClosingLabel(executionLabel)}」処理の対象外です。`
+            );
+        }
+
+        return {
+            customer_code: getFieldValue(customer, CUSTOMER_FIELDS.customerCode),
+            customer_name: getFieldValue(customer, CUSTOMER_FIELDS.customerName),
+            closing_day: customerClosingDay,
+        };
+
+    };
+
+    InvoiceCreate.CLOSING_EXECUTION_LABELS = CLOSING_EXECUTION_LABELS;
+    InvoiceCreate.CUSTOMER_CLOSING_DAY_LABELS = CUSTOMER_CLOSING_DAY_LABELS;
+    InvoiceCreate.CLOSING_DATE_LABELS = CLOSING_EXECUTION_LABELS;
 
     const isEmptyDeliveryDetailRow = (rowFields) => {
 
@@ -372,7 +474,12 @@
     /**
      * 請求先コード・請求対象期間で未請求の納品書を取得する（V1.0）
      */
-    InvoiceCreate.fetchUninvoicedDeliveries = async ({ customerCode, billingFrom, billingTo }) => {
+    InvoiceCreate.fetchUninvoicedDeliveries = async ({
+        customerCode,
+        billingFrom,
+        billingTo,
+        singleDelivery = false,
+    }) => {
 
         const code = String(customerCode ?? '').trim();
         const from = String(billingFrom ?? '').trim();
@@ -381,6 +488,72 @@
         if (!code) {
             throw new Error('請求先コード（customer_code）を入力してください。');
         }
+
+        const conditions = [
+            `${DELIVERY_FIELDS.customerCode} = "${escapeQueryValue(code)}"`,
+            `${DELIVERY_FIELDS.billingStatus} in ("${UNINVOICED_STATUS}")`,
+        ];
+
+        if (from && to) {
+            if (from > to) {
+                throw new Error('請求対象期間が不正です。billing_from は billing_to 以前の日付にしてください。');
+            }
+
+            conditions.push(
+                `${DELIVERY_FIELDS.deliveryDate} >= "${escapeQueryValue(from)}"`,
+                `${DELIVERY_FIELDS.deliveryDate} <= "${escapeQueryValue(to)}"`
+            );
+        } else if (!singleDelivery) {
+            throw new Error('請求対象期間（billing_from / billing_to）を入力してください。');
+        }
+
+        const query = [
+            ...conditions,
+            'order by delivery_date asc, delivery_no asc',
+        ].join(' and ');
+
+        const records = [];
+        const limit = 500;
+        let offset = 0;
+
+        while (true) {
+
+            const response = await kintoneApi(
+                kintone.api.url('/k/v1/records', true),
+                'GET',
+                {
+                    app: DELIVERY_APP_ID,
+                    query: `${query} limit ${limit} offset ${offset}`,
+                }
+            );
+
+            records.push(...response.records);
+
+            if (response.records.length < limit) {
+                break;
+            }
+
+            offset += limit;
+
+        }
+
+        const deliveries = records.filter((record) => isUninvoicedDelivery(record));
+
+        if (singleDelivery && deliveries.length > 1) {
+            return [deliveries[0]];
+        }
+
+        return deliveries;
+
+    };
+
+    /**
+     * 請求対象期間内の未請求納品書を全件取得する（月次請求処理 V1.0）
+     */
+    InvoiceCreate.fetchAllUninvoicedDeliveriesInPeriod = async ({ billingFrom, billingTo }) => {
+
+        const from = String(billingFrom ?? '').trim();
+        const to = String(billingTo ?? '').trim();
 
         if (!from || !to) {
             throw new Error('請求対象期間（billing_from / billing_to）を入力してください。');
@@ -391,7 +564,6 @@
         }
 
         const conditions = [
-            `${DELIVERY_FIELDS.customerCode} = "${escapeQueryValue(code)}"`,
             `${DELIVERY_FIELDS.billingStatus} in ("${UNINVOICED_STATUS}")`,
             `${DELIVERY_FIELDS.deliveryDate} >= "${escapeQueryValue(from)}"`,
             `${DELIVERY_FIELDS.deliveryDate} <= "${escapeQueryValue(to)}"`,
@@ -399,7 +571,7 @@
 
         const query = [
             ...conditions,
-            'order by delivery_date asc, delivery_no asc',
+            'order by customer_code asc, delivery_date asc, delivery_no asc',
         ].join(' and ');
 
         const records = [];
@@ -432,9 +604,132 @@
     };
 
     /**
+     * 締日種別に一致する顧客を取得する（月次請求処理 V1.0）
+     */
+    InvoiceCreate.fetchCustomersByClosingDays = async (closingDays) => {
+
+        const targets = [...new Set(
+            (Array.isArray(closingDays) ? closingDays : [])
+                .map((label) => normalizeClosingLabel(label))
+                .filter((label) => label !== '')
+        )];
+
+        if (targets.length === 0) {
+            return [];
+        }
+
+        const inClause = targets.map((label) => `"${escapeQueryValue(label)}"`).join(', ');
+        const query = `${CUSTOMER_FIELDS.closingDay} in (${inClause}) order by ${CUSTOMER_FIELDS.customerCode} asc`;
+        const records = [];
+        const limit = 500;
+        let offset = 0;
+
+        while (true) {
+
+            const response = await kintoneApi(
+                kintone.api.url('/k/v1/records', true),
+                'GET',
+                {
+                    app: CUSTOMER_APP_ID,
+                    query: `${query} limit ${limit} offset ${offset}`,
+                    fields: [
+                        CUSTOMER_FIELDS.customerCode,
+                        CUSTOMER_FIELDS.customerName,
+                        CUSTOMER_FIELDS.closingDay,
+                    ],
+                }
+            );
+
+            records.push(...response.records);
+
+            if (response.records.length < limit) {
+                break;
+            }
+
+            offset += limit;
+
+        }
+
+        return records;
+
+    };
+
+    InvoiceCreate.groupDeliveriesByCustomerCode = (deliveryRecords) => {
+
+        const groups = new Map();
+
+        (Array.isArray(deliveryRecords) ? deliveryRecords : []).forEach((record) => {
+
+            const code = String(getFieldValue(record, DELIVERY_FIELDS.customerCode) ?? '').trim();
+
+            if (!code) {
+                return;
+            }
+
+            if (!groups.has(code)) {
+                groups.set(code, []);
+            }
+
+            groups.get(code).push(record);
+
+        });
+
+        return groups;
+
+    };
+
+    /**
+     * 月次請求処理で kintone API に POST するレコード形式を組み立てる
+     */
+    InvoiceCreate.buildMonthlyInvoiceRecord = ({
+        customerCode,
+        customerName,
+        closingYm,
+        closingDate,
+        billingFrom,
+        billingTo,
+        details,
+        summary,
+        invoiceDate,
+        invoiceNo,
+    }) => {
+
+        const total = toNumber(summary?.total);
+        const carryOver = 0;
+        const paymentAmount = 0;
+        const balance = InvoiceCreate.calculateBalance(carryOver, total, paymentAmount);
+
+        return {
+            [INVOICE_FIELDS.customerCode]: { value: customerCode },
+            [INVOICE_FIELDS.customerName]: { value: customerName },
+            [INVOICE_FIELDS.closingYm]: { value: closingYm },
+            [INVOICE_FIELDS.closingDate]: { value: closingDate },
+            [INVOICE_FIELDS.billingFrom]: { value: billingFrom },
+            [INVOICE_FIELDS.billingTo]: { value: billingTo },
+            [INVOICE_FIELDS.detailTable]: InvoiceCreate.toInvoiceDetailFieldValue(details),
+            [INVOICE_FIELDS.itemCount]: { value: summary.item_count },
+            [INVOICE_FIELDS.qtyTotal]: { value: summary.qty_total },
+            [INVOICE_FIELDS.subtotal]: { value: summary.subtotal },
+            [INVOICE_FIELDS.tax]: { value: summary.tax },
+            [INVOICE_FIELDS.total]: { value: total },
+            [INVOICE_FIELDS.invoiceAmount]: { value: total },
+            [INVOICE_FIELDS.invoiceStatus]: { value: INVOICE_STATUS_CREATING },
+            [INVOICE_FIELDS.invoiceDate]: { value: invoiceDate },
+            [INVOICE_FIELDS.invoiceNo]: { value: invoiceNo },
+            [INVOICE_FIELDS.carryOver]: { value: carryOver },
+            [INVOICE_FIELDS.paymentAmount]: { value: paymentAmount },
+            [INVOICE_FIELDS.balance]: { value: balance },
+            [INVOICE_FIELDS.paymentStatus]: { value: PAYMENT_STATUS_UNPAID },
+            [INVOICE_FIELDS.accountsReceivable]: { value: total },
+            [INVOICE_FIELDS.collectionStatus]: { value: COLLECTION_STATUS_UNCOLLECTED },
+        };
+
+    };
+
+    /**
      * 請求締年月・締日・請求先コードで未請求の納品書を取得する
      */
-    InvoiceCreate.fetchDeliveries = async ({ closingYm, closingDate, customerCode, referenceDate }) => {
+    InvoiceCreate.fetchDeliveries = async ({ closingYm, closingDate, customerCode }) => {
 
         const code = String(customerCode ?? '').trim();
 
@@ -442,7 +737,9 @@
             throw new Error('請求先コード（customer_code）を入力してください。');
         }
 
-        const period = InvoiceCreate.resolveClosingPeriod(closingYm, closingDate, referenceDate);
+        const period = InvoiceCreate.resolveClosingPeriod(closingYm, closingDate);
+
+        await InvoiceCreate.validateCustomerClosingDay(code, closingDate);
 
         const conditions = [
             `${DELIVERY_FIELDS.customerCode} = "${escapeQueryValue(code)}"`,
@@ -453,15 +750,6 @@
             conditions.push(
                 `${DELIVERY_FIELDS.deliveryDate} >= "${escapeQueryValue(period.periodStart)}"`,
                 `${DELIVERY_FIELDS.deliveryDate} <= "${escapeQueryValue(period.periodEnd)}"`
-            );
-        } else {
-            const { year, month } = parseClosingYm(closingYm);
-            const ymStart = formatDate(year, month, 1);
-            const ymEnd = formatDate(year, month, getLastDayOfMonth(year, month));
-
-            conditions.push(
-                `${DELIVERY_FIELDS.deliveryDate} >= "${escapeQueryValue(ymStart)}"`,
-                `${DELIVERY_FIELDS.deliveryDate} <= "${escapeQueryValue(ymEnd)}"`
             );
         }
 
@@ -495,7 +783,13 @@
 
         }
 
-        return records.filter((record) => !isInvoicedDelivery(record));
+        const deliveries = records.filter((record) => !isInvoicedDelivery(record));
+
+        if (period.singleDelivery && deliveries.length > 1) {
+            return [deliveries[0]];
+        }
+
+        return deliveries;
 
     };
 
@@ -590,18 +884,18 @@
         })),
     });
 
-    InvoiceCreate.buildInvoiceData = async ({ closingYm, closingDate, customerCode, referenceDate }) => {
+    InvoiceCreate.buildInvoiceData = async ({ closingYm, closingDate, customerCode }) => {
 
-        const period = InvoiceCreate.resolveClosingPeriod(closingYm, closingDate, referenceDate);
+        const period = InvoiceCreate.resolveClosingPeriod(closingYm, closingDate);
+        const customer = await InvoiceCreate.validateCustomerClosingDay(customerCode, closingDate);
         const deliveries = await InvoiceCreate.fetchDeliveries({
             closingYm: period.closingYm,
             closingDate,
             customerCode,
-            referenceDate,
         });
 
         const periodLabel = period.adHoc
-            ? `${period.closingYm}（都度払い）`
+            ? `${period.executionLabel}（納品書1件）`
             : `${period.periodStart} ～ ${period.periodEnd}`;
 
         if (deliveries.length === 0) {
@@ -615,14 +909,14 @@
             throw new Error('請求対象の明細がありません。');
         }
 
-        const customerName = getFieldValue(deliveries[0], DELIVERY_FIELDS.customerName);
-
         return {
             header: {
                 closing_date: closingDate,
                 closing_ym: period.closingYm,
                 customer_code: customerCode,
-                customer_name: customerName,
+                customer_name: customer.customer_name,
+                billing_from: period.periodStart,
+                billing_to: period.periodEnd,
                 period_start: period.periodStart,
                 period_end: period.periodEnd,
                 period_label: periodLabel,
@@ -639,12 +933,48 @@
     /**
      * 未請求データ取込（V1.0: 納品書への書き戻しは行わない）
      */
-    InvoiceCreate.importUninvoicedData = async ({ customerCode, billingFrom, billingTo }) => {
+    InvoiceCreate.importUninvoicedData = async ({
+        customerCode,
+        closingYm,
+        closingDate,
+        billingFrom,
+        billingTo,
+    }) => {
+
+        let from = String(billingFrom ?? '').trim();
+        let to = String(billingTo ?? '').trim();
+        let singleDelivery = false;
+        let periodLabel = '';
+        let customerName = '';
+
+        if (closingYm && closingDate) {
+
+            const period = InvoiceCreate.resolveClosingPeriod(closingYm, closingDate);
+            const customer = await InvoiceCreate.validateCustomerClosingDay(customerCode, closingDate);
+
+            customerName = customer.customer_name;
+            singleDelivery = period.singleDelivery;
+            from = period.periodStart || '';
+            to = period.periodEnd || '';
+            periodLabel = period.adHoc
+                ? `${period.executionLabel}（納品書1件）`
+                : `${period.periodStart} ～ ${period.periodEnd}`;
+
+        } else {
+
+            if (!from || !to) {
+                throw new Error('請求締年月・締日、または billing_from / billing_to を入力してください。');
+            }
+
+            periodLabel = `${from} ～ ${to}`;
+
+        }
 
         const deliveries = await InvoiceCreate.fetchUninvoicedDeliveries({
             customerCode,
-            billingFrom,
-            billingTo,
+            billingFrom: from,
+            billingTo: to,
+            singleDelivery,
         });
 
         const { details, deliveryRecordIds, deliveryNos } = InvoiceCreate.buildInvoiceDetails(deliveries);
@@ -654,8 +984,9 @@
             throw new Error(NO_DATA_MESSAGE);
         }
 
-        const customerName = getFieldValue(deliveries[0], DELIVERY_FIELDS.customerName);
-        const periodLabel = `${billingFrom} ～ ${billingTo}`;
+        if (!customerName) {
+            customerName = getFieldValue(deliveries[0], DELIVERY_FIELDS.customerName);
+        }
 
         console.log('[AYANAS Invoice] 未請求データ取込');
         console.log('取得件数:', summary.item_count);
@@ -667,8 +998,10 @@
             header: {
                 customer_code: customerCode,
                 customer_name: customerName,
-                billing_from: billingFrom,
-                billing_to: billingTo,
+                closing_ym: closingYm || '',
+                closing_date: closingDate || '',
+                billing_from: from,
+                billing_to: to,
                 period_label: periodLabel,
             },
             details,
@@ -1155,6 +1488,8 @@
 
     InvoiceCreate.getInvoiceAppId = () => INVOICE_APP_ID;
 
+    InvoiceCreate.getCustomerAppId = () => CUSTOMER_APP_ID;
+
     InvoiceCreate.fetchInvoiceRecord = async (recordId) => {
 
         const id = Number(recordId);
@@ -1360,6 +1695,8 @@
     InvoiceCreate.INVOICE_FIELDS = INVOICE_FIELDS;
 
     InvoiceCreate.INVOICE_DETAIL_FIELDS = INVOICE_DETAIL_FIELDS;
+
+    InvoiceCreate.formatToday = formatToday;
 
     window.InvoiceCreate = InvoiceCreate;
 

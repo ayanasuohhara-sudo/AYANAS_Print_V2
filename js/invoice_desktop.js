@@ -77,6 +77,8 @@
 
         return {
             customerCode: String(getFieldValue(record, fields.customerCode) ?? '').trim(),
+            closingYm: String(getFieldValue(record, fields.closingYm) ?? '').trim(),
+            closingDate: String(getFieldValue(record, fields.closingDate) ?? '').trim(),
             billingFrom: String(getFieldValue(record, fields.billingFrom) ?? '').trim(),
             billingTo: String(getFieldValue(record, fields.billingTo) ?? '').trim(),
         };
@@ -94,18 +96,34 @@
             },
         });
 
-        kintone.app.record.set({
-            record: {
-                [fields.customerName]: { value: header.customer_name },
-                [fields.detailTable]: InvoiceCreate.toInvoiceDetailFieldValue(details),
-                [fields.itemCount]: { value: summary.item_count },
-                [fields.qtyTotal]: { value: summary.qty_total },
-                [fields.subtotal]: { value: summary.subtotal },
-                [fields.tax]: { value: summary.tax },
-                [fields.total]: { value: summary.total },
-                [fields.invoiceAmount]: { value: summary.total },
-            },
-        });
+        const updates = {
+            [fields.customerName]: { value: header.customer_name },
+            [fields.detailTable]: InvoiceCreate.toInvoiceDetailFieldValue(details),
+            [fields.itemCount]: { value: summary.item_count },
+            [fields.qtyTotal]: { value: summary.qty_total },
+            [fields.subtotal]: { value: summary.subtotal },
+            [fields.tax]: { value: summary.tax },
+            [fields.total]: { value: summary.total },
+            [fields.invoiceAmount]: { value: summary.total },
+        };
+
+        if (header.closing_ym) {
+            updates[fields.closingYm] = { value: header.closing_ym };
+        }
+
+        if (header.closing_date) {
+            updates[fields.closingDate] = { value: header.closing_date };
+        }
+
+        if (header.billing_from) {
+            updates[fields.billingFrom] = { value: header.billing_from };
+        }
+
+        if (header.billing_to) {
+            updates[fields.billingTo] = { value: header.billing_to };
+        }
+
+        kintone.app.record.set({ record: updates });
 
     };
 
@@ -127,10 +145,12 @@
         try {
 
             const current = kintone.app.record.get();
-            const { customerCode, billingFrom, billingTo } = getFormValues(current.record);
+            const { customerCode, closingYm, closingDate, billingFrom, billingTo } = getFormValues(current.record);
 
             const invoiceData = await InvoiceCreate.importUninvoicedData({
                 customerCode,
+                closingYm,
+                closingDate,
                 billingFrom,
                 billingTo,
             });

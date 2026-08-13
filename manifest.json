@@ -20,6 +20,7 @@
       "js/utils/dom.js",
       "js/record.js",
       "js/invoice_create.js",
+      "js/monthly_billing.js",
       "js/invoice_index.js",
       "js/payment_create.js",
       "js/receivable_create.js",
@@ -38,6 +39,7 @@
       "js/barcode.js",
       "js/preview.js",
       "js/invoice_desktop.js",
+      "js/monthly_billing_desktop.js",
       "js/payment_desktop.js",
       "js/receivable_index.js",
       "js/desktop.js"

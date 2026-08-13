@@ -89,3 +89,104 @@ tr.ayanas-payment-paid > td,
 tr.ayanas-payment-paid > th {
     background-color: #e8f5e9 !important;
 }
+
+/* 月次請求処理 */
+.ayanas-monthly-billing-toolbar {
+    margin: 0 0 12px;
+}
+
+.ayanas-monthly-billing-button {
+    margin: 0;
+    padding: 8px 16px;
+    border: 1px solid #2ecc71;
+    border-radius: 4px;
+    background: #2ecc71;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ayanas-monthly-billing-button:hover {
+    background: #27ae60;
+    border-color: #27ae60;
+}
+
+.ayanas-monthly-billing-button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.ayanas-monthly-billing-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.ayanas-monthly-billing-dialog {
+    box-sizing: border-box;
+    width: min(480px, calc(100vw - 32px));
+    padding: 20px 24px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.ayanas-monthly-billing-dialog-title {
+    margin: 0 0 12px;
+    font-size: 18px;
+}
+
+.ayanas-monthly-billing-dialog-note {
+    margin: 0 0 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.ayanas-monthly-billing-dialog-field {
+    margin: 0 0 12px;
+}
+
+.ayanas-monthly-billing-dialog-field label {
+    display: block;
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ayanas-monthly-billing-dialog-field input,
+.ayanas-monthly-billing-dialog-field select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.ayanas-monthly-billing-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.ayanas-monthly-billing-dialog-actions button {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.ayanas-monthly-billing-dialog-run {
+    border-color: #2ecc71 !important;
+    background: #2ecc71 !important;
+    color: #fff;
+    font-weight: 700;
+}
