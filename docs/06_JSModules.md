@@ -31,18 +31,14 @@
 
 | ファイル | 対象アプリ | 役割 |
 |----------|-----------|------|
-| `js/reports/order_definition.js` | 16 | 受注票レイアウト定義 |
-| `js/reports/delivery_definition.js` | 19 | 納品書レイアウト定義 |
+| `js/reports/definitions.js` | 16, 19, 35 | 帳票レイアウト定義（受注票・納品書・請求書） |
 | `js/templates/template_interface.js` | 共通 | テンプレート基底 |
 | `js/templates/order_template.js` | 16 | 受注票 HTML 生成 |
 | `js/templates/delivery_template.js` | 19 | 納品書 HTML 生成 |
-| `js/templates/invoice_template.js` | 35 | 請求書テンプレート（予定） |
-| `js/templates/estimate_template.js` | — | 見積テンプレート |
-| `js/templates/invoice_export_template.js` | — | インボイス出力 |
-| `js/templates/purchase_template.js` | — | 仕入テンプレート |
-| `js/templates/label_template.js` | — | ラベルテンプレート |
-| `js/report_registry.js` | 16, 19 | 帳票種別レジストリ |
-| `js/desktop.js` | 16, 19 等 | 印刷ボタン配置・Preview 起動 |
+| `js/templates/invoice_template.js` | 35 | 請求書 HTML 生成 |
+| `js/templates/stub_templates.js` | — | 未実装帳票スタブ |
+| `js/report_registry.js` | 16, 19, 35 | 帳票種別レジストリ |
+| `js/desktop.js` | 16, 19, 35 等 | 印刷ボタン配置・Preview 起動 |
 
 ---
 
