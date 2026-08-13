@@ -31,8 +31,9 @@
 
         const paperSize = config.paper_size === 'A5' ? 'A5' : 'A4';
         const orientation = config.print_orientation === 'portrait' ? 'portrait' : 'landscape';
+        const margin = orientation === 'portrait' ? '0' : '10mm';
 
-        return `<style>@page { size: ${paperSize} ${orientation}; margin: 10mm; }</style>`;
+        return `<style>@page { size: ${paperSize} ${orientation}; margin: ${margin}; }</style>`;
 
     };
 
@@ -58,9 +59,18 @@
      */
     Dom.buildButtonScriptBody = () => `
 
-    document.getElementById('ayanas-print-btn').addEventListener('click', function () {
+    function runPrint() {
+        var savedTitle = document.title;
+        document.title = ' ';
+        var restoreTitle = function () {
+            document.title = savedTitle;
+            window.removeEventListener('afterprint', restoreTitle);
+        };
+        window.addEventListener('afterprint', restoreTitle);
         window.print();
-    });
+    }
+
+    document.getElementById('ayanas-print-btn').addEventListener('click', runPrint);
 
     document.getElementById('ayanas-close-btn').addEventListener('click', function () {
         window.close();

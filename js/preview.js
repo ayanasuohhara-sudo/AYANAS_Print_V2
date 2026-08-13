@@ -235,9 +235,18 @@
 
     const buildButtonScriptBody = () => `
 
-    document.getElementById('ayanas-print-btn').addEventListener('click', function () {
+    function runPrint() {
+        var savedTitle = document.title;
+        document.title = ' ';
+        var restoreTitle = function () {
+            document.title = savedTitle;
+            window.removeEventListener('afterprint', restoreTitle);
+        };
+        window.addEventListener('afterprint', restoreTitle);
         window.print();
-    });
+    }
+
+    document.getElementById('ayanas-print-btn').addEventListener('click', runPrint);
 
     document.getElementById('ayanas-close-btn').addEventListener('click', function () {
         window.close();
@@ -362,6 +371,10 @@ ${buildButtonScriptBody()}
         const barcodeJsUrl = getPluginResourceUrl(BARCODE_JS_PATH);
 
         html = html.split('<div class="page">').join(`<div class="${Dom.getPageClassName(previewConfig)}">`);
+
+        if (layout.reportType === 'delivery') {
+            html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
+        }
 
         html = html.replace(
             '</head>',
