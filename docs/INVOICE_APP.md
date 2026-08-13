@@ -133,6 +133,10 @@ V1.0 では表示のみ。入金管理アプリ完成後にフィールドへ自
 | 数量 | qty |
 | 単価 | unit_price |
 | 金額 | amount |
+| 伝票番号 | slip_no |
+| 担当者 | in_charge |
+
+※ `slip_no` / `in_charge` は納品書ヘッダーから明細行へ展開する。
 
 ---
 
@@ -152,9 +156,9 @@ V1.0 では表示のみ。入金管理アプリ完成後にフィールドへ自
 ### 抽出条件
 
 - `customer_code` = 請求書の `customer_code`
-- 顧客の `closing_day` が実行締日の対象に含まれる
-- `billing_status` = `未請求`
-- `delivery_date` が請求期間内（都度払いは1件のみ）
+- `invoice_status` = `未請求`（`invoice_no` 未設定）
+- `delivery_date` が請求対象期間内（都度払いは1件のみ）
+- 請求対象期間は顧客マスタの `closing_day` と `closing_ym` から自動計算（10・20・月末締めは `closing_date` 選択必須）
 
 ### 処理
 

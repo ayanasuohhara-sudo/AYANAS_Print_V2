@@ -83,6 +83,7 @@
             closingDate: String(getFieldValue(record, fields.closingDate) ?? '').trim(),
             billingFrom: String(getFieldValue(record, fields.billingFrom) ?? '').trim(),
             billingTo: String(getFieldValue(record, fields.billingTo) ?? '').trim(),
+            invoiceDate: String(getFieldValue(record, fields.invoiceDate) ?? '').trim(),
         };
 
     };
@@ -169,7 +170,7 @@
                 await InvoicePermission.assertEditCurrentRecord(current.record);
             }
 
-            const { customerCode, closingYm, closingDate, billingFrom, billingTo } = getFormValues(current.record);
+            const { customerCode, closingYm, closingDate, billingFrom, billingTo, invoiceDate } = getFormValues(current.record);
 
             const invoiceData = await InvoiceCreate.importUninvoicedData({
                 customerCode,
@@ -177,6 +178,7 @@
                 closingDate,
                 billingFrom,
                 billingTo,
+                invoiceDate,
             });
 
             applyInvoiceDataToForm(invoiceData);
