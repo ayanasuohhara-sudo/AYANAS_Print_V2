@@ -96,6 +96,7 @@
         invoiceStatus: 'invoice_status',
         invoiceNo: 'invoice_no',
         invoiceDate: 'invoice_date',
+        updatedAt: 'updated_at',
         invoiceFlag: 'invoice_flag',
         detailTable: 'delivery_detail',
     };
@@ -1652,6 +1653,7 @@
         [DELIVERY_FIELDS.invoiceStatus]: { value: DELIVERY_INVOICE_STATUS_INVOICED },
         [DELIVERY_FIELDS.invoiceNo]: { value: invoiceNo },
         [DELIVERY_FIELDS.invoiceDate]: { value: invoiceDate },
+        [DELIVERY_FIELDS.updatedAt]: { value: formatNowDateTime() },
     });
 
     const buildDeliveryCancelUpdate = () => ({
@@ -1750,71 +1752,78 @@
 
     };
 
-    const updateDeliveriesByMap = async ({ deliveryMap, updateRecord }) => {
+    const updateDeliveriesByMap = async ({ deliveryMap, updateRecord, failFast = false }) => {
 
         const failedNos = [];
         const entries = [...deliveryMap.entries()].map(([deliveryNo, record]) => ({
             deliveryNo,
             id: Number(record.$id?.value),
         })).filter(({ id }) => !Number.isNaN(id) && id > 0);
-        const chunkSize = 100;
+        let successCount = 0;
 
-        for (let index = 0; index < entries.length; index += chunkSize) {
-
-            const chunk = entries.slice(index, index + chunkSize);
-            const records = chunk.map(({ deliveryNo, id }) => ({
-                deliveryNo,
-                id,
-            }));
+        for (const { deliveryNo, id } of entries) {
 
             try {
+                await updateDeliveryRecord(id, updateRecord);
+                successCount += 1;
+            } catch (singleError) {
+                failedNos.push(deliveryNo);
+                console.error('[AYANAS Invoice]', deliveryNo, singleError);
 
-                await kintoneApi(
-                    kintone.api.url('/k/v1/records', true),
-                    'PUT',
-                    {
-                        app: DELIVERY_APP_ID,
-                        records: records.map(({ id }) => ({
-                            id,
-                            record: updateRecord,
-                        })),
-                    }
-                );
-
-            } catch (batchError) {
-
-                for (const { deliveryNo, id } of records) {
-
-                    try {
-                        await updateDeliveryRecord(id, updateRecord);
-                    } catch (singleError) {
-                        failedNos.push(deliveryNo);
-                        console.error('[AYANAS Invoice]', deliveryNo, singleError);
-                    }
-
+                if (failFast) {
+                    break;
                 }
-
             }
 
         }
 
-        return failedNos;
+        return {
+            failedNos,
+            successCount,
+            totalCount: entries.length,
+        };
+
+    };
+
+    /**
+     * 請求確定時: 納品管理（App 19）へ請求済を書き戻す（V1.0）
+     */
+    InvoiceCreate.writeBackDeliveriesAsInvoiced = async ({ deliveryMap, invoiceNo, invoiceDate }) => {
+
+        const updateRecord = buildDeliveryConfirmUpdate(invoiceNo, invoiceDate);
+        const result = await updateDeliveriesByMap({
+            deliveryMap,
+            updateRecord,
+            failFast: true,
+        });
+
+        console.log('[AYANAS Invoice] 納品請求済書戻し');
+        console.log('更新件数:', result.totalCount);
+        console.log('成功件数:', result.successCount);
+        console.log('失敗件数:', result.failedNos.length);
+
+        return result;
 
     };
 
     InvoiceCreate.updateDeliveriesOnConfirm = async ({ deliveryMap, invoiceNo, invoiceDate }) => {
 
-        const updateRecord = buildDeliveryConfirmUpdate(invoiceNo, invoiceDate);
+        const { failedNos } = await InvoiceCreate.writeBackDeliveriesAsInvoiced({
+            deliveryMap,
+            invoiceNo,
+            invoiceDate,
+        });
 
-        return updateDeliveriesByMap({ deliveryMap, updateRecord });
+        return failedNos;
 
     };
 
     InvoiceCreate.updateDeliveriesOnCancel = async ({ deliveryMap }) => {
 
         const updateRecord = buildDeliveryCancelUpdate();
+        const { failedNos } = await updateDeliveriesByMap({ deliveryMap, updateRecord });
 
-        return updateDeliveriesByMap({ deliveryMap, updateRecord });
+        return failedNos;
 
     };
 
@@ -1843,6 +1852,62 @@
                 app: INVOICE_APP_ID,
                 id: recordId,
                 record: buildInvoiceConfirmUpdate(),
+            }
+        );
+
+    };
+
+    InvoiceCreate.persistInvoiceRecordBeforeConfirm = async ({ record, recordId }) => {
+
+        const id = Number(recordId);
+
+        if (Number.isNaN(id) || id <= 0) {
+            throw new Error('レコード ID を取得できません。保存後に再度お試しください。');
+        }
+
+        const persistFields = [
+            INVOICE_FIELDS.invoiceNo,
+            INVOICE_FIELDS.invoiceDate,
+            INVOICE_FIELDS.closingDate,
+            INVOICE_FIELDS.dueDate,
+            INVOICE_FIELDS.customerCode,
+            INVOICE_FIELDS.customerName,
+            INVOICE_FIELDS.closingYm,
+            INVOICE_FIELDS.billingFrom,
+            INVOICE_FIELDS.billingTo,
+            INVOICE_FIELDS.itemCount,
+            INVOICE_FIELDS.qtyTotal,
+            INVOICE_FIELDS.subtotal,
+            INVOICE_FIELDS.tax,
+            INVOICE_FIELDS.total,
+            INVOICE_FIELDS.invoiceAmount,
+            INVOICE_FIELDS.carryOver,
+            INVOICE_FIELDS.balance,
+            INVOICE_FIELDS.remarks,
+            INVOICE_FIELDS.detailTable,
+        ];
+
+        const updateRecord = {
+            [INVOICE_FIELDS.invoiceStatus]: { value: INVOICE_STATUS_CREATING },
+        };
+
+        persistFields.forEach((fieldCode) => {
+
+            const field = record[fieldCode];
+
+            if (field && Object.prototype.hasOwnProperty.call(field, 'value')) {
+                updateRecord[fieldCode] = { value: field.value };
+            }
+
+        });
+
+        await kintoneApi(
+            kintone.api.url('/k/v1/record', true),
+            'PUT',
+            {
+                app: INVOICE_APP_ID,
+                id,
+                record: updateRecord,
             }
         );
 
@@ -1960,7 +2025,9 @@
 
         InvoiceCreate.validateDeliveriesForConfirm(deliveryMap, invoiceNo);
 
-        const failedNos = await InvoiceCreate.updateDeliveriesOnConfirm({
+        await InvoiceCreate.persistInvoiceRecordBeforeConfirm({ record, recordId });
+
+        const { failedNos, successCount } = await InvoiceCreate.writeBackDeliveriesAsInvoiced({
             deliveryMap,
             invoiceNo,
             invoiceDate,
@@ -1977,7 +2044,7 @@
         const confirmUpdate = buildInvoiceConfirmUpdate();
 
         return {
-            updatedDeliveryCount: deliveryMap.size,
+            updatedDeliveryCount: successCount,
             invoiceNo,
             invoiceStatus: INVOICE_STATUS_CONFIRMED,
             confirmedAt: confirmUpdate[INVOICE_FIELDS.confirmedAt].value,

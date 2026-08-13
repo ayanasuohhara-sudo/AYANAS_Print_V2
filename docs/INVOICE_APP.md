@@ -255,12 +255,12 @@ invoice_no like "2608-%" order by invoice_no desc limit 500 offset {n}
 
 | 対象 | 更新内容 |
 |------|----------|
-| 請求書（App 35） | `invoice_status` = 確定 / `confirmed_at` = 現在日時 / `confirmed_by` = ログインユーザー |
-| 納品管理（App 19） | `invoice_status` = 請求済 / `invoice_no` / `invoice_date` |
+| 請求書（App 35） | ① 請求データ保存（`invoice_status` = 作成中）→ ④ 確定時 `invoice_status` = 確定 / `confirmed_at` / `confirmed_by` |
+| 納品管理（App 19） | ② `invoice_status` = 請求済 / `invoice_no` / `invoice_date` / `updated_at` |
 
-`invoice_detail.delivery_no` をキーに納品書を検索して更新。更新失敗時は請求書を確定せず、失敗した `delivery_no` を一覧表示。
+`invoice_detail.delivery_no` をキーに納品書を検索して更新。更新失敗時は請求書を確定せず（`作成中` のまま）、失敗した `delivery_no` を一覧表示。
 
-V1.0: 印刷・入金管理の更新は行わない。
+V1.0: 受注明細・入金管理・売掛は更新しない。納品管理のみ。
 
 ---
 
