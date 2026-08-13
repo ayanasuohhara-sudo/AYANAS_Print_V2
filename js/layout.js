@@ -11,6 +11,7 @@
     const REPORT_DEFINITIONS = {
         order: OrderDefinition,
         delivery: DeliveryDefinition,
+        invoice: InvoiceDefinition,
     };
 
     const getCurrentAppId = () => {

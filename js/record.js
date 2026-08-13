@@ -13,6 +13,16 @@
 
     const DELIVERY_APP_ID = 19;
 
+    const getInvoiceAppId = () => {
+
+        if (typeof InvoiceCreate !== 'undefined' && typeof InvoiceCreate.getInvoiceAppId === 'function') {
+            return InvoiceCreate.getInvoiceAppId();
+        }
+
+        return 35;
+
+    };
+
     /** 受注票（App 16）ヘッダーフィールド */
     const ORDER_HEADER_FIELDS = [
         'manage_no',
@@ -45,6 +55,38 @@
         delivery_date: 'delivery_date',
         customer_name: 'customer_name',
         customer_code: 'customer_code',
+    };
+
+    /** 請求書（App 35）ヘッダーフィールド */
+    const INVOICE_HEADER_FIELDS = [
+        'invoice_no',
+        'invoice_date',
+        'customer_code',
+        'customer_name',
+        'due_date',
+        'item_count',
+        'qty_total',
+        'subtotal',
+        'tax',
+        'total',
+    ];
+
+    /** 請求書（App 35）明細テーブル */
+    const INVOICE_DETAIL_TABLE_CODE = 'invoice_detail';
+
+    /** 請求書（App 35）明細フィールド */
+    const INVOICE_DETAIL_FIELDS = {
+        string: [
+            'delivery_no',
+            'delivery_date',
+            'manage_no',
+            'client_name',
+            'kimono_type',
+            'kimono_spec',
+            'item_name',
+            'in_charge',
+        ],
+        number: ['qty', 'unit_price', 'amount'],
     };
 
     /** 納品管理（App 19）明細テーブル */
@@ -257,6 +299,105 @@
 
     };
 
+    const isEmptyInvoiceDetailRow = (detail) => {
+
+        const deliveryNo = String(detail.delivery_no ?? '').trim();
+        const itemName = String(detail.item_name ?? '').trim();
+
+        if (deliveryNo !== '') {
+            return false;
+        }
+
+        if (itemName !== '') {
+            return false;
+        }
+
+        if (detail.qty !== 0) {
+            return false;
+        }
+
+        if (detail.amount !== 0) {
+            return false;
+        }
+
+        return true;
+
+    };
+
+    const buildInvoiceHeader = (record, details) => {
+
+        const header = {};
+
+        INVOICE_HEADER_FIELDS.forEach((fieldCode) => {
+            header[fieldCode] = getFieldValue(record, fieldCode);
+        });
+
+        const inCharge = details
+            .map((detail) => String(detail.in_charge ?? '').trim())
+            .find((value) => value !== '') ?? '';
+
+        header.in_charge = inCharge;
+
+        return header;
+
+    };
+
+    const buildInvoiceDetails = (record) => {
+
+        const tableField = record[INVOICE_DETAIL_TABLE_CODE];
+        const rows = Array.isArray(tableField?.value) ? tableField.value : [];
+
+        const details = [];
+
+        rows.forEach((row) => {
+
+            const detail = buildDetailRow(row, INVOICE_DETAIL_FIELDS);
+
+            if (isEmptyInvoiceDetailRow(detail)) {
+                return;
+            }
+
+            details.push(detail);
+
+        });
+
+        return details;
+
+    };
+
+    const buildInvoiceSummary = (record, details) => {
+
+        const itemCount = toNumber(getFieldValue(record, 'item_count'));
+        const qtyTotal = toNumber(getFieldValue(record, 'qty_total'));
+        const subtotal = toNumber(getFieldValue(record, 'subtotal'));
+        const tax = toNumber(getFieldValue(record, 'tax'));
+        const total = toNumber(getFieldValue(record, 'total'));
+
+        return {
+            totalCount: itemCount || details.length,
+            totalQty: qtyTotal || details.reduce((sum, detail) => sum + detail.qty, 0),
+            subtotal: subtotal || details.reduce((sum, detail) => sum + detail.amount, 0),
+            tax,
+            total,
+            totalAmount: subtotal || details.reduce((sum, detail) => sum + detail.amount, 0),
+        };
+
+    };
+
+    const buildInvoiceReportData = (record) => {
+
+        const details = buildInvoiceDetails(record);
+        const header = buildInvoiceHeader(record, details);
+        const summary = buildInvoiceSummary(record, details);
+
+        return {
+            header,
+            details,
+            summary,
+        };
+
+    };
+
     const buildDeliveryReportData = (record) => {
 
         const { details, summary } = buildDeliveryDetails(record);
@@ -336,7 +477,17 @@
      * @returns {Object} 帳票データ
      */
     Record.getInvoiceData = () => {
-        throw new Error('Record.getInvoiceData: 請求書データ取得は未実装です。');
+
+        try {
+
+            return buildInvoiceReportData(getCurrentRecord());
+
+        } catch (error) {
+
+            wrapRecordError(error, 'Record.getInvoiceData');
+
+        }
+
     };
 
     /**
@@ -385,6 +536,10 @@
 
             if (appId === DELIVERY_APP_ID) {
                 return Record.getDeliveryData();
+            }
+
+            if (appId === getInvoiceAppId()) {
+                return Record.getInvoiceData();
             }
 
             return Record.getOrderData();

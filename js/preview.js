@@ -35,6 +35,7 @@
         'js/record.js',
         'js/reports/order_definition.js',
         'js/reports/delivery_definition.js',
+      'js/reports/invoice_definition.js',
         'js/templates/template_interface.js',
         'js/templates/order_template.js',
         'js/templates/delivery_template.js',
@@ -358,7 +359,7 @@ ${buildButtonScriptBody()}
 
         const previewConfig = buildPreviewConfig(config, layout);
 
-        if (layout.reportType === 'delivery') {
+        if (layout.reportType === 'delivery' || layout.reportType === 'invoice') {
             previewConfig.print_orientation = 'portrait';
             previewConfig.paper_size = 'A4';
         }
@@ -372,7 +373,7 @@ ${buildButtonScriptBody()}
 
         html = html.split('<div class="page">').join(`<div class="${Dom.getPageClassName(previewConfig)}">`);
 
-        if (layout.reportType === 'delivery') {
+        if (layout.reportType === 'delivery' || layout.reportType === 'invoice') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
         }
 

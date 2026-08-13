@@ -532,14 +532,241 @@
 }
 
 /* ========================================
+   帳票種別: 請求書 (invoice)
+   ======================================== */
+.report-invoice .page {
+    width: 190mm;
+    min-height: 277mm;
+    max-height: 277mm;
+    margin: 0 auto 8mm;
+    padding: 4mm 5mm;
+    box-sizing: border-box;
+    background: #fff;
+    overflow: hidden;
+    position: relative;
+    font-size: 8pt;
+    line-height: 1.3;
+}
+
+.report-invoice .page:last-child {
+    margin-bottom: 0;
+}
+
+.report-invoice .invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 4mm;
+    margin-bottom: 3mm;
+    min-height: 38mm;
+}
+
+.report-invoice .invoice-header__left {
+    flex: 1 1 55%;
+    min-width: 0;
+}
+
+.report-invoice .invoice-header__right {
+    flex: 0 0 42%;
+    min-width: 0;
+}
+
+.report-invoice .invoice-header__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2mm;
+}
+
+.report-invoice .invoice-header__info--no-barcode {
+    justify-content: flex-end;
+}
+
+.report-invoice .invoice-header__doc {
+    flex: 0 0 auto;
+    text-align: right;
+    font-size: 8pt;
+}
+
+.report-invoice .invoice-header__company {
+    flex: 1 1 auto;
+    text-align: right;
+    font-size: 7.5pt;
+}
+
+.report-invoice .invoice-title {
+    margin: 0 0 2mm;
+    font-size: 16pt;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-indent: 0.4em;
+}
+
+.report-invoice .invoice-meta {
+    margin: 0 0 2mm;
+    font-size: 8pt;
+}
+
+.report-invoice .invoice-customer-name {
+    margin: 0 0 1mm;
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+.report-invoice .invoice-due-date {
+    margin: 0;
+    font-size: 8pt;
+}
+
+.report-invoice .invoice-meta__item {
+    display: flex;
+    gap: 2mm;
+    margin-bottom: 0.5mm;
+}
+
+.report-invoice .invoice-meta dt {
+    flex: 0 0 auto;
+    margin: 0;
+    font-weight: 700;
+}
+
+.report-invoice .invoice-meta dt::after {
+    content: '：';
+}
+
+.report-invoice .invoice-meta dd {
+    margin: 0;
+}
+
+.report-invoice .invoice-page-no {
+    margin: 0 0 1mm;
+    font-size: 8pt;
+}
+
+.report-invoice .invoice-doc-item {
+    margin: 0 0 0.5mm;
+}
+
+.report-invoice .invoice-barcode {
+    position: absolute;
+    top: 4mm;
+    right: 5mm;
+    width: 42mm;
+    height: 10mm;
+}
+
+.report-invoice .invoice-barcode svg {
+    width: 100%;
+    height: 100%;
+}
+
+.report-invoice .company-name {
+    margin: 0 0 0.5mm;
+    font-size: 9pt;
+    font-weight: 700;
+}
+
+.report-invoice .company-address,
+.report-invoice .company-contact {
+    margin: 0 0 0.3mm;
+}
+
+.report-invoice .invoice-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 7pt;
+}
+
+.report-invoice .invoice-detail-table th,
+.report-invoice .invoice-detail-table td {
+    border: 0.2mm solid #333;
+    padding: 0.8mm 0.6mm;
+    vertical-align: top;
+    word-break: break-all;
+}
+
+.report-invoice .invoice-detail-table thead th {
+    background: #f0f0f0;
+    font-weight: 700;
+    text-align: center;
+    font-size: 6.5pt;
+}
+
+.report-invoice .invoice-detail-table .num {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.report-invoice .invoice-detail-table th:nth-child(1),
+.report-invoice .invoice-detail-table td:nth-child(1) { width: 9%; }
+.report-invoice .invoice-detail-table th:nth-child(2),
+.report-invoice .invoice-detail-table td:nth-child(2) { width: 8%; }
+.report-invoice .invoice-detail-table th:nth-child(3),
+.report-invoice .invoice-detail-table td:nth-child(3) { width: 8%; }
+.report-invoice .invoice-detail-table th:nth-child(4),
+.report-invoice .invoice-detail-table td:nth-child(4) { width: 12%; }
+.report-invoice .invoice-detail-table th:nth-child(5),
+.report-invoice .invoice-detail-table td:nth-child(5) { width: 8%; }
+.report-invoice .invoice-detail-table th:nth-child(6),
+.report-invoice .invoice-detail-table td:nth-child(6) { width: 8%; }
+.report-invoice .invoice-detail-table th:nth-child(7),
+.report-invoice .invoice-detail-table td:nth-child(7) { width: 17%; }
+.report-invoice .invoice-detail-table th:nth-child(8),
+.report-invoice .invoice-detail-table td:nth-child(8) { width: 6%; }
+.report-invoice .invoice-detail-table th:nth-child(9),
+.report-invoice .invoice-detail-table td:nth-child(9) { width: 9%; }
+.report-invoice .invoice-detail-table th:nth-child(10),
+.report-invoice .invoice-detail-table td:nth-child(10) { width: 9%; }
+
+.report-invoice .invoice-footer {
+    margin-top: 3mm;
+}
+
+.report-invoice .invoice-footer--totals {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.report-invoice .invoice-summary {
+    border-collapse: collapse;
+    min-width: 70%;
+    font-size: 8pt;
+}
+
+.report-invoice .invoice-summary th,
+.report-invoice .invoice-summary td {
+    border: 0.2mm solid #333;
+    padding: 1mm 2mm;
+}
+
+.report-invoice .invoice-summary th {
+    background: #f0f0f0;
+    text-align: center;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.report-invoice .invoice-summary td {
+    text-align: right;
+    min-width: 18mm;
+}
+
+.report-invoice .invoice-summary__total th,
+.report-invoice .invoice-summary__total td {
+    font-weight: 700;
+    font-size: 9pt;
+}
+
+/* ========================================
    帳票種別: 請求書 (bill) - 将来追加
    ======================================== */
 /* .report-bill .page { } */
 
 /* ========================================
-   帳票種別: インボイス (invoice) - 将来追加
+   帳票種別: インボイス (invoice export) - 将来追加
    ======================================== */
-/* .report-invoice .page { } */
+/* .report-invoice-export .page { } */
 
 /* 用紙サイズ・方向は preview.js が config に応じて @page と page クラスを設定する */
 .page--a4.page--landscape {
@@ -685,6 +912,21 @@ body {
         page-break-after: avoid;
     }
 
+    .report-invoice .page {
+        page-break-after: always;
+        page-break-inside: avoid;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .report-invoice .page:last-child {
+        page-break-after: avoid;
+    }
+
+    .report-invoice .invoice-footer {
+        page-break-inside: avoid;
+    }
+
     .report-delivery .delivery-footer {
         page-break-inside: avoid;
     }
@@ -697,12 +939,15 @@ body {
     .report-order .detail-table,
     .report-order .summary,
     .report-delivery .delivery-detail-table,
-    .report-delivery .delivery-summary {
+    .report-delivery .delivery-summary,
+    .report-invoice .invoice-detail-table,
+    .report-invoice .invoice-summary {
         page-break-inside: avoid;
     }
 
     .report-order .detail-table tbody tr,
-    .report-delivery .delivery-detail-table tbody tr {
+    .report-delivery .delivery-detail-table tbody tr,
+    .report-invoice .invoice-detail-table tbody tr {
         page-break-inside: avoid;
     }
 

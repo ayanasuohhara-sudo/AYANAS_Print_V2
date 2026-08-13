@@ -28,6 +28,7 @@
       "js/receivable_create.js",
       "js/reports/order_definition.js",
       "js/reports/delivery_definition.js",
+      "js/reports/invoice_definition.js",
       "js/templates/template_interface.js",
       "js/templates/order_template.js",
       "js/templates/delivery_template.js",

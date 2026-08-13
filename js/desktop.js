@@ -99,6 +99,10 @@
             return '納品書印刷';
         }
 
+        if (getAppId() === getInvoiceAppId()) {
+            return '請求書印刷';
+        }
+
         if (typeof Layout !== 'undefined' && typeof Layout.getButtonLabel === 'function') {
             return Layout.getButtonLabel();
         }

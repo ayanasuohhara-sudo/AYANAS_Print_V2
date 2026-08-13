@@ -180,6 +180,33 @@
         },
     });
 
+    const INVOICE_APP_ID = 35;
+
+    const INVOICE_COMPANY = {
+        name: '株式会社AYANAS',
+        postalCode: '〒631-0078',
+        address: '奈良県奈良市富雄元町1-13-41',
+        tel: 'TEL 0742-47-8390',
+        fax: 'FAX 0742-47-8391',
+    };
+
+    ReportRegistry.register({
+        reportType: 'invoice',
+        title: '請求書',
+        template: InvoiceTemplate,
+        pageClass: 'report-invoice',
+        barcodeField: 'invoice_no',
+        paperSize: 'A4',
+        orientation: 'portrait',
+        buttonLabel: '請求書印刷',
+        appIds: [INVOICE_APP_ID],
+        company: { ...INVOICE_COMPANY },
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '1',
+        },
+    });
+
     ReportRegistry.register({
         reportType: 'order',
         title: '受注票',
