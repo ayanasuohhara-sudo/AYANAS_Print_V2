@@ -519,6 +519,29 @@
 
     };
 
+    /**
+     * 未請求データ取込（V1.0: 納品書の請求済更新は行わない）
+     */
+    InvoiceCreate.importUninvoicedData = async ({ closingYm, closingDate, customerCode, referenceDate }) => {
+
+        const invoiceData = await InvoiceCreate.buildInvoiceData({
+            closingYm,
+            closingDate,
+            customerCode,
+            referenceDate,
+        });
+
+        const { summary } = invoiceData;
+
+        console.log('[AYANAS Invoice] 未請求データ取込');
+        console.log('取得件数:', summary.item_count);
+        console.log('subtotal:', summary.subtotal);
+        console.log('total:', summary.total);
+
+        return invoiceData;
+
+    };
+
     InvoiceCreate.markDeliveriesAsInvoiced = async (deliveryRecordIds) => {
 
         const uniqueIds = [...new Set(

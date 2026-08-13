@@ -8,8 +8,11 @@
      * 請求書作成アプリ（App 35）画面イベント。
      */
 
-    const BUTTON_ID = 'ayanas-invoice-create-button';
-    const BUTTON_CLASS = 'ayanas-invoice-create-button';
+    const BUTTON_ID = 'ayanas-invoice-import-button';
+    const BUTTON_CLASS = 'ayanas-invoice-import-button';
+
+    /** V1.0: 未請求データ取込のみ。保存時の請求済更新は行わない */
+    const MARK_INVOICED_ON_SAVE = false;
 
     const pendingDeliveryIds = new Set();
 
@@ -69,38 +72,31 @@
 
     };
 
-    const handleCreateInvoiceClick = async () => {
+    const handleImportUninvoicedClick = async () => {
 
         try {
 
             const current = kintone.app.record.get();
             const { closingDate, closingYm, customerCode, invoiceDate } = getFormValues(current.record);
 
-            const invoiceData = await InvoiceCreate.buildInvoiceData({
+            const invoiceData = await InvoiceCreate.importUninvoicedData({
                 closingYm,
                 closingDate,
                 customerCode,
                 referenceDate: invoiceDate,
             });
 
-            pendingDeliveryIds.clear();
-
-            invoiceData.deliveryRecordIds.forEach((id) => {
-                pendingDeliveryIds.add(id);
-            });
-
             applyInvoiceDataToForm(invoiceData);
 
             alert(
-                `請求明細を作成しました。\n\n`
+                `未請求データを取り込みました。\n\n`
                 + `集計期間: ${invoiceData.header.period_label}\n`
                 + `納品書: ${invoiceData.deliveryCount} 件\n`
-                + `点数: ${invoiceData.summary.item_count} 点\n`
+                + `取得件数: ${invoiceData.summary.item_count} 点\n`
                 + `数量合計: ${invoiceData.summary.qty_total}\n`
                 + `税抜合計: ${invoiceData.summary.subtotal.toLocaleString()} 円\n`
                 + `消費税: ${invoiceData.summary.tax.toLocaleString()} 円\n`
-                + `税込合計: ${invoiceData.summary.total.toLocaleString()} 円\n\n`
-                + '保存すると、対象納品書に請求済フラグが設定されます。'
+                + `税込合計: ${invoiceData.summary.total.toLocaleString()} 円`
             );
 
         } catch (error) {
@@ -111,27 +107,27 @@
                 ? error.message
                 : '不明なエラーが発生しました。';
 
-            alert(`請求明細作成エラー\n\n${message}`);
+            alert(`未請求データ取込エラー\n\n${message}`);
 
         }
 
     };
 
-    const createInvoiceButton = () => {
+    const createImportButton = () => {
 
         const button = document.createElement('button');
 
         button.id = BUTTON_ID;
         button.type = 'button';
         button.className = BUTTON_CLASS;
-        button.textContent = '請求明細を作成';
-        button.addEventListener('click', handleCreateInvoiceClick);
+        button.textContent = '未請求データ取込';
+        button.addEventListener('click', handleImportUninvoicedClick);
 
         return button;
 
     };
 
-    const appendInvoiceButton = () => {
+    const appendImportButton = () => {
 
         if (!isInvoiceApp()) {
             return;
@@ -147,13 +143,13 @@
             return;
         }
 
-        space.appendChild(createInvoiceButton());
+        space.appendChild(createImportButton());
 
     };
 
     const handleSubmitSuccess = async (event) => {
 
-        if (!isInvoiceApp()) {
+        if (!MARK_INVOICED_ON_SAVE || !isInvoiceApp()) {
             return event;
         }
 
@@ -195,7 +191,7 @@
 
     kintone.events.on(['app.record.create.show', 'app.record.edit.show'], (event) => {
 
-        appendInvoiceButton();
+        appendImportButton();
 
         return event;
 
