@@ -18,6 +18,7 @@
     const INVOICE_FLAG_VALUE = '請求済';
     const UNINVOICED_STATUS = '未請求';
     const NO_DATA_MESSAGE = '請求対象データがありません。';
+    const INVOICE_NO_ASSIGN_ERROR = '請求番号を採番できませんでした。';
     const INVOICE_VALIDATION_MESSAGES = {
         customerCode: '請求先を入力してください。',
         customerName: '請求先名を入力してください。',
@@ -1206,6 +1207,7 @@
     };
 
     InvoiceCreate.NO_DATA_MESSAGE = NO_DATA_MESSAGE;
+    InvoiceCreate.INVOICE_NO_ASSIGN_ERROR = INVOICE_NO_ASSIGN_ERROR;
     InvoiceCreate.INVOICE_VALIDATION_MESSAGES = INVOICE_VALIDATION_MESSAGES;
 
     const pad3 = (value) => String(value).padStart(3, '0');
@@ -1380,38 +1382,25 @@
 
         }
 
-        throw new Error('請求番号の採番に失敗しました。再度保存してください。');
+        throw new Error(INVOICE_NO_ASSIGN_ERROR);
 
     };
 
     /**
-     * 保存時に請求番号を自動採番する
-     * - 新規: 常に採番（重複時は再採番）
-     * - 編集: 既存番号がある場合は維持
+     * 保存時に請求番号を自動採番する（V1.0）
+     * invoice_no が空欄の場合のみ採番。既存番号は変更しない。
      */
-    InvoiceCreate.assignInvoiceNoForSave = async ({ record, recordId = null, isCreate = false }) => {
+    InvoiceCreate.assignInvoiceNoForSave = async ({ record, recordId = null }) => {
 
         const invoiceDate = String(getFieldValue(record, INVOICE_FIELDS.invoiceDate) ?? '').trim();
         const existingNo = String(getFieldValue(record, INVOICE_FIELDS.invoiceNo) ?? '').trim();
 
-        if (!isCreate && existingNo) {
+        if (existingNo) {
             return existingNo;
         }
 
         if (!invoiceDate) {
             throw new Error('請求日（invoice_date）を入力してください。');
-        }
-
-        if (!isCreate && !existingNo) {
-            return InvoiceCreate.generateUniqueInvoiceNo(invoiceDate, recordId);
-        }
-
-        if (isCreate && existingNo) {
-            const taken = await InvoiceCreate.isInvoiceNoTaken(existingNo, recordId);
-
-            if (!taken) {
-                return existingNo;
-            }
         }
 
         return InvoiceCreate.generateUniqueInvoiceNo(invoiceDate, recordId);

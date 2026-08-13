@@ -479,11 +479,9 @@
             }
 
             const fields = InvoiceCreate.INVOICE_FIELDS;
-            const isCreate = !event.recordId;
             const invoiceNo = await InvoiceCreate.assignInvoiceNoForSave({
                 record: event.record,
                 recordId: event.recordId ?? null,
-                isCreate,
             });
 
             if (!event.record[fields.invoiceNo]) {
@@ -498,7 +496,7 @@
 
             event.error = error instanceof Error
                 ? error.message
-                : '請求番号の採番に失敗しました。';
+                : InvoiceCreate.INVOICE_NO_ASSIGN_ERROR;
 
         }
 
@@ -555,6 +553,12 @@
 
         if (!isInvoiceApp()) {
             return event;
+        }
+
+        const fields = InvoiceCreate.INVOICE_FIELDS;
+
+        if (event.record[fields.invoiceNo]) {
+            event.record[fields.invoiceNo].disabled = true;
         }
 
         currentRecordId = event.recordId ?? null;
