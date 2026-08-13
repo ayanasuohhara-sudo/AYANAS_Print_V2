@@ -150,7 +150,7 @@
             collection_status: receivable.collection_status,
             last_payment_date: String(receivable.last_payment_date ?? '').trim(),
             elapsed_days: elapsedDays,
-            in_charge: String(getFieldValue(invoiceRecord, invoiceFields.inCharge) ?? '').trim(),
+            in_charge: InvoiceCreate.getInvoiceInCharge(invoiceRecord),
             invoice_record_id: Number(invoiceRecord.$id?.value),
         };
 
@@ -165,7 +165,7 @@
             invoiceFields.dueDate,
             invoiceFields.customerCode,
             invoiceFields.customerName,
-            invoiceFields.inCharge,
+            invoiceFields.detailTable,
             invoiceFields.invoiceAmount,
             invoiceFields.total,
             invoiceFields.paymentAmount,

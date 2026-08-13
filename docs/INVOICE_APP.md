@@ -25,7 +25,6 @@
 | 支払期限 | due_date | 日付 |
 | 請求先コード | customer_code | ルックアップ |
 | 請求先名 | customer_name | 文字列 |
-| 担当者 | in_charge | 文字列 |
 | 請求状態 | invoice_status | ドロップダウン |
 | 前回請求残高 | carry_over | 数値 |
 | 今回請求額 | invoice_amount | 数値 |
@@ -134,9 +133,9 @@ V1.0 では表示のみ。入金管理アプリ完成後にフィールドへ自
 | 単価 | unit_price |
 | 金額 | amount |
 | 伝票番号 | slip_no |
-| 担当者 | in_charge_0 |
+| 担当者 | in_charge |
 
-※ `slip_no` / `in_charge_0` は納品書ヘッダー（`slip_no` / `in_charge`）から明細行へ展開する。
+※ `slip_no` / `in_charge` は納品書ヘッダーから明細行へ展開する。
 
 ---
 

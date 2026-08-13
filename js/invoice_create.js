@@ -108,7 +108,6 @@
         dueDate: 'due_date',
         customerCode: 'customer_code',
         customerName: 'customer_name',
-        inCharge: 'in_charge',
         invoiceStatus: 'invoice_status',
         carryOver: 'carry_over',
         paymentDueDate: 'payment_due_date',
@@ -147,7 +146,7 @@
         unitPrice: 'unit_price',
         amount: 'amount',
         slipNo: 'slip_no',
-        inCharge: 'in_charge_0',
+        inCharge: 'in_charge',
     };
 
     const kintoneApi = (path, method, body) => new Promise((resolve, reject) => {
@@ -983,6 +982,25 @@
             },
         })),
     });
+
+    InvoiceCreate.getInvoiceInCharge = (invoiceRecord) => {
+
+        const table = invoiceRecord?.[INVOICE_FIELDS.detailTable];
+        const rows = Array.isArray(table?.value) ? table.value : [];
+
+        for (const row of rows) {
+            const value = String(
+                getFieldValue(row?.value ?? {}, INVOICE_DETAIL_FIELDS.inCharge) ?? ''
+            ).trim();
+
+            if (value) {
+                return value;
+            }
+        }
+
+        return '';
+
+    };
 
     InvoiceCreate.buildInvoiceData = async ({ closingYm, closingDate, customerCode }) => {
 

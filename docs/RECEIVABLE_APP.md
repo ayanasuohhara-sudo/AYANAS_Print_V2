@@ -42,7 +42,7 @@ V1.0 ではレコード手入力は不可。以下は表示項目のフィール
 | 回収状況 | collection_status | 請求書 / 算出 |
 | 最終入金日 | last_payment_date | 請求書 |
 | 経過日数 | elapsed_days | 請求書 / 算出 |
-| 担当者 | in_charge | 請求書 |
+| 担当者 | in_charge | 請求明細（invoice_detail）先頭行 |
 
 **回収状況:** 未回収 / 一部回収 / 回収済
 
