@@ -88,6 +88,8 @@
 | 請求先コード | customer_code | 文字列 | ルックアップ | 35, 36, 37 |
 | 請求先名 | customer_name | 文字列 | 請求先名 | 35, 36, 37 |
 | 請求状態 | invoice_status | ドロップダウン | 作成中/確定/取消 | 35 |
+| 確定日時 | confirmed_at | 日時 | 請求確定日時 | 35 |
+| 確定者 | confirmed_by | 文字列 | 請求確定ユーザー | 35 |
 | 前回請求残高 | carry_over | 数値 | 繰越残高 | 35 |
 | 今回請求額 | invoice_amount | 数値 | 税込請求額 | 35, 36, 37 |
 | 請求後残高 | balance | 数値 | carry_over + invoice_amount − payment | 35 |

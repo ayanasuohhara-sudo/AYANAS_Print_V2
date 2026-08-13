@@ -40,7 +40,7 @@
     const DELIVERY_INVOICE_STATUS_INVOICED = '請求済';
     const INVOICE_COMPLETE_MESSAGE = '請求書を作成しました。';
     const INVOICE_CONFIRM_MESSAGE = '請求を確定しました。';
-    const INVOICE_CONFIRM_DIALOG = '請求を確定します。\n\n納品書は請求済になります。\n\nよろしいですか？';
+    const INVOICE_CONFIRM_DIALOG = '請求書を確定します。\n\n確定後は対象納品書が\n「請求済」となります。\n\nよろしいですか？';
     const INVOICE_CANCEL_MESSAGE = '請求書を取り消しました。';
     const INVOICE_CANCEL_DIALOG = '請求書を取り消します。\n\n納品書は未請求へ戻ります。\n\nよろしいですか？';
 
@@ -119,6 +119,8 @@
         customerCode: 'customer_code',
         customerName: 'customer_name',
         invoiceStatus: 'invoice_status',
+        confirmedAt: 'confirmed_at',
+        confirmedBy: 'confirmed_by',
         carryOver: 'carry_over',
         paymentDueDate: 'payment_due_date',
         paymentDate: 'payment_date',
@@ -1611,6 +1613,41 @@
     InvoiceCreate.DELIVERY_INVOICE_STATUS_CREATING = DELIVERY_INVOICE_STATUS_CREATING;
     InvoiceCreate.DELIVERY_INVOICE_STATUS_INVOICED = DELIVERY_INVOICE_STATUS_INVOICED;
 
+    const formatNowDateTime = () => {
+
+        const now = new Date();
+        const offsetMinutes = -now.getTimezoneOffset();
+        const sign = offsetMinutes >= 0 ? '+' : '-';
+        const absOffset = Math.abs(offsetMinutes);
+        const offsetHours = pad2(Math.floor(absOffset / 60));
+        const offsetMins = pad2(absOffset % 60);
+
+        return `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`
+            + `T${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`
+            + `${sign}${offsetHours}:${offsetMins}`;
+
+    };
+
+    const getLoginUserDisplayName = () => {
+
+        if (typeof kintone === 'undefined' || typeof kintone.getLoginUser !== 'function') {
+            return '';
+        }
+
+        const user = kintone.getLoginUser();
+
+        return String(user?.name ?? user?.code ?? '').trim();
+
+    };
+
+    const buildInvoiceConfirmUpdate = () => ({
+        [INVOICE_FIELDS.invoiceStatus]: { value: INVOICE_STATUS_CONFIRMED },
+        [INVOICE_FIELDS.confirmedAt]: { value: formatNowDateTime() },
+        [INVOICE_FIELDS.confirmedBy]: { value: getLoginUserDisplayName() },
+    });
+
+    InvoiceCreate.buildInvoiceConfirmUpdate = buildInvoiceConfirmUpdate;
+
     const buildDeliveryConfirmUpdate = (invoiceNo, invoiceDate) => ({
         [DELIVERY_FIELDS.invoiceStatus]: { value: DELIVERY_INVOICE_STATUS_INVOICED },
         [DELIVERY_FIELDS.invoiceNo]: { value: invoiceNo },
@@ -1797,6 +1834,20 @@
 
     };
 
+    InvoiceCreate.confirmInvoiceRecord = async (recordId) => {
+
+        await kintoneApi(
+            kintone.api.url('/k/v1/record', true),
+            'PUT',
+            {
+                app: INVOICE_APP_ID,
+                id: recordId,
+                record: buildInvoiceConfirmUpdate(),
+            }
+        );
+
+    };
+
     const buildInvoiceVoidUpdate = () => ({
         [INVOICE_FIELDS.detailTable]: InvoiceCreate.toInvoiceDetailFieldValue([]),
         [INVOICE_FIELDS.itemCount]: { value: 0 },
@@ -1889,6 +1940,10 @@
             throw new Error('この請求書は既に確定済みです。');
         }
 
+        if (invoiceStatus !== INVOICE_STATUS_CREATING) {
+            throw new Error('作成中の請求書のみ確定できます。');
+        }
+
         const deliveryNos = InvoiceCreate.collectDeliveryNosFromRecord(record);
 
         if (deliveryNos.length === 0) {
@@ -1896,6 +1951,12 @@
         }
 
         const { deliveryMap, notFoundNos } = await InvoiceCreate.fetchDeliveryMapByNos(deliveryNos);
+
+        if (notFoundNos.length > 0) {
+            throw new Error(
+                `更新できなかった納品書があります。請求書は確定しませんでした。\n\n${notFoundNos.join('\n')}`
+            );
+        }
 
         InvoiceCreate.validateDeliveriesForConfirm(deliveryMap, invoiceNo);
 
@@ -1905,19 +1966,22 @@
             invoiceDate,
         });
 
-        const errorNos = [...new Set([...notFoundNos, ...failedNos])];
-
-        if (errorNos.length > 0) {
+        if (failedNos.length > 0) {
             throw new Error(
-                `以下の納品書を更新できませんでした。\n\n${errorNos.join('\n')}`
+                `更新できなかった納品書があります。請求書は確定しませんでした。\n\n${failedNos.join('\n')}`
             );
         }
 
-        await InvoiceCreate.updateInvoiceStatus(id, INVOICE_STATUS_CONFIRMED);
+        await InvoiceCreate.confirmInvoiceRecord(id);
+
+        const confirmUpdate = buildInvoiceConfirmUpdate();
 
         return {
             updatedDeliveryCount: deliveryMap.size,
             invoiceNo,
+            invoiceStatus: INVOICE_STATUS_CONFIRMED,
+            confirmedAt: confirmUpdate[INVOICE_FIELDS.confirmedAt].value,
+            confirmedBy: confirmUpdate[INVOICE_FIELDS.confirmedBy].value,
         };
 
     };

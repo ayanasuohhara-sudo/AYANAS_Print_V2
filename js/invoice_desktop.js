@@ -242,6 +242,20 @@
 
     };
 
+    const applyInvoiceConfirmToForm = (result) => {
+
+        const fields = InvoiceCreate.INVOICE_FIELDS;
+
+        kintone.app.record.set({
+            record: {
+                [fields.invoiceStatus]: { value: result.invoiceStatus },
+                [fields.confirmedAt]: { value: result.confirmedAt },
+                [fields.confirmedBy]: { value: result.confirmedBy },
+            },
+        });
+
+    };
+
     const handleConfirmInvoiceClick = async () => {
 
         if (!window.confirm(InvoiceCreate.INVOICE_CONFIRM_DIALOG)) {
@@ -254,13 +268,13 @@
 
             await InvoicePermission.assertConfirm(record);
 
-            await InvoiceCreate.confirmInvoice({
+            const result = await InvoiceCreate.confirmInvoice({
                 record,
                 recordId,
             });
 
             try {
-                applyInvoiceStatusToForm(InvoiceCreate.INVOICE_STATUS_CONFIRMED);
+                applyInvoiceConfirmToForm(result);
             } catch (formError) {
                 // 詳細画面など record.set 非対応の場合は API 更新のみ
             }
