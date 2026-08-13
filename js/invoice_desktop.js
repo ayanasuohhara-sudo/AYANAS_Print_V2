@@ -5,8 +5,7 @@
      * AYANAS Print V2
      * invoice_desktop.js
      *
-     * 請求書作成アプリの画面イベント。
-     * 締日指定 → 納品書抽出 → 請求明細作成 → 税計算 → 保存時に請求済更新。
+     * 請求書作成アプリ（App 35）画面イベント。
      */
 
     const BUTTON_ID = 'ayanas-invoice-create-button';
@@ -42,7 +41,9 @@
 
         return {
             closingDate: String(getFieldValue(record, fields.closingDate) ?? '').trim(),
+            closingYm: String(getFieldValue(record, fields.closingYm) ?? '').trim(),
             customerCode: String(getFieldValue(record, fields.customerCode) ?? '').trim(),
+            invoiceDate: String(getFieldValue(record, fields.invoiceDate) ?? '').trim(),
         };
 
     };
@@ -52,15 +53,19 @@
         const fields = InvoiceCreate.INVOICE_FIELDS;
         const { header, details, summary } = invoiceData;
 
-        kintone.app.record.set({
-            record: {
-                [fields.customerName]: { value: header.customer_name },
-                [fields.detailTable]: InvoiceCreate.toInvoiceDetailFieldValue(details),
-                [fields.subtotal]: { value: summary.subtotal },
-                [fields.tax]: { value: summary.tax },
-                [fields.total]: { value: summary.total },
-            },
-        });
+        const updates = {
+            [fields.closingYm]: { value: header.closing_ym },
+            [fields.customerName]: { value: header.customer_name },
+            [fields.detailTable]: InvoiceCreate.toInvoiceDetailFieldValue(details),
+            [fields.itemCount]: { value: summary.item_count },
+            [fields.qtyTotal]: { value: summary.qty_total },
+            [fields.subtotal]: { value: summary.subtotal },
+            [fields.tax]: { value: summary.tax },
+            [fields.total]: { value: summary.total },
+            [fields.invoiceAmount]: { value: summary.total },
+        };
+
+        kintone.app.record.set({ record: updates });
 
     };
 
@@ -69,11 +74,13 @@
         try {
 
             const current = kintone.app.record.get();
-            const { closingDate, customerCode } = getFormValues(current.record);
+            const { closingDate, closingYm, customerCode, invoiceDate } = getFormValues(current.record);
 
             const invoiceData = await InvoiceCreate.buildInvoiceData({
+                closingYm,
                 closingDate,
                 customerCode,
+                referenceDate: invoiceDate,
             });
 
             pendingDeliveryIds.clear();
@@ -86,8 +93,10 @@
 
             alert(
                 `請求明細を作成しました。\n\n`
+                + `集計期間: ${invoiceData.header.period_label}\n`
                 + `納品書: ${invoiceData.deliveryCount} 件\n`
-                + `明細行: ${invoiceData.summary.count} 行\n`
+                + `点数: ${invoiceData.summary.item_count} 点\n`
+                + `数量合計: ${invoiceData.summary.qty_total}\n`
                 + `税抜合計: ${invoiceData.summary.subtotal.toLocaleString()} 円\n`
                 + `消費税: ${invoiceData.summary.tax.toLocaleString()} 円\n`
                 + `税込合計: ${invoiceData.summary.total.toLocaleString()} 円\n\n`
@@ -148,16 +157,17 @@
             return event;
         }
 
-        const recordDeliveryIds = InvoiceCreate.collectDeliveryIdsFromRecord(event.record);
-        const targetIds = recordDeliveryIds.length > 0
-            ? recordDeliveryIds
-            : [...pendingDeliveryIds];
-
-        if (targetIds.length === 0) {
-            return event;
-        }
-
         try {
+
+            const fallbackIds = [...pendingDeliveryIds];
+            const targetIds = await InvoiceCreate.resolveDeliveryIdsForRecord(
+                event.record,
+                fallbackIds
+            );
+
+            if (targetIds.length === 0) {
+                return event;
+            }
 
             const updatedCount = await InvoiceCreate.markDeliveriesAsInvoiced(targetIds);
 
