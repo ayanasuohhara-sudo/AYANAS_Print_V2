@@ -2,17 +2,14 @@
     'use strict';
 
     /**
-     * AYANAS Print V2
-     * templates/delivery_template.js
+     * AYANAS Print V3
+     * templates/delivery.js
      *
      * 納品書の HTML 文字列を生成する（納品管理アプリ App ID: 19 向け）。
-     * DOM 操作・印刷・Barcode 描画は行わない。
      */
 
     const DETAIL_COLUMN_COUNT = 7;
-    const DETAILS_PER_PAGE = 20;
-
-    const EMPTY_DETAIL = null;
+    const DETAILS_PER_PAGE = Core.Report.DETAILS_PER_PAGE;
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -157,34 +154,6 @@ ${buildDetailRowsHtml(details)}
     </tbody>
 </table>`;
 
-    const padPageDetails = (pageDetails, size) => {
-
-        const padded = pageDetails.slice(0, size);
-
-        while (padded.length < size) {
-            padded.push(EMPTY_DETAIL);
-        }
-
-        return padded;
-
-    };
-
-    const buildDetailPages = (details, size) => {
-
-        const totalPages = Math.max(1, Math.ceil(details.length / size));
-        const pages = [];
-
-        for (let pageIndex = 0; pageIndex < totalPages; pageIndex += 1) {
-            const start = pageIndex * size;
-            const pageDetails = details.slice(start, start + size);
-
-            pages.push(padPageDetails(pageDetails, size));
-        }
-
-        return pages;
-
-    };
-
     const buildPageHtml = (header, pageDetails, summary, layout, options = {}) => {
 
         const {
@@ -241,7 +210,7 @@ ${buildDetailRowsHtml(details)}
         Validation.assertDetailReportData(data);
 
         const { header, details, summary } = data;
-        const detailPages = buildDetailPages(details, DETAILS_PER_PAGE);
+        const detailPages = Core.Report.buildDetailPages(details, DETAILS_PER_PAGE);
         const totalPages = detailPages.length;
         const pagesHtml = detailPages.map((pageDetails, index) => (
             `<div class="page">${buildPageHtml(

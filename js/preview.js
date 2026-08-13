@@ -2,7 +2,7 @@
     'use strict';
 
     /**
-     * AYANAS Print V2
+     * AYANAS Print V3
      * preview.js
      *
      * 帳票 HTML を別ウィンドウでプレビュー表示する。
@@ -28,21 +28,12 @@
 
     const PLUGIN_JS_FILES = [
         'lib/JsBarcode.all.min.js',
-        'js/format.js',
-        'js/utils/validation.js',
-        'js/utils/common.js',
-        'js/utils/dom.js',
+        'js/core.js',
         'js/record.js',
-        'js/reports/definitions.js',
-        'js/templates/template_interface.js',
-        'js/templates/order_template.js',
-        'js/templates/delivery_template.js',
-        'js/templates/invoice_template.js',
-        'js/templates/stub_templates.js',
-        'js/report_registry.js',
         'js/layout.js',
         'js/barcode.js',
         'js/preview.js',
+        'js/apps.js',
         'js/desktop.js',
     ];
 
@@ -207,6 +198,12 @@
                 return jsUrl;
             }
 
+        }
+
+        try {
+            return Core.getPluginContentsUrl(normalizedPath);
+        } catch (error) {
+            // manifest 外リソースは Core に委譲
         }
 
         throw new Error(`プラグインリソース URL を取得できません。（${normalizedPath}）`);
@@ -388,7 +385,7 @@ ${buildButtonScriptBody()}
 
     };
 
-    Preview.open = (data) => {
+    Preview.open = async (data) => {
 
         try {
 
@@ -397,7 +394,7 @@ ${buildButtonScriptBody()}
             Validation.assertReportData(data);
 
             const config = loadPluginConfig();
-            const layout = Layout.resolve(data, config);
+            const layout = await Layout.resolve(data, config);
 
             Validation.assertLayout(layout);
 

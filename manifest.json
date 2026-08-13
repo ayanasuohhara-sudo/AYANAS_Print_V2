@@ -1,46 +1,25 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 2,
+  "version": 3,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン",
-    "en": "AYANAS Print Plugin"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 3.0",
+    "en": "AYANAS Print Plugin V3"
   },
   "desktop": {
     "js": [
       "lib/JsBarcode.all.min.js",
-      "js/format.js",
-      "js/utils/validation.js",
-      "js/utils/common.js",
-      "js/utils/dom.js",
+      "js/core.js",
       "js/record.js",
-      "js/invoice_create.js",
-      "js/invoice_permission.js",
-      "js/batch_history.js",
-      "js/bulk_invoice_create.js",
-      "js/invoice_index.js",
-      "js/payment_create.js",
-      "js/receivable_create.js",
-      "js/reports/definitions.js",
-      "js/templates/template_interface.js",
-      "js/templates/order_template.js",
-      "js/templates/delivery_template.js",
-      "js/templates/invoice_template.js",
-      "js/templates/stub_templates.js",
-      "js/report_registry.js",
       "js/layout.js",
       "js/barcode.js",
       "js/preview.js",
-      "js/invoice_desktop.js",
-      "js/bulk_invoice_create_desktop.js",
-      "js/batch_history_index.js",
-      "js/payment_desktop.js",
-      "js/receivable_index.js",
+      "js/apps.js",
       "js/desktop.js"
     ],
     "css": [

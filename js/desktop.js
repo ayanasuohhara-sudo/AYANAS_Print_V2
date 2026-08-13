@@ -2,7 +2,7 @@
     'use strict';
 
     /**
-     * AYANAS Print V2
+     * AYANAS Print V3
      * desktop.js
      *
      * kintone レコード詳細画面に印刷ボタンを配置し、
@@ -17,7 +17,7 @@
             return InvoiceCreate.getInvoiceAppId();
         }
 
-        return null;
+        return 35;
 
     };
 
@@ -27,7 +27,7 @@
             return PaymentCreate.getPaymentAppId();
         }
 
-        return null;
+        return 36;
 
     };
 
@@ -37,7 +37,7 @@
             return ReceivableCreate.getReceivableAppId();
         }
 
-        return null;
+        return 37;
 
     };
 
@@ -45,22 +45,16 @@
     const BUTTON_CLASS = 'ayanas-print-button';
 
     const assertRecordLoaded = () => {
-
         Validation.assertModule(Record, 'Record', 'get');
-
     };
 
     const assertPreviewLoaded = () => {
-
         Validation.assertModule(Preview, 'Preview', 'open');
         Validation.assertModule(Preview, 'Preview', 'initialize');
-
     };
 
     const assertLayoutLoaded = () => {
-
         Validation.assertModule(Layout, 'Layout', 'getButtonLabel');
-
     };
 
     const getAppId = () => {
@@ -74,44 +68,32 @@
             return kintone.app.getId();
 
         } catch (error) {
-
             return null;
-
         }
 
     };
 
     const getPluginBaseUrl = () => {
 
+        const scripts = document.querySelectorAll('script[src*="desktop.js"]');
+
+        if (scripts.length > 0) {
+            return scripts[scripts.length - 1].src;
+        }
+
         const script = document.currentScript;
 
-        if (!(script instanceof HTMLScriptElement) || !script.src) {
-            throw new Error('pluginBaseUrl を取得できません。');
+        if (script instanceof HTMLScriptElement && script.src) {
+            return script.src;
         }
 
-        return script.src;
+        throw new Error('pluginBaseUrl を取得できません。');
 
     };
 
-    const getButtonLabel = () => {
+    const getButtonLabel = () => Layout.getButtonLabel();
 
-        if (getAppId() === DELIVERY_APP_ID) {
-            return '納品書印刷';
-        }
-
-        if (getAppId() === getInvoiceAppId()) {
-            return '請求書印刷';
-        }
-
-        if (typeof Layout !== 'undefined' && typeof Layout.getButtonLabel === 'function') {
-            return Layout.getButtonLabel();
-        }
-
-        return '受注票印刷';
-
-    };
-
-    const handlePrintClick = () => {
+    const handlePrintClick = async () => {
 
         try {
 
@@ -121,11 +103,11 @@
 
             assertPreviewLoaded();
 
-            Preview.open(data);
+            await Preview.open(data);
 
         } catch (error) {
 
-            console.error('[AYANAS Print]', error);
+            console.error('[AYANAS Print V3]', error);
 
             const message = error instanceof Error
                 ? error.message
