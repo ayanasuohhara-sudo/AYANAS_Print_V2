@@ -15,12 +15,45 @@
     const INVOICE_APP_ID = 35;
     const TAX_RATE = 0.10;
     const INVOICE_FLAG_VALUE = '請求済';
+    const UNINVOICED_STATUS = '未請求';
+    const NO_DATA_MESSAGE = '請求対象データがありません。';
+    const INVOICE_STATUS_CREATING = '作成中';
+    const INVOICE_STATUS_CONFIRMED = '確定';
+    const INVOICED_STATUS = '請求済';
+    const INVOICE_COMPLETE_MESSAGE = '請求書を作成しました。';
+    const INVOICE_CONFIRM_MESSAGE = '請求を確定しました。';
+    const INVOICE_CONFIRM_DIALOG = '請求を確定します。\n\n納品書は請求済になります。\n\nよろしいですか？';
+
+    /** 入金状況（payment_status）選択肢 — フィールドコードは請求書印刷でも使用 */
+    const PAYMENT_STATUS_LABELS = [
+        '未入金',
+        '一部入金',
+        '入金済',
+    ];
+
+    const PAYMENT_STATUS_UNPAID = '未入金';
+    const PAYMENT_STATUS_PARTIAL = '一部入金';
+    const PAYMENT_STATUS_PAID = '入金済';
+
+    /** 回収状況（collection_status）選択肢 */
+    const COLLECTION_STATUS_LABELS = [
+        '未回収',
+        '一部回収',
+        '回収済',
+    ];
+
+    const COLLECTION_STATUS_UNCOLLECTED = '未回収';
+    const COLLECTION_STATUS_PARTIAL = '一部回収';
+    const COLLECTION_STATUS_COLLECTED = '回収済';
 
     const DELIVERY_FIELDS = {
         deliveryNo: 'delivery_no',
         deliveryDate: 'delivery_date',
         customerCode: 'customer_code',
         customerName: 'customer_name',
+        billingStatus: 'billing_status',
+        invoiceNo: 'invoice_no',
+        invoiceDate: 'invoice_date',
         invoiceFlag: 'invoice_flag',
         detailTable: 'delivery_detail',
     };
@@ -46,17 +79,27 @@
         inCharge: 'in_charge',
         invoiceStatus: 'invoice_status',
         carryOver: 'carry_over',
+        paymentDueDate: 'payment_due_date',
+        paymentDate: 'payment_date',
         paymentAmount: 'payment_amount',
+        paymentBalance: 'payment_balance',
+        paymentStatus: 'payment_status',
+        paymentNote: 'payment_note',
         invoiceAmount: 'invoice_amount',
         balance: 'balance',
         remarks: 'remarks',
         closingYm: 'closing_ym',
-        paymentStatus: 'payment_status',
+        billingFrom: 'billing_from',
+        billingTo: 'billing_to',
         itemCount: 'item_count',
         qtyTotal: 'qty_total',
         subtotal: 'subtotal',
         tax: 'tax',
         total: 'total',
+        accountsReceivable: 'accounts_receivable',
+        overdueDays: 'overdue_days',
+        collectionStatus: 'collection_status',
+        lastPaymentDate: 'last_payment_date',
         detailTable: 'invoice_detail',
     };
 
@@ -314,6 +357,80 @@
 
     };
 
+    const isUninvoicedDelivery = (record) => {
+
+        const status = String(getFieldValue(record, DELIVERY_FIELDS.billingStatus) ?? '').trim();
+
+        if (status !== '') {
+            return status === UNINVOICED_STATUS;
+        }
+
+        return !isInvoicedDelivery(record);
+
+    };
+
+    /**
+     * 請求先コード・請求対象期間で未請求の納品書を取得する（V1.0）
+     */
+    InvoiceCreate.fetchUninvoicedDeliveries = async ({ customerCode, billingFrom, billingTo }) => {
+
+        const code = String(customerCode ?? '').trim();
+        const from = String(billingFrom ?? '').trim();
+        const to = String(billingTo ?? '').trim();
+
+        if (!code) {
+            throw new Error('請求先コード（customer_code）を入力してください。');
+        }
+
+        if (!from || !to) {
+            throw new Error('請求対象期間（billing_from / billing_to）を入力してください。');
+        }
+
+        if (from > to) {
+            throw new Error('請求対象期間が不正です。billing_from は billing_to 以前の日付にしてください。');
+        }
+
+        const conditions = [
+            `${DELIVERY_FIELDS.customerCode} = "${escapeQueryValue(code)}"`,
+            `${DELIVERY_FIELDS.billingStatus} in ("${UNINVOICED_STATUS}")`,
+            `${DELIVERY_FIELDS.deliveryDate} >= "${escapeQueryValue(from)}"`,
+            `${DELIVERY_FIELDS.deliveryDate} <= "${escapeQueryValue(to)}"`,
+        ];
+
+        const query = [
+            ...conditions,
+            'order by delivery_date asc, delivery_no asc',
+        ].join(' and ');
+
+        const records = [];
+        const limit = 500;
+        let offset = 0;
+
+        while (true) {
+
+            const response = await kintoneApi(
+                kintone.api.url('/k/v1/records', true),
+                'GET',
+                {
+                    app: DELIVERY_APP_ID,
+                    query: `${query} limit ${limit} offset ${offset}`,
+                }
+            );
+
+            records.push(...response.records);
+
+            if (response.records.length < limit) {
+                break;
+            }
+
+            offset += limit;
+
+        }
+
+        return records.filter((record) => isUninvoicedDelivery(record));
+
+    };
+
     /**
      * 請求締年月・締日・請求先コードで未請求の納品書を取得する
      */
@@ -457,7 +574,7 @@
     };
 
     InvoiceCreate.toInvoiceDetailFieldValue = (details) => ({
-        value: details.map((detail) => ({
+        value: (Array.isArray(details) ? details : []).map((detail) => ({
             value: {
                 [INVOICE_DETAIL_FIELDS.deliveryNo]: { value: detail.delivery_no },
                 [INVOICE_DETAIL_FIELDS.deliveryDate]: { value: detail.delivery_date },
@@ -520,25 +637,394 @@
     };
 
     /**
-     * 未請求データ取込（V1.0: 納品書の請求済更新は行わない）
+     * 未請求データ取込（V1.0: 納品書への書き戻しは行わない）
      */
-    InvoiceCreate.importUninvoicedData = async ({ closingYm, closingDate, customerCode, referenceDate }) => {
+    InvoiceCreate.importUninvoicedData = async ({ customerCode, billingFrom, billingTo }) => {
 
-        const invoiceData = await InvoiceCreate.buildInvoiceData({
-            closingYm,
-            closingDate,
+        const deliveries = await InvoiceCreate.fetchUninvoicedDeliveries({
             customerCode,
-            referenceDate,
+            billingFrom,
+            billingTo,
         });
 
-        const { summary } = invoiceData;
+        const { details, deliveryRecordIds, deliveryNos } = InvoiceCreate.buildInvoiceDetails(deliveries);
+        const summary = InvoiceCreate.calculateSummary(details);
+
+        if (deliveries.length === 0 || details.length === 0) {
+            throw new Error(NO_DATA_MESSAGE);
+        }
+
+        const customerName = getFieldValue(deliveries[0], DELIVERY_FIELDS.customerName);
+        const periodLabel = `${billingFrom} ～ ${billingTo}`;
 
         console.log('[AYANAS Invoice] 未請求データ取込');
         console.log('取得件数:', summary.item_count);
         console.log('subtotal:', summary.subtotal);
+        console.log('tax:', summary.tax);
         console.log('total:', summary.total);
 
-        return invoiceData;
+        return {
+            header: {
+                customer_code: customerCode,
+                customer_name: customerName,
+                billing_from: billingFrom,
+                billing_to: billingTo,
+                period_label: periodLabel,
+            },
+            details,
+            summary,
+            deliveryRecordIds,
+            deliveryNos,
+            deliveryCount: deliveries.length,
+        };
+
+    };
+
+    InvoiceCreate.NO_DATA_MESSAGE = NO_DATA_MESSAGE;
+
+    const pad3 = (value) => String(value).padStart(3, '0');
+
+    const formatToday = () => {
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = pad2(now.getMonth() + 1);
+        const day = pad2(now.getDate());
+
+        return `${year}-${month}-${day}`;
+
+    };
+
+    const formatClosingYmFromDate = (dateValue) => {
+
+        const normalized = String(dateValue ?? '').trim();
+        const match = normalized.match(/^(\d{4})-(\d{2})/);
+
+        if (!match) {
+            throw new Error('請求日（invoice_date）の形式が不正です。');
+        }
+
+        return `${match[1]}-${match[2]}`;
+
+    };
+
+    const formatInvoiceNoPrefix = (dateValue) => {
+
+        const normalized = String(dateValue ?? '').trim();
+        const match = normalized.match(/^(\d{4})-(\d{2})/);
+
+        if (!match) {
+            throw new Error('請求日（invoice_date）の形式が不正です。');
+        }
+
+        return `${match[1].slice(-2)}${match[2]}`;
+
+    };
+
+    const parseInvoiceNoSequence = (invoiceNo, prefix) => {
+
+        const normalized = String(invoiceNo ?? '').trim();
+        const pattern = new RegExp(`^${prefix}-(\\d{3})$`);
+        const match = normalized.match(pattern);
+
+        if (!match) {
+            return 0;
+        }
+
+        return Number(match[1]);
+
+    };
+
+    /**
+     * 請求番号を YYMM-001 形式で採番する
+     * @param {string} invoiceDate - YYYY-MM-DD
+     */
+    InvoiceCreate.generateNextInvoiceNo = async (invoiceDate) => {
+
+        const prefix = formatInvoiceNoPrefix(invoiceDate);
+        const query = [
+            `${INVOICE_FIELDS.invoiceNo} like "${escapeQueryValue(prefix)}-%"`,
+            'order by invoice_no desc',
+            'limit 500',
+        ].join(' ');
+
+        const response = await kintoneApi(
+            kintone.api.url('/k/v1/records', true),
+            'GET',
+            {
+                app: INVOICE_APP_ID,
+                query,
+                fields: [INVOICE_FIELDS.invoiceNo],
+            }
+        );
+
+        let maxSequence = 0;
+
+        response.records.forEach((record) => {
+
+            const invoiceNo = getFieldValue(record, INVOICE_FIELDS.invoiceNo);
+            const sequence = parseInvoiceNoSequence(invoiceNo, prefix);
+
+            if (sequence > maxSequence) {
+                maxSequence = sequence;
+            }
+
+        });
+
+        return `${prefix}-${pad3(maxSequence + 1)}`;
+
+    };
+
+    InvoiceCreate.calculateBalance = (carryOver, invoiceAmount, paymentAmount) => (
+        toNumber(carryOver) + toNumber(invoiceAmount) - toNumber(paymentAmount)
+    );
+
+    const hasInvoiceDetails = (record) => {
+
+        const table = record?.[INVOICE_FIELDS.detailTable];
+        const rows = Array.isArray(table?.value) ? table.value : [];
+
+        return rows.some((row) => {
+
+            const rowFields = row?.value ?? {};
+            const deliveryNo = String(getFieldValue(rowFields, INVOICE_DETAIL_FIELDS.deliveryNo) ?? '').trim();
+            const itemName = String(getFieldValue(rowFields, INVOICE_DETAIL_FIELDS.itemName) ?? '').trim();
+
+            return deliveryNo !== '' || itemName !== '';
+
+        });
+
+    };
+
+    /**
+     * 請求書作成ボタン用: ヘッダー項目を組み立てる
+     */
+    InvoiceCreate.buildInvoiceCompletion = async (record) => {
+
+        if (!hasInvoiceDetails(record)) {
+            throw new Error('請求明細がありません。先に「未請求データ取込」を実行してください。');
+        }
+
+        const total = toNumber(getFieldValue(record, INVOICE_FIELDS.total));
+
+        if (total === 0) {
+            throw new Error('税込合計（total）が 0 です。請求明細を確認してください。');
+        }
+
+        const carryOver = toNumber(getFieldValue(record, INVOICE_FIELDS.carryOver));
+        const paymentAmount = toNumber(getFieldValue(record, INVOICE_FIELDS.paymentAmount));
+        const invoiceDate = formatToday();
+        const invoiceNo = await InvoiceCreate.generateNextInvoiceNo(invoiceDate);
+        const invoiceAmount = total;
+        const balance = InvoiceCreate.calculateBalance(carryOver, invoiceAmount, paymentAmount);
+        const closingYm = formatClosingYmFromDate(invoiceDate);
+
+        return {
+            [INVOICE_FIELDS.invoiceNo]: invoiceNo,
+            [INVOICE_FIELDS.invoiceDate]: invoiceDate,
+            [INVOICE_FIELDS.invoiceAmount]: invoiceAmount,
+            [INVOICE_FIELDS.balance]: balance,
+            [INVOICE_FIELDS.invoiceStatus]: INVOICE_STATUS_CREATING,
+            [INVOICE_FIELDS.closingYm]: closingYm,
+        };
+
+    };
+
+    InvoiceCreate.INVOICE_STATUS_CREATING = INVOICE_STATUS_CREATING;
+    InvoiceCreate.INVOICE_STATUS_CONFIRMED = INVOICE_STATUS_CONFIRMED;
+    InvoiceCreate.INVOICE_COMPLETE_MESSAGE = INVOICE_COMPLETE_MESSAGE;
+    InvoiceCreate.INVOICE_CONFIRM_MESSAGE = INVOICE_CONFIRM_MESSAGE;
+    InvoiceCreate.INVOICE_CONFIRM_DIALOG = INVOICE_CONFIRM_DIALOG;
+
+    const buildDeliveryConfirmUpdate = (invoiceNo, invoiceDate) => ({
+        [DELIVERY_FIELDS.billingStatus]: { value: INVOICED_STATUS },
+        [DELIVERY_FIELDS.invoiceNo]: { value: invoiceNo },
+        [DELIVERY_FIELDS.invoiceDate]: { value: invoiceDate },
+    });
+
+    InvoiceCreate.fetchDeliveryMapByNos = async (deliveryNos) => {
+
+        const uniqueNos = [...new Set(
+            deliveryNos
+                .map((no) => String(no ?? '').trim())
+                .filter((no) => no !== '')
+        )];
+
+        const deliveryMap = new Map();
+        const chunkSize = 100;
+
+        for (let index = 0; index < uniqueNos.length; index += chunkSize) {
+
+            const chunk = uniqueNos.slice(index, index + chunkSize);
+            const inClause = chunk.map((no) => `"${escapeQueryValue(no)}"`).join(', ');
+            const query = `${DELIVERY_FIELDS.deliveryNo} in (${inClause})`;
+
+            const response = await kintoneApi(
+                kintone.api.url('/k/v1/records', true),
+                'GET',
+                {
+                    app: DELIVERY_APP_ID,
+                    query,
+                    fields: ['$id', DELIVERY_FIELDS.deliveryNo],
+                }
+            );
+
+            response.records.forEach((record) => {
+
+                const deliveryNo = String(getFieldValue(record, DELIVERY_FIELDS.deliveryNo) ?? '').trim();
+                const id = Number(record.$id?.value);
+
+                if (deliveryNo && !Number.isNaN(id)) {
+                    deliveryMap.set(deliveryNo, id);
+                }
+
+            });
+
+        }
+
+        const notFoundNos = uniqueNos.filter((no) => !deliveryMap.has(no));
+
+        return {
+            deliveryMap,
+            notFoundNos,
+        };
+
+    };
+
+    const updateDeliveryRecord = async (id, updateRecord) => {
+
+        await kintoneApi(
+            kintone.api.url('/k/v1/record', true),
+            'PUT',
+            {
+                app: DELIVERY_APP_ID,
+                id,
+                record: updateRecord,
+            }
+        );
+
+    };
+
+    InvoiceCreate.updateDeliveriesOnConfirm = async ({ deliveryMap, invoiceNo, invoiceDate }) => {
+
+        const updateRecord = buildDeliveryConfirmUpdate(invoiceNo, invoiceDate);
+        const failedNos = [];
+        const entries = [...deliveryMap.entries()];
+        const chunkSize = 100;
+
+        for (let index = 0; index < entries.length; index += chunkSize) {
+
+            const chunk = entries.slice(index, index + chunkSize);
+            const records = chunk.map(([deliveryNo, id]) => ({
+                deliveryNo,
+                id,
+            }));
+
+            try {
+
+                await kintoneApi(
+                    kintone.api.url('/k/v1/records', true),
+                    'PUT',
+                    {
+                        app: DELIVERY_APP_ID,
+                        records: records.map(({ id }) => ({
+                            id,
+                            record: updateRecord,
+                        })),
+                    }
+                );
+
+            } catch (batchError) {
+
+                for (const { deliveryNo, id } of records) {
+
+                    try {
+                        await updateDeliveryRecord(id, updateRecord);
+                    } catch (singleError) {
+                        failedNos.push(deliveryNo);
+                        console.error('[AYANAS Invoice]', deliveryNo, singleError);
+                    }
+
+                }
+
+            }
+
+        }
+
+        return failedNos;
+
+    };
+
+    InvoiceCreate.updateInvoiceStatus = async (recordId, status) => {
+
+        await kintoneApi(
+            kintone.api.url('/k/v1/record', true),
+            'PUT',
+            {
+                app: INVOICE_APP_ID,
+                id: recordId,
+                record: {
+                    [INVOICE_FIELDS.invoiceStatus]: { value: status },
+                },
+            }
+        );
+
+    };
+
+    /**
+     * 請求確定: 納品管理を請求済に更新し、請求書を「確定」にする
+     */
+    InvoiceCreate.confirmInvoice = async ({ record, recordId }) => {
+
+        const id = Number(recordId);
+
+        if (Number.isNaN(id) || id <= 0) {
+            throw new Error('レコード ID を取得できません。保存後に再度お試しください。');
+        }
+
+        const invoiceNo = String(getFieldValue(record, INVOICE_FIELDS.invoiceNo) ?? '').trim();
+        const invoiceDate = String(getFieldValue(record, INVOICE_FIELDS.invoiceDate) ?? '').trim();
+        const invoiceStatus = String(getFieldValue(record, INVOICE_FIELDS.invoiceStatus) ?? '').trim();
+
+        if (!invoiceNo) {
+            throw new Error('請求番号（invoice_no）が未設定です。');
+        }
+
+        if (!invoiceDate) {
+            throw new Error('請求日（invoice_date）が未設定です。');
+        }
+
+        if (invoiceStatus === INVOICE_STATUS_CONFIRMED) {
+            throw new Error('この請求書は既に確定済みです。');
+        }
+
+        const deliveryNos = InvoiceCreate.collectDeliveryNosFromRecord(record);
+
+        if (deliveryNos.length === 0) {
+            throw new Error('請求明細に納品番号がありません。');
+        }
+
+        const { deliveryMap, notFoundNos } = await InvoiceCreate.fetchDeliveryMapByNos(deliveryNos);
+        const failedNos = await InvoiceCreate.updateDeliveriesOnConfirm({
+            deliveryMap,
+            invoiceNo,
+            invoiceDate,
+        });
+
+        const errorNos = [...new Set([...notFoundNos, ...failedNos])];
+
+        if (errorNos.length > 0) {
+            throw new Error(
+                `以下の納品書を更新できませんでした。\n\n${errorNos.join('\n')}`
+            );
+        }
+
+        await InvoiceCreate.updateInvoiceStatus(id, INVOICE_STATUS_CONFIRMED);
+
+        return {
+            updatedDeliveryCount: deliveryMap.size,
+            invoiceNo,
+        };
 
     };
 
@@ -669,7 +1155,207 @@
 
     InvoiceCreate.getInvoiceAppId = () => INVOICE_APP_ID;
 
+    InvoiceCreate.fetchInvoiceRecord = async (recordId) => {
+
+        const id = Number(recordId);
+
+        if (Number.isNaN(id) || id <= 0) {
+            throw new Error('レコード ID を取得できません。');
+        }
+
+        const response = await kintoneApi(
+            kintone.api.url('/k/v1/record', true),
+            'GET',
+            {
+                app: INVOICE_APP_ID,
+                id,
+            }
+        );
+
+        return response.record;
+
+    };
+
+    InvoiceCreate.fetchInvoiceByNo = async (invoiceNo) => {
+
+        const normalized = String(invoiceNo ?? '').trim();
+
+        if (!normalized) {
+            throw new Error('請求番号（invoice_no）を入力してください。');
+        }
+
+        const query = `${INVOICE_FIELDS.invoiceNo} = "${escapeQueryValue(normalized)}" limit 1`;
+        const response = await kintoneApi(
+            kintone.api.url('/k/v1/records', true),
+            'GET',
+            {
+                app: INVOICE_APP_ID,
+                query,
+            }
+        );
+
+        if (response.records.length === 0) {
+            throw new Error(`請求番号 ${normalized} の請求書が見つかりません。`);
+        }
+
+        return response.records[0];
+
+    };
+
+    /**
+     * 入金状況（payment_status）を累計入金額から判定
+     */
+    InvoiceCreate.derivePaymentStatus = (totalPaid, invoiceAmount) => {
+
+        const paid = toNumber(totalPaid);
+        const amount = toNumber(invoiceAmount);
+
+        if (paid <= 0) {
+            return PAYMENT_STATUS_UNPAID;
+        }
+
+        if (paid >= amount) {
+            return PAYMENT_STATUS_PAID;
+        }
+
+        return PAYMENT_STATUS_PARTIAL;
+
+    };
+
     InvoiceCreate.getDeliveryAppId = () => DELIVERY_APP_ID;
+
+    /**
+     * 入金残高 = 請求額（invoice_amount）− 入金金額（payment_amount）
+     * V1.0: 自動更新は行わない。入金管理アプリ連携時に使用。
+     */
+    InvoiceCreate.calculatePaymentBalance = (invoiceAmount, paymentAmount) => (
+        toNumber(invoiceAmount) - toNumber(paymentAmount)
+    );
+
+    const parseDateOnly = (dateValue) => {
+
+        const normalized = String(dateValue ?? '').trim();
+        const match = normalized.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+        if (!match) {
+            return null;
+        }
+
+        return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+
+    };
+
+    InvoiceCreate.getTaxInclusiveInvoiceAmount = (recordOrInvoiceAmount, paymentAmountArg) => {
+
+        if (recordOrInvoiceAmount && typeof recordOrInvoiceAmount === 'object') {
+            const record = recordOrInvoiceAmount;
+            const invoiceAmount = toNumber(getFieldValue(record, INVOICE_FIELDS.invoiceAmount));
+
+            if (invoiceAmount !== 0) {
+                return invoiceAmount;
+            }
+
+            return toNumber(getFieldValue(record, INVOICE_FIELDS.total));
+        }
+
+        return toNumber(recordOrInvoiceAmount);
+
+    };
+
+    /**
+     * 売掛残高 = 税込請求額 − 入金金額
+     * V1.0: 表示用。入金管理アプリ完成後にフィールドへ自動反映。
+     */
+    InvoiceCreate.calculateAccountsReceivable = (recordOrInvoiceAmount, paymentAmount) => {
+
+        const taxInclusiveAmount = InvoiceCreate.getTaxInclusiveInvoiceAmount(recordOrInvoiceAmount);
+        const paidAmount = recordOrInvoiceAmount && typeof recordOrInvoiceAmount === 'object'
+            ? toNumber(getFieldValue(recordOrInvoiceAmount, INVOICE_FIELDS.paymentAmount))
+            : toNumber(paymentAmount);
+
+        return taxInclusiveAmount - paidAmount;
+
+    };
+
+    /**
+     * 回収期限超過日数 = 今日 − 支払期限（超過していない場合は 0）
+     */
+    InvoiceCreate.calculateOverdueDays = (dueDate, referenceDate) => {
+
+        const due = parseDateOnly(dueDate);
+        const reference = parseDateOnly(referenceDate || formatToday());
+
+        if (!due || !reference) {
+            return 0;
+        }
+
+        const diffMs = reference.getTime() - due.getTime();
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        return diffDays > 0 ? diffDays : 0;
+
+    };
+
+    /**
+     * 回収状況を売掛残高・入金金額から判定（V1.0: 表示用）
+     */
+    InvoiceCreate.deriveCollectionStatus = (accountsReceivable, paymentAmount) => {
+
+        const receivable = toNumber(accountsReceivable);
+        const paid = toNumber(paymentAmount);
+
+        if (receivable <= 0) {
+            return COLLECTION_STATUS_COLLECTED;
+        }
+
+        if (paid > 0) {
+            return COLLECTION_STATUS_PARTIAL;
+        }
+
+        return COLLECTION_STATUS_UNCOLLECTED;
+
+    };
+
+    /**
+     * 売掛管理の表示用値をレコードから算出（V1.0）
+     */
+    InvoiceCreate.computeReceivableDisplay = (record) => {
+
+        const storedReceivable = getFieldValue(record, INVOICE_FIELDS.accountsReceivable);
+        const storedOverdueDays = getFieldValue(record, INVOICE_FIELDS.overdueDays);
+        const storedCollectionStatus = String(getFieldValue(record, INVOICE_FIELDS.collectionStatus) ?? '').trim();
+        const paymentAmount = toNumber(getFieldValue(record, INVOICE_FIELDS.paymentAmount));
+        const dueDate = getFieldValue(record, INVOICE_FIELDS.dueDate);
+
+        const accountsReceivable = storedReceivable !== '' && storedReceivable !== null && storedReceivable !== undefined
+            ? toNumber(storedReceivable)
+            : InvoiceCreate.calculateAccountsReceivable(record);
+
+        const overdueDays = storedOverdueDays !== '' && storedOverdueDays !== null && storedOverdueDays !== undefined
+            ? toNumber(storedOverdueDays)
+            : InvoiceCreate.calculateOverdueDays(dueDate);
+
+        const collectionStatus = storedCollectionStatus
+            || InvoiceCreate.deriveCollectionStatus(accountsReceivable, paymentAmount);
+
+        return {
+            accounts_receivable: accountsReceivable,
+            overdue_days: overdueDays,
+            collection_status: collectionStatus,
+            last_payment_date: getFieldValue(record, INVOICE_FIELDS.lastPaymentDate),
+        };
+
+    };
+
+    InvoiceCreate.PAYMENT_STATUS_LABELS = PAYMENT_STATUS_LABELS;
+    InvoiceCreate.PAYMENT_STATUS_UNPAID = PAYMENT_STATUS_UNPAID;
+    InvoiceCreate.PAYMENT_STATUS_PARTIAL = PAYMENT_STATUS_PARTIAL;
+    InvoiceCreate.PAYMENT_STATUS_PAID = PAYMENT_STATUS_PAID;
+
+    InvoiceCreate.COLLECTION_STATUS_LABELS = COLLECTION_STATUS_LABELS;
+    InvoiceCreate.COLLECTION_STATUS_UNCOLLECTED = COLLECTION_STATUS_UNCOLLECTED;
+    InvoiceCreate.COLLECTION_STATUS_PARTIAL = COLLECTION_STATUS_PARTIAL;
+    InvoiceCreate.COLLECTION_STATUS_COLLECTED = COLLECTION_STATUS_COLLECTED;
 
     InvoiceCreate.INVOICE_FIELDS = INVOICE_FIELDS;
 

@@ -20,6 +20,9 @@
       "js/utils/dom.js",
       "js/record.js",
       "js/invoice_create.js",
+      "js/invoice_index.js",
+      "js/payment_create.js",
+      "js/receivable_create.js",
       "js/reports/order_definition.js",
       "js/reports/delivery_definition.js",
       "js/templates/template_interface.js",
@@ -35,10 +38,14 @@
       "js/barcode.js",
       "js/preview.js",
       "js/invoice_desktop.js",
+      "js/payment_desktop.js",
+      "js/receivable_index.js",
       "js/desktop.js"
     ],
     "css": [
-      "css/print.css"
+      "css/print.css",
+      "css/invoice_index.css",
+      "css/receivable_index.css"
     ]
   },
   "config": {

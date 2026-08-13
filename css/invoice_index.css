@@ -1,0 +1,91 @@
+.ayanas-invoice-index-toolbar {
+    box-sizing: border-box;
+    margin: 0 0 12px;
+    padding: 12px 16px;
+    background: #f7f9fb;
+    border: 1px solid #d4d7d7;
+    border-radius: 4px;
+}
+
+.ayanas-invoice-index-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 32px;
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.ayanas-invoice-index-summary-item {
+    margin: 0;
+}
+
+.ayanas-invoice-index-summary-item strong {
+    margin-right: 6px;
+    font-weight: 700;
+}
+
+.ayanas-invoice-index-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.ayanas-invoice-index-filters-label {
+    margin: 0 8px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #333;
+}
+
+.ayanas-invoice-index-filter-button {
+    margin: 0;
+    padding: 6px 14px;
+    border: 1px solid #3498db;
+    border-radius: 4px;
+    background: #fff;
+    color: #3498db;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.ayanas-invoice-index-filter-button:hover {
+    background: #ebf5fb;
+}
+
+.ayanas-invoice-index-sorts {
+    margin-top: 8px;
+}
+
+.ayanas-invoice-index-filter-button.is-active {
+    background: #3498db;
+    color: #fff;
+}
+
+.ayanas-invoice-index-loading {
+    color: #888;
+    font-size: 13px;
+}
+
+/* 入金状況による行の色分け */
+.recordlist-gaia tr.ayanas-payment-unpaid td,
+.recordlist-gaia tr.ayanas-payment-unpaid th,
+tr.ayanas-payment-unpaid > td,
+tr.ayanas-payment-unpaid > th {
+    background-color: #fdecea !important;
+}
+
+.recordlist-gaia tr.ayanas-payment-partial td,
+.recordlist-gaia tr.ayanas-payment-partial th,
+tr.ayanas-payment-partial > td,
+tr.ayanas-payment-partial > th {
+    background-color: #fff3e0 !important;
+}
+
+.recordlist-gaia tr.ayanas-payment-paid td,
+.recordlist-gaia tr.ayanas-payment-paid th,
+tr.ayanas-payment-paid > td,
+tr.ayanas-payment-paid > th {
+    background-color: #e8f5e9 !important;
+}

@@ -21,6 +21,26 @@
 
     };
 
+    const getPaymentAppId = () => {
+
+        if (typeof PaymentCreate !== 'undefined' && typeof PaymentCreate.getPaymentAppId === 'function') {
+            return PaymentCreate.getPaymentAppId();
+        }
+
+        return null;
+
+    };
+
+    const getReceivableAppId = () => {
+
+        if (typeof ReceivableCreate !== 'undefined' && typeof ReceivableCreate.getReceivableAppId === 'function') {
+            return ReceivableCreate.getReceivableAppId();
+        }
+
+        return null;
+
+    };
+
     const BUTTON_ID = 'ayanas-print-button';
     const BUTTON_CLASS = 'ayanas-print-button';
 
@@ -133,7 +153,11 @@
 
     kintone.events.on('app.record.detail.show', (event) => {
 
-        if (getAppId() === getInvoiceAppId()) {
+        if (
+            getAppId() === getInvoiceAppId()
+            || getAppId() === getPaymentAppId()
+            || getAppId() === getReceivableAppId()
+        ) {
             return event;
         }
 
