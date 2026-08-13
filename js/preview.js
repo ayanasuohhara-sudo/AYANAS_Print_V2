@@ -33,7 +33,6 @@
         'js/layout.js',
         'js/barcode.js',
         'js/preview.js',
-        'js/apps.js',
         'js/desktop.js',
     ];
 

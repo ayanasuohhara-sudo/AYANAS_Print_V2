@@ -7,39 +7,12 @@
      *
      * kintone レコード詳細画面に印刷ボタンを配置し、
      * Record.get() → Preview.open() でプレビュー表示を行う。
+     * 印刷以外の処理は行わない（請求業務は AYANAS Invoice プラグイン）。
      */
 
     const DELIVERY_APP_ID = 19;
-
-    const getInvoiceAppId = () => {
-
-        if (typeof InvoiceCreate !== 'undefined' && typeof InvoiceCreate.getInvoiceAppId === 'function') {
-            return InvoiceCreate.getInvoiceAppId();
-        }
-
-        return 35;
-
-    };
-
-    const getPaymentAppId = () => {
-
-        if (typeof PaymentCreate !== 'undefined' && typeof PaymentCreate.getPaymentAppId === 'function') {
-            return PaymentCreate.getPaymentAppId();
-        }
-
-        return 36;
-
-    };
-
-    const getReceivableAppId = () => {
-
-        if (typeof ReceivableCreate !== 'undefined' && typeof ReceivableCreate.getReceivableAppId === 'function') {
-            return ReceivableCreate.getReceivableAppId();
-        }
-
-        return 37;
-
-    };
+    const PAYMENT_APP_ID = 36;
+    const RECEIVABLE_APP_ID = 37;
 
     const BUTTON_ID = 'ayanas-print-button';
     const BUTTON_CLASS = 'ayanas-print-button';
@@ -91,6 +64,18 @@
 
     };
 
+    const shouldShowPrintButton = () => {
+
+        const appId = getAppId();
+
+        if (appId === PAYMENT_APP_ID || appId === RECEIVABLE_APP_ID) {
+            return false;
+        }
+
+        return true;
+
+    };
+
     const getButtonLabel = () => Layout.getButtonLabel();
 
     const handlePrintClick = async () => {
@@ -139,7 +124,7 @@
 
     kintone.events.on('app.record.detail.show', (event) => {
 
-        if (getAppId() === getPaymentAppId() || getAppId() === getReceivableAppId()) {
+        if (!shouldShowPrintButton()) {
             return event;
         }
 

@@ -1,57 +1,30 @@
-# AYANAS Print V2
+# AYANAS Print V3
 
-## 概要
+kintone 帳票印刷専用プラグイン。
 
-- kintone帳票印刷プラグイン
+## 機能
+
 - 受注票印刷
-- Code39バーコード対応
+- 納品書印刷
+- 請求書印刷
+- 見積書印刷（テンプレート準備中）
+- インボイス印刷（テンプレート準備中）
 
-## ディレクトリ構成
+請求書作成・確定などの業務処理は **AYANAS Invoice**（`C:\CAYANAS_Invoice`）を使用してください。
 
+## ビルド
+
+```bash
+npm install
+npm run pack
 ```
-CAYANAS_PRINT_V2/
-├── manifest.json
-├── package.json
-├── private.ppk
-├── README.md
-├── css/
-│   └── print.css
-├── html/
-│   └── config.html
-├── image/
-│   └── icon.png
-├── js/
-│   ├── format.js
-│   ├── record.js
-│   ├── template.js
-│   ├── barcode.js
-│   ├── preview.js
-│   ├── desktop.js
-│   └── config.js
-└── lib/
-    └── JsBarcode.all.min.js
-```
-
-## 使用方法
-
-1. `npm install`
-2. `npm run pack`
-3. 生成された `plugin.zip` を kintone へアップロード
 
 ## アーキテクチャ
 
 ```
-desktop.js
-↓
-Record.get()
-↓
-Template.render()
-↓
-Preview.open()
-↓
-Barcode.draw()
+desktop.js → Record.get() → Layout.resolve() → Preview.open() → 印刷
 ```
 
 ## Version
 
-v1.0.0
+3.0.0

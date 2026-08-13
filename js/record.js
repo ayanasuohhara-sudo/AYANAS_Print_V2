@@ -12,16 +12,7 @@
     const Record = {};
 
     const DELIVERY_APP_ID = 19;
-
-    const getInvoiceAppId = () => {
-
-        if (typeof InvoiceCreate !== 'undefined' && typeof InvoiceCreate.getInvoiceAppId === 'function') {
-            return InvoiceCreate.getInvoiceAppId();
-        }
-
-        return 35;
-
-    };
+    const INVOICE_APP_ID = 35;
 
     /** 受注票（App 16）ヘッダーフィールド */
     const ORDER_HEADER_FIELDS = [
@@ -538,7 +529,7 @@
                 return Record.getDeliveryData();
             }
 
-            if (appId === getInvoiceAppId()) {
+            if (appId === INVOICE_APP_ID) {
                 return Record.getInvoiceData();
             }
 

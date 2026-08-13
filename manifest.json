@@ -8,8 +8,8 @@
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 3.0",
-    "en": "AYANAS Print Plugin V3"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 3.0（印刷専用）",
+    "en": "AYANAS Print Plugin V3 (print only)"
   },
   "desktop": {
     "js": [
@@ -19,13 +19,10 @@
       "js/layout.js",
       "js/barcode.js",
       "js/preview.js",
-      "js/apps.js",
       "js/desktop.js"
     ],
     "css": [
-      "css/print.css",
-      "css/invoice_index.css",
-      "css/receivable_index.css"
+      "css/print.css"
     ]
   },
   "config": {
