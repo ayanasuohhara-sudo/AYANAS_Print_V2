@@ -147,7 +147,7 @@
         unitPrice: 'unit_price',
         amount: 'amount',
         slipNo: 'slip_no',
-        inCharge: 'in_charge',
+        inCharge: 'in_charge_0',
     };
 
     const kintoneApi = (path, method, body) => new Promise((resolve, reject) => {
