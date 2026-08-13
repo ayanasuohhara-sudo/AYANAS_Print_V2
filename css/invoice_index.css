@@ -190,3 +190,66 @@ tr.ayanas-payment-paid > th {
     color: #fff;
     font-weight: 700;
 }
+
+/* 請求締め実行履歴 */
+.ayanas-batch-history-panel {
+    box-sizing: border-box;
+    margin: 0 0 16px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid #d4d7d7;
+    border-radius: 4px;
+}
+
+.ayanas-batch-history-title {
+    margin: 0 0 12px;
+    font-size: 16px;
+}
+
+.ayanas-batch-history-table-wrap {
+    overflow-x: auto;
+}
+
+.ayanas-batch-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.ayanas-batch-history-table th,
+.ayanas-batch-history-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e3e7ea;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.ayanas-batch-history-table th {
+    background: #f7f9fb;
+    font-weight: 700;
+}
+
+.ayanas-batch-history-table td.num {
+    text-align: right;
+}
+
+.ayanas-batch-history-empty {
+    color: #888;
+    text-align: center;
+}
+
+.ayanas-batch-history-success td {
+    background: #e8f5e9;
+}
+
+.ayanas-batch-history-partial td {
+    background: #fff3e0;
+}
+
+.ayanas-batch-history-failed td {
+    background: #fdecea;
+}
+
+.ayanas-batch-history-running td {
+    background: #ebf5fb;
+}

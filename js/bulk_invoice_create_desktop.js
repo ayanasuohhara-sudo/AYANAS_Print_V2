@@ -3,14 +3,14 @@
 
     /**
      * AYANAS Print V2
-     * monthly_billing_desktop.js
+     * bulk_invoice_create_desktop.js
      *
-     * 請求書作成アプリ一覧に「月次請求処理」ボタンを配置する。
+     * 請求書作成アプリ一覧に「請求書一括作成」ボタンを配置する。
      */
 
-    const BUTTON_ID = 'ayanas-monthly-billing-button';
-    const DIALOG_ID = 'ayanas-monthly-billing-dialog';
-    const OVERLAY_ID = 'ayanas-monthly-billing-overlay';
+    const BUTTON_ID = 'ayanas-bulk-invoice-create-button';
+    const DIALOG_ID = 'ayanas-bulk-invoice-create-dialog';
+    const OVERLAY_ID = 'ayanas-bulk-invoice-create-overlay';
 
     const isInvoiceApp = () => {
 
@@ -41,11 +41,13 @@
 
     const renderClosingOptions = () => {
 
-        const labels = MonthlyBilling.getMonthlyClosingLabels();
+        const labels = BulkInvoiceCreate.getClosingLabels();
 
         return labels.map((label) => `<option value="${label}">${label}</option>`).join('');
 
     };
+
+    const formatYen = (amount) => `${Number(amount || 0).toLocaleString()} 円`;
 
     const showDialog = () => new Promise((resolve) => {
 
@@ -59,18 +61,18 @@
         dialog.id = DIALOG_ID;
         dialog.className = 'ayanas-monthly-billing-dialog';
         dialog.innerHTML = `
-            <h3 class="ayanas-monthly-billing-dialog-title">月次請求処理</h3>
+            <h3 class="ayanas-monthly-billing-dialog-title">請求書一括作成</h3>
             <p class="ayanas-monthly-billing-dialog-note">
-                選択した締日の対象期間内の未請求納品書を、請求先ごとに請求書へ一括作成します。<br>
+                選択した締日の対象期間内の未請求納品書を、取引先ごとに請求書へ一括作成します。<br>
                 V1.0: 納品管理の請求済更新は行いません。
             </p>
             <div class="ayanas-monthly-billing-dialog-field">
-                <label for="ayanas-monthly-closing-ym">請求締年月</label>
-                <input type="month" id="ayanas-monthly-closing-ym" value="${formatDefaultClosingYm()}">
+                <label for="ayanas-bulk-closing-ym">請求締年月</label>
+                <input type="month" id="ayanas-bulk-closing-ym" value="${formatDefaultClosingYm()}">
             </div>
             <div class="ayanas-monthly-billing-dialog-field">
-                <label for="ayanas-monthly-closing-date">締日</label>
-                <select id="ayanas-monthly-closing-date">
+                <label for="ayanas-bulk-closing-date">締日</label>
+                <select id="ayanas-bulk-closing-date">
                     ${renderClosingOptions()}
                 </select>
             </div>
@@ -104,8 +106,8 @@
         dialog.querySelector('.ayanas-monthly-billing-dialog-run')
             .addEventListener('click', () => {
 
-                const closingYm = dialog.querySelector('#ayanas-monthly-closing-ym')?.value ?? '';
-                const closingDate = dialog.querySelector('#ayanas-monthly-closing-date')?.value ?? '';
+                const closingYm = dialog.querySelector('#ayanas-bulk-closing-ym')?.value ?? '';
+                const closingDate = dialog.querySelector('#ayanas-bulk-closing-date')?.value ?? '';
 
                 if (!closingYm) {
                     alert('請求締年月を入力してください。');
@@ -127,7 +129,28 @@
         `${period.periodStart} ～ ${period.periodEnd}`
     );
 
-    const handleMonthlyBillingClick = async () => {
+    const buildResultMessage = (result) => {
+
+        const errorLines = result.errors.map((item) => (
+            `${item.customerCode} ${item.customerName}: ${item.message}`
+        ));
+
+        return [
+            '請求書一括作成が完了しました。',
+            '',
+            result.batchNo ? `締め処理番号: ${result.batchNo}` : null,
+            `対象期間: ${formatPeriodLabel(result.period)}`,
+            `作成件数: ${result.createdCount.toLocaleString()} 件`,
+            `対象納品件数: ${result.deliveryCount.toLocaleString()} 件`,
+            `対象金額: ${formatYen(result.totalAmount)}`,
+            errorLines.length > 0 ? '' : null,
+            errorLines.length > 0 ? '処理できなかった取引先:' : null,
+            ...errorLines,
+        ].filter((line) => line !== null).join('\n');
+
+    };
+
+    const handleBulkInvoiceCreateClick = async () => {
 
         const input = await showDialog();
 
@@ -138,11 +161,11 @@
         const { closingYm, closingDate } = input;
         const period = InvoiceCreate.resolveClosingPeriod(closingYm, closingDate);
         const confirmed = window.confirm(
-            `月次請求処理を実行します。\n\n`
+            `請求書一括作成を実行します。\n\n`
             + `請求締年月: ${period.closingYm}\n`
             + `締日: ${period.executionLabel}\n`
             + `対象期間: ${formatPeriodLabel(period)}\n\n`
-            + `未請求の納品書を請求先ごとに請求書へ作成します。\n`
+            + `未請求の納品書を取引先ごとに請求書へ作成します。\n`
             + `よろしいですか？`
         );
 
@@ -159,48 +182,36 @@
 
         try {
 
-            const result = await MonthlyBilling.run({ closingYm, closingDate });
-            const createdLines = result.created.map((item) => (
-                `${item.customerCode} ${item.customerName} / ${item.invoiceNo} / `
-                + `${item.deliveryCount} 件 / ${item.total.toLocaleString()} 円`
-            ));
-            const errorLines = result.errors.map((item) => (
-                `${item.customerCode}: ${item.message}`
-            ));
+            await InvoicePermission.assertAddRecord();
 
-            alert(
-                `月次請求処理が完了しました。\n\n`
-                + `対象期間: ${formatPeriodLabel(result.period)}\n`
-                + `作成件数: ${result.created.length} 件\n`
-                + `対象納品書: ${result.deliveryCount} 件\n`
-                + (result.skippedDeliveryCount > 0
-                    ? `対象外納品書: ${result.skippedDeliveryCount} 件\n`
-                    : '')
-                + (createdLines.length > 0 ? `\n${createdLines.join('\n')}\n` : '')
-                + (errorLines.length > 0 ? `\nエラー:\n${errorLines.join('\n')}` : '')
-            );
+            const result = await BulkInvoiceCreate.run({ closingYm, closingDate });
 
+            alert(buildResultMessage(result));
             location.reload();
 
         } catch (error) {
 
-            console.error('[AYANAS Monthly Billing]', error);
-            alert(error?.message || '月次請求処理に失敗しました。');
+            console.error('[AYANAS Bulk Invoice Create]', error);
+            alert(error?.message || '請求書一括作成に失敗しました。');
 
         } finally {
 
             if (button instanceof HTMLButtonElement) {
                 button.disabled = false;
-                button.textContent = '月次請求処理';
+                button.textContent = '請求書一括作成';
             }
 
         }
 
     };
 
-    const ensureButton = () => {
+    const ensureButton = async () => {
 
         if (document.getElementById(BUTTON_ID)) {
+            return;
+        }
+
+        if (typeof InvoicePermission !== 'undefined' && !(await InvoicePermission.canAddRecord())) {
             return;
         }
 
@@ -208,8 +219,8 @@
         button.id = BUTTON_ID;
         button.type = 'button';
         button.className = 'ayanas-monthly-billing-button';
-        button.textContent = '月次請求処理';
-        button.addEventListener('click', handleMonthlyBillingClick);
+        button.textContent = '請求書一括作成';
+        button.addEventListener('click', handleBulkInvoiceCreateClick);
 
         const toolbar = document.getElementById('ayanas-invoice-index-toolbar');
         const headerMenuSpace = kintone.app.getHeaderMenuSpaceElement();
@@ -229,13 +240,13 @@
 
     };
 
-    kintone.events.on('app.record.index.show', (event) => {
+    kintone.events.on('app.record.index.show', async (event) => {
 
         if (!isInvoiceApp()) {
             return event;
         }
 
-        ensureButton();
+        await ensureButton();
 
         return event;
 

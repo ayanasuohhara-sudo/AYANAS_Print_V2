@@ -153,11 +153,7 @@
 
     kintone.events.on('app.record.detail.show', (event) => {
 
-        if (
-            getAppId() === getInvoiceAppId()
-            || getAppId() === getPaymentAppId()
-            || getAppId() === getReceivableAppId()
-        ) {
+        if (getAppId() === getPaymentAppId() || getAppId() === getReceivableAppId()) {
             return event;
         }
 

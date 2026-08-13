@@ -20,10 +20,19 @@
     const NO_DATA_MESSAGE = '請求対象データがありません。';
     const INVOICE_STATUS_CREATING = '作成中';
     const INVOICE_STATUS_CONFIRMED = '確定';
+    const INVOICE_STATUS_CANCELLED = '取消';
     const INVOICED_STATUS = '請求済';
+    const INVOICED_IMPORT_ERROR = '請求済データは取り込めません。';
+    const INVOICE_NO_IMPORT_ERROR = '請求番号が設定されたデータは取り込めません。';
+    const INVOICE_VOID_BLOCKED_ERROR = '請求済のため取消できません。';
+    const DELIVERY_INVOICE_STATUS_UNINVOICED = '未請求';
+    const DELIVERY_INVOICE_STATUS_CREATING = '請求作成中';
+    const DELIVERY_INVOICE_STATUS_INVOICED = '請求済';
     const INVOICE_COMPLETE_MESSAGE = '請求書を作成しました。';
     const INVOICE_CONFIRM_MESSAGE = '請求を確定しました。';
     const INVOICE_CONFIRM_DIALOG = '請求を確定します。\n\n納品書は請求済になります。\n\nよろしいですか？';
+    const INVOICE_CANCEL_MESSAGE = '請求書を取り消しました。';
+    const INVOICE_CANCEL_DIALOG = '請求書を取り消します。\n\n納品書は未請求へ戻ります。\n\nよろしいですか？';
 
     /** 入金状況（payment_status）選択肢 — フィールドコードは請求書印刷でも使用 */
     const PAYMENT_STATUS_LABELS = [
@@ -51,7 +60,20 @@
         customerCode: 'customer_code',
         customerName: 'customer_name',
         closingDay: 'closing_day',
+        paymentTerms: 'payment_terms',
     };
+
+    /** 顧客管理 payment_terms 選択肢 */
+    const PAYMENT_TERMS_LABELS = [
+        '当月末払い',
+        '翌月10日払い',
+        '翌月15日払い',
+        '翌月20日払い',
+        '翌月25日払い',
+        '翌月末払い',
+        '翌々月10日払い',
+        '都度払い',
+    ];
 
     const DELIVERY_FIELDS = {
         deliveryNo: 'delivery_no',
@@ -59,6 +81,7 @@
         customerCode: 'customer_code',
         customerName: 'customer_name',
         billingStatus: 'billing_status',
+        invoiceStatus: 'invoice_status',
         invoiceNo: 'invoice_no',
         invoiceDate: 'invoice_date',
         invoiceFlag: 'invoice_flag',
@@ -385,6 +408,7 @@
                     CUSTOMER_FIELDS.customerCode,
                     CUSTOMER_FIELDS.customerName,
                     CUSTOMER_FIELDS.closingDay,
+                    CUSTOMER_FIELDS.paymentTerms,
                 ],
             }
         );
@@ -426,6 +450,7 @@
     InvoiceCreate.CLOSING_EXECUTION_LABELS = CLOSING_EXECUTION_LABELS;
     InvoiceCreate.CUSTOMER_CLOSING_DAY_LABELS = CUSTOMER_CLOSING_DAY_LABELS;
     InvoiceCreate.CLOSING_DATE_LABELS = CLOSING_EXECUTION_LABELS;
+    InvoiceCreate.PAYMENT_TERMS_LABELS = PAYMENT_TERMS_LABELS;
 
     const isEmptyDeliveryDetailRow = (rowFields) => {
 
@@ -447,7 +472,7 @@
 
     };
 
-    const isInvoicedDelivery = (record) => {
+    const isInvoicedDeliveryLegacy = (record) => {
 
         const flagValue = getFieldValue(record, DELIVERY_FIELDS.invoiceFlag);
 
@@ -459,17 +484,71 @@
 
     };
 
-    const isUninvoicedDelivery = (record) => {
+    const getDeliveryInvoiceStatus = (record) => {
 
-        const status = String(getFieldValue(record, DELIVERY_FIELDS.billingStatus) ?? '').trim();
+        const status = String(getFieldValue(record, DELIVERY_FIELDS.invoiceStatus) ?? '').trim();
 
-        if (status !== '') {
-            return status === UNINVOICED_STATUS;
+        if (status) {
+            return status;
         }
 
-        return !isInvoicedDelivery(record);
+        const billingStatus = String(getFieldValue(record, DELIVERY_FIELDS.billingStatus) ?? '').trim();
+
+        if (billingStatus === DELIVERY_INVOICE_STATUS_INVOICED || billingStatus === INVOICED_STATUS) {
+            return DELIVERY_INVOICE_STATUS_INVOICED;
+        }
+
+        if (billingStatus === DELIVERY_INVOICE_STATUS_UNINVOICED || billingStatus === UNINVOICED_STATUS) {
+            return DELIVERY_INVOICE_STATUS_UNINVOICED;
+        }
+
+        if (isInvoicedDeliveryLegacy(record)) {
+            return DELIVERY_INVOICE_STATUS_INVOICED;
+        }
+
+        return DELIVERY_INVOICE_STATUS_UNINVOICED;
 
     };
+
+    const hasDeliveryInvoiceNo = (record) => (
+        String(getFieldValue(record, DELIVERY_FIELDS.invoiceNo) ?? '').trim() !== ''
+    );
+
+    const isImportableDelivery = (record) => {
+
+        if (getDeliveryInvoiceStatus(record) !== DELIVERY_INVOICE_STATUS_UNINVOICED) {
+            return false;
+        }
+
+        return !hasDeliveryInvoiceNo(record);
+
+    };
+
+    const assertDeliveriesImportable = (deliveries) => {
+
+        const records = Array.isArray(deliveries) ? deliveries : [];
+
+        if (records.some((record) => getDeliveryInvoiceStatus(record) === DELIVERY_INVOICE_STATUS_INVOICED)) {
+            throw new Error(INVOICED_IMPORT_ERROR);
+        }
+
+        if (records.some((record) => hasDeliveryInvoiceNo(record))) {
+            throw new Error(INVOICE_NO_IMPORT_ERROR);
+        }
+
+        const blocked = records.filter((record) => !isImportableDelivery(record));
+
+        if (blocked.length > 0) {
+            throw new Error(INVOICED_IMPORT_ERROR);
+        }
+
+    };
+
+    const isInvoicedDelivery = (record) => (
+        getDeliveryInvoiceStatus(record) === DELIVERY_INVOICE_STATUS_INVOICED
+    );
+
+    const isUninvoicedDelivery = (record) => isImportableDelivery(record);
 
     /**
      * 請求先コード・請求対象期間で未請求の納品書を取得する（V1.0）
@@ -491,7 +570,7 @@
 
         const conditions = [
             `${DELIVERY_FIELDS.customerCode} = "${escapeQueryValue(code)}"`,
-            `${DELIVERY_FIELDS.billingStatus} in ("${UNINVOICED_STATUS}")`,
+            `${DELIVERY_FIELDS.invoiceStatus} in ("${DELIVERY_INVOICE_STATUS_UNINVOICED}")`,
         ];
 
         if (from && to) {
@@ -537,7 +616,9 @@
 
         }
 
-        const deliveries = records.filter((record) => isUninvoicedDelivery(record));
+        const deliveries = records.filter((record) => isImportableDelivery(record));
+
+        assertDeliveriesImportable(deliveries);
 
         if (singleDelivery && deliveries.length > 1) {
             return [deliveries[0]];
@@ -564,7 +645,7 @@
         }
 
         const conditions = [
-            `${DELIVERY_FIELDS.billingStatus} in ("${UNINVOICED_STATUS}")`,
+            `${DELIVERY_FIELDS.invoiceStatus} in ("${DELIVERY_INVOICE_STATUS_UNINVOICED}")`,
             `${DELIVERY_FIELDS.deliveryDate} >= "${escapeQueryValue(from)}"`,
             `${DELIVERY_FIELDS.deliveryDate} <= "${escapeQueryValue(to)}"`,
         ];
@@ -599,7 +680,11 @@
 
         }
 
-        return records.filter((record) => isUninvoicedDelivery(record));
+        const deliveries = records.filter((record) => isImportableDelivery(record));
+
+        assertDeliveriesImportable(deliveries);
+
+        return deliveries;
 
     };
 
@@ -636,6 +721,7 @@
                         CUSTOMER_FIELDS.customerCode,
                         CUSTOMER_FIELDS.customerName,
                         CUSTOMER_FIELDS.closingDay,
+                        CUSTOMER_FIELDS.paymentTerms,
                     ],
                 }
             );
@@ -692,6 +778,7 @@
         summary,
         invoiceDate,
         invoiceNo,
+        dueDate,
     }) => {
 
         const total = toNumber(summary?.total);
@@ -716,6 +803,7 @@
             [INVOICE_FIELDS.invoiceStatus]: { value: INVOICE_STATUS_CREATING },
             [INVOICE_FIELDS.invoiceDate]: { value: invoiceDate },
             [INVOICE_FIELDS.invoiceNo]: { value: invoiceNo },
+            [INVOICE_FIELDS.dueDate]: { value: dueDate },
             [INVOICE_FIELDS.carryOver]: { value: carryOver },
             [INVOICE_FIELDS.paymentAmount]: { value: paymentAmount },
             [INVOICE_FIELDS.balance]: { value: balance },
@@ -743,7 +831,7 @@
 
         const conditions = [
             `${DELIVERY_FIELDS.customerCode} = "${escapeQueryValue(code)}"`,
-            `${DELIVERY_FIELDS.invoiceFlag} not in ("${INVOICE_FLAG_VALUE}")`,
+            `${DELIVERY_FIELDS.invoiceStatus} in ("${DELIVERY_INVOICE_STATUS_UNINVOICED}")`,
         ];
 
         if (!period.adHoc) {
@@ -783,7 +871,9 @@
 
         }
 
-        const deliveries = records.filter((record) => !isInvoicedDelivery(record));
+        const deliveries = records.filter((record) => isImportableDelivery(record));
+
+        assertDeliveriesImportable(deliveries);
 
         if (period.singleDelivery && deliveries.length > 1) {
             return [deliveries[0]];
@@ -1069,42 +1159,159 @@
     };
 
     /**
-     * 請求番号を YYMM-001 形式で採番する
-     * @param {string} invoiceDate - YYYY-MM-DD
+     * 請求番号が既に使用されているか確認する
+     * @param {string} invoiceNo
+     * @param {number|null} excludeRecordId - 編集時に自身のレコードを除外
      */
-    InvoiceCreate.generateNextInvoiceNo = async (invoiceDate) => {
+    InvoiceCreate.isInvoiceNoTaken = async (invoiceNo, excludeRecordId = null) => {
 
-        const prefix = formatInvoiceNoPrefix(invoiceDate);
-        const query = [
-            `${INVOICE_FIELDS.invoiceNo} like "${escapeQueryValue(prefix)}-%"`,
-            'order by invoice_no desc',
-            'limit 500',
-        ].join(' ');
+        const normalized = String(invoiceNo ?? '').trim();
 
+        if (!normalized) {
+            return false;
+        }
+
+        const query = `${INVOICE_FIELDS.invoiceNo} = "${escapeQueryValue(normalized)}" limit 1`;
         const response = await kintoneApi(
             kintone.api.url('/k/v1/records', true),
             'GET',
             {
                 app: INVOICE_APP_ID,
                 query,
-                fields: [INVOICE_FIELDS.invoiceNo],
+                fields: ['$id', INVOICE_FIELDS.invoiceNo],
             }
         );
 
+        if (response.records.length === 0) {
+            return false;
+        }
+
+        if (excludeRecordId === null || excludeRecordId === undefined || excludeRecordId === '') {
+            return true;
+        }
+
+        const excludeId = Number(excludeRecordId);
+
+        return response.records.some((record) => Number(record.$id?.value) !== excludeId);
+
+    };
+
+    /**
+     * 同一 YYMM  prefix の請求番号から最大連番を取得する
+     */
+    InvoiceCreate.fetchMaxInvoiceNoSequence = async (prefix) => {
+
         let maxSequence = 0;
+        const limit = 500;
+        let offset = 0;
 
-        response.records.forEach((record) => {
+        while (true) {
 
-            const invoiceNo = getFieldValue(record, INVOICE_FIELDS.invoiceNo);
-            const sequence = parseInvoiceNoSequence(invoiceNo, prefix);
+            const query = [
+                `${INVOICE_FIELDS.invoiceNo} like "${escapeQueryValue(prefix)}-%"`,
+                'order by invoice_no desc',
+                `limit ${limit} offset ${offset}`,
+            ].join(' ');
 
-            if (sequence > maxSequence) {
-                maxSequence = sequence;
+            const response = await kintoneApi(
+                kintone.api.url('/k/v1/records', true),
+                'GET',
+                {
+                    app: INVOICE_APP_ID,
+                    query,
+                    fields: [INVOICE_FIELDS.invoiceNo],
+                }
+            );
+
+            response.records.forEach((record) => {
+
+                const invoiceNo = getFieldValue(record, INVOICE_FIELDS.invoiceNo);
+                const sequence = parseInvoiceNoSequence(invoiceNo, prefix);
+
+                if (sequence > maxSequence) {
+                    maxSequence = sequence;
+                }
+
+            });
+
+            if (response.records.length < limit) {
+                break;
             }
 
-        });
+            offset += limit;
+
+        }
+
+        return maxSequence;
+
+    };
+
+    /**
+     * 請求番号を YYMM-001 形式で採番する
+     * @param {string} invoiceDate - YYYY-MM-DD
+     */
+    InvoiceCreate.generateNextInvoiceNo = async (invoiceDate) => {
+
+        const prefix = formatInvoiceNoPrefix(invoiceDate);
+        const maxSequence = await InvoiceCreate.fetchMaxInvoiceNoSequence(prefix);
 
         return `${prefix}-${pad3(maxSequence + 1)}`;
+
+    };
+
+    const INVOICE_NO_MAX_RETRY = 10;
+
+    /**
+     * 重複確認付きで請求番号を採番する（保存直前の再採番用）
+     */
+    InvoiceCreate.generateUniqueInvoiceNo = async (invoiceDate, excludeRecordId = null) => {
+
+        for (let attempt = 0; attempt < INVOICE_NO_MAX_RETRY; attempt += 1) {
+
+            const invoiceNo = await InvoiceCreate.generateNextInvoiceNo(invoiceDate);
+            const taken = await InvoiceCreate.isInvoiceNoTaken(invoiceNo, excludeRecordId);
+
+            if (!taken) {
+                return invoiceNo;
+            }
+
+        }
+
+        throw new Error('請求番号の採番に失敗しました。再度保存してください。');
+
+    };
+
+    /**
+     * 保存時に請求番号を自動採番する
+     * - 新規: 常に採番（重複時は再採番）
+     * - 編集: 既存番号がある場合は維持
+     */
+    InvoiceCreate.assignInvoiceNoForSave = async ({ record, recordId = null, isCreate = false }) => {
+
+        const invoiceDate = String(getFieldValue(record, INVOICE_FIELDS.invoiceDate) ?? '').trim();
+        const existingNo = String(getFieldValue(record, INVOICE_FIELDS.invoiceNo) ?? '').trim();
+
+        if (!isCreate && existingNo) {
+            return existingNo;
+        }
+
+        if (!invoiceDate) {
+            throw new Error('請求日（invoice_date）を入力してください。');
+        }
+
+        if (!isCreate && !existingNo) {
+            return InvoiceCreate.generateUniqueInvoiceNo(invoiceDate, recordId);
+        }
+
+        if (isCreate && existingNo) {
+            const taken = await InvoiceCreate.isInvoiceNoTaken(existingNo, recordId);
+
+            if (!taken) {
+                return existingNo;
+            }
+        }
+
+        return InvoiceCreate.generateUniqueInvoiceNo(invoiceDate, recordId);
 
     };
 
@@ -1129,6 +1336,86 @@
 
     };
 
+    const parseInvoiceDate = (invoiceDate) => {
+
+        const normalized = String(invoiceDate ?? '').trim();
+        const match = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+        if (!match) {
+            throw new Error('請求日（invoice_date）の形式が不正です。');
+        }
+
+        return {
+            year: Number(match[1]),
+            month: Number(match[2]),
+            day: Number(match[3]),
+        };
+
+    };
+
+    /**
+     * 請求日と支払条件から支払期限（due_date）を算出する
+     * @param {string} invoiceDate - YYYY-MM-DD
+     * @param {string} paymentTerms - 顧客管理 payment_terms
+     */
+    InvoiceCreate.calculateDueDate = (invoiceDate, paymentTerms) => {
+
+        const { year, month, day } = parseInvoiceDate(invoiceDate);
+        const label = String(paymentTerms ?? '').trim();
+
+        if (!label) {
+            throw new Error('支払条件（payment_terms）が未設定です。');
+        }
+
+        switch (label) {
+            case '当月末払い':
+                return formatDate(year, month, getLastDayOfMonth(year, month));
+            case '翌月10日払い': {
+                const next = shiftMonth(year, month, 1);
+                return formatDate(next.year, next.month, clampDayToMonth(next.year, next.month, 10));
+            }
+            case '翌月15日払い': {
+                const next = shiftMonth(year, month, 1);
+                return formatDate(next.year, next.month, clampDayToMonth(next.year, next.month, 15));
+            }
+            case '翌月20日払い': {
+                const next = shiftMonth(year, month, 1);
+                return formatDate(next.year, next.month, clampDayToMonth(next.year, next.month, 20));
+            }
+            case '翌月25日払い': {
+                const next = shiftMonth(year, month, 1);
+                return formatDate(next.year, next.month, clampDayToMonth(next.year, next.month, 25));
+            }
+            case '翌月末払い': {
+                const next = shiftMonth(year, month, 1);
+                return formatDate(next.year, next.month, getLastDayOfMonth(next.year, next.month));
+            }
+            case '翌々月10日払い': {
+                const nextNext = shiftMonth(year, month, 2);
+                return formatDate(nextNext.year, nextNext.month, clampDayToMonth(nextNext.year, nextNext.month, 10));
+            }
+            case '都度払い':
+                return formatDate(year, month, day);
+            default:
+                throw new Error(
+                    `支払条件（payment_terms）が不正です。選択肢: ${PAYMENT_TERMS_LABELS.join(' / ')}`
+                );
+        }
+
+    };
+
+    /**
+     * 請求先コードから顧客の支払条件を取得し due_date を算出する
+     */
+    InvoiceCreate.resolveDueDateForCustomer = async (customerCode, invoiceDate) => {
+
+        const customer = await InvoiceCreate.fetchCustomerByCode(customerCode);
+        const paymentTerms = getFieldValue(customer, CUSTOMER_FIELDS.paymentTerms);
+
+        return InvoiceCreate.calculateDueDate(invoiceDate, paymentTerms);
+
+    };
+
     /**
      * 請求書作成ボタン用: ヘッダー項目を組み立てる
      */
@@ -1144,17 +1431,23 @@
             throw new Error('税込合計（total）が 0 です。請求明細を確認してください。');
         }
 
+        const customerCode = String(getFieldValue(record, INVOICE_FIELDS.customerCode) ?? '').trim();
+
+        if (!customerCode) {
+            throw new Error('請求先コード（customer_code）を入力してください。');
+        }
+
         const carryOver = toNumber(getFieldValue(record, INVOICE_FIELDS.carryOver));
         const paymentAmount = toNumber(getFieldValue(record, INVOICE_FIELDS.paymentAmount));
         const invoiceDate = formatToday();
-        const invoiceNo = await InvoiceCreate.generateNextInvoiceNo(invoiceDate);
+        const dueDate = await InvoiceCreate.resolveDueDateForCustomer(customerCode, invoiceDate);
         const invoiceAmount = total;
         const balance = InvoiceCreate.calculateBalance(carryOver, invoiceAmount, paymentAmount);
         const closingYm = formatClosingYmFromDate(invoiceDate);
 
         return {
-            [INVOICE_FIELDS.invoiceNo]: invoiceNo,
             [INVOICE_FIELDS.invoiceDate]: invoiceDate,
+            [INVOICE_FIELDS.dueDate]: dueDate,
             [INVOICE_FIELDS.invoiceAmount]: invoiceAmount,
             [INVOICE_FIELDS.balance]: balance,
             [INVOICE_FIELDS.invoiceStatus]: INVOICE_STATUS_CREATING,
@@ -1165,14 +1458,28 @@
 
     InvoiceCreate.INVOICE_STATUS_CREATING = INVOICE_STATUS_CREATING;
     InvoiceCreate.INVOICE_STATUS_CONFIRMED = INVOICE_STATUS_CONFIRMED;
+    InvoiceCreate.INVOICE_STATUS_CANCELLED = INVOICE_STATUS_CANCELLED;
     InvoiceCreate.INVOICE_COMPLETE_MESSAGE = INVOICE_COMPLETE_MESSAGE;
     InvoiceCreate.INVOICE_CONFIRM_MESSAGE = INVOICE_CONFIRM_MESSAGE;
     InvoiceCreate.INVOICE_CONFIRM_DIALOG = INVOICE_CONFIRM_DIALOG;
+    InvoiceCreate.INVOICE_CANCEL_MESSAGE = INVOICE_CANCEL_MESSAGE;
+    InvoiceCreate.INVOICE_CANCEL_DIALOG = INVOICE_CANCEL_DIALOG;
+    InvoiceCreate.INVOICE_VOID_BLOCKED_ERROR = INVOICE_VOID_BLOCKED_ERROR;
+    InvoiceCreate.INVOICED_IMPORT_ERROR = INVOICED_IMPORT_ERROR;
+    InvoiceCreate.INVOICE_NO_IMPORT_ERROR = INVOICE_NO_IMPORT_ERROR;
+    InvoiceCreate.DELIVERY_INVOICE_STATUS_UNINVOICED = DELIVERY_INVOICE_STATUS_UNINVOICED;
+    InvoiceCreate.DELIVERY_INVOICE_STATUS_CREATING = DELIVERY_INVOICE_STATUS_CREATING;
+    InvoiceCreate.DELIVERY_INVOICE_STATUS_INVOICED = DELIVERY_INVOICE_STATUS_INVOICED;
 
     const buildDeliveryConfirmUpdate = (invoiceNo, invoiceDate) => ({
-        [DELIVERY_FIELDS.billingStatus]: { value: INVOICED_STATUS },
+        [DELIVERY_FIELDS.invoiceStatus]: { value: DELIVERY_INVOICE_STATUS_INVOICED },
         [DELIVERY_FIELDS.invoiceNo]: { value: invoiceNo },
         [DELIVERY_FIELDS.invoiceDate]: { value: invoiceDate },
+    });
+
+    const buildDeliveryCancelUpdate = () => ({
+        [DELIVERY_FIELDS.invoiceStatus]: { value: DELIVERY_INVOICE_STATUS_UNINVOICED },
+        [DELIVERY_FIELDS.invoiceNo]: { value: '' },
     });
 
     InvoiceCreate.fetchDeliveryMapByNos = async (deliveryNos) => {
@@ -1198,7 +1505,12 @@
                 {
                     app: DELIVERY_APP_ID,
                     query,
-                    fields: ['$id', DELIVERY_FIELDS.deliveryNo],
+                    fields: [
+                        '$id',
+                        DELIVERY_FIELDS.deliveryNo,
+                        DELIVERY_FIELDS.invoiceStatus,
+                        DELIVERY_FIELDS.invoiceNo,
+                    ],
                 }
             );
 
@@ -1208,7 +1520,7 @@
                 const id = Number(record.$id?.value);
 
                 if (deliveryNo && !Number.isNaN(id)) {
-                    deliveryMap.set(deliveryNo, id);
+                    deliveryMap.set(deliveryNo, record);
                 }
 
             });
@@ -1238,17 +1550,42 @@
 
     };
 
-    InvoiceCreate.updateDeliveriesOnConfirm = async ({ deliveryMap, invoiceNo, invoiceDate }) => {
+    InvoiceCreate.validateDeliveriesForConfirm = (deliveryMap, invoiceNo) => {
 
-        const updateRecord = buildDeliveryConfirmUpdate(invoiceNo, invoiceDate);
+        const conflicts = [];
+
+        deliveryMap.forEach((record, deliveryNo) => {
+
+            const status = getDeliveryInvoiceStatus(record);
+            const existingNo = String(getFieldValue(record, DELIVERY_FIELDS.invoiceNo) ?? '').trim();
+
+            if (status === DELIVERY_INVOICE_STATUS_INVOICED && existingNo && existingNo !== invoiceNo) {
+                conflicts.push(deliveryNo);
+            }
+
+        });
+
+        if (conflicts.length > 0) {
+            throw new Error(
+                `以下の納品書は既に別請求で確定済みです。\n\n${conflicts.join('\n')}`
+            );
+        }
+
+    };
+
+    const updateDeliveriesByMap = async ({ deliveryMap, updateRecord }) => {
+
         const failedNos = [];
-        const entries = [...deliveryMap.entries()];
+        const entries = [...deliveryMap.entries()].map(([deliveryNo, record]) => ({
+            deliveryNo,
+            id: Number(record.$id?.value),
+        })).filter(({ id }) => !Number.isNaN(id) && id > 0);
         const chunkSize = 100;
 
         for (let index = 0; index < entries.length; index += chunkSize) {
 
             const chunk = entries.slice(index, index + chunkSize);
-            const records = chunk.map(([deliveryNo, id]) => ({
+            const records = chunk.map(({ deliveryNo, id }) => ({
                 deliveryNo,
                 id,
             }));
@@ -1288,6 +1625,22 @@
 
     };
 
+    InvoiceCreate.updateDeliveriesOnConfirm = async ({ deliveryMap, invoiceNo, invoiceDate }) => {
+
+        const updateRecord = buildDeliveryConfirmUpdate(invoiceNo, invoiceDate);
+
+        return updateDeliveriesByMap({ deliveryMap, updateRecord });
+
+    };
+
+    InvoiceCreate.updateDeliveriesOnCancel = async ({ deliveryMap }) => {
+
+        const updateRecord = buildDeliveryCancelUpdate();
+
+        return updateDeliveriesByMap({ deliveryMap, updateRecord });
+
+    };
+
     InvoiceCreate.updateInvoiceStatus = async (recordId, status) => {
 
         await kintoneApi(
@@ -1301,6 +1654,71 @@
                 },
             }
         );
+
+    };
+
+    const buildInvoiceVoidUpdate = () => ({
+        [INVOICE_FIELDS.detailTable]: InvoiceCreate.toInvoiceDetailFieldValue([]),
+        [INVOICE_FIELDS.itemCount]: { value: 0 },
+        [INVOICE_FIELDS.qtyTotal]: { value: 0 },
+        [INVOICE_FIELDS.subtotal]: { value: 0 },
+        [INVOICE_FIELDS.tax]: { value: 0 },
+        [INVOICE_FIELDS.total]: { value: 0 },
+        [INVOICE_FIELDS.invoiceStatus]: { value: INVOICE_STATUS_CANCELLED },
+    });
+
+    InvoiceCreate.buildInvoiceVoidUpdate = buildInvoiceVoidUpdate;
+
+    /**
+     * 請求書取消・再発行: 作成中の請求書を取消し、納品書を未請求に戻す
+     */
+    InvoiceCreate.voidInvoice = async ({ record, recordId }) => {
+
+        const id = Number(recordId);
+
+        if (Number.isNaN(id) || id <= 0) {
+            throw new Error('レコード ID を取得できません。保存後に再度お試しください。');
+        }
+
+        const invoiceStatus = String(getFieldValue(record, INVOICE_FIELDS.invoiceStatus) ?? '').trim();
+
+        if (invoiceStatus === INVOICE_STATUS_CONFIRMED) {
+            throw new Error(INVOICE_VOID_BLOCKED_ERROR);
+        }
+
+        if (invoiceStatus !== INVOICE_STATUS_CREATING) {
+            throw new Error('作成中の請求書のみ取消できます。');
+        }
+
+        const deliveryNos = InvoiceCreate.collectDeliveryNosFromRecord(record);
+
+        if (deliveryNos.length > 0) {
+
+            const { deliveryMap, notFoundNos } = await InvoiceCreate.fetchDeliveryMapByNos(deliveryNos);
+            const failedNos = await InvoiceCreate.updateDeliveriesOnCancel({ deliveryMap });
+            const errorNos = [...new Set([...notFoundNos, ...failedNos])];
+
+            if (errorNos.length > 0) {
+                throw new Error(
+                    `以下の納品書を更新できませんでした。\n\n${errorNos.join('\n')}`
+                );
+            }
+
+        }
+
+        await kintoneApi(
+            kintone.api.url('/k/v1/record', true),
+            'PUT',
+            {
+                app: INVOICE_APP_ID,
+                id,
+                record: buildInvoiceVoidUpdate(),
+            }
+        );
+
+        return {
+            updatedDeliveryCount: deliveryNos.length,
+        };
 
     };
 
@@ -1338,6 +1756,9 @@
         }
 
         const { deliveryMap, notFoundNos } = await InvoiceCreate.fetchDeliveryMapByNos(deliveryNos);
+
+        InvoiceCreate.validateDeliveriesForConfirm(deliveryMap, invoiceNo);
+
         const failedNos = await InvoiceCreate.updateDeliveriesOnConfirm({
             deliveryMap,
             invoiceNo,
@@ -1382,9 +1803,8 @@
             const records = chunk.map((id) => ({
                 id,
                 record: {
-                    [DELIVERY_FIELDS.invoiceFlag]: {
-                        value: [INVOICE_FLAG_VALUE],
-                    },
+                    [DELIVERY_FIELDS.invoiceStatus]: { value: DELIVERY_INVOICE_STATUS_INVOICED },
+                    [DELIVERY_FIELDS.invoiceNo]: { value: '' },
                 },
             }));
 
