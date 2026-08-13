@@ -463,6 +463,13 @@
             return event;
         }
 
+        const validationErrors = InvoiceCreate.validateInvoiceBeforeSave(event.record);
+
+        if (validationErrors.length > 0) {
+            event.error = validationErrors.join('\n');
+            return event;
+        }
+
         try {
 
             if (!event.recordId) {

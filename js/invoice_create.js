@@ -18,6 +18,15 @@
     const INVOICE_FLAG_VALUE = '請求済';
     const UNINVOICED_STATUS = '未請求';
     const NO_DATA_MESSAGE = '請求対象データがありません。';
+    const INVOICE_VALIDATION_MESSAGES = {
+        customerCode: '請求先を入力してください。',
+        customerName: '請求先名を入力してください。',
+        invoiceDate: '請求日を入力してください。',
+        closingDate: '締日を入力してください。',
+        invoiceDetail: '請求明細がありません。',
+        subtotal: '税抜合計が0円です。',
+        total: '税込合計が0円です。',
+    };
     const INVOICE_STATUS_CREATING = '作成中';
     const INVOICE_STATUS_CONFIRMED = '確定';
     const INVOICE_STATUS_CANCELLED = '取消';
@@ -1197,6 +1206,7 @@
     };
 
     InvoiceCreate.NO_DATA_MESSAGE = NO_DATA_MESSAGE;
+    InvoiceCreate.INVOICE_VALIDATION_MESSAGES = INVOICE_VALIDATION_MESSAGES;
 
     const pad3 = (value) => String(value).padStart(3, '0');
 
@@ -1426,6 +1436,54 @@
             return deliveryNo !== '' || itemName !== '';
 
         });
+
+    };
+
+    /**
+     * 保存前バリデーション（V1.0: 保存中止のみ、自動補完なし）
+     * @returns {string[]} エラーメッセージ（問題なしは空配列）
+     */
+    InvoiceCreate.validateInvoiceBeforeSave = (record) => {
+
+        const errors = [];
+
+        const customerCode = String(getFieldValue(record, INVOICE_FIELDS.customerCode) ?? '').trim();
+
+        if (!customerCode) {
+            errors.push(INVOICE_VALIDATION_MESSAGES.customerCode);
+        }
+
+        const customerName = String(getFieldValue(record, INVOICE_FIELDS.customerName) ?? '').trim();
+
+        if (!customerName) {
+            errors.push(INVOICE_VALIDATION_MESSAGES.customerName);
+        }
+
+        const invoiceDate = String(getFieldValue(record, INVOICE_FIELDS.invoiceDate) ?? '').trim();
+
+        if (!invoiceDate) {
+            errors.push(INVOICE_VALIDATION_MESSAGES.invoiceDate);
+        }
+
+        const closingDate = String(getFieldValue(record, INVOICE_FIELDS.closingDate) ?? '').trim();
+
+        if (!closingDate) {
+            errors.push(INVOICE_VALIDATION_MESSAGES.closingDate);
+        }
+
+        if (!hasInvoiceDetails(record)) {
+            errors.push(INVOICE_VALIDATION_MESSAGES.invoiceDetail);
+        }
+
+        if (toNumber(getFieldValue(record, INVOICE_FIELDS.subtotal)) <= 0) {
+            errors.push(INVOICE_VALIDATION_MESSAGES.subtotal);
+        }
+
+        if (toNumber(getFieldValue(record, INVOICE_FIELDS.total)) <= 0) {
+            errors.push(INVOICE_VALIDATION_MESSAGES.total);
+        }
+
+        return errors;
 
     };
 
