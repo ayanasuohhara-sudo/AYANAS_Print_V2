@@ -667,17 +667,22 @@ ${bodyInner}
 
     Core.getPluginContentsUrl = (relativePath) => {
 
-        const scripts = document.getElementsByTagName('script');
-
-        for (let index = 0; index < scripts.length; index += 1) {
-            const src = scripts[index].src;
-
-            if (src.includes('/js/core.js') || src.includes('/js/desktop.js')) {
-                return src.replace(/\/js\/(core|desktop)\.js(\?.*)?$/, `/${relativePath}$2`);
-            }
+        if (typeof kintone === 'undefined') {
+            throw new Error('kintone が読み込まれていません。');
         }
 
-        throw new Error('プラグイン script タグが見つかりません。');
+        if (!kintone.$PLUGIN_ID) {
+            throw new Error('プラグイン ID を取得できません。');
+        }
+
+        const normalizedPath = String(relativePath).replace(/^\//, '');
+        const resourcePath = `/k/plugin/${kintone.$PLUGIN_ID}/${normalizedPath}`;
+
+        if (typeof kintone.api?.url === 'function') {
+            return kintone.api.url(resourcePath, true);
+        }
+
+        return resourcePath;
 
     };
 
