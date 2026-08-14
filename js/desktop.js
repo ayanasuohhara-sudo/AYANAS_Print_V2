@@ -11,6 +11,7 @@
      */
 
     const DELIVERY_APP_ID = 19;
+    const INVOICE_APP_ID = 35;
     const PAYMENT_APP_ID = 36;
     const RECEIVABLE_APP_ID = 37;
 
@@ -69,6 +70,10 @@
         const appId = getAppId();
 
         if (appId === PAYMENT_APP_ID || appId === RECEIVABLE_APP_ID) {
+            return false;
+        }
+
+        if (appId === INVOICE_APP_ID) {
             return false;
         }
 

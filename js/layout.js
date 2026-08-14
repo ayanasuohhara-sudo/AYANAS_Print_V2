@@ -27,6 +27,8 @@
         address: '奈良県奈良市富雄元町1-13-41',
         tel: 'TEL 0742-47-8390',
         fax: 'FAX 0742-47-8391',
+        bankInfo: '三菱UFJ銀行 奈良支店 普通 1234567 カ）アヤナス',
+        invoiceRegistrationNo: 'T0000000000000',
     };
 
     /** @type {Map<string, object>} */
@@ -235,7 +237,7 @@
 
     };
 
-    const buildLayout = (registryDefinition, template) => {
+    const buildLayout = (registryDefinition, template, printOptions = {}) => {
 
         const definition = registryDefinition.definition ?? {};
 
@@ -262,6 +264,15 @@
             layout.configDefaults = registryDefinition.configDefaults;
         }
 
+        if (registryDefinition.reportType === 'invoice') {
+            layout.invoiceLayout = typeof InvoiceLayout !== 'undefined'
+                ? InvoiceLayout.resolve({
+                    invoiceLayout: printOptions.invoiceLayout,
+                    customerInvoiceLayout: printOptions.customerInvoiceLayout,
+                })
+                : 'normal';
+        }
+
         return layout;
 
     };
@@ -275,7 +286,7 @@
 
     };
 
-    Layout.resolve = async (data, config) => {
+    Layout.resolve = async (data, config, printOptions = {}) => {
 
         Validation.assertObject(data, '帳票データ');
         Validation.assertObject(config, 'プラグイン設定');
@@ -284,7 +295,16 @@
         const registryDefinition = ReportRegistry.get(reportType);
         const template = await Layout.loadTemplate(reportType);
 
-        return buildLayout(registryDefinition, template);
+        if (reportType === 'invoice'
+            && typeof InvoiceLayout !== 'undefined'
+            && InvoiceLayout.isWindowEnvelope(printOptions.invoiceLayout
+                || printOptions.customerInvoiceLayout)) {
+
+            await Core.loadScript('js/templates/invoice_window.js');
+
+        }
+
+        return buildLayout(registryDefinition, template, printOptions);
 
     };
 

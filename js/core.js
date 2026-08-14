@@ -270,11 +270,19 @@
 
     Common.getBodyClass = (layout = {}) => {
 
+        const classes = [];
+
         if (typeof layout.pageClass === 'string' && layout.pageClass.trim() !== '') {
-            return layout.pageClass.trim();
+            classes.push(layout.pageClass.trim());
+        } else {
+            classes.push(`report-${layout.reportType || 'order'}`);
         }
 
-        return `report-${layout.reportType || 'order'}`;
+        if (layout.invoiceLayout === 'window_envelope') {
+            classes.push('report-invoice--window-envelope');
+        }
+
+        return classes.join(' ');
 
     };
 

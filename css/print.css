@@ -758,6 +758,79 @@
     font-size: 9pt;
 }
 
+.report-invoice .invoice-footer--extras {
+    margin-top: 4mm;
+    font-size: 8pt;
+    line-height: 1.5;
+}
+
+.report-invoice .invoice-footer__section {
+    margin: 0 0 2mm;
+}
+
+.report-invoice .invoice-footer__section:last-child {
+    margin-bottom: 0;
+}
+
+.report-invoice .invoice-footer__label {
+    margin: 0 0 0.5mm;
+    font-weight: 700;
+}
+
+.report-invoice .invoice-footer__text {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.report-invoice--window-envelope .page:first-child {
+    position: relative;
+}
+
+.report-invoice--window-envelope .invoice-window-address {
+    position: absolute;
+    top: var(--invoice-window-top, 99mm);
+    left: var(--invoice-window-left, 15mm);
+    width: var(--invoice-window-width, 90mm);
+    min-height: var(--invoice-window-height, 45mm);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0;
+    font-size: 10pt;
+    line-height: 1.45;
+    z-index: 2;
+}
+
+.report-invoice--window-envelope .invoice-window-address__label {
+    margin: 0 0 1mm;
+    font-size: 7pt;
+    color: #666;
+}
+
+.report-invoice--window-envelope .invoice-window-address__postal {
+    margin: 0 0 1mm;
+    font-size: 10pt;
+    letter-spacing: 0.05em;
+}
+
+.report-invoice--window-envelope .invoice-window-address__address {
+    margin: 0 0 2mm;
+    white-space: pre-wrap;
+}
+
+.report-invoice--window-envelope .invoice-window-address__company {
+    margin: 0 0 1mm;
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+.report-invoice--window-envelope .invoice-window-address__person {
+    margin: 0;
+    font-size: 10pt;
+}
+
 /* ========================================
    帳票種別: 請求書 (bill) - 将来追加
    ======================================== */
@@ -949,6 +1022,12 @@ body {
     .report-delivery .delivery-detail-table tbody tr,
     .report-invoice .invoice-detail-table tbody tr {
         page-break-inside: avoid;
+    }
+
+    .report-invoice--window-envelope .invoice-window-address {
+        position: absolute;
+        top: var(--invoice-window-top, 99mm);
+        left: var(--invoice-window-left, 15mm);
     }
 
 }

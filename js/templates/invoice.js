@@ -30,6 +30,8 @@
             address: source.address ?? DEFAULT_COMPANY.address,
             tel: source.tel ?? DEFAULT_COMPANY.tel,
             fax: source.fax ?? DEFAULT_COMPANY.fax,
+            bankInfo: source.bankInfo ?? '',
+            invoiceRegistrationNo: source.invoiceRegistrationNo ?? '',
         };
 
     };
@@ -72,6 +74,7 @@
                 <p class="invoice-page-no">${pageNumber} / ${totalPages}</p>
                 <p class="invoice-doc-item">請求番号：${esc(header.invoice_no)}</p>
                 <p class="invoice-doc-item">請求日：${esc(Format.formatDate(header.invoice_date))}</p>
+                <p class="invoice-doc-item">請求期間：${esc(header.billing_period)}</p>
             </div>
             <div class="invoice-header__company">
                 <p class="company-name">${esc(company.name)}</p>
@@ -99,8 +102,8 @@
         }
 
         return `<tr class="invoice-detail-row">`
-            + `<td>${esc(detail.delivery_no)}</td>`
             + `<td>${esc(Format.formatDate(detail.delivery_date))}</td>`
+            + `<td>${esc(detail.delivery_no)}</td>`
             + `<td>${esc(detail.manage_no)}</td>`
             + `<td>${esc(detail.client_name)}</td>`
             + `<td>${esc(detail.kimono_type)}</td>`
@@ -120,8 +123,8 @@
 <table class="invoice-detail-table">
     <thead>
         <tr class="invoice-detail-head">
-            <th>納品番号</th>
             <th>納品日</th>
+            <th>納品番号</th>
             <th>管理番号</th>
             <th>お客様名</th>
             <th>着物種類</th>
@@ -162,6 +165,32 @@ ${buildDetailRowsHtml(details)}
     </table>
 </footer>`;
 
+    const buildFooterExtrasHtml = (header, layout = {}) => {
+
+        const company = getCompanyInfo(layout);
+        const remarks = String(header.remarks ?? '').trim();
+        const bankInfo = String(company.bankInfo ?? '').trim();
+        const invoiceRegistrationNo = String(company.invoiceRegistrationNo ?? '').trim();
+
+        return `
+
+<footer class="invoice-footer invoice-footer--extras">
+    <div class="invoice-footer__section">
+        <p class="invoice-footer__label">備考</p>
+        <p class="invoice-footer__text">${esc(remarks)}</p>
+    </div>
+    <div class="invoice-footer__section">
+        <p class="invoice-footer__label">振込先</p>
+        <p class="invoice-footer__text">${esc(bankInfo)}</p>
+    </div>
+    <div class="invoice-footer__section">
+        <p class="invoice-footer__label">インボイス登録番号</p>
+        <p class="invoice-footer__text">${esc(invoiceRegistrationNo)}</p>
+    </div>
+</footer>`;
+
+    };
+
     const buildPageHtml = (header, pageDetails, summary, layout, options = {}) => {
 
         const {
@@ -170,10 +199,19 @@ ${buildDetailRowsHtml(details)}
             totalPages = 1,
         } = options;
 
+        const isWindowEnvelope = layout.invoiceLayout === 'window_envelope';
+        const windowAddressHtml = isWindowEnvelope
+            && pageNumber === 1
+            && typeof InvoiceWindowTemplate !== 'undefined'
+            ? InvoiceWindowTemplate.buildAddressHtml(header)
+            : '';
+
         return `
+    ${windowAddressHtml}
     ${buildHeaderHtml(header, layout, { pageNumber, totalPages })}
     ${buildDetailTableHtml(pageDetails)}
-    ${showSummary ? buildSummaryHtml(summary) : ''}`;
+    ${showSummary ? buildSummaryHtml(summary) : ''}
+    ${showSummary ? buildFooterExtrasHtml(header, layout) : ''}`;
 
     };
 

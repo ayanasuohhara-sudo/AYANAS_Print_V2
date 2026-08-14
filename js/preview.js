@@ -355,12 +355,21 @@ ${buildButtonScriptBody()}
             previewConfig.paper_size = 'A4';
         }
 
+        if (layout.reportType === 'invoice' && layout.invoiceLayout === 'window_envelope') {
+            previewConfig.print_orientation = 'portrait';
+            previewConfig.paper_size = 'A4';
+        }
+
         const barcodeValue = getBarcodeValue(data, layout);
         let html = layout.template.render(data, previewConfig, layout);
 
         const printCssUrl = getPluginResourceUrl(PRINT_CSS_PATH);
         const jsBarcodeUrl = getPluginResourceUrl(JSBARCODE_PATH);
         const barcodeJsUrl = getPluginResourceUrl(BARCODE_JS_PATH);
+        const invoiceLayoutStyle = layout.reportType === 'invoice'
+            && typeof InvoiceLayout !== 'undefined'
+            ? InvoiceLayout.getCssVariables()
+            : '';
 
         html = html.split('<div class="page">').join(`<div class="${Dom.getPageClassName(previewConfig)}">`);
 
@@ -371,7 +380,9 @@ ${buildButtonScriptBody()}
         html = html.replace(
             '</head>',
             `<link rel="stylesheet" href="${printCssUrl}">\n`
-            + `${Dom.buildPrintStyleHtml(previewConfig)}\n</head>`
+            + `${Dom.buildPrintStyleHtml(previewConfig)}\n`
+            + (invoiceLayoutStyle ? `<style>:root{${invoiceLayoutStyle}}</style>\n` : '')
+            + `</head>`
         );
 
         html = html.replace(
@@ -384,7 +395,7 @@ ${buildButtonScriptBody()}
 
     };
 
-    Preview.open = async (data) => {
+    Preview.open = async (data, printOptions = {}) => {
 
         try {
 
@@ -393,7 +404,7 @@ ${buildButtonScriptBody()}
             Validation.assertReportData(data);
 
             const config = loadPluginConfig();
-            const layout = await Layout.resolve(data, config);
+            const layout = await Layout.resolve(data, config, printOptions);
 
             Validation.assertLayout(layout);
 

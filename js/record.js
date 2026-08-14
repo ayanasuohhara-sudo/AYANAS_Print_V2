@@ -52,9 +52,12 @@
     const INVOICE_HEADER_FIELDS = [
         'invoice_no',
         'invoice_date',
+        'billing_from',
+        'billing_to',
         'customer_code',
         'customer_name',
         'due_date',
+        'remarks',
         'item_count',
         'qty_total',
         'subtotal',
@@ -315,6 +318,24 @@
 
     };
 
+    const getFirstFieldValue = (record, fieldCodes) => {
+
+        const codes = Array.isArray(fieldCodes) ? fieldCodes : [fieldCodes];
+
+        for (const fieldCode of codes) {
+
+            const value = String(getFieldValue(record, fieldCode) ?? '').trim();
+
+            if (value) {
+                return value;
+            }
+
+        }
+
+        return '';
+
+    };
+
     const buildInvoiceHeader = (record, details) => {
 
         const header = {};
@@ -322,6 +343,24 @@
         INVOICE_HEADER_FIELDS.forEach((fieldCode) => {
             header[fieldCode] = getFieldValue(record, fieldCode);
         });
+
+        const billingFrom = String(header.billing_from ?? '').trim();
+        const billingTo = String(header.billing_to ?? '').trim();
+
+        header.billing_period = billingFrom && billingTo
+            ? `${billingFrom} ～ ${billingTo}`
+            : '';
+
+        header.customer_postal_code = getFirstFieldValue(record, [
+            'customer_postal_code',
+            'postal_code',
+            'zip_code',
+        ]);
+
+        header.customer_address = getFirstFieldValue(record, [
+            'customer_address',
+            'address',
+        ]);
 
         const inCharge = details
             .map((detail) => String(detail.in_charge ?? '').trim())
