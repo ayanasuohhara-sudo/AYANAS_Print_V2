@@ -49,19 +49,47 @@
 
     const getPluginBaseUrl = () => {
 
-        const scripts = document.querySelectorAll('script[src*="desktop.js"]');
+        const current = document.currentScript;
 
-        if (scripts.length > 0) {
-            return scripts[scripts.length - 1].src;
+        if (current instanceof HTMLScriptElement && current.src) {
+            return current.src;
         }
 
-        const script = document.currentScript;
+        const scriptUrl = findPrintPluginScriptUrlFromDesktop();
 
-        if (script instanceof HTMLScriptElement && script.src) {
-            return script.src;
+        if (scriptUrl) {
+            return scriptUrl;
         }
 
         throw new Error('pluginBaseUrl を取得できません。');
+
+    };
+
+    const findPrintPluginScriptUrlFromDesktop = () => {
+
+        const scripts = Array.from(document.querySelectorAll('script[src*="download.do"]'));
+
+        for (let index = scripts.length - 1; index >= 0; index -= 1) {
+
+            const src = scripts[index]?.src ?? '';
+
+            if (!src.includes('type=DESKTOP_JS')) {
+                continue;
+            }
+
+            try {
+
+                if (new URL(src).searchParams.get('pluginId')) {
+                    return src;
+                }
+
+            } catch (error) {
+                continue;
+            }
+
+        }
+
+        return '';
 
     };
 

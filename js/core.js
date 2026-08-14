@@ -673,36 +673,41 @@ ${bodyInner}
     // Core script loading
     // -------------------------------------------------------------------------
 
-    Core.getPluginContentsUrl = (relativePath) => {
+    let printPluginId = '';
 
-        if (typeof kintone === 'undefined') {
-            throw new Error('kintone が読み込まれていません。');
-        }
+    Core.setPrintPluginId = (pluginId) => {
 
-        if (!kintone.$PLUGIN_ID) {
-            throw new Error('プラグイン ID を取得できません。');
-        }
-
-        const normalizedPath = String(relativePath).replace(/^\//, '');
-        const resourcePath = `/k/plugin/${kintone.$PLUGIN_ID}/${normalizedPath}`;
-
-        if (typeof kintone.api?.url === 'function') {
-            return kintone.api.url(resourcePath, true);
-        }
-
-        return resourcePath;
+        printPluginId = String(pluginId ?? '').trim();
 
     };
 
-    Core.loadScript = (relativePath) => new Promise((resolve, reject) => {
+    Core.getPrintPluginId = () => printPluginId;
 
-        const script = document.createElement('script');
-        script.src = Core.getPluginContentsUrl(relativePath);
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error(`スクリプトの読み込みに失敗しました。（${relativePath}）`));
-        document.head.appendChild(script);
+    Core.getPluginContentsUrl = (relativePath) => {
 
-    });
+        if (typeof Preview !== 'undefined' && typeof Preview.loadScript === 'function') {
+
+            const normalizedPath = String(relativePath).replace(/^\//, '');
+
+            throw new Error(
+                `静的リソース URL は download.do 経由で解決してください。（${normalizedPath}）`
+            );
+
+        }
+
+        throw new Error('Preview モジュールが読み込まれていません。');
+
+    };
+
+    Core.loadScript = (relativePath) => {
+
+        if (typeof Preview !== 'undefined' && typeof Preview.loadScript === 'function') {
+            return Preview.loadScript(relativePath);
+        }
+
+        throw new Error('Preview.loadScript が利用できません。');
+
+    };
 
     Core.loadScripts = async (paths) => {
 

@@ -17,6 +17,45 @@
     const BARCODE_JS_PATH = 'js/barcode.js';
 
     let pluginBaseUrl = '';
+    let cachedPluginId = '';
+
+    const parsePluginIdFromUrl = (url) => {
+
+        if (typeof url !== 'string' || url.trim() === '') {
+            return '';
+        }
+
+        try {
+            return String(new URL(url).searchParams.get('pluginId') ?? '').trim();
+        } catch (error) {
+            return '';
+        }
+
+    };
+
+    const findPrintPluginScriptUrl = () => {
+
+        const scripts = Array.from(document.querySelectorAll('script[src*="download.do"]'));
+
+        for (let index = scripts.length - 1; index >= 0; index -= 1) {
+
+            const src = scripts[index]?.src ?? '';
+
+            if (!src.includes('type=DESKTOP_JS')) {
+                continue;
+            }
+
+            const pluginId = parsePluginIdFromUrl(src);
+
+            if (pluginId) {
+                return src;
+            }
+
+        }
+
+        return '';
+
+    };
 
     const DEFAULT_CONFIG = {
         report_title: '受注票',
@@ -29,10 +68,16 @@
     const PLUGIN_JS_FILES = [
         'lib/JsBarcode.all.min.js',
         'js/core.js',
+        'js/invoice_layout.js',
         'js/record.js',
         'js/layout.js',
         'js/barcode.js',
         'js/preview.js',
+        'js/templates/order.js',
+        'js/templates/delivery.js',
+        'js/templates/invoice.js',
+        'js/templates/invoice_window.js',
+        'js/templates/estimate.js',
         'js/desktop.js',
     ];
 
@@ -47,6 +92,17 @@
         }
 
         pluginBaseUrl = baseUrl;
+        cachedPluginId = parsePluginIdFromUrl(baseUrl);
+
+        if (!cachedPluginId) {
+            cachedPluginId = parsePluginIdFromUrl(findPrintPluginScriptUrl());
+        }
+
+        console.log('pluginId', cachedPluginId);
+
+        if (typeof Core !== 'undefined' && typeof Core.setPrintPluginId === 'function') {
+            Core.setPrintPluginId(cachedPluginId);
+        }
 
     };
 
@@ -87,6 +143,12 @@
                 return { ...DEFAULT_CONFIG };
             }
 
+            const pluginId = getPluginId();
+
+            if (pluginId && kintone.plugin?.app?.getConfig) {
+                return normalizeConfig(kintone.plugin.app.getConfig(pluginId));
+            }
+
             if (!kintone.plugin?.app?.getConfig || !kintone.$PLUGIN_ID) {
                 return { ...DEFAULT_CONFIG };
             }
@@ -121,15 +183,36 @@
 
     const getPluginId = () => {
 
+        if (cachedPluginId) {
+            return cachedPluginId;
+        }
+
         if (pluginBaseUrl) {
-            return new URL(pluginBaseUrl).searchParams.get('pluginId');
+            cachedPluginId = parsePluginIdFromUrl(pluginBaseUrl);
+
+            if (cachedPluginId) {
+                return cachedPluginId;
+            }
+
+        }
+
+        const scriptUrl = findPrintPluginScriptUrl();
+
+        if (scriptUrl) {
+            cachedPluginId = parsePluginIdFromUrl(scriptUrl);
+
+            if (cachedPluginId) {
+                return cachedPluginId;
+            }
+
         }
 
         for (const script of document.querySelectorAll('script[src*="download.do"]')) {
 
-            const pluginId = new URL(script.src).searchParams.get('pluginId');
+            const pluginId = parsePluginIdFromUrl(script.src);
 
             if (pluginId) {
+                cachedPluginId = pluginId;
                 return pluginId;
             }
 
@@ -199,13 +282,57 @@
 
         }
 
-        try {
-            return Core.getPluginContentsUrl(normalizedPath);
-        } catch (error) {
-            // manifest 外リソースは Core に委譲
+        throw new Error(`プラグインリソース URL を取得できません。（${normalizedPath}）`);
+
+    };
+
+    const loadScriptFromUrl = (scriptUrl, relativePath) => new Promise((resolve, reject) => {
+
+        const existing = Array.from(document.querySelectorAll('script[src]'))
+            .find((element) => element.src === scriptUrl);
+
+        if (existing) {
+            resolve();
+            return;
         }
 
-        throw new Error(`プラグインリソース URL を取得できません。（${normalizedPath}）`);
+        const script = document.createElement('script');
+
+        script.type = 'text/javascript';
+        script.src = scriptUrl;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error(`スクリプトの読み込みに失敗しました。（${relativePath}）`));
+        document.head.appendChild(script);
+
+    });
+
+    Preview.loadScript = (relativePath) => {
+
+        const normalizedPath = String(relativePath ?? '').replace(/^\//, '');
+
+        if (normalizedPath === '') {
+            return Promise.reject(new Error('テンプレートパスが指定されていません。'));
+        }
+
+        const pluginId = getPluginId();
+        const currentUrl = pluginId && typeof kintone !== 'undefined' && typeof kintone.api?.url === 'function'
+            ? kintone.api.url(`/k/plugin/${pluginId}/${normalizedPath}`, true)
+            : `/k/plugin/{pluginId}/${normalizedPath}.json`;
+
+        const fixedUrl = getManifestMappedResourceUrl(
+            normalizedPath,
+            PLUGIN_JS_FILES,
+            'DESKTOP_JS'
+        );
+
+        console.log('Current URL', currentUrl);
+        console.log('Fixed URL', fixedUrl || '(manifest 未登録)');
+
+        if (!fixedUrl) {
+            return Promise.reject(new Error(`プラグインリソース URL を取得できません。（${normalizedPath}）`));
+        }
+
+        return loadScriptFromUrl(fixedUrl, normalizedPath);
 
     };
 
@@ -402,6 +529,18 @@ ${buildButtonScriptBody()}
             assertPluginBaseUrlInitialized();
             assertLayoutLoaded();
             Validation.assertReportData(data);
+
+            const pluginId = getPluginId();
+
+            console.log('pluginId', pluginId);
+
+            if (!pluginId) {
+                throw new Error('プラグイン ID を取得できません。');
+            }
+
+            if (typeof Core !== 'undefined' && typeof Core.setPrintPluginId === 'function') {
+                Core.setPrintPluginId(pluginId);
+            }
 
             const config = loadPluginConfig();
             const layout = await Layout.resolve(data, config, printOptions);

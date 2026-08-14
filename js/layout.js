@@ -225,7 +225,7 @@
             return window[globalName];
         }
 
-        await Core.loadScript(definition.templatePath);
+        await Preview.loadScript(definition.templatePath);
 
         if (!window[globalName] || typeof window[globalName].render !== 'function') {
             throw new Error(`Layout.loadTemplate: ${globalName} の読込に失敗しました。`);
@@ -300,7 +300,7 @@
             && InvoiceLayout.isWindowEnvelope(printOptions.invoiceLayout
                 || printOptions.customerInvoiceLayout)) {
 
-            await Core.loadScript('js/templates/invoice_window.js');
+            await Preview.loadScript('js/templates/invoice_window.js');
 
         }
 
