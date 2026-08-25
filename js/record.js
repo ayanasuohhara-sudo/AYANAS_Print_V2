@@ -13,6 +13,15 @@
 
     const DELIVERY_APP_ID = 19;
     const INVOICE_APP_ID = 35;
+    const CUSTOMER_APP_ID = 8;
+
+    const CUSTOMER_ADDRESS_FIELDS = [
+        'post_no',
+        'prefecture',
+        'city',
+        'address',
+        'building',
+    ];
 
     /** 受注票（App 16）ヘッダーフィールド */
     const ORDER_HEADER_FIELDS = [
@@ -78,6 +87,7 @@
             'kimono_type',
             'kimono_spec',
             'item_name',
+            'slip_no',
             'in_charge',
         ],
         number: ['qty', 'unit_price', 'amount'],
@@ -132,7 +142,23 @@
 
     };
 
-    const getCurrentRecord = () => {
+    const normalizeAppId = (appId) => {
+
+        if (appId === null || appId === undefined || appId === '') {
+            return null;
+        }
+
+        const normalized = Number(appId);
+
+        return Number.isNaN(normalized) ? null : normalized;
+
+    };
+
+    const getCurrentRecord = (record) => {
+
+        if (record && typeof record === 'object') {
+            return record;
+        }
 
         const current = kintone.app.record.get();
 
@@ -336,6 +362,95 @@
 
     };
 
+    const escapeQueryValue = (value) => String(value ?? '')
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g, '\\"');
+
+    const kintoneApi = (path, method, body) => new Promise((resolve, reject) => {
+        kintone.api(path, method, body, resolve, reject);
+    });
+
+    const fetchCustomerRecord = async (customerCode) => {
+
+        const code = String(customerCode ?? '').trim();
+
+        if (!code) {
+            return null;
+        }
+
+        const query = `customer_code = "${escapeQueryValue(code)}" limit 1`;
+        const response = await kintoneApi(
+            kintone.api.url('/k/v1/records', true),
+            'GET',
+            {
+                app: CUSTOMER_APP_ID,
+                query,
+                fields: ['customer_code', ...CUSTOMER_ADDRESS_FIELDS],
+            }
+        );
+
+        return response.records?.[0] ?? null;
+
+    };
+
+    const buildCustomerAddressFromMaster = (customerRecord) => {
+
+        if (!customerRecord) {
+            return {
+                customer_postal_code: '',
+                customer_address: '',
+            };
+        }
+
+        const postNo = String(getFieldValue(customerRecord, 'post_no') ?? '').trim();
+        const prefecture = String(getFieldValue(customerRecord, 'prefecture') ?? '').trim();
+        const city = String(getFieldValue(customerRecord, 'city') ?? '').trim();
+        const address = String(getFieldValue(customerRecord, 'address') ?? '').trim();
+        const building = String(getFieldValue(customerRecord, 'building') ?? '').trim();
+        const addressLine = [prefecture, city, address, building]
+            .filter((part) => part !== '')
+            .join('');
+
+        return {
+            customer_postal_code: postNo,
+            customer_post_no: postNo,
+            customer_prefecture: prefecture,
+            customer_city: city,
+            customer_address_line: address,
+            customer_building: building,
+            customer_address: addressLine,
+        };
+
+    };
+
+    const enrichInvoiceHeaderWithCustomerMaster = async (header) => {
+
+        const customerRecord = await fetchCustomerRecord(header.customer_code);
+
+        if (!customerRecord) {
+            return header;
+        }
+
+        const masterAddress = buildCustomerAddressFromMaster(customerRecord);
+
+        if (masterAddress.customer_postal_code) {
+            header.customer_postal_code = masterAddress.customer_postal_code;
+        }
+
+        if (masterAddress.customer_address) {
+            header.customer_address = masterAddress.customer_address;
+        }
+
+        header.customer_post_no = masterAddress.customer_post_no;
+        header.customer_prefecture = masterAddress.customer_prefecture;
+        header.customer_city = masterAddress.customer_city;
+        header.customer_address_line = masterAddress.customer_address_line;
+        header.customer_building = masterAddress.customer_building;
+
+        return header;
+
+    };
+
     const buildInvoiceHeader = (record, details) => {
 
         const header = {};
@@ -466,11 +581,11 @@
      * 受注票データを取得する
      * @returns {Object} 帳票データ
      */
-    Record.getOrderData = () => {
+    Record.getOrderData = (record) => {
 
         try {
 
-            return buildOrderReportData(getCurrentRecord());
+            return buildOrderReportData(getCurrentRecord(record));
 
         } catch (error) {
 
@@ -484,11 +599,11 @@
      * 納品書データを取得する
      * @returns {Object} 帳票データ
      */
-    Record.getDeliveryData = () => {
+    Record.getDeliveryData = (record) => {
 
         try {
 
-            const data = buildDeliveryReportData(getCurrentRecord());
+            const data = buildDeliveryReportData(getCurrentRecord(record));
 
             console.log(data.details);
 
@@ -506,15 +621,33 @@
      * 請求書データを取得する
      * @returns {Object} 帳票データ
      */
-    Record.getInvoiceData = () => {
+    Record.getInvoiceData = (record) => {
 
         try {
 
-            return buildInvoiceReportData(getCurrentRecord());
+            return buildInvoiceReportData(getCurrentRecord(record));
 
         } catch (error) {
 
             wrapRecordError(error, 'Record.getInvoiceData');
+
+        }
+
+    };
+
+    Record.getInvoiceDataAsync = async (record) => {
+
+        try {
+
+            const data = buildInvoiceReportData(getCurrentRecord(record));
+
+            data.header = await enrichInvoiceHeaderWithCustomerMaster(data.header);
+
+            return data;
+
+        } catch (error) {
+
+            wrapRecordError(error, 'Record.getInvoiceDataAsync');
 
         }
 
@@ -556,23 +689,25 @@
      * 現在のアプリに応じた帳票データを取得する
      * @returns {Object} 帳票データ
      */
-    Record.get = () => {
+    Record.get = async (record) => {
 
         try {
 
-            const appId = typeof kintone !== 'undefined' && typeof kintone.app?.getId === 'function'
-                ? kintone.app.getId()
-                : null;
+            const appId = normalizeAppId(
+                typeof kintone !== 'undefined' && typeof kintone.app?.getId === 'function'
+                    ? kintone.app.getId()
+                    : null
+            );
 
             if (appId === DELIVERY_APP_ID) {
-                return Record.getDeliveryData();
+                return Record.getDeliveryData(record);
             }
 
             if (appId === INVOICE_APP_ID) {
-                return Record.getInvoiceData();
+                return Record.getInvoiceDataAsync(record);
             }
 
-            return Record.getOrderData();
+            return Record.getOrderData(record);
 
         } catch (error) {
 

@@ -8,15 +8,22 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const DETAILS_PER_PAGE = Core.Report.DETAILS_PER_PAGE;
+    const DETAILS_PER_PAGE = 12;
 
     const DEFAULT_COMPANY = {
-        name: '株式会社AYANAS',
+        name: '株式会社ayanasu',
         postalCode: '〒631-0078',
         address: '奈良県奈良市富雄元町1-13-41',
         tel: 'TEL 0742-47-8390',
         fax: 'FAX 0742-47-8391',
+        invoiceRegistrationNo: 'T7150001017765',
     };
+
+    const INVOICE_BANK_LINES = [
+        '三井住友銀行\u3000奈良支店\u3000普通\u30001591678',
+        '三菱UFJ銀行\u3000富雄出張所\u3000普通\u30000083302',
+        'ゆうちょ銀行\u3000四五八\u3000普通\u30002155204',
+    ];
 
     const esc = (value) => Format.escapeHtml(value);
 
@@ -36,102 +43,225 @@
 
     };
 
+    const formatKimonoSubHtml = (type, spec) => {
+
+        const kimonoType = String(type ?? '').trim();
+        const kimonoSpec = String(spec ?? '').trim();
+
+        if (kimonoType && kimonoSpec) {
+            return `<span class="detail-kimono-type">${esc(kimonoType)}</span>`
+                + `<span class="detail-kimono-spec">${esc(kimonoSpec)}</span>`;
+        }
+
+        return esc(kimonoType || kimonoSpec);
+
+    };
+
     const formatCustomerName = (name) => `${String(name ?? '').trim()}様`;
+
+    const resolveCustomerNameFontSize = (name) => {
+
+        const length = formatCustomerName(name).length;
+
+        if (length <= 14) {
+            return '10pt';
+        }
+
+        if (length <= 18) {
+            return '9pt';
+        }
+
+        if (length <= 22) {
+            return '8pt';
+        }
+
+        if (length <= 28) {
+            return '7pt';
+        }
+
+        if (length <= 34) {
+            return '6.5pt';
+        }
+
+        return '6pt';
+
+    };
+
+    const buildCustomerNameHtml = (name) => {
+
+        const customerName = formatCustomerName(name);
+        const fontSize = resolveCustomerNameFontSize(name);
+
+        return `<p class="invoice-customer-panel__name" style="font-size:${fontSize}">${esc(customerName)}</p>`;
+
+    };
+
+    const formatPostal = (value) => {
+
+        const raw = String(value ?? '').trim();
+
+        if (!raw) {
+            return '';
+        }
+
+        return raw.startsWith('〒') ? raw : `〒${raw}`;
+
+    };
+
+    const buildCustomerPanelHtml = (header) => {
+
+        const postal = formatPostal(header.customer_postal_code);
+        const address = String(header.customer_address ?? '').trim();
+        const customerCode = String(header.customer_code ?? '').trim();
+        const billingPeriod = String(header.billing_period ?? '').trim();
+
+        return `
+            <div class="invoice-customer-panel">
+                ${postal ? `<p class="invoice-customer-panel__postal">${esc(postal)}</p>` : ''}
+                ${address ? `<p class="invoice-customer-panel__address">${esc(address)}</p>` : ''}
+                ${buildCustomerNameHtml(header.customer_name)}
+                ${customerCode ? `<p class="invoice-customer-panel__code">お得意様コード：${esc(customerCode)}</p>` : ''}
+                ${billingPeriod ? `<p class="invoice-customer-panel__period">請求対象期間：${esc(billingPeriod)}</p>` : ''}
+            </div>`;
+
+    };
+
+    const buildCustomerPanelBriefHtml = (header) => {
+
+        const customerCode = String(header.customer_code ?? '').trim();
+
+        return `
+            <div class="invoice-customer-panel invoice-customer-panel--brief">
+                ${buildCustomerNameHtml(header.customer_name)}
+                ${customerCode ? `<p class="invoice-customer-panel__code">お得意様コード：${esc(customerCode)}</p>` : ''}
+            </div>`;
+
+    };
+
+    const buildCompanyHtml = (company) => {
+
+        const registrationNo = String(company.invoiceRegistrationNo ?? '').trim();
+
+        return `
+
+            <div class="invoice-header__company">
+                <p class="company-name">${esc(company.name)}</p>
+                ${registrationNo ? `<p class="company-registration">登録番号：${esc(registrationNo)}</p>` : ''}
+                <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
+                <p class="company-contact">${esc(company.tel)}</p>
+                <p class="company-contact">${esc(company.fax)}</p>
+            </div>`;
+
+    };
+
+    const buildBankInfoHtml = () => {
+
+        const [firstLine, ...restLines] = INVOICE_BANK_LINES;
+        const restRowsHtml = restLines.map((line) => (
+            `<tr><td class="invoice-bank-info__account">${esc(line)}</td></tr>`
+        )).join('');
+
+        return `
+
+<table class="invoice-bank-info">
+    <tbody>
+        <tr>
+            <th class="invoice-bank-info__label" rowspan="${INVOICE_BANK_LINES.length}">振込先</th>
+            <td class="invoice-bank-info__account">${esc(firstLine)}</td>
+        </tr>
+        ${restRowsHtml}
+    </tbody>
+</table>`;
+
+    };
+
+    const buildPageNoHtml = (pageNumber, totalPages) => (
+        `<p class="invoice-page-no">${pageNumber} / ${totalPages}</p>`
+    );
 
     const buildHeaderHtml = (header, layout, pageMeta = {}) => {
 
         const company = getCompanyInfo(layout);
         const pageNumber = pageMeta.pageNumber ?? 1;
-        const totalPages = pageMeta.totalPages ?? 1;
-        const showBarcode = pageNumber === 1;
-        const infoClass = showBarcode
-            ? 'invoice-header__info'
-            : 'invoice-header__info invoice-header__info--no-barcode';
+        const showFullAddressee = pageNumber === 1;
+        const showBriefAddressee = pageNumber > 1;
+        const showCompany = pageNumber === 1;
 
         return `
-<header class="invoice-header">
-    ${showBarcode ? `<div class="invoice-barcode">
-        <svg id="barcode" class="barcode"></svg>
-    </div>` : ''}
+<header class="invoice-header${showFullAddressee ? '' : ' invoice-header--continued'}">
     <div class="invoice-header__left">
-        <h1 class="invoice-title">請 求 書</h1>
-        <dl class="invoice-meta">
-            <div class="invoice-meta__item">
-                <dt>請求先コード</dt>
-                <dd>${esc(header.customer_code)}</dd>
-            </div>
-            <div class="invoice-meta__item">
-                <dt>担当者</dt>
-                <dd>${esc(header.in_charge)}</dd>
-            </div>
-        </dl>
-        <p class="invoice-customer-name">${esc(formatCustomerName(header.customer_name))}</p>
-        <p class="invoice-due-date">支払期限：${esc(Format.formatDate(header.due_date))}</p>
+        ${showFullAddressee ? buildCustomerPanelHtml(header) : ''}
+        ${showBriefAddressee ? buildCustomerPanelBriefHtml(header) : ''}
     </div>
     <div class="invoice-header__right">
-        <div class="${infoClass}">
+        <div class="invoice-header__info">
+            <h1 class="invoice-title">請 求 書</h1>
             <div class="invoice-header__doc">
-                <p class="invoice-page-no">${pageNumber} / ${totalPages}</p>
                 <p class="invoice-doc-item">請求番号：${esc(header.invoice_no)}</p>
                 <p class="invoice-doc-item">請求日：${esc(Format.formatDate(header.invoice_date))}</p>
-                <p class="invoice-doc-item">請求期間：${esc(header.billing_period)}</p>
             </div>
-            <div class="invoice-header__company">
-                <p class="company-name">${esc(company.name)}</p>
-                <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
-                <p class="company-contact">${esc(company.tel)}</p>
-                <p class="company-contact">${esc(company.fax)}</p>
-            </div>
+            ${showCompany ? buildCompanyHtml(company) : ''}
         </div>
     </div>
 </header>`;
 
     };
 
-    const buildEmptyDetailRowHtml = () => (
-        '<tr class="invoice-detail-row invoice-detail-row--empty">'
-        + '<td></td><td></td><td></td><td></td><td></td>'
-        + '<td></td><td></td><td class="num"></td><td class="num"></td><td class="num"></td>'
-        + '</tr>'
+    const buildEmptyDetailPairHtml = () => (
+        `<tr class="detail-row detail-row--primary detail-row--empty">`
+        + `<td class="detail-cell--stack"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `<td class="num detail-cell--merged" rowspan="2"></td>`
+        + `<td class="num detail-cell--merged" rowspan="2"></td>`
+        + `<td class="num detail-cell--merged" rowspan="2"></td>`
+        + `</tr>`
+        + `<tr class="detail-row detail-row--secondary detail-row--empty">`
+        + `<td class="detail-cell--stack detail-cell--delivery-no"></td>`
+        + `<td class="detail-cell--stack detail-cell--manage-no"></td>`
+        + `<td class="detail-cell--stack detail-cell--item-sub"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `</tr>`
     );
 
-    const buildDetailRowHtml = (detail) => {
+    const buildDetailPairHtml = (detail) => {
 
         if (!detail) {
-            return buildEmptyDetailRowHtml();
+            return buildEmptyDetailPairHtml();
         }
 
-        return `<tr class="invoice-detail-row">`
-            + `<td>${esc(Format.formatDate(detail.delivery_date))}</td>`
-            + `<td>${esc(detail.delivery_no)}</td>`
-            + `<td>${esc(detail.manage_no)}</td>`
-            + `<td>${esc(detail.client_name)}</td>`
-            + `<td>${esc(detail.kimono_type)}</td>`
-            + `<td>${esc(detail.kimono_spec)}</td>`
-            + `<td>${esc(detail.item_name)}</td>`
-            + `<td class="num">${esc(detail.qty)}</td>`
-            + `<td class="num">${esc(Format.formatMoney(detail.unit_price))}</td>`
-            + `<td class="num">${esc(Format.formatMoney(detail.amount))}</td>`
+        return `<tr class="detail-row detail-row--primary">`
+            + `<td class="detail-cell--stack">${esc(Format.formatDate(detail.delivery_date))}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.client_name)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.slip_no)}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
+            + `</tr>`
+            + `<tr class="detail-row detail-row--secondary">`
+            + `<td class="detail-cell--stack detail-cell--delivery-no">${esc(detail.delivery_no)}</td>`
+            + `<td class="detail-cell--stack detail-cell--manage-no">${esc(detail.manage_no)}</td>`
+            + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.in_charge)}</td>`
             + `</tr>`;
 
     };
 
-    const buildDetailRowsHtml = (details) => details.map((detail) => buildDetailRowHtml(detail)).join('');
+    const buildDetailRowsHtml = (details) => details.map((detail) => buildDetailPairHtml(detail)).join('');
 
     const buildDetailTableHtml = (details) => `
 
 <table class="invoice-detail-table">
     <thead>
-        <tr class="invoice-detail-head">
+        <tr class="detail-head">
             <th>納品日</th>
-            <th>納品番号</th>
-            <th>管理番号</th>
             <th>お客様名</th>
-            <th>着物種類</th>
-            <th>仕様</th>
             <th>加工内容</th>
-            <th>数量</th>
+            <th>伝票番号 / 係</th>
             <th>単価</th>
+            <th>数量</th>
             <th>金額</th>
         </tr>
     </thead>
@@ -140,53 +270,31 @@ ${buildDetailRowsHtml(details)}
     </tbody>
 </table>`;
 
-    const buildSummaryHtml = (summary) => `
+    const buildSummaryHtml = (summary) => {
+
+        const subtotal = summary.subtotal ?? summary.totalAmount ?? 0;
+        const tax = summary.tax ?? 0;
+        const total = summary.total || (subtotal + tax);
+
+        return `
 
 <footer class="invoice-footer invoice-footer--totals">
     <table class="invoice-summary invoice-summary--totals">
         <tbody>
             <tr>
-                <th>点数</th>
-                <td>${esc(summary.totalCount ?? 0)}</td>
-                <th>数量合計</th>
-                <td>${esc(summary.totalQty ?? 0)}</td>
+                <th>税抜合計</th>
+                <td colspan="3">${esc(Format.formatMoney(subtotal))}</td>
             </tr>
             <tr>
-                <th>税抜合計</th>
-                <td>${esc(Format.formatMoney(summary.subtotal ?? summary.totalAmount ?? 0))}</td>
                 <th>消費税（10％）</th>
-                <td>${esc(Format.formatMoney(summary.tax ?? 0))}</td>
+                <td colspan="3">${esc(Format.formatMoney(tax))}</td>
             </tr>
             <tr class="invoice-summary__total">
                 <th>税込合計</th>
-                <td colspan="3">${esc(Format.formatMoney(summary.total ?? 0))}</td>
+                <td colspan="3">${esc(Format.formatMoney(total))}</td>
             </tr>
         </tbody>
     </table>
-</footer>`;
-
-    const buildFooterExtrasHtml = (header, layout = {}) => {
-
-        const company = getCompanyInfo(layout);
-        const remarks = String(header.remarks ?? '').trim();
-        const bankInfo = String(company.bankInfo ?? '').trim();
-        const invoiceRegistrationNo = String(company.invoiceRegistrationNo ?? '').trim();
-
-        return `
-
-<footer class="invoice-footer invoice-footer--extras">
-    <div class="invoice-footer__section">
-        <p class="invoice-footer__label">備考</p>
-        <p class="invoice-footer__text">${esc(remarks)}</p>
-    </div>
-    <div class="invoice-footer__section">
-        <p class="invoice-footer__label">振込先</p>
-        <p class="invoice-footer__text">${esc(bankInfo)}</p>
-    </div>
-    <div class="invoice-footer__section">
-        <p class="invoice-footer__label">インボイス登録番号</p>
-        <p class="invoice-footer__text">${esc(invoiceRegistrationNo)}</p>
-    </div>
 </footer>`;
 
     };
@@ -199,19 +307,16 @@ ${buildDetailRowsHtml(details)}
             totalPages = 1,
         } = options;
 
-        const isWindowEnvelope = layout.invoiceLayout === 'window_envelope';
-        const windowAddressHtml = isWindowEnvelope
-            && pageNumber === 1
-            && typeof InvoiceWindowTemplate !== 'undefined'
-            ? InvoiceWindowTemplate.buildAddressHtml(header)
-            : '';
+        const windowAddressHtml = '';
+        const showPage1BankInfo = pageNumber === 1;
 
         return `
     ${windowAddressHtml}
     ${buildHeaderHtml(header, layout, { pageNumber, totalPages })}
     ${buildDetailTableHtml(pageDetails)}
+    ${showPage1BankInfo ? buildBankInfoHtml() : ''}
     ${showSummary ? buildSummaryHtml(summary) : ''}
-    ${showSummary ? buildFooterExtrasHtml(header, layout) : ''}`;
+    ${buildPageNoHtml(pageNumber, totalPages)}`;
 
     };
 

@@ -22,13 +22,13 @@
     };
 
     const INVOICE_COMPANY = {
-        name: '株式会社AYANAS',
+        name: '株式会社ayanasu',
         postalCode: '〒631-0078',
         address: '奈良県奈良市富雄元町1-13-41',
         tel: 'TEL 0742-47-8390',
         fax: 'FAX 0742-47-8391',
         bankInfo: '三菱UFJ銀行 奈良支店 普通 1234567 カ）アヤナス',
-        invoiceRegistrationNo: 'T0000000000000',
+        invoiceRegistrationNo: 'T7150001017765',
     };
 
     /** @type {Map<string, object>} */
@@ -41,6 +41,18 @@
     const templateCache = new Map();
 
     let defaultReportType = 'order';
+
+    const normalizeAppId = (appId) => {
+
+        if (appId === null || appId === undefined || appId === '') {
+            return null;
+        }
+
+        const normalized = Number(appId);
+
+        return Number.isNaN(normalized) ? null : normalized;
+
+    };
 
     const normalizeBarcodeField = (barcodeField) => {
 
@@ -65,7 +77,11 @@
         }
 
         (definition.appIds ?? []).forEach((appId) => {
-            appIdToReportType.set(appId, definition.reportType);
+            const normalizedAppId = normalizeAppId(appId);
+
+            if (normalizedAppId !== null) {
+                appIdToReportType.set(normalizedAppId, definition.reportType);
+            }
         });
 
     };
@@ -98,7 +114,7 @@
         company: { ...DEFAULT_COMPANY },
         configDefaults: {
             barcode_type: 'CODE39',
-            barcode_visible: '1',
+            barcode_visible: '0',
         },
         definition: DeliveryDefinition,
     });
@@ -117,7 +133,7 @@
         company: { ...INVOICE_COMPANY },
         configDefaults: {
             barcode_type: 'CODE39',
-            barcode_visible: '1',
+            barcode_visible: '0',
         },
         definition: InvoiceDefinition,
     });
@@ -176,8 +192,10 @@
 
     const ReportRegistry = {
         resolveReportType: (appId) => {
-            if (appId !== null && appIdToReportType.has(appId)) {
-                return appIdToReportType.get(appId);
+            const normalizedAppId = normalizeAppId(appId);
+
+            if (normalizedAppId !== null && appIdToReportType.has(normalizedAppId)) {
+                return appIdToReportType.get(normalizedAppId);
             }
 
             return defaultReportType;

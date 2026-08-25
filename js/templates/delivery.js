@@ -51,21 +51,12 @@
 
     };
 
-    const buildHeaderHtml = (header, layout, pageMeta = {}) => {
+    const buildHeaderHtml = (header, layout) => {
 
         const company = getCompanyInfo(layout);
-        const pageNumber = pageMeta.pageNumber ?? 1;
-        const totalPages = pageMeta.totalPages ?? 1;
-        const showBarcode = pageNumber === 1;
-        const infoClass = showBarcode
-            ? 'delivery-header__info'
-            : 'delivery-header__info delivery-header__info--no-barcode';
 
         return `
 <header class="delivery-header">
-    ${showBarcode ? `<div class="delivery-barcode">
-        <svg id="barcode" class="barcode"></svg>
-    </div>` : ''}
     <div class="delivery-header__left">
         <h1 class="delivery-title">納 品 書</h1>
         <dl class="delivery-meta">
@@ -77,9 +68,8 @@
         <p class="delivery-customer-name">${esc(formatCustomerName(header.customer_name))}</p>
     </div>
     <div class="delivery-header__right">
-        <div class="${infoClass}">
+        <div class="delivery-header__info">
             <div class="delivery-header__doc">
-                <p class="delivery-page-no">${pageNumber} / ${totalPages}</p>
                 <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
                 <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
             </div>
@@ -94,6 +84,10 @@
 </header>`;
 
     };
+
+    const buildPageNoHtml = (pageNumber, totalPages) => (
+        `<p class="delivery-page-no">${pageNumber} / ${totalPages}</p>`
+    );
 
     const buildEmptyDetailPairHtml = () => (
         `<tr class="detail-row detail-row--primary detail-row--empty">`
@@ -163,9 +157,10 @@ ${buildDetailRowsHtml(details)}
         } = options;
 
         return `
-    ${buildHeaderHtml(header, layout, { pageNumber, totalPages })}
+    ${buildHeaderHtml(header, layout)}
     ${buildDetailTableHtml(pageDetails)}
-    ${showSummary ? buildSummaryHtml(summary) : ''}`;
+    ${showSummary ? buildSummaryHtml(summary) : ''}
+    ${buildPageNoHtml(pageNumber, totalPages)}`;
 
     };
 
@@ -219,7 +214,7 @@ ${buildDetailRowsHtml(details)}
                 summary,
                 layout,
                 {
-                    showSummary: index === totalPages - 1,
+                    showSummary: index === 0,
                     pageNumber: index + 1,
                     totalPages,
                 }

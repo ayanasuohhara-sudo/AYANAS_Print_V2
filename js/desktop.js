@@ -117,7 +117,7 @@
 
             assertRecordLoaded();
 
-            const data = Record.get();
+            const data = await Record.get();
 
             assertPreviewLoaded();
 
