@@ -61,6 +61,7 @@
     const INVOICE_HEADER_FIELDS = [
         'invoice_no',
         'invoice_date',
+        'closing_date',
         'billing_from',
         'billing_to',
         'customer_code',
@@ -74,6 +75,7 @@
         'total',
         'carry_over',
         'invoice_amount',
+        'payment_amount',
     ];
 
     /** 請求書（App 35）明細テーブル */
@@ -169,6 +171,60 @@
         }
 
         return current.record;
+
+    };
+
+    const getRecordId = (record) => {
+
+        const id = record?.$id?.value;
+
+        if (id === null || id === undefined || id === '') {
+            return null;
+        }
+
+        const normalized = Number(id);
+
+        return Number.isNaN(normalized) || normalized <= 0 ? null : normalized;
+
+    };
+
+    const fetchInvoiceRecordFromApi = async (recordId) => {
+
+        const response = await kintone.api(
+            kintone.api.url('/k/v1/record', true),
+            'GET',
+            {
+                app: INVOICE_APP_ID,
+                id: recordId,
+            }
+        );
+
+        if (!response?.record) {
+            throw new Error('請求書レコードを取得できません。');
+        }
+
+        return response.record;
+
+    };
+
+    const resolveInvoiceRecordForPrint = async (record) => {
+
+        const sourceRecord = getCurrentRecord(record);
+        const recordId = getRecordId(sourceRecord);
+
+        if (!recordId) {
+            return sourceRecord;
+        }
+
+        try {
+            return await fetchInvoiceRecordFromApi(recordId);
+        } catch (error) {
+
+            console.warn('[AYANAS Print] billing_from / billing_to 取得のため API 再取得に失敗しました。', error);
+
+            return sourceRecord;
+
+        }
 
     };
 
@@ -520,10 +576,11 @@
         const tax = toNumber(getFieldValue(record, 'tax'));
         const total = toNumber(getFieldValue(record, 'total'));
         const carryOver = toNumber(getFieldValue(record, 'carry_over'));
+        const paymentAmount = toNumber(getFieldValue(record, 'payment_amount'));
         const invoiceAmount = toNumber(getFieldValue(record, 'invoice_amount'));
         const resolvedSubtotal = subtotal || details.reduce((sum, detail) => sum + detail.amount, 0);
         const resolvedTotal = total || (resolvedSubtotal + tax);
-        const monthlyBillingAmount = invoiceAmount || resolvedTotal;
+        const currentBillingAmount = invoiceAmount || resolvedTotal;
 
         return {
             totalCount: itemCount || details.length,
@@ -532,8 +589,10 @@
             tax,
             total: resolvedTotal,
             carryOver,
-            invoiceAmount: monthlyBillingAmount,
-            monthlyBillingAmount,
+            paymentAmount,
+            invoiceAmount: currentBillingAmount,
+            currentBillingAmount,
+            monthlyBillingAmount: currentBillingAmount,
             totalAmount: resolvedSubtotal,
         };
 
@@ -649,7 +708,8 @@
 
         try {
 
-            const data = buildInvoiceReportData(getCurrentRecord(record));
+            const sourceRecord = await resolveInvoiceRecordForPrint(record);
+            const data = buildInvoiceReportData(sourceRecord);
 
             data.header = await enrichInvoiceHeaderWithCustomerMaster(data.header);
 

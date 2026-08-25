@@ -8,8 +8,9 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '27';
-    const DETAILS_PER_PAGE = 12;
+    const INVOICE_TEMPLATE_VERSION = '35';
+    const DETAILS_PER_PAGE_FIRST = 18;
+    const DETAILS_PER_PAGE_NEXT = 24;
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -109,12 +110,34 @@
 
     };
 
+    const formatBillingPeriodLabel = (header) => {
+
+        const from = String(header.billing_from ?? '').trim();
+        const to = String(header.billing_to ?? '').trim();
+
+        if (from && to) {
+            return `${Format.formatDate(from)}～${Format.formatDate(to)}`;
+        }
+
+        const legacy = String(header.billing_period ?? '').trim();
+
+        if (!legacy) {
+            return '';
+        }
+
+        return legacy.replace(
+            /(\d{4}-\d{2}-\d{2}|\d{4}\/\d{2}\/\d{2})/g,
+            (date) => Format.formatDate(date)
+        );
+
+    };
+
     const buildCustomerPanelHtml = (header) => {
 
         const postal = formatPostal(header.customer_postal_code);
         const address = String(header.customer_address ?? '').trim();
         const customerCode = String(header.customer_code ?? '').trim();
-        const billingPeriod = String(header.billing_period ?? '').trim();
+        const billingPeriod = formatBillingPeriodLabel(header);
 
         return `
             <div class="invoice-customer-panel">
@@ -276,16 +299,51 @@ ${buildDetailRowsHtml(details)}
         const subtotal = summary.subtotal ?? summary.totalAmount ?? 0;
         const tax = summary.tax ?? 0;
         const total = summary.total || (subtotal + tax);
-        const monthlyBillingAmount = summary.monthlyBillingAmount
+        const carryOver = summary.carryOver ?? 0;
+        const paymentAmount = summary.paymentAmount ?? 0;
+        const currentBillingAmount = summary.currentBillingAmount
             ?? summary.invoiceAmount
+            ?? summary.monthlyBillingAmount
             ?? total;
 
         return {
+            carryOver,
+            paymentAmount,
             subtotal,
             tax,
             total,
-            monthlyBillingAmount,
+            currentBillingAmount,
         };
+
+    };
+
+    const buildBillingMetaBarHtml = (header) => {
+
+        const closingDate = String(header.closing_date ?? '').trim();
+        const billingPeriod = formatBillingPeriodLabel(header);
+
+        if (!closingDate && !billingPeriod) {
+            return '';
+        }
+
+        return `
+
+<div class="invoice-billing-meta">
+    <table class="invoice-summary invoice-billing-meta__table">
+        <thead>
+            <tr>
+                <th>締日</th>
+                <th>ご請求対象期間</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>${esc(closingDate)}</td>
+                <td>${esc(billingPeriod)}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>`;
 
     };
 
@@ -297,22 +355,24 @@ ${buildDetailRowsHtml(details)}
 
 <div class="invoice-amount-overview">
     <table class="invoice-summary invoice-summary--overview">
+        <thead>
+            <tr>
+                <th>前回請求額</th>
+                <th>今回入金額</th>
+                <th>小計</th>
+                <th>消費税</th>
+                <th>税込み合計</th>
+                <th class="invoice-amount-overview__current-head">今回ご請求金額</th>
+            </tr>
+        </thead>
         <tbody>
             <tr>
-                <th>小計</th>
-                <td>${esc(Format.formatMoney(amounts.subtotal))}</td>
-            </tr>
-            <tr>
-                <th>消費税（10％）</th>
-                <td>${esc(Format.formatMoney(amounts.tax))}</td>
-            </tr>
-            <tr>
-                <th>税込合計</th>
-                <td>${esc(Format.formatMoney(amounts.total))}</td>
-            </tr>
-            <tr class="invoice-summary__billing">
-                <th>今月ご請求金額</th>
-                <td>${esc(Format.formatMoney(amounts.monthlyBillingAmount))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.carryOver))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.paymentAmount))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.subtotal))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.tax))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.total))}</td>
+                <td class="num invoice-amount-overview__current">${esc(Format.formatMoney(amounts.currentBillingAmount))}</td>
             </tr>
         </tbody>
     </table>
@@ -320,52 +380,88 @@ ${buildDetailRowsHtml(details)}
 
     };
 
-    const buildSummaryHtml = (summary) => {
+    const buildPage1FooterHtml = (summary) => {
 
         const amounts = resolveSummaryAmounts(summary);
+        const [firstLine, secondLine, thirdLine] = INVOICE_BANK_LINES;
 
         return `
 
-<footer class="invoice-footer invoice-footer--totals">
-    <table class="invoice-summary invoice-summary--totals">
-        <tbody>
-            <tr>
-                <th>税抜合計</th>
-                <td colspan="3">${esc(Format.formatMoney(amounts.subtotal))}</td>
-            </tr>
-            <tr>
-                <th>消費税（10％）</th>
-                <td colspan="3">${esc(Format.formatMoney(amounts.tax))}</td>
-            </tr>
-            <tr class="invoice-summary__total">
-                <th>税込合計</th>
-                <td colspan="3">${esc(Format.formatMoney(amounts.total))}</td>
-            </tr>
-        </tbody>
-    </table>
-</footer>`;
+<table class="invoice-page1-footer-table">
+    <colgroup>
+        <col class="invoice-page1-footer__col-bank-label">
+        <col class="invoice-page1-footer__col-bank-account">
+        <col class="invoice-page1-footer__col-total-label">
+        <col class="invoice-page1-footer__col-total-value">
+    </colgroup>
+    <tbody>
+        <tr class="invoice-page1-footer__row">
+            <th class="invoice-bank-info__label" rowspan="3">振込先</th>
+            <td class="invoice-bank-info__account">${esc(firstLine)}</td>
+            <th class="invoice-page1-totals__label">税抜合計</th>
+            <td class="num invoice-page1-totals__value">${esc(Format.formatMoney(amounts.subtotal))}</td>
+        </tr>
+        <tr class="invoice-page1-footer__row">
+            <td class="invoice-bank-info__account">${esc(secondLine)}</td>
+            <th class="invoice-page1-totals__label">消費税（10％）</th>
+            <td class="num invoice-page1-totals__value">${esc(Format.formatMoney(amounts.tax))}</td>
+        </tr>
+        <tr class="invoice-page1-footer__row invoice-summary__total">
+            <td class="invoice-bank-info__account">${esc(thirdLine)}</td>
+            <th class="invoice-page1-totals__label">税込合計</th>
+            <td class="num invoice-page1-totals__value">${esc(Format.formatMoney(amounts.total))}</td>
+        </tr>
+    </tbody>
+</table>`;
+
+    };
+
+    const buildInvoiceDetailPages = (details) => {
+
+        const pages = [];
+
+        if (!Array.isArray(details) || details.length === 0) {
+            pages.push(Core.Report.padPageDetails([], DETAILS_PER_PAGE_FIRST));
+            return pages;
+        }
+
+        pages.push(Core.Report.padPageDetails(
+            details.slice(0, DETAILS_PER_PAGE_FIRST),
+            DETAILS_PER_PAGE_FIRST
+        ));
+
+        let index = DETAILS_PER_PAGE_FIRST;
+
+        while (index < details.length) {
+
+            const chunk = details.slice(index, index + DETAILS_PER_PAGE_NEXT);
+
+            pages.push(Core.Report.padPageDetails(chunk, DETAILS_PER_PAGE_NEXT));
+            index += DETAILS_PER_PAGE_NEXT;
+
+        }
+
+        return pages;
 
     };
 
     const buildPageHtml = (header, pageDetails, summary, layout, options = {}) => {
 
         const {
-            showSummary = false,
             pageNumber = 1,
             totalPages = 1,
         } = options;
 
         const windowAddressHtml = '';
-        const showPage1BankInfo = pageNumber === 1;
-        const showAmountOverview = pageNumber === 1;
+        const isPage1 = pageNumber === 1;
 
         return `
     ${windowAddressHtml}
     ${buildHeaderHtml(header, layout, { pageNumber, totalPages })}
-    ${showAmountOverview ? buildAmountOverviewHtml(summary) : ''}
+    ${isPage1 ? buildBillingMetaBarHtml(header) : ''}
+    ${isPage1 ? buildAmountOverviewHtml(summary) : ''}
     ${buildDetailTableHtml(pageDetails)}
-    ${showPage1BankInfo ? buildBankInfoHtml() : ''}
-    ${showSummary ? buildSummaryHtml(summary) : ''}
+    ${isPage1 ? buildPage1FooterHtml(summary) : ''}
     ${buildPageNoHtml(pageNumber, totalPages)}`;
 
     };
@@ -381,7 +477,7 @@ ${buildDetailRowsHtml(details)}
         Validation.assertDetailReportData(data);
 
         const { header, details, summary } = data;
-        const detailPages = Core.Report.buildDetailPages(details, DETAILS_PER_PAGE);
+        const detailPages = buildInvoiceDetailPages(details);
         const totalPages = detailPages.length;
         const pagesHtml = detailPages.map((pageDetails, index) => (
             `<div class="page">${buildPageHtml(
@@ -390,7 +486,6 @@ ${buildDetailRowsHtml(details)}
                 summary,
                 layout,
                 {
-                    showSummary: index === totalPages - 1,
                     pageNumber: index + 1,
                     totalPages,
                 }

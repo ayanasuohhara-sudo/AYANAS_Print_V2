@@ -559,8 +559,9 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 4mm;
-    margin-bottom: 3mm;
-    min-height: 38mm;
+    margin-bottom: 2mm;
+    min-height: 34mm;
+    flex: 0 0 auto;
 }
 
 .report-invoice .invoice-header--continued {
@@ -743,23 +744,146 @@
     margin: 0 0 0.3mm;
 }
 
-.report-invoice .invoice-amount-overview {
-    margin: 0 0 2mm;
+.report-invoice .invoice-billing-meta {
+    margin: 0 0 1mm;
     flex: 0 0 auto;
-    align-self: flex-end;
+    width: 50%;
+    max-width: 50%;
+}
+
+.report-invoice .invoice-billing-meta__table {
     width: 100%;
-    display: flex;
-    justify-content: flex-end;
+    table-layout: fixed;
+}
+
+.report-invoice .invoice-billing-meta__table th,
+.report-invoice .invoice-billing-meta__table td {
+    text-align: center;
+    font-size: 7.5pt;
+    padding: 0.8mm 1.5mm;
+    white-space: nowrap;
+}
+
+.report-invoice .invoice-billing-meta__table th:nth-child(1),
+.report-invoice .invoice-billing-meta__table td:nth-child(1) {
+    width: 18%;
+}
+
+.report-invoice .invoice-billing-meta__table th:nth-child(2),
+.report-invoice .invoice-billing-meta__table td:nth-child(2) {
+    width: 82%;
+    text-align: left;
+}
+
+.report-invoice .invoice-amount-overview {
+    margin: 0 0 1.5mm;
+    flex: 0 0 auto;
+    width: 100%;
 }
 
 .report-invoice .invoice-summary--overview {
-    min-width: 52mm;
-    max-width: 62mm;
+    width: 100%;
+    table-layout: fixed;
 }
 
-.report-invoice .invoice-summary__billing th,
-.report-invoice .invoice-summary__billing td {
+.report-invoice .invoice-summary--overview th,
+.report-invoice .invoice-summary--overview td {
+    text-align: center;
+    font-size: 7pt;
+    padding: 0.8mm 1mm;
+    white-space: nowrap;
+}
+
+.report-invoice .invoice-summary--overview td.num {
+    text-align: right;
+}
+
+.report-invoice .invoice-amount-overview__current-head,
+.report-invoice .invoice-amount-overview__current {
     font-weight: 700;
+    font-size: 10pt;
+}
+
+.report-invoice .invoice-page1-footer-table {
+    margin-top: auto;
+    padding-top: 1.5mm;
+    flex: 0 0 auto;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.report-invoice .invoice-page1-footer__col-bank-label {
+    width: 8%;
+}
+
+.report-invoice .invoice-page1-footer__col-bank-account {
+    width: 58%;
+}
+
+.report-invoice .invoice-page1-footer__col-total-label {
+    width: 16%;
+}
+
+.report-invoice .invoice-page1-footer__col-total-value {
+    width: 18%;
+}
+
+.report-invoice .invoice-page1-footer-table tbody .invoice-page1-footer__row {
+    height: 6mm;
+}
+
+.report-invoice .invoice-page1-footer-table .invoice-bank-info__label {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    text-align: center;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+    padding: 1mm 0.3mm;
+    line-height: 1;
+    font-size: 6.5pt;
+    background: #f0f0f0;
+    vertical-align: middle;
+}
+
+.report-invoice .invoice-page1-footer-table .invoice-bank-info__account {
+    text-align: left;
+    font-size: 7pt;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.report-invoice .invoice-page1-footer-table .invoice-page1-totals__label {
+    background: #f0f0f0;
+    text-align: center;
+    font-weight: 700;
+    font-size: 7pt;
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: 0.5mm 0.5mm;
+}
+
+.report-invoice .invoice-page1-footer-table .invoice-page1-totals__value {
+    text-align: right;
+    font-size: 7pt;
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: 0.5mm 1mm;
+}
+
+.report-invoice .invoice-page1-footer-table .invoice-summary__total th,
+.report-invoice .invoice-page1-footer-table .invoice-summary__total td {
+    font-weight: 700;
+    font-size: 8.5pt;
+}
+
+.report-invoice .invoice-page1-footer-table th,
+.report-invoice .invoice-page1-footer-table td {
+    border: 0.2mm solid #333;
+    padding: 0.5mm 1mm;
 }
 
 .report-invoice .invoice-detail-table {
@@ -784,14 +908,14 @@
     background: #f0f0f0;
     font-weight: normal;
     text-align: center;
-    font-size: 9pt;
-    padding: 1px 2px;
-    line-height: 1.15;
-    height: 5mm;
+    font-size: 8.5pt;
+    padding: 0.5px 2px;
+    line-height: 1.1;
+    height: 4.5mm;
 }
 
 .report-invoice .invoice-detail-table tbody tr {
-    height: 5.1mm;
+    height: 4.6mm;
 }
 
 .report-invoice .invoice-detail-table tbody .detail-row--primary td {
@@ -812,7 +936,7 @@
 .report-invoice .invoice-detail-table tbody .detail-row--secondary td {
     padding: 0 2px;
     background: #ffffff;
-    font-size: 9pt;
+    font-size: 8.5pt;
     color: #222222;
     vertical-align: middle;
 }
@@ -866,7 +990,7 @@
 
 .report-invoice .invoice-detail-table th:nth-child(1),
 .report-invoice .invoice-detail-table td:nth-child(1) {
-    width: 10%;
+    width: 14%;
 }
 
 .report-invoice .invoice-detail-table th:nth-child(2),
@@ -896,7 +1020,7 @@
 
 .report-invoice .invoice-detail-table th:nth-child(7),
 .report-invoice .invoice-detail-table td:nth-child(7) {
-    width: 22%;
+    width: 18%;
 }
 
 .report-invoice .invoice-footer {
