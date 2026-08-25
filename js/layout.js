@@ -272,10 +272,10 @@
             definition,
         };
 
-        if (definition.company) {
-            layout.company = definition.company;
-        } else if (registryDefinition.company) {
+        if (registryDefinition.company) {
             layout.company = registryDefinition.company;
+        } else if (definition.company) {
+            layout.company = definition.company;
         }
 
         if (registryDefinition.configDefaults) {

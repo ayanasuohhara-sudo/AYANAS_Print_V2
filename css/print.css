@@ -743,6 +743,25 @@
     margin: 0 0 0.3mm;
 }
 
+.report-invoice .invoice-amount-overview {
+    margin: 0 0 2mm;
+    flex: 0 0 auto;
+    align-self: flex-end;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.report-invoice .invoice-summary--overview {
+    min-width: 52mm;
+    max-width: 62mm;
+}
+
+.report-invoice .invoice-summary__billing th,
+.report-invoice .invoice-summary__billing td {
+    font-weight: 700;
+}
+
 .report-invoice .invoice-detail-table {
     width: 100%;
     border-collapse: collapse;

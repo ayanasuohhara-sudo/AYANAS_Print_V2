@@ -15,6 +15,8 @@
     const PAYMENT_APP_ID = 36;
     const RECEIVABLE_APP_ID = 37;
 
+    const PLUGIN_VERSION = '27';
+
     const BUTTON_ID = 'ayanas-print-button';
     const BUTTON_CLASS = 'ayanas-print-button';
 
@@ -154,6 +156,7 @@
     assertPreviewLoaded();
     assertLayoutLoaded();
     Preview.initialize(getPluginBaseUrl());
+    console.info(`[AYANAS Print V3] plugin version ${PLUGIN_VERSION}`);
 
     kintone.events.on('app.record.detail.show', (event) => {
 

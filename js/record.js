@@ -72,6 +72,8 @@
         'subtotal',
         'tax',
         'total',
+        'carry_over',
+        'invoice_amount',
     ];
 
     /** 請求書（App 35）明細テーブル */
@@ -517,14 +519,22 @@
         const subtotal = toNumber(getFieldValue(record, 'subtotal'));
         const tax = toNumber(getFieldValue(record, 'tax'));
         const total = toNumber(getFieldValue(record, 'total'));
+        const carryOver = toNumber(getFieldValue(record, 'carry_over'));
+        const invoiceAmount = toNumber(getFieldValue(record, 'invoice_amount'));
+        const resolvedSubtotal = subtotal || details.reduce((sum, detail) => sum + detail.amount, 0);
+        const resolvedTotal = total || (resolvedSubtotal + tax);
+        const monthlyBillingAmount = invoiceAmount || resolvedTotal;
 
         return {
             totalCount: itemCount || details.length,
             totalQty: qtyTotal || details.reduce((sum, detail) => sum + detail.qty, 0),
-            subtotal: subtotal || details.reduce((sum, detail) => sum + detail.amount, 0),
+            subtotal: resolvedSubtotal,
             tax,
-            total,
-            totalAmount: subtotal || details.reduce((sum, detail) => sum + detail.amount, 0),
+            total: resolvedTotal,
+            carryOver,
+            invoiceAmount: monthlyBillingAmount,
+            monthlyBillingAmount,
+            totalAmount: resolvedSubtotal,
         };
 
     };

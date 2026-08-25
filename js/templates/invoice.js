@@ -8,6 +8,7 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
+    const INVOICE_TEMPLATE_VERSION = '27';
     const DETAILS_PER_PAGE = 12;
 
     const DEFAULT_COMPANY = {
@@ -270,11 +271,58 @@ ${buildDetailRowsHtml(details)}
     </tbody>
 </table>`;
 
-    const buildSummaryHtml = (summary) => {
+    const resolveSummaryAmounts = (summary) => {
 
         const subtotal = summary.subtotal ?? summary.totalAmount ?? 0;
         const tax = summary.tax ?? 0;
         const total = summary.total || (subtotal + tax);
+        const monthlyBillingAmount = summary.monthlyBillingAmount
+            ?? summary.invoiceAmount
+            ?? total;
+
+        return {
+            subtotal,
+            tax,
+            total,
+            monthlyBillingAmount,
+        };
+
+    };
+
+    const buildAmountOverviewHtml = (summary) => {
+
+        const amounts = resolveSummaryAmounts(summary);
+
+        return `
+
+<div class="invoice-amount-overview">
+    <table class="invoice-summary invoice-summary--overview">
+        <tbody>
+            <tr>
+                <th>小計</th>
+                <td>${esc(Format.formatMoney(amounts.subtotal))}</td>
+            </tr>
+            <tr>
+                <th>消費税（10％）</th>
+                <td>${esc(Format.formatMoney(amounts.tax))}</td>
+            </tr>
+            <tr>
+                <th>税込合計</th>
+                <td>${esc(Format.formatMoney(amounts.total))}</td>
+            </tr>
+            <tr class="invoice-summary__billing">
+                <th>今月ご請求金額</th>
+                <td>${esc(Format.formatMoney(amounts.monthlyBillingAmount))}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>`;
+
+    };
+
+    const buildSummaryHtml = (summary) => {
+
+        const amounts = resolveSummaryAmounts(summary);
 
         return `
 
@@ -283,15 +331,15 @@ ${buildDetailRowsHtml(details)}
         <tbody>
             <tr>
                 <th>税抜合計</th>
-                <td colspan="3">${esc(Format.formatMoney(subtotal))}</td>
+                <td colspan="3">${esc(Format.formatMoney(amounts.subtotal))}</td>
             </tr>
             <tr>
                 <th>消費税（10％）</th>
-                <td colspan="3">${esc(Format.formatMoney(tax))}</td>
+                <td colspan="3">${esc(Format.formatMoney(amounts.tax))}</td>
             </tr>
             <tr class="invoice-summary__total">
                 <th>税込合計</th>
-                <td colspan="3">${esc(Format.formatMoney(total))}</td>
+                <td colspan="3">${esc(Format.formatMoney(amounts.total))}</td>
             </tr>
         </tbody>
     </table>
@@ -309,10 +357,12 @@ ${buildDetailRowsHtml(details)}
 
         const windowAddressHtml = '';
         const showPage1BankInfo = pageNumber === 1;
+        const showAmountOverview = pageNumber === 1;
 
         return `
     ${windowAddressHtml}
     ${buildHeaderHtml(header, layout, { pageNumber, totalPages })}
+    ${showAmountOverview ? buildAmountOverviewHtml(summary) : ''}
     ${buildDetailTableHtml(pageDetails)}
     ${showPage1BankInfo ? buildBankInfoHtml() : ''}
     ${showSummary ? buildSummaryHtml(summary) : ''}
@@ -321,6 +371,8 @@ ${buildDetailRowsHtml(details)}
     };
 
     const InvoiceTemplate = TemplateInterface.create('InvoiceTemplate', (data, config = {}, layout = {}) => {
+
+        console.info(`[AYANAS Print V3] invoice template v${INVOICE_TEMPLATE_VERSION}`);
 
         if (typeof Format === 'undefined') {
             throw new Error('Format モジュールが読み込まれていません。');

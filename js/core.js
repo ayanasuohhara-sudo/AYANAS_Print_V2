@@ -573,11 +573,12 @@ ${bodyInner}
             ],
         },
         company: {
-            name: '株式会社AYANAS',
+            name: '株式会社ayanasu',
             postalCode: '〒631-0078',
             address: '奈良県奈良市富雄元町1-13-41',
             tel: 'TEL 0742-47-8390',
             fax: 'FAX 0742-47-8391',
+            invoiceRegistrationNo: 'T7150001017765',
         },
         summary: {
             items: [
