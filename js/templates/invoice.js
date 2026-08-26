@@ -8,7 +8,7 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '43';
+    const INVOICE_TEMPLATE_VERSION = '44';
     const DETAILS_PER_PAGE_FIRST = 16;
     const DETAILS_PER_PAGE_NEXT = 24;
 
@@ -68,7 +68,7 @@
             bankInfo: source.bankInfo ?? '',
             invoiceRegistrationNo: source.invoiceRegistrationNo ?? '',
             sealImageUrl: resolveSealImageUrl(source.sealImage, config),
-            sealOpacity: Number(source.sealOpacity ?? 0.4),
+            sealOpacity: Number(source.sealOpacity ?? 0.65),
         };
 
     };
@@ -192,7 +192,7 @@
 
         const registrationNo = String(company.invoiceRegistrationNo ?? '').trim();
         const sealImageUrl = String(company.sealImageUrl ?? '').trim();
-        const sealOpacity = Number.isFinite(company.sealOpacity) ? company.sealOpacity : 0.4;
+        const sealOpacity = Number.isFinite(company.sealOpacity) ? company.sealOpacity : 0.65;
         const sealHtml = sealImageUrl
             ? `<img class="invoice-header__company-seal" src="${esc(sealImageUrl)}" alt="" style="opacity:${sealOpacity}">`
             : '';
