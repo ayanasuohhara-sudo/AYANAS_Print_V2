@@ -8,8 +8,8 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '35';
-    const DETAILS_PER_PAGE_FIRST = 18;
+    const INVOICE_TEMPLATE_VERSION = '41';
+    const DETAILS_PER_PAGE_FIRST = 16;
     const DETAILS_PER_PAGE_NEXT = 24;
 
     const DEFAULT_COMPANY = {
@@ -29,6 +29,26 @@
 
     const esc = (value) => Format.escapeHtml(value);
 
+    const resolveSealImageUrl = (sealImage) => {
+
+        const path = String(sealImage ?? '').trim();
+
+        if (!path) {
+            return '';
+        }
+
+        if (typeof Preview !== 'undefined' && typeof Preview.getPluginAssetUrl === 'function') {
+            return Preview.getPluginAssetUrl(path);
+        }
+
+        if (/^(https?:|data:)/i.test(path)) {
+            return path;
+        }
+
+        return '';
+
+    };
+
     const getCompanyInfo = (layout = {}) => {
 
         const source = layout.company ?? DEFAULT_COMPANY;
@@ -41,6 +61,8 @@
             fax: source.fax ?? DEFAULT_COMPANY.fax,
             bankInfo: source.bankInfo ?? '',
             invoiceRegistrationNo: source.invoiceRegistrationNo ?? '',
+            sealImageUrl: resolveSealImageUrl(source.sealImage),
+            sealOpacity: Number(source.sealOpacity ?? 0.4),
         };
 
     };
@@ -66,26 +88,26 @@
         const length = formatCustomerName(name).length;
 
         if (length <= 14) {
-            return '10pt';
+            return '12pt';
         }
 
         if (length <= 18) {
-            return '9pt';
+            return '11pt';
         }
 
         if (length <= 22) {
-            return '8pt';
+            return '10pt';
         }
 
         if (length <= 28) {
-            return '7pt';
+            return '9pt';
         }
 
         if (length <= 34) {
-            return '6.5pt';
+            return '8.5pt';
         }
 
-        return '6pt';
+        return '8pt';
 
     };
 
@@ -137,7 +159,6 @@
         const postal = formatPostal(header.customer_postal_code);
         const address = String(header.customer_address ?? '').trim();
         const customerCode = String(header.customer_code ?? '').trim();
-        const billingPeriod = formatBillingPeriodLabel(header);
 
         return `
             <div class="invoice-customer-panel">
@@ -145,7 +166,6 @@
                 ${address ? `<p class="invoice-customer-panel__address">${esc(address)}</p>` : ''}
                 ${buildCustomerNameHtml(header.customer_name)}
                 ${customerCode ? `<p class="invoice-customer-panel__code">お得意様コード：${esc(customerCode)}</p>` : ''}
-                ${billingPeriod ? `<p class="invoice-customer-panel__period">請求対象期間：${esc(billingPeriod)}</p>` : ''}
             </div>`;
 
     };
@@ -165,15 +185,24 @@
     const buildCompanyHtml = (company) => {
 
         const registrationNo = String(company.invoiceRegistrationNo ?? '').trim();
+        const sealImageUrl = String(company.sealImageUrl ?? '').trim();
+        const sealOpacity = Number.isFinite(company.sealOpacity) ? company.sealOpacity : 0.4;
+        const sealHtml = sealImageUrl
+            ? `<img class="invoice-header__company-seal" src="${esc(sealImageUrl)}" alt="" style="opacity:${sealOpacity}">`
+            : '';
 
         return `
 
             <div class="invoice-header__company">
-                <p class="company-name">${esc(company.name)}</p>
-                ${registrationNo ? `<p class="company-registration">登録番号：${esc(registrationNo)}</p>` : ''}
-                <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
-                <p class="company-contact">${esc(company.tel)}</p>
-                <p class="company-contact">${esc(company.fax)}</p>
+                ${sealHtml}
+                <div class="invoice-header__company-body">
+                    <p class="company-name">${esc(company.name)}</p>
+                    ${registrationNo ? `<p class="company-registration">登録番号：${esc(registrationNo)}</p>` : ''}
+                    <p class="company-postal">${esc(company.postalCode)}</p>
+                    <p class="company-address">${esc(company.address)}</p>
+                    <p class="company-contact">${esc(company.tel)}</p>
+                    <p class="company-contact">${esc(company.fax)}</p>
+                </div>
             </div>`;
 
     };
@@ -361,7 +390,7 @@ ${buildDetailRowsHtml(details)}
                 <th>今回入金額</th>
                 <th>小計</th>
                 <th>消費税</th>
-                <th>税込み合計</th>
+                <th>税込合計</th>
                 <th class="invoice-amount-overview__current-head">今回ご請求金額</th>
             </tr>
         </thead>

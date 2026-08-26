@@ -286,6 +286,32 @@
 
     };
 
+    Preview.getPluginAssetUrl = (relativePath) => {
+
+        const normalizedPath = String(relativePath ?? '').replace(/^\//, '').trim();
+
+        if (normalizedPath === '') {
+            return '';
+        }
+
+        if (/^(https?:|data:)/i.test(normalizedPath)) {
+            return normalizedPath;
+        }
+
+        const pluginId = getPluginId();
+
+        if (!pluginId) {
+            return '';
+        }
+
+        if (typeof kintone !== 'undefined' && typeof kintone.api?.url === 'function') {
+            return kintone.api.url(`/k/plugin/${pluginId}/${normalizedPath}`, true);
+        }
+
+        return '';
+
+    };
+
     const loadScriptFromUrl = (scriptUrl, relativePath) => new Promise((resolve, reject) => {
 
         const existing = Array.from(document.querySelectorAll('script[src]'))

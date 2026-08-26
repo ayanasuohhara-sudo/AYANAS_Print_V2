@@ -29,6 +29,8 @@
         fax: 'FAX 0742-47-8391',
         bankInfo: '三菱UFJ銀行 奈良支店 普通 1234567 カ）アヤナス',
         invoiceRegistrationNo: 'T7150001017765',
+        sealImage: 'image/company-seal.png',
+        sealOpacity: 0.4,
     };
 
     /** @type {Map<string, object>} */
