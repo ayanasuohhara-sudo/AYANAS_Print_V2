@@ -15,7 +15,7 @@
     const PAYMENT_APP_ID = 36;
     const RECEIVABLE_APP_ID = 37;
 
-    const PLUGIN_VERSION = '41';
+    const PLUGIN_VERSION = '43';
 
     const BUTTON_ID = 'ayanas-print-button';
     const BUTTON_CLASS = 'ayanas-print-button';

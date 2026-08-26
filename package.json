@@ -5,6 +5,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "prepack": "node scripts/embed-company-seal.js",
     "pack": "npx @kintone/plugin-packer . --ppk private.ppk --out plugin.zip"
   },
   "devDependencies": {

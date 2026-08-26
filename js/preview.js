@@ -73,6 +73,7 @@
         'js/layout.js',
         'js/barcode.js',
         'js/preview.js',
+        'js/company-seal-data.js',
         'js/templates/order.js',
         'js/templates/delivery.js',
         'js/templates/invoice.js',

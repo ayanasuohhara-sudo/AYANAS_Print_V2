@@ -8,7 +8,7 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '41';
+    const INVOICE_TEMPLATE_VERSION = '43';
     const DETAILS_PER_PAGE_FIRST = 16;
     const DETAILS_PER_PAGE_NEXT = 24;
 
@@ -29,16 +29,22 @@
 
     const esc = (value) => Format.escapeHtml(value);
 
-    const resolveSealImageUrl = (sealImage) => {
+    const resolveSealImageUrl = (sealImage, config = {}) => {
+
+        const configDataUrl = String(config.company_seal_data_url ?? '').trim();
+
+        if (configDataUrl.startsWith('data:')) {
+            return configDataUrl;
+        }
+
+        if (typeof window.CompanySealDataUrl === 'string' && window.CompanySealDataUrl.startsWith('data:')) {
+            return window.CompanySealDataUrl;
+        }
 
         const path = String(sealImage ?? '').trim();
 
         if (!path) {
             return '';
-        }
-
-        if (typeof Preview !== 'undefined' && typeof Preview.getPluginAssetUrl === 'function') {
-            return Preview.getPluginAssetUrl(path);
         }
 
         if (/^(https?:|data:)/i.test(path)) {
@@ -49,7 +55,7 @@
 
     };
 
-    const getCompanyInfo = (layout = {}) => {
+    const getCompanyInfo = (layout = {}, config = {}) => {
 
         const source = layout.company ?? DEFAULT_COMPANY;
 
@@ -61,7 +67,7 @@
             fax: source.fax ?? DEFAULT_COMPANY.fax,
             bankInfo: source.bankInfo ?? '',
             invoiceRegistrationNo: source.invoiceRegistrationNo ?? '',
-            sealImageUrl: resolveSealImageUrl(source.sealImage),
+            sealImageUrl: resolveSealImageUrl(source.sealImage, config),
             sealOpacity: Number(source.sealOpacity ?? 0.4),
         };
 
@@ -232,9 +238,9 @@
         `<p class="invoice-page-no">${pageNumber} / ${totalPages}</p>`
     );
 
-    const buildHeaderHtml = (header, layout, pageMeta = {}) => {
+    const buildHeaderHtml = (header, layout, pageMeta = {}, config = {}) => {
 
-        const company = getCompanyInfo(layout);
+        const company = getCompanyInfo(layout, config);
         const pageNumber = pageMeta.pageNumber ?? 1;
         const showFullAddressee = pageNumber === 1;
         const showBriefAddressee = pageNumber > 1;
@@ -474,7 +480,7 @@ ${buildDetailRowsHtml(details)}
 
     };
 
-    const buildPageHtml = (header, pageDetails, summary, layout, options = {}) => {
+    const buildPageHtml = (header, pageDetails, summary, layout, options = {}, config = {}) => {
 
         const {
             pageNumber = 1,
@@ -486,7 +492,7 @@ ${buildDetailRowsHtml(details)}
 
         return `
     ${windowAddressHtml}
-    ${buildHeaderHtml(header, layout, { pageNumber, totalPages })}
+    ${buildHeaderHtml(header, layout, { pageNumber, totalPages }, config)}
     ${isPage1 ? buildBillingMetaBarHtml(header) : ''}
     ${isPage1 ? buildAmountOverviewHtml(summary) : ''}
     ${buildDetailTableHtml(pageDetails)}
@@ -517,7 +523,8 @@ ${buildDetailRowsHtml(details)}
                 {
                     pageNumber: index + 1,
                     totalPages,
-                }
+                },
+                config
             )}
 </div>`
         )).join('\n');
