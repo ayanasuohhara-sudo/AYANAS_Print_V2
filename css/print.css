@@ -186,6 +186,116 @@
 }
 
 /* ========================================
+   帳票種別: 受注明細表 (order_detail)
+   ======================================== */
+.report-order-detail .page {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 297mm;
+    min-height: 210mm;
+    max-height: 210mm;
+    height: 210mm;
+    margin: 0 auto 10px;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    grid-template-columns: unset;
+    grid-template-rows: unset;
+    grid-template-areas: unset;
+    gap: 0;
+    font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", "MS Gothic", sans-serif;
+    font-size: 14pt;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #000000;
+    background: #ffffff;
+}
+
+.report-order-detail .order-detail-sheet {
+    flex: 0 0 148mm;
+    width: 148mm;
+    max-width: 148mm;
+    min-height: 210mm;
+    box-sizing: border-box;
+    padding: 5mm 3mm 4mm;
+    overflow: hidden;
+}
+
+.report-order-detail .order-detail-blank {
+    flex: 1 1 auto;
+    width: 149mm;
+    min-height: 210mm;
+    background: #ffffff;
+}
+
+.report-order-detail .order-detail-title {
+    margin: 0 0 4mm;
+    padding: 0;
+    font-size: 16pt;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+}
+
+.report-order-detail .order-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0 0 4mm;
+}
+
+.report-order-detail .order-detail-table th,
+.report-order-detail .order-detail-table td {
+    border: 1px solid #000000;
+    padding: 1.5mm 2mm;
+    vertical-align: middle;
+    font-size: 14pt;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #000000;
+}
+
+.report-order-detail .order-detail-table__label {
+    width: 38mm;
+    text-align: left;
+    white-space: nowrap;
+    background: #ffffff;
+}
+
+.report-order-detail .order-detail-table__value {
+    text-align: left;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.report-order-detail .order-detail-table__value--wrap {
+    white-space: normal;
+}
+
+.report-order-detail .order-detail-barcode {
+    margin-top: 2mm;
+    text-align: center;
+}
+
+.report-order-detail .order-detail-barcode__svg {
+    display: block;
+    width: 92mm;
+    height: 22mm;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.report-order-detail .order-detail-barcode__value {
+    margin: 2mm 0 0;
+    font-size: 14pt;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+}
+
+/* ========================================
    帳票種別: 納品書 (delivery)
    ======================================== */
 .report-delivery .page {
@@ -195,13 +305,16 @@
     grid-template-columns: unset;
     grid-template-rows: unset;
     grid-template-areas: unset;
-    font-size: 9pt;
-    line-height: 1.3;
+    width: 190mm;
     min-height: 277mm;
     max-height: none;
+    margin: 0 auto 12px;
+    padding: 4mm 10mm;
+    box-sizing: border-box;
+    font-size: 9pt;
+    line-height: 1.3;
     overflow: visible;
     position: relative;
-    margin-bottom: 12px;
 }
 
 .report-delivery .page:last-child {
@@ -363,6 +476,8 @@
     border-collapse: collapse;
     table-layout: fixed;
     flex: 0 0 auto;
+    font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", "MS Gothic", sans-serif;
+    font-weight: 700;
 }
 
 .report-delivery .delivery-detail-table th,
@@ -373,11 +488,13 @@
     word-break: break-word;
     font-size: 9pt;
     line-height: 1.15;
+    font-family: inherit;
+    font-weight: 700;
 }
 
 .report-delivery .delivery-detail-table thead th {
     background: #f0f0f0;
-    font-weight: normal;
+    font-weight: 700;
     text-align: center;
     font-size: 9pt;
     padding: 1px 2px;
@@ -403,6 +520,7 @@
     padding: 0 2px;
     background: #ffffff;
     font-size: 9pt;
+    font-weight: 700;
     color: #222222;
     vertical-align: middle;
 }
@@ -444,22 +562,22 @@
 
 .report-delivery .delivery-detail-table th:nth-child(1),
 .report-delivery .delivery-detail-table td:nth-child(1) {
-    width: 10%;
+    width: 14%;
 }
 
 .report-delivery .delivery-detail-table th:nth-child(2),
 .report-delivery .delivery-detail-table td:nth-child(2) {
-    width: 12%;
+    width: 16%;
 }
 
 .report-delivery .delivery-detail-table th:nth-child(3),
 .report-delivery .delivery-detail-table td:nth-child(3) {
-    width: 18%;
+    width: 27%;
 }
 
 .report-delivery .delivery-detail-table th:nth-child(4),
 .report-delivery .delivery-detail-table td:nth-child(4) {
-    width: 14%;
+    width: 9%;
 }
 
 .report-delivery .delivery-detail-table th:nth-child(5),
@@ -474,7 +592,7 @@
 
 .report-delivery .delivery-detail-table th:nth-child(7),
 .report-delivery .delivery-detail-table td:nth-child(7) {
-    width: 18%;
+    width: 14%;
 }
 
 .report-delivery .delivery-footer {
@@ -495,6 +613,8 @@
     margin-left: auto;
     border-collapse: collapse;
     table-layout: fixed;
+    font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", "MS Gothic", sans-serif;
+    font-weight: 700;
 }
 
 .report-delivery .delivery-summary th,
@@ -504,19 +624,21 @@
     vertical-align: middle;
     font-size: 8.5pt;
     line-height: 1.25;
+    font-family: inherit;
+    font-weight: 700;
 }
 
 .report-delivery .delivery-summary th {
     width: 42%;
     background: #f0f0f0;
     text-align: left;
-    font-weight: normal;
+    font-weight: 700;
     white-space: nowrap;
 }
 
 .report-delivery .delivery-summary td {
     text-align: right;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .report-delivery .delivery-summary__total th,
@@ -539,7 +661,7 @@
     min-height: 277mm;
     max-height: 277mm;
     margin: 0 auto 8mm;
-    padding: 4mm 5mm;
+    padding: 4mm 10mm;
     box-sizing: border-box;
     background: #fff;
     overflow: hidden;
@@ -630,7 +752,7 @@
     border: none;
     background: transparent;
     color: #000000;
-    padding: 0 0 0 4em;
+    padding: 0 0 0 2em;
     text-align: left;
     word-break: break-word;
     overflow-wrap: anywhere;
@@ -651,7 +773,7 @@
 .report-invoice .invoice-customer-panel__postal,
 .report-invoice .invoice-customer-panel__address,
 .report-invoice .invoice-customer-panel__name {
-    max-width: calc(50cqw - 4em);
+    max-width: calc(50cqw - 2em);
     box-sizing: border-box;
 }
 
@@ -792,6 +914,32 @@
     max-width: 50%;
 }
 
+.report-invoice .invoice-billing-meta__table,
+.report-invoice .invoice-summary--overview,
+.report-invoice .invoice-page1-footer-table,
+.report-invoice .invoice-detail-table,
+.report-invoice .invoice-summary,
+.report-invoice .invoice-bank-info {
+    font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", "MS Gothic", sans-serif;
+    font-weight: 700;
+}
+
+.report-invoice .invoice-billing-meta__table th,
+.report-invoice .invoice-billing-meta__table td,
+.report-invoice .invoice-summary--overview th,
+.report-invoice .invoice-summary--overview td,
+.report-invoice .invoice-page1-footer-table th,
+.report-invoice .invoice-page1-footer-table td,
+.report-invoice .invoice-detail-table th,
+.report-invoice .invoice-detail-table td,
+.report-invoice .invoice-summary th,
+.report-invoice .invoice-summary td,
+.report-invoice .invoice-bank-info th,
+.report-invoice .invoice-bank-info td {
+    font-family: inherit;
+    font-weight: 700;
+}
+
 .report-invoice .invoice-billing-meta__table {
     width: 100%;
     table-layout: fixed;
@@ -800,9 +948,26 @@
 .report-invoice .invoice-billing-meta__table th,
 .report-invoice .invoice-billing-meta__table td {
     text-align: center;
-    font-size: 7.5pt;
-    padding: 0.8mm 1.5mm;
     white-space: nowrap;
+    vertical-align: middle;
+}
+
+.report-invoice .invoice-billing-meta__table thead th {
+    font-size: 8.5pt;
+    line-height: 1.1;
+    height: 4.5mm;
+    padding: 0.5px 2px;
+}
+
+.report-invoice .invoice-billing-meta__table tbody td {
+    font-size: 9pt;
+    line-height: 1.15;
+    height: 6mm;
+    padding: 1mm 2px;
+}
+
+.report-invoice .invoice-billing-meta__table tbody td:nth-child(1) {
+    text-align: center;
 }
 
 .report-invoice .invoice-billing-meta__table th:nth-child(1),
@@ -830,19 +995,36 @@
 .report-invoice .invoice-summary--overview th,
 .report-invoice .invoice-summary--overview td {
     text-align: center;
-    font-size: 7pt;
-    padding: 0.8mm 1mm;
     white-space: nowrap;
+    vertical-align: middle;
+}
+
+.report-invoice .invoice-summary--overview thead th {
+    font-size: 8.5pt;
+    line-height: 1.1;
+    height: 4.5mm;
+    padding: 0.5px 2px;
+}
+
+.report-invoice .invoice-summary--overview tbody td {
+    font-size: 9pt;
+    line-height: 1.15;
+    height: 6mm;
+    padding: 1mm 2px;
 }
 
 .report-invoice .invoice-summary--overview td.num {
     text-align: right;
 }
 
-.report-invoice .invoice-amount-overview__current-head,
+.report-invoice .invoice-amount-overview__current-head {
+    font-weight: 700;
+    font-size: 8.5pt;
+}
+
 .report-invoice .invoice-amount-overview__current {
     font-weight: 700;
-    font-size: 11pt;
+    font-size: 9pt;
 }
 
 .report-invoice .invoice-page1-footer-table {
@@ -878,7 +1060,7 @@
     writing-mode: vertical-rl;
     text-orientation: upright;
     text-align: center;
-    font-weight: 400;
+    font-weight: 700;
     white-space: nowrap;
     letter-spacing: 0.1em;
     padding: 1mm 0.3mm;
@@ -891,7 +1073,7 @@
 .report-invoice .invoice-page1-footer-table .invoice-bank-info__account {
     text-align: left;
     font-size: 7pt;
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
@@ -923,7 +1105,7 @@
 }
 
 .report-invoice .invoice-page1-footer-table .invoice-summary__total .invoice-bank-info__account {
-    font-weight: 400;
+    font-weight: 700;
     font-size: 7pt;
 }
 
@@ -953,7 +1135,7 @@
 
 .report-invoice .invoice-detail-table thead th {
     background: #f0f0f0;
-    font-weight: normal;
+    font-weight: 700;
     text-align: center;
     font-size: 8.5pt;
     padding: 0.5px 2px;
@@ -1037,27 +1219,27 @@
 
 .report-invoice .invoice-detail-table th:nth-child(1),
 .report-invoice .invoice-detail-table td:nth-child(1) {
-    width: 14%;
+    width: 16%;
 }
 
 .report-invoice .invoice-detail-table th:nth-child(2),
 .report-invoice .invoice-detail-table td:nth-child(2) {
-    width: 12%;
+    width: 16%;
 }
 
 .report-invoice .invoice-detail-table th:nth-child(3),
 .report-invoice .invoice-detail-table td:nth-child(3) {
-    width: 18%;
+    width: 26%;
 }
 
 .report-invoice .invoice-detail-table th:nth-child(4),
 .report-invoice .invoice-detail-table td:nth-child(4) {
-    width: 14%;
+    width: 9%;
 }
 
 .report-invoice .invoice-detail-table th:nth-child(5),
 .report-invoice .invoice-detail-table td:nth-child(5) {
-    width: 14%;
+    width: 11%;
 }
 
 .report-invoice .invoice-detail-table th:nth-child(6),
@@ -1067,7 +1249,7 @@
 
 .report-invoice .invoice-detail-table th:nth-child(7),
 .report-invoice .invoice-detail-table td:nth-child(7) {
-    width: 18%;
+    width: 12%;
 }
 
 .report-invoice .invoice-footer {
@@ -1136,6 +1318,15 @@
 .report-invoice .invoice-summary td {
     text-align: right;
     min-width: 18mm;
+}
+
+.report-invoice .invoice-billing-meta__table td {
+    text-align: center;
+    min-width: 0;
+}
+
+.report-invoice .invoice-billing-meta__table td:nth-child(2) {
+    text-align: left;
 }
 
 .report-invoice .invoice-summary__total th,
@@ -1269,6 +1460,14 @@
     max-height: 277mm;
 }
 
+.report-order-detail .page.page--a4.page--landscape,
+.report-order-detail .page.page--landscape {
+    width: 297mm;
+    min-height: 210mm;
+    max-height: 210mm;
+    height: 210mm;
+}
+
 *,
 *::before,
 *::after {
@@ -1370,6 +1569,8 @@ body {
         page-break-inside: avoid;
         max-height: none;
         overflow: visible;
+        margin: 0 auto;
+        padding: 4mm 10mm;
     }
 
     .report-delivery .page:last-child {
@@ -1381,6 +1582,8 @@ body {
         page-break-inside: avoid;
         max-height: none;
         overflow: visible;
+        margin: 0 auto;
+        padding: 4mm 10mm;
     }
 
     .report-invoice .invoice-header__company-seal {
@@ -1398,6 +1601,24 @@ body {
 
     .report-delivery .delivery-footer {
         page-break-inside: avoid;
+    }
+
+    .report-order-detail .page {
+        width: 297mm;
+        min-height: 210mm;
+        max-height: 210mm;
+        height: 210mm;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        overflow: hidden;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+
+    .report-order-detail .order-detail-sheet {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
     }
 
     .buttons {

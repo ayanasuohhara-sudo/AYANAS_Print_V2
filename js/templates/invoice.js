@@ -8,9 +8,9 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '44';
-    const DETAILS_PER_PAGE_FIRST = 16;
-    const DETAILS_PER_PAGE_NEXT = 24;
+    const INVOICE_TEMPLATE_VERSION = '49';
+    const DETAILS_PER_PAGE_FIRST = 17;
+    const DETAILS_PER_PAGE_NEXT = 26;
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -382,11 +382,14 @@ ${buildDetailRowsHtml(details)}
 
     };
 
-    const buildAmountOverviewHtml = (summary) => {
+    const buildAmountOverviewHtml = (summary, layout = {}) => {
 
         const amounts = resolveSummaryAmounts(summary);
+        const showCarryOver = layout.carryOverMode !== 'none';
 
-        return `
+        if (showCarryOver) {
+
+            return `
 
 <div class="invoice-amount-overview">
     <table class="invoice-summary invoice-summary--overview">
@@ -404,6 +407,31 @@ ${buildDetailRowsHtml(details)}
             <tr>
                 <td class="num">${esc(Format.formatMoney(amounts.carryOver))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.paymentAmount))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.subtotal))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.tax))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.total))}</td>
+                <td class="num invoice-amount-overview__current">${esc(Format.formatMoney(amounts.currentBillingAmount))}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>`;
+
+        }
+
+        return `
+
+<div class="invoice-amount-overview invoice-amount-overview--no-carry">
+    <table class="invoice-summary invoice-summary--overview">
+        <thead>
+            <tr>
+                <th>小計</th>
+                <th>消費税</th>
+                <th>税込合計</th>
+                <th class="invoice-amount-overview__current-head">今回ご請求金額</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
                 <td class="num">${esc(Format.formatMoney(amounts.subtotal))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.tax))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.total))}</td>
@@ -494,7 +522,7 @@ ${buildDetailRowsHtml(details)}
     ${windowAddressHtml}
     ${buildHeaderHtml(header, layout, { pageNumber, totalPages }, config)}
     ${isPage1 ? buildBillingMetaBarHtml(header) : ''}
-    ${isPage1 ? buildAmountOverviewHtml(summary) : ''}
+    ${isPage1 ? buildAmountOverviewHtml(summary, layout) : ''}
     ${buildDetailTableHtml(pageDetails)}
     ${isPage1 ? buildPage1FooterHtml(summary) : ''}
     ${buildPageNoHtml(pageNumber, totalPages)}`;

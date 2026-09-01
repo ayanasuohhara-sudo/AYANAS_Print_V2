@@ -75,6 +75,7 @@
         'js/preview.js',
         'js/company-seal-data.js',
         'js/templates/order.js',
+        'js/templates/order_detail.js',
         'js/templates/delivery.js',
         'js/templates/invoice.js',
         'js/templates/invoice_window.js',
@@ -398,9 +399,30 @@
         window.close();
     });`;
 
-    const buildScriptHtml = (barcodeValue, config = {}, resourceUrls = {}) => {
+    const getBarcodeDrawOptions = (layout, barcodeType) => {
+
+        if (layout.reportType === 'order_detail') {
+            return {
+                barcode_type: barcodeType,
+                format: barcodeType,
+                height: 70,
+                width: 2.5,
+                margin: 12,
+                displayValue: false,
+                textAlign: 'center',
+                background: '#ffffff',
+                lineColor: '#000000',
+            };
+        }
+
+        return { barcode_type: barcodeType };
+
+    };
+
+    const buildScriptHtml = (barcodeValue, config = {}, resourceUrls = {}, layout = {}) => {
 
         const barcodeType = Barcode.resolveFormat(config);
+        const barcodeDrawOptions = getBarcodeDrawOptions(layout, barcodeType);
 
         if (config.barcode_visible === '0') {
 
@@ -424,6 +446,7 @@ ${buildButtonScriptBody()}
 
     var barcodeValue = ${JSON.stringify(barcodeValue)};
     var barcodeType = ${JSON.stringify(barcodeType)};
+    var barcodeDrawOptions = ${JSON.stringify(barcodeDrawOptions)};
     var jsBarcodeUrl = ${JSON.stringify(jsBarcodeUrl)};
     var barcodeJsUrl = ${JSON.stringify(barcodeJsUrl)};
 
@@ -454,7 +477,7 @@ ${buildButtonScriptBody()}
         }
 
         try {
-            window.Barcode.draw(svg, barcodeValue, { barcode_type: barcodeType });
+            window.Barcode.draw(svg, barcodeValue, barcodeDrawOptions);
         } catch (error) {
             console.error(error);
             alert('バーコード描画エラー\\n\\n' + String(error));
@@ -509,6 +532,13 @@ ${buildButtonScriptBody()}
             previewConfig.paper_size = 'A4';
         }
 
+        if (layout.reportType === 'order_detail') {
+            previewConfig.print_orientation = 'landscape';
+            previewConfig.paper_size = 'A4';
+            previewConfig.page_margin = '0';
+            previewConfig.barcode_visible = '1';
+        }
+
         if (layout.reportType === 'invoice' && layout.invoiceLayout === 'window_envelope') {
             previewConfig.print_orientation = 'portrait';
             previewConfig.paper_size = 'A4';
@@ -531,6 +561,10 @@ ${buildButtonScriptBody()}
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
         }
 
+        if (layout.reportType === 'order_detail') {
+            html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
+        }
+
         html = html.replace(
             '</head>',
             `<link rel="stylesheet" href="${printCssUrl}">\n`
@@ -542,7 +576,7 @@ ${buildButtonScriptBody()}
         html = html.replace(
             '</body>',
             `${buildPreviewButtonsHtml()}\n`
-            + `${buildScriptHtml(barcodeValue, previewConfig, { jsBarcodeUrl, barcodeJsUrl })}\n</body>`
+            + `${buildScriptHtml(barcodeValue, previewConfig, { jsBarcodeUrl, barcodeJsUrl }, layout)}\n</body>`
         );
 
         return html;

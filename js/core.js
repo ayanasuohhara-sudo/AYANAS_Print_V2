@@ -328,7 +328,9 @@ ${bodyInner}
 
         const paperSize = config.paper_size === 'A5' ? 'A5' : 'A4';
         const orientation = config.print_orientation === 'portrait' ? 'portrait' : 'landscape';
-        const margin = orientation === 'portrait' ? '0' : '10mm';
+        const margin = typeof config.page_margin === 'string' && config.page_margin !== ''
+            ? config.page_margin
+            : (orientation === 'portrait' ? '0' : '10mm');
 
         return `<style>@page { size: ${paperSize} ${orientation}; margin: ${margin}; }</style>`;
 

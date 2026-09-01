@@ -12,6 +12,7 @@
 
     const DELIVERY_APP_ID = 19;
     const INVOICE_APP_ID = 35;
+    const ORDER_APP_ID = 16;
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -98,8 +99,27 @@
         paperSize: 'A4',
         orientation: 'landscape',
         buttonLabel: '受注票印刷',
+        appIds: [ORDER_APP_ID],
         default: true,
         definition: OrderDefinition,
+    });
+
+    registerReport({
+        reportType: 'order_detail',
+        title: '受注明細表',
+        templatePath: 'js/templates/order_detail.js',
+        templateGlobal: 'OrderDetailTemplate',
+        pageClass: 'report-order-detail',
+        barcodeField: 'manage_no',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '受注明細表印刷',
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '1',
+            page_margin: '0',
+        },
+        definition: {},
     });
 
     registerReport({
@@ -291,6 +311,7 @@
                     customerInvoiceLayout: printOptions.customerInvoiceLayout,
                 })
                 : 'normal';
+            layout.carryOverMode = printOptions.carryOverMode === 'none' ? 'none' : 'with_carry';
         }
 
         return layout;
@@ -311,7 +332,9 @@
         Validation.assertObject(data, '帳票データ');
         Validation.assertObject(config, 'プラグイン設定');
 
-        const reportType = ReportRegistry.resolveReportType(getCurrentAppId());
+        const reportType = typeof printOptions.reportType === 'string' && printOptions.reportType !== ''
+            ? printOptions.reportType
+            : ReportRegistry.resolveReportType(getCurrentAppId());
         const registryDefinition = ReportRegistry.get(reportType);
         const template = await Layout.loadTemplate(reportType);
 

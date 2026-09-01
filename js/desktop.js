@@ -12,12 +12,14 @@
 
     const DELIVERY_APP_ID = 19;
     const INVOICE_APP_ID = 35;
+    const ORDER_APP_ID = 16;
     const PAYMENT_APP_ID = 36;
     const RECEIVABLE_APP_ID = 37;
 
-    const PLUGIN_VERSION = '44';
+    const PLUGIN_VERSION = '55';
 
-    const BUTTON_ID = 'ayanas-print-button';
+    const ORDER_PRINT_BUTTON_ID = 'ayanas-print-button-order';
+    const ORDER_DETAIL_PRINT_BUTTON_ID = 'ayanas-print-button-order-detail';
     const BUTTON_CLASS = 'ayanas-print-button';
 
     const assertRecordLoaded = () => {
@@ -111,9 +113,11 @@
 
     };
 
+    const isOrderApp = () => getAppId() === ORDER_APP_ID;
+
     const getButtonLabel = () => Layout.getButtonLabel();
 
-    const handlePrintClick = async () => {
+    const handlePrintClick = async (reportType) => {
 
         try {
 
@@ -123,7 +127,7 @@
 
             assertPreviewLoaded();
 
-            await Preview.open(data);
+            await Preview.open(data, reportType ? { reportType } : {});
 
         } catch (error) {
 
@@ -139,17 +143,57 @@
 
     };
 
-    const createPrintButton = (label) => {
+    const createPrintButton = (id, label, reportType) => {
 
         const button = document.createElement('button');
 
-        button.id = BUTTON_ID;
+        button.id = id;
         button.type = 'button';
         button.className = BUTTON_CLASS;
         button.textContent = label;
-        button.addEventListener('click', handlePrintClick);
+        button.addEventListener('click', () => handlePrintClick(reportType));
 
         return button;
+
+    };
+
+    const removePrintButtons = () => {
+
+        document.getElementById(ORDER_PRINT_BUTTON_ID)?.remove();
+        document.getElementById(ORDER_DETAIL_PRINT_BUTTON_ID)?.remove();
+        document.getElementById('ayanas-print-button')?.remove();
+
+    };
+
+    const appendPrintButtons = () => {
+
+        const space = kintone.app.record.getHeaderMenuSpaceElement();
+
+        if (!space) {
+            return;
+        }
+
+        removePrintButtons();
+
+        if (isOrderApp()) {
+            space.appendChild(createPrintButton(
+                ORDER_PRINT_BUTTON_ID,
+                '受注票印刷',
+                'order'
+            ));
+            space.appendChild(createPrintButton(
+                ORDER_DETAIL_PRINT_BUTTON_ID,
+                '受注明細表',
+                'order_detail'
+            ));
+            return;
+        }
+
+        space.appendChild(createPrintButton(
+            'ayanas-print-button',
+            getButtonLabel(),
+            null
+        ));
 
     };
 
@@ -164,17 +208,13 @@
             return event;
         }
 
-        if (document.getElementById(BUTTON_ID)) {
+        if (document.getElementById(ORDER_PRINT_BUTTON_ID)
+            || document.getElementById(ORDER_DETAIL_PRINT_BUTTON_ID)
+            || document.getElementById('ayanas-print-button')) {
             return event;
         }
 
-        const space = kintone.app.record.getHeaderMenuSpaceElement();
-
-        if (!space) {
-            return event;
-        }
-
-        space.appendChild(createPrintButton(getButtonLabel()));
+        appendPrintButtons();
 
         return event;
 
