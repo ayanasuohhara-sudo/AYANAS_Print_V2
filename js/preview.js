@@ -76,10 +76,13 @@
         'js/company-seal-data.js',
         'js/templates/order.js',
         'js/templates/order_detail.js',
+        'js/templates/overseas_outbound_detail.js',
         'js/templates/delivery.js',
         'js/templates/invoice.js',
         'js/templates/invoice_window.js',
         'js/templates/estimate.js',
+        'js/overseas_outbound_service.js',
+        'js/overseas_outbound_index.js',
         'js/desktop.js',
     ];
 
@@ -539,6 +542,13 @@ ${buildButtonScriptBody()}
             previewConfig.barcode_visible = '1';
         }
 
+        if (layout.reportType === 'overseas_outbound_detail') {
+            previewConfig.print_orientation = 'landscape';
+            previewConfig.paper_size = 'A4';
+            previewConfig.page_margin = '0';
+            previewConfig.barcode_visible = '0';
+        }
+
         if (layout.reportType === 'invoice' && layout.invoiceLayout === 'window_envelope') {
             previewConfig.print_orientation = 'portrait';
             previewConfig.paper_size = 'A4';
@@ -561,7 +571,8 @@ ${buildButtonScriptBody()}
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
         }
 
-        if (layout.reportType === 'order_detail') {
+        if (layout.reportType === 'order_detail'
+            || layout.reportType === 'overseas_outbound_detail') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
         }
 

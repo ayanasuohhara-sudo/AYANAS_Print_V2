@@ -14,8 +14,9 @@
     const INVOICE_APP_ID = 35;
     const PAYMENT_APP_ID = 36;
     const RECEIVABLE_APP_ID = 37;
+    const OVERSEAS_OUTBOUND_APP_ID = 28;
 
-    const PLUGIN_VERSION = '59';
+    const PLUGIN_VERSION = '61';
 
     const BUTTON_ID = 'ayanas-print-button';
     const BUTTON_CLASS = 'ayanas-print-button';
@@ -104,6 +105,10 @@
         }
 
         if (appId === INVOICE_APP_ID) {
+            return false;
+        }
+
+        if (appId === OVERSEAS_OUTBOUND_APP_ID) {
             return false;
         }
 

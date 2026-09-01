@@ -13,6 +13,7 @@
     const DELIVERY_APP_ID = 19;
     const INVOICE_APP_ID = 35;
     const ORDER_APP_ID = 16;
+    const OVERSEAS_OUTBOUND_APP_ID = 28;
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -101,6 +102,25 @@
         buttonLabel: '受注票印刷',
         default: true,
         definition: OrderDefinition,
+    });
+
+    registerReport({
+        reportType: 'overseas_outbound_detail',
+        title: '出庫明細表',
+        templatePath: 'js/templates/overseas_outbound_detail.js',
+        templateGlobal: 'OverseasOutboundDetailTemplate',
+        pageClass: 'report-overseas-outbound-detail',
+        barcodeField: '',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '出庫明細表',
+        appIds: [OVERSEAS_OUTBOUND_APP_ID],
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '0',
+            page_margin: '0',
+        },
+        definition: {},
     });
 
     registerReport({
