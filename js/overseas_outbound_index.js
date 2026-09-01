@@ -8,6 +8,7 @@
      * 海外外注（App 28）一覧画面に出庫明細表ボタンを追加する。
      */
 
+    const TOOLBAR_ID = 'ayanas-overseas-outbound-toolbar';
     const BUTTON_ID = 'ayanas-overseas-outbound-button';
     const DIALOG_ID = 'ayanas-overseas-outbound-dialog';
     const LIST_ID = 'ayanas-overseas-outbound-list';
@@ -163,7 +164,7 @@
                 ? error.message
                 : '不明なエラーが発生しました。';
 
-            alert(`出庫日の取得に失敗しました。\n\n${message}`);
+            alert(`出庫日の取得に失敗しました。\n\n${message}\n\nApp 28 に overseas_in_date フィールドがあるか確認してください。`);
 
         }
 
@@ -183,23 +184,54 @@
 
     };
 
+    const createToolbar = () => {
+
+        const toolbar = document.createElement('div');
+
+        toolbar.id = TOOLBAR_ID;
+        toolbar.className = 'ayanas-overseas-outbound-toolbar';
+        toolbar.appendChild(createButton());
+
+        return toolbar;
+
+    };
+
+    const mountToolbar = () => {
+
+        if (document.getElementById(TOOLBAR_ID)) {
+            return;
+        }
+
+        const toolbar = createToolbar();
+        const headerSpace = kintone.app.getHeaderSpaceElement();
+
+        if (headerSpace) {
+            headerSpace.prepend(toolbar);
+            return;
+        }
+
+        const recordList = document.querySelector('.recordlist-gaia');
+
+        if (recordList?.parentElement) {
+            recordList.parentElement.insertBefore(toolbar, recordList);
+            return;
+        }
+
+        const menuSpace = kintone.app.getHeaderMenuSpaceElement();
+
+        if (menuSpace) {
+            menuSpace.prepend(toolbar);
+        }
+
+    };
+
     kintone.events.on('app.record.index.show', (event) => {
 
         if (kintone.app.getId() !== OverseasOutbound.APP_ID) {
             return event;
         }
 
-        if (document.getElementById(BUTTON_ID)) {
-            return event;
-        }
-
-        const space = kintone.app.getHeaderMenuSpaceElement();
-
-        if (!space) {
-            return event;
-        }
-
-        space.appendChild(createButton());
+        mountToolbar();
 
         return event;
 

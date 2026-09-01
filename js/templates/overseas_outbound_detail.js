@@ -8,10 +8,10 @@
      * 海外外注 出庫明細表（A4横・全面）の HTML 文字列を生成する。
      */
 
-    const OVERSEAS_OUTBOUND_DETAIL_TEMPLATE_VERSION = '1';
+    const OVERSEAS_OUTBOUND_DETAIL_TEMPLATE_VERSION = '2';
 
-    const DETAILS_PER_PAGE_FIRST = 24;
-    const DETAILS_PER_PAGE_NEXT = 28;
+    const DETAILS_PER_PAGE_FIRST = 20;
+    const DETAILS_PER_PAGE_NEXT = 24;
 
     const TABLE_HEADERS = [
         'No.',
@@ -112,13 +112,14 @@
 
     };
 
-    const buildPageHtml = (header, pageDetails, pageNumber, startNo) => `
+    const buildPageHtml = (header, pageDetails, pageNumber, startNo, totalPages) => `
 <div class="page">
     ${buildPageHeaderHtml(header, pageNumber)}
     <table class="oob-detail-table">
         ${buildTableHeadHtml()}
         ${buildTableBodyHtml(pageDetails, startNo)}
     </table>
+    <p class="oob-detail-page-no">${pageNumber} / ${totalPages}</p>
 </div>`;
 
     const OverseasOutboundDetailTemplate = {
@@ -133,12 +134,19 @@
 
             const header = data.header ?? {};
             const detailPages = buildDetailPages(data.details);
+            const totalPages = detailPages.length;
             let startNo = 1;
 
             const pagesHtml = detailPages.map((pageDetails, index) => {
 
                 const pageNumber = index + 1;
-                const pageHtml = buildPageHtml(header, pageDetails, pageNumber, startNo);
+                const pageHtml = buildPageHtml(
+                    header,
+                    pageDetails,
+                    pageNumber,
+                    startNo,
+                    totalPages
+                );
 
                 startNo += pageDetails.length;
 

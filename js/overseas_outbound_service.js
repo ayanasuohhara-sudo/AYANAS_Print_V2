@@ -12,6 +12,7 @@
     const OverseasOutbound = {};
 
     const OVERSEAS_APP_ID = 28;
+    const ORDER_APP_ID = 16;
 
     const FIELDS = {
         shipDate: 'ship_date',
@@ -24,8 +25,12 @@
         overseasInDate: 'overseas_in_date',
     };
 
-    const FETCH_FIELDS = [
-        FIELDS.shipDate,
+    const RECORDS_LIMIT = 500;
+    const MAX_OFFSET = 10000;
+    const SHIP_DATE_MIN = '2000-01-01';
+    const ORDER_LOOKUP_CHUNK_SIZE = 100;
+
+    const ORDER_DETAIL_FIELDS = [
         FIELDS.manageNo,
         FIELDS.customerCode,
         FIELDS.clientName,
@@ -34,11 +39,43 @@
         FIELDS.deadline,
     ];
 
-    const RECORDS_LIMIT = 500;
-
     const escapeQueryValue = (value) => String(value ?? '')
         .replace(/\\/g, '\\\\')
         .replace(/"/g, '\\"');
+
+    const normalizeDateValue = (value) => {
+
+        const text = String(value ?? '').trim();
+
+        if (!text) {
+            return '';
+        }
+
+        if (/^\d{4}-\d{2}-\d{2}/.test(text)) {
+            return text.slice(0, 10);
+        }
+
+        if (/^\d{4}\/\d{2}\/\d{2}/.test(text)) {
+            return text.slice(0, 10).replace(/\//g, '-');
+        }
+
+        return text;
+
+    };
+
+    const addDaysToDateString = (dateString, days) => {
+
+        const parts = String(dateString ?? '').split('-').map(Number);
+
+        if (parts.length !== 3 || parts.some(Number.isNaN)) {
+            return dateString;
+        }
+
+        const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2] + days));
+
+        return date.toISOString().slice(0, 10);
+
+    };
 
     const getFieldValue = (record, fieldCode) => {
 
@@ -52,6 +89,14 @@
 
     };
 
+    const getShipDate = (record) => normalizeDateValue(getFieldValue(record, FIELDS.shipDate));
+
+    const isUnreceivedRecord = (record) => {
+        return normalizeDateValue(getFieldValue(record, FIELDS.overseasInDate)) === '';
+    };
+
+    const hasShipDate = (record) => getShipDate(record) !== '';
+
     const kintoneApi = (path, method, body) => new Promise((resolve, reject) => {
         kintone.api(path, method, body, resolve, reject);
     });
@@ -62,7 +107,6 @@
         {
             app: OVERSEAS_APP_ID,
             query: `${query} limit ${RECORDS_LIMIT} offset ${offset}`,
-            fields: FETCH_FIELDS,
         }
     );
 
@@ -71,7 +115,7 @@
         const allRecords = [];
         let offset = 0;
 
-        while (true) {
+        while (offset <= MAX_OFFSET) {
 
             const response = await fetchRecordsPage(query, offset);
             const records = Array.isArray(response.records) ? response.records : [];
@@ -90,14 +134,212 @@
 
     };
 
-    const buildDetailRow = (record) => ({
-        manage_no: String(getFieldValue(record, FIELDS.manageNo) ?? '').trim(),
-        customer_code: String(getFieldValue(record, FIELDS.customerCode) ?? '').trim(),
-        client_name: String(getFieldValue(record, FIELDS.clientName) ?? '').trim(),
-        kimono_type: String(getFieldValue(record, FIELDS.kimonoType) ?? '').trim(),
-        kimono_spec: String(getFieldValue(record, FIELDS.kimonoSpec) ?? '').trim(),
-        deadline: String(getFieldValue(record, FIELDS.deadline) ?? '').trim(),
+    const isQueryError = (error) => {
+
+        if (!error || typeof error !== 'object') {
+            return false;
+        }
+
+        return error.code === 'CB_IL02'
+            || error.code === 'GAIA_IQ03'
+            || error.code === 'GAIA_IQ04'
+            || error.code === 'GAIA_AP01'
+            || String(error.message ?? '').includes('query')
+            || String(error.message ?? '').includes('フィールド');
+
+    };
+
+    const filterUnreceivedRecords = (records, shipDateFilter = null) => records.filter((record) => {
+
+        if (!isUnreceivedRecord(record) || !hasShipDate(record)) {
+            return false;
+        }
+
+        if (shipDateFilter === null) {
+            return true;
+        }
+
+        return getShipDate(record) === shipDateFilter;
+
     });
+
+    const dedupeRecordsById = (records) => {
+
+        const recordMap = new Map();
+
+        records.forEach((record) => {
+
+            const recordId = String(record?.$id?.value ?? '');
+
+            if (!recordId) {
+                return;
+            }
+
+            recordMap.set(recordId, record);
+
+        });
+
+        return Array.from(recordMap.values());
+
+    };
+
+    const fetchRecordsWithFallback = async (queryCandidates, shipDateFilter = null) => {
+
+        let lastError = null;
+        let bestRecords = [];
+
+        for (let index = 0; index < queryCandidates.length; index += 1) {
+
+            try {
+
+                const records = await fetchAllRecords(queryCandidates[index]);
+                const filteredRecords = filterUnreceivedRecords(records, shipDateFilter);
+
+                if (filteredRecords.length > bestRecords.length) {
+                    bestRecords = filteredRecords;
+                }
+
+                const isCatchAllQuery = index === queryCandidates.length - 1;
+
+                if (!isCatchAllQuery && filteredRecords.length > 0) {
+                    return filteredRecords;
+                }
+
+            } catch (error) {
+
+                lastError = error;
+
+                if (!isQueryError(error)) {
+                    throw error;
+                }
+
+            }
+
+        }
+
+        if (bestRecords.length > 0) {
+            return bestRecords;
+        }
+
+        if (lastError) {
+            throw lastError;
+        }
+
+        return [];
+
+    };
+
+    const buildShipDateRangeCondition = (shipDate) => {
+
+        const nextDay = addDaysToDateString(shipDate, 1);
+
+        return `${FIELDS.shipDate} >= "${escapeQueryValue(shipDate)}" and ${FIELDS.shipDate} < "${escapeQueryValue(nextDay)}"`;
+
+    };
+
+    const buildShipDateListQueries = () => [
+        `${FIELDS.shipDate} >= "${SHIP_DATE_MIN}" and ${FIELDS.overseasInDate} = "" order by $id desc`,
+        `${FIELDS.shipDate} >= "${SHIP_DATE_MIN}" order by $id desc`,
+        'order by $id desc',
+    ];
+
+    const buildShipDateDetailQueries = (shipDate) => {
+
+        const rangeCondition = buildShipDateRangeCondition(shipDate);
+        const exactCondition = `${FIELDS.shipDate} = "${escapeQueryValue(shipDate)}"`;
+
+        return [
+            `${rangeCondition} and ${FIELDS.overseasInDate} = "" order by $id desc`,
+            `${rangeCondition} order by $id desc`,
+            `${exactCondition} and ${FIELDS.overseasInDate} = "" order by $id desc`,
+            `${exactCondition} order by $id desc`,
+            'order by $id desc',
+        ];
+
+    };
+
+    const getManageNo = (record) => String(
+        getFieldValue(record, FIELDS.manageNo)
+        || getFieldValue(record, 'overseas_manage_no')
+        || ''
+    ).trim();
+
+    const getDetailFieldValue = (record, orderRecord, fieldCode) => {
+
+        const localValue = String(getFieldValue(record, fieldCode) ?? '').trim();
+
+        if (localValue !== '') {
+            return localValue;
+        }
+
+        if (!orderRecord) {
+            return '';
+        }
+
+        return String(getFieldValue(orderRecord, fieldCode) ?? '').trim();
+
+    };
+
+    const fetchOrderRecordsPage = async (query, offset = 0) => kintoneApi(
+        kintone.api.url('/k/v1/records', true),
+        'GET',
+        {
+            app: ORDER_APP_ID,
+            query: `${query} limit ${RECORDS_LIMIT} offset ${offset}`,
+            fields: ORDER_DETAIL_FIELDS,
+        }
+    );
+
+    const fetchOrderMapByManageNos = async (manageNos) => {
+
+        const orderMap = new Map();
+        const uniqueManageNos = [...new Set(
+            manageNos
+                .map((manageNo) => String(manageNo ?? '').trim())
+                .filter((manageNo) => manageNo !== '')
+        )];
+
+        for (let index = 0; index < uniqueManageNos.length; index += ORDER_LOOKUP_CHUNK_SIZE) {
+
+            const chunk = uniqueManageNos.slice(index, index + ORDER_LOOKUP_CHUNK_SIZE);
+            const inValues = chunk
+                .map((manageNo) => `"${escapeQueryValue(manageNo)}"`)
+                .join(', ');
+            const query = `${FIELDS.manageNo} in (${inValues}) order by $id desc`;
+            const response = await fetchOrderRecordsPage(query);
+
+            (response.records ?? []).forEach((orderRecord) => {
+
+                const manageNo = String(getFieldValue(orderRecord, FIELDS.manageNo) ?? '').trim();
+
+                if (manageNo !== '' && !orderMap.has(manageNo)) {
+                    orderMap.set(manageNo, orderRecord);
+                }
+
+            });
+
+        }
+
+        return orderMap;
+
+    };
+
+    const buildDetailRow = (record, orderRecord = null) => {
+
+        const manageNo = getManageNo(record);
+
+        return {
+            manage_no: manageNo,
+            customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode),
+            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName),
+            kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType),
+            kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec),
+            deadline: normalizeDateValue(
+                getDetailFieldValue(record, orderRecord, FIELDS.deadline)
+            ),
+        };
+
+    };
 
     const compareManageNo = (left, right) => String(left.manage_no ?? '')
         .localeCompare(String(right.manage_no ?? ''), 'ja', { numeric: true });
@@ -108,7 +350,7 @@
 
         records.forEach((record) => {
 
-            const shipDate = String(getFieldValue(record, FIELDS.shipDate) ?? '').trim();
+            const shipDate = getShipDate(record);
 
             if (!shipDate) {
                 return;
@@ -133,8 +375,7 @@
      */
     OverseasOutbound.fetchShipDateList = async () => {
 
-        const query = `${FIELDS.shipDate} != "" and ${FIELDS.overseasInDate} = "" order by ${FIELDS.shipDate} desc, ${FIELDS.manageNo} asc`;
-        const records = await fetchAllRecords(query);
+        const records = await fetchRecordsWithFallback(buildShipDateListQueries());
 
         return groupRecordsByShipDate(records);
 
@@ -147,16 +388,23 @@
      */
     OverseasOutbound.fetchReportDataByShipDate = async (shipDate) => {
 
-        const normalizedDate = String(shipDate ?? '').trim();
+        const normalizedDate = normalizeDateValue(shipDate);
 
         if (!normalizedDate) {
             throw new Error('出庫日が指定されていません。');
         }
 
-        const query = `${FIELDS.shipDate} = "${escapeQueryValue(normalizedDate)}" and ${FIELDS.overseasInDate} = "" order by ${FIELDS.manageNo} asc`;
-        const records = await fetchAllRecords(query);
+        const records = dedupeRecordsById(
+            await fetchRecordsWithFallback(
+                buildShipDateDetailQueries(normalizedDate),
+                normalizedDate
+            )
+        );
+        const manageNos = records.map((record) => getManageNo(record));
+        const orderMap = await fetchOrderMapByManageNos(manageNos);
         const details = records
-            .map(buildDetailRow)
+            .map((record) => buildDetailRow(record, orderMap.get(getManageNo(record))))
+            .filter((detail) => detail.manage_no !== '')
             .sort(compareManageNo);
 
         return {

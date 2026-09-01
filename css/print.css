@@ -459,9 +459,32 @@
     white-space: nowrap;
 }
 
-/* 一覧画面: 出庫明細表ダイアログ */
+.report-overseas-outbound-detail .oob-detail-page-no {
+    margin: 2mm 0 0;
+    text-align: right;
+    font-size: 9pt;
+    font-weight: 700;
+}
+
+/* 一覧画面: 出庫明細表 */
+.ayanas-overseas-outbound-toolbar {
+    display: block;
+    clear: both;
+    width: 100%;
+    padding: 8px 16px 12px;
+    margin: 0 0 8px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
+    background: #ffffff;
+}
+
 .ayanas-overseas-outbound-button {
-    margin-left: 8px;
+    margin: 0;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
 }
 
 .ayanas-overseas-outbound-dialog {
@@ -1900,7 +1923,7 @@ body {
     }
 
     .report-overseas-outbound-detail .oob-detail-table tbody tr {
-        page-break-inside: avoid;
+        page-break-inside: auto;
     }
 
     .buttons {
