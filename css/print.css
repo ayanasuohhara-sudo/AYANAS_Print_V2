@@ -251,17 +251,36 @@
     border: 1px solid #000000;
     padding: 1.5mm 2mm;
     vertical-align: middle;
-    font-size: 14pt;
-    font-weight: 700;
     line-height: 1.35;
     color: #000000;
 }
 
+.report-order-detail .order-detail-table th.order-detail-table__label,
+.report-order-detail .order-detail-table th.order-detail-table__label--single,
+.report-order-detail .order-detail-table th.order-detail-table__label--pair {
+    font-size: 10pt;
+    font-weight: 400;
+}
+
+.report-order-detail .order-detail-table td.order-detail-table__value,
+.report-order-detail .order-detail-table td.order-detail-table__value--single,
+.report-order-detail .order-detail-table td.order-detail-table__value--pair {
+    font-size: 14pt;
+    font-weight: 700;
+}
+
 .report-order-detail .order-detail-table__label {
-    width: 38mm;
     text-align: left;
     white-space: nowrap;
     background: #ffffff;
+}
+
+.report-order-detail .order-detail-table__label--single {
+    width: 38mm;
+}
+
+.report-order-detail .order-detail-table__label--pair {
+    width: 22mm;
 }
 
 .report-order-detail .order-detail-table__value {
@@ -272,6 +291,27 @@
 
 .report-order-detail .order-detail-table__value--wrap {
     white-space: normal;
+}
+
+.report-order-detail .order-detail-table__value--multiline {
+    line-height: 1.4;
+    vertical-align: top;
+}
+
+.report-order-detail .order-detail-table__col-label-single {
+    width: 38mm;
+}
+
+.report-order-detail .order-detail-table__col-value-single {
+    width: auto;
+}
+
+.report-order-detail .order-detail-table__col-label-pair {
+    width: 22mm;
+}
+
+.report-order-detail .order-detail-table__col-value-pair {
+    width: auto;
 }
 
 .report-order-detail .order-detail-barcode {

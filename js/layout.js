@@ -99,7 +99,6 @@
         paperSize: 'A4',
         orientation: 'landscape',
         buttonLabel: '受注票印刷',
-        appIds: [ORDER_APP_ID],
         default: true,
         definition: OrderDefinition,
     });
@@ -113,7 +112,8 @@
         barcodeField: 'manage_no',
         paperSize: 'A4',
         orientation: 'landscape',
-        buttonLabel: '受注明細表印刷',
+        buttonLabel: '受注明細表',
+        appIds: [ORDER_APP_ID],
         configDefaults: {
             barcode_type: 'CODE39',
             barcode_visible: '1',
