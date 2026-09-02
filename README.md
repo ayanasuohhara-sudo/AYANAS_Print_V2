@@ -27,4 +27,4 @@ desktop.js → Record.get() → Layout.resolve() → Preview.open() → 印刷
 
 ## Version
 
-3.0.0
+68
