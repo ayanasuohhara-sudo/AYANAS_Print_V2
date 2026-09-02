@@ -13,8 +13,10 @@
     scheduledArrivalDate: 'scheduled_arrival_date',
     cartonNo: 'carton_no',
     manageNo: 'manage_no',
+    overseasManageNo: 'overseas_manage_no',
     customerCode: 'customer_code',
     clientName: 'client_name',
+    customerName: 'customer_name',
     kimonoType: 'kimono_type',
     kimonoSpec: 'kimono_spec',
     deadline: 'deadline',
@@ -96,19 +98,60 @@
 
   };
 
+  const getBarcodeInputElement = () => {
+
+    const barcodeFieldCode = getBarcodeFieldCode(kintone.app.record.get().record);
+    const fieldElement = kintone.app.record.getFieldElement(barcodeFieldCode);
+
+    return fieldElement?.querySelector('input') ?? null;
+
+  };
+
   const focusBarcodeInput = () => {
 
     setTimeout(function() {
 
-      const barcodeFieldCode = getBarcodeFieldCode(kintone.app.record.get().record);
-      const fieldElement = kintone.app.record.getFieldElement(barcodeFieldCode);
-      const input = fieldElement?.querySelector('input');
+      const input = getBarcodeInputElement();
 
       if (input) {
         input.focus();
       }
 
     }, 100);
+
+  };
+
+  const bindBarcodeEnterKey = () => {
+
+    setTimeout(function() {
+
+      const input = getBarcodeInputElement();
+
+      if (!input || input.dataset.outboundEnterBound === '1') {
+        return;
+      }
+
+      input.dataset.outboundEnterBound = '1';
+
+      input.addEventListener('keydown', function(event) {
+
+        if (event.key !== 'Enter') {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (debounceTimer) {
+          clearTimeout(debounceTimer);
+          debounceTimer = null;
+        }
+
+        processBarcode(kintone.app.record.get().record);
+
+      });
+
+    }, 350);
 
   };
 
@@ -205,45 +248,145 @@
 
   };
 
-  const createOutboundRecord = async (headerRecord, orderRecord, manageNo) => kintone.api(
-    kintone.api.url('/k/v1/record', true),
-    'POST',
-    {
-      app: OVERSEAS_APP_ID,
-      record: {
-        [FIELDS.shipDate]: {
-          value: getFieldValue(headerRecord, FIELDS.shipDate),
-        },
-        [FIELDS.scheduledArrivalDate]: {
-          value: getFieldValue(headerRecord, FIELDS.scheduledArrivalDate),
-        },
-        [FIELDS.cartonNo]: {
-          value: getFieldValue(headerRecord, FIELDS.cartonNo),
-        },
-        [FIELDS.manageNo]: {
-          value: manageNo,
-        },
-        [FIELDS.customerCode]: {
-          value: getFieldValue(orderRecord, FIELDS.customerCode),
-        },
-        [FIELDS.clientName]: {
-          value: getFieldValue(orderRecord, FIELDS.clientName),
-        },
-        [FIELDS.kimonoType]: {
-          value: getFieldValue(orderRecord, FIELDS.kimonoType),
-        },
-        [FIELDS.kimonoSpec]: {
-          value: getFieldValue(orderRecord, FIELDS.kimonoSpec),
-        },
-        [FIELDS.deadline]: {
-          value: getFieldValue(orderRecord, FIELDS.deadline),
-        },
-        [FIELDS.overseasStatus]: {
-          value: OVERSEAS_OUTBOUND_STATUS,
-        },
-      },
+  const getOrderFieldValue = (orderRecord, fieldCodes) => {
+
+    const codes = Array.isArray(fieldCodes) ? fieldCodes : [fieldCodes];
+
+    for (let index = 0; index < codes.length; index += 1) {
+      const value = String(getFieldValue(orderRecord, codes[index]) ?? '').trim();
+
+      if (value !== '') {
+        return value;
+      }
+
     }
-  );
+
+    return '';
+
+  };
+
+  const appendFieldIfExists = (payload, formRecord, fieldCode, value) => {
+
+    if (!formRecord?.[fieldCode]) {
+      return;
+    }
+
+    payload[fieldCode] = {
+      value: value ?? '',
+    };
+
+  };
+
+  const resolveManageNoFieldCode = (formRecord) => {
+
+    if (formRecord?.[FIELDS.manageNo]) {
+      return FIELDS.manageNo;
+    }
+
+    if (formRecord?.[FIELDS.overseasManageNo]) {
+      return FIELDS.overseasManageNo;
+    }
+
+    return FIELDS.manageNo;
+
+  };
+
+  const resolveClientNameFieldCode = (formRecord) => {
+
+    if (formRecord?.[FIELDS.clientName]) {
+      return FIELDS.clientName;
+    }
+
+    if (formRecord?.[FIELDS.customerName]) {
+      return FIELDS.customerName;
+    }
+
+    return null;
+
+  };
+
+  const buildOutboundRecordPayload = (formRecord, orderRecord, manageNo) => {
+
+    const payload = {};
+    const manageNoFieldCode = resolveManageNoFieldCode(formRecord);
+    const clientNameFieldCode = resolveClientNameFieldCode(formRecord);
+    const clientName = getOrderFieldValue(orderRecord, [
+      FIELDS.clientName,
+      FIELDS.customerName,
+    ]);
+
+    appendFieldIfExists(
+      payload,
+      formRecord,
+      FIELDS.shipDate,
+      getFieldValue(formRecord, FIELDS.shipDate)
+    );
+    appendFieldIfExists(
+      payload,
+      formRecord,
+      FIELDS.scheduledArrivalDate,
+      getFieldValue(formRecord, FIELDS.scheduledArrivalDate)
+    );
+    appendFieldIfExists(
+      payload,
+      formRecord,
+      FIELDS.cartonNo,
+      getFieldValue(formRecord, FIELDS.cartonNo)
+    );
+    appendFieldIfExists(payload, formRecord, manageNoFieldCode, manageNo);
+    appendFieldIfExists(
+      payload,
+      formRecord,
+      FIELDS.customerCode,
+      getOrderFieldValue(orderRecord, FIELDS.customerCode)
+    );
+
+    if (clientNameFieldCode) {
+      appendFieldIfExists(payload, formRecord, clientNameFieldCode, clientName);
+    }
+
+    appendFieldIfExists(
+      payload,
+      formRecord,
+      FIELDS.kimonoType,
+      getOrderFieldValue(orderRecord, FIELDS.kimonoType)
+    );
+    appendFieldIfExists(
+      payload,
+      formRecord,
+      FIELDS.kimonoSpec,
+      getOrderFieldValue(orderRecord, FIELDS.kimonoSpec)
+    );
+    appendFieldIfExists(
+      payload,
+      formRecord,
+      FIELDS.deadline,
+      getOrderFieldValue(orderRecord, FIELDS.deadline)
+    );
+    appendFieldIfExists(payload, formRecord, FIELDS.overseasStatus, OVERSEAS_OUTBOUND_STATUS);
+
+    return payload;
+
+  };
+
+  const createOutboundRecord = async (formRecord, orderRecord, manageNo) => {
+
+    const record = buildOutboundRecordPayload(formRecord, orderRecord, manageNo);
+
+    if (Object.keys(record).length === 0) {
+      throw new Error('App28に登録可能なフィールドがありません。フォーム設定を確認してください。');
+    }
+
+    return kintone.api(
+      kintone.api.url('/k/v1/record', true),
+      'POST',
+      {
+        app: OVERSEAS_APP_ID,
+        record: record,
+      }
+    );
+
+  };
 
   const updateOrderForOutbound = async (orderRecord) => kintone.api(
     kintone.api.url('/k/v1/record', true),
@@ -282,8 +425,8 @@
     try {
 
       if (sessionRegisteredManageNos.has(manageNo)) {
-        alert('管理番号 ' + manageNo + ' は既に今回の出庫に登録されています。');
-        showMessage('管理番号 ' + manageNo + ' は既に今回の出庫に登録されています。', true);
+        alert('管理番号 ' + manageNo + ' は今回の出庫に既に登録されています。');
+        showMessage('管理番号 ' + manageNo + ' は今回の出庫に既に登録されています。', true);
         clearBarcodeInput(record);
         kintone.app.record.set({ record: record });
         focusBarcodeInput();
@@ -293,7 +436,7 @@
       const orderRecord = await fetchOrderRecord(manageNo);
 
       if (!orderRecord) {
-        alert('管理番号が見つかりません\n' + manageNo);
+        alert('管理番号 ' + manageNo + ' は受注明細に存在しません。');
         showMessage('管理番号 ' + manageNo + ' は受注明細に存在しません。', true);
         clearBarcodeInput(record);
         kintone.app.record.set({ record: record });
@@ -316,7 +459,7 @@
       await updateOrderForOutbound(orderRecord);
 
       sessionRegisteredManageNos.add(manageNo);
-      showMessage('管理番号 ' + manageNo + ' を出庫登録しました。', false);
+      showMessage('登録済：' + manageNo, false);
 
       clearBarcodeInput(record);
       kintone.app.record.set({ record: record });
@@ -325,8 +468,18 @@
     } catch (error) {
 
       console.error('[海外外注出庫]', error);
-      alert('出庫登録エラー\n' + (error.message || error));
-      showMessage('出庫登録エラー: ' + (error.message || error), true);
+
+      const apiMessage = error?.message || String(error);
+      const invalidFieldMatch = apiMessage.match(/\[([^\]]+)\]/);
+      const detailMessage = invalidFieldMatch
+        ? '\nフィールド「' + invalidFieldMatch[1] + '」が App28 に存在しない可能性があります。'
+        : '';
+
+      alert('出庫登録エラー\n' + apiMessage + detailMessage);
+      showMessage('出庫登録エラー: ' + apiMessage, true);
+      clearBarcodeInput(record);
+      kintone.app.record.set({ record: record });
+      focusBarcodeInput();
 
     } finally {
       isProcessing = false;
@@ -360,6 +513,7 @@
 
     setTimeout(function() {
       focusBarcodeInput();
+      bindBarcodeEnterKey();
     }, 300);
 
     return event;

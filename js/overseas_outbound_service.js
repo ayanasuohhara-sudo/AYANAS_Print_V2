@@ -32,15 +32,6 @@
     const SHIP_DATE_MIN = '2000-01-01';
     const ORDER_LOOKUP_CHUNK_SIZE = 100;
 
-    const ORDER_DETAIL_FIELDS = [
-        FIELDS.manageNo,
-        FIELDS.customerCode,
-        FIELDS.clientName,
-        FIELDS.kimonoType,
-        FIELDS.kimonoSpec,
-        FIELDS.deadline,
-    ];
-
     const escapeQueryValue = (value) => String(value ?? '')
         .replace(/\\/g, '\\\\')
         .replace(/"/g, '\\"');
@@ -260,13 +251,68 @@
 
     };
 
-    const getManageNo = (record) => String(
-        getFieldValue(record, FIELDS.manageNo)
-        || getFieldValue(record, 'overseas_manage_no')
-        || ''
-    ).trim();
+    const getManageNo = (record, subtableRow = null) => {
 
-    const getDetailFieldValue = (record, orderRecord, fieldCode) => {
+        if (subtableRow?.value?.[FIELDS.manageNo]) {
+            const subtableManageNo = String(subtableRow.value[FIELDS.manageNo].value ?? '').trim();
+
+            if (subtableManageNo !== '') {
+                return subtableManageNo;
+            }
+
+        }
+
+        return String(
+            getFieldValue(record, FIELDS.manageNo)
+            || getFieldValue(record, 'overseas_manage_no')
+            || ''
+        ).trim();
+
+    };
+
+    const getSubtableFieldValue = (subtableRow, fieldCode) => {
+
+        if (!subtableRow?.value?.[fieldCode]) {
+            return '';
+        }
+
+        return String(subtableRow.value[fieldCode].value ?? '').trim();
+
+    };
+
+    const getOrderFieldValue = (orderRecord, fieldCodes) => {
+
+        const codes = Array.isArray(fieldCodes) ? fieldCodes : [fieldCodes];
+
+        for (let index = 0; index < codes.length; index += 1) {
+            const value = String(getFieldValue(orderRecord, codes[index]) ?? '').trim();
+
+            if (value !== '') {
+                return value;
+            }
+
+        }
+
+        return '';
+
+    };
+
+    const getDetailFieldValue = (record, orderRecord, fieldCode, subtableRow = null) => {
+
+        const subtableValue = getSubtableFieldValue(subtableRow, fieldCode);
+
+        if (subtableValue !== '') {
+            return subtableValue;
+        }
+
+        if (fieldCode === FIELDS.clientName && subtableRow) {
+            const subtableCustomerName = getSubtableFieldValue(subtableRow, 'customer_name');
+
+            if (subtableCustomerName !== '') {
+                return subtableCustomerName;
+            }
+
+        }
 
         const localValue = String(getFieldValue(record, fieldCode) ?? '').trim();
 
@@ -274,11 +320,56 @@
             return localValue;
         }
 
+        if (fieldCode === FIELDS.clientName) {
+            const localCustomerName = String(getFieldValue(record, 'customer_name') ?? '').trim();
+
+            if (localCustomerName !== '') {
+                return localCustomerName;
+            }
+
+        }
+
         if (!orderRecord) {
             return '';
         }
 
+        if (fieldCode === FIELDS.clientName) {
+            return getOrderFieldValue(orderRecord, [FIELDS.clientName, 'customer_name']);
+        }
+
         return String(getFieldValue(orderRecord, fieldCode) ?? '').trim();
+
+    };
+
+    const flattenOutboundRecords = (records) => {
+
+        const flattened = [];
+
+        records.forEach((record) => {
+
+            const subtableRows = record?.overseas_details?.value;
+
+            if (Array.isArray(subtableRows) && subtableRows.length > 0) {
+
+                subtableRows.forEach((subtableRow) => {
+                    flattened.push({
+                        record,
+                        subtableRow,
+                    });
+                });
+
+                return;
+
+            }
+
+            flattened.push({
+                record,
+                subtableRow: null,
+            });
+
+        });
+
+        return flattened;
 
     };
 
@@ -288,7 +379,6 @@
         {
             app: ORDER_APP_ID,
             query: `${query} limit ${RECORDS_LIMIT} offset ${offset}`,
-            fields: ORDER_DETAIL_FIELDS,
         }
     );
 
@@ -326,18 +416,18 @@
 
     };
 
-    const buildDetailRow = (record, orderRecord = null) => {
+    const buildDetailRow = (record, orderRecord = null, subtableRow = null) => {
 
-        const manageNo = getManageNo(record);
+        const manageNo = getManageNo(record, subtableRow);
 
         return {
             manage_no: manageNo,
-            customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode),
-            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName),
-            kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType),
-            kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec),
+            customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode, subtableRow),
+            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName, subtableRow),
+            kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType, subtableRow),
+            kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec, subtableRow),
             deadline: normalizeDateValue(
-                getDetailFieldValue(record, orderRecord, FIELDS.deadline)
+                getDetailFieldValue(record, orderRecord, FIELDS.deadline, subtableRow)
             ),
         };
 
@@ -449,23 +539,23 @@
 
     };
 
-    const buildOutboundSheetRow = (record, orderRecord = null) => {
+    const buildOutboundSheetRow = (record, orderRecord = null, subtableRow = null) => {
 
-        const manageNo = getManageNo(record);
+        const manageNo = getManageNo(record, subtableRow);
 
         return {
             record_id: getRecordId(record),
-            carton_no: getDetailFieldValue(record, orderRecord, FIELDS.cartonNo),
+            carton_no: getDetailFieldValue(record, orderRecord, FIELDS.cartonNo, subtableRow),
             manage_no: manageNo,
-            customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode),
-            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName),
-            kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType),
-            kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec),
+            customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode, subtableRow),
+            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName, subtableRow),
+            kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType, subtableRow),
+            kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec, subtableRow),
             scheduled_arrival_date: normalizeDateValue(
-                getDetailFieldValue(record, orderRecord, FIELDS.scheduledArrivalDate)
+                getDetailFieldValue(record, orderRecord, FIELDS.scheduledArrivalDate, subtableRow)
             ),
             deadline: normalizeDateValue(
-                getDetailFieldValue(record, orderRecord, FIELDS.deadline)
+                getDetailFieldValue(record, orderRecord, FIELDS.deadline, subtableRow)
             ),
         };
 
@@ -562,10 +652,15 @@
                 normalizedDate
             )
         );
-        const manageNos = records.map((record) => getManageNo(record));
+        const flattenedRecords = flattenOutboundRecords(records);
+        const manageNos = flattenedRecords.map((item) => getManageNo(item.record, item.subtableRow));
         const orderMap = await fetchOrderMapByManageNos(manageNos);
-        const details = records
-            .map((record) => buildOutboundSheetRow(record, orderMap.get(getManageNo(record))))
+        const details = flattenedRecords
+            .map((item) => buildOutboundSheetRow(
+                item.record,
+                orderMap.get(getManageNo(item.record, item.subtableRow)),
+                item.subtableRow
+            ))
             .filter((detail) => detail.manage_no !== '')
             .sort(compareCartonThenRecordId);
 
@@ -605,10 +700,15 @@
                 normalizedDate
             )
         );
-        const manageNos = records.map((record) => getManageNo(record));
+        const flattenedRecords = flattenOutboundRecords(records);
+        const manageNos = flattenedRecords.map((item) => getManageNo(item.record, item.subtableRow));
         const orderMap = await fetchOrderMapByManageNos(manageNos);
-        const details = records
-            .map((record) => buildDetailRow(record, orderMap.get(getManageNo(record))))
+        const details = flattenedRecords
+            .map((item) => buildDetailRow(
+                item.record,
+                orderMap.get(getManageNo(item.record, item.subtableRow)),
+                item.subtableRow
+            ))
             .filter((detail) => detail.manage_no !== '')
             .sort(compareManageNo);
 
