@@ -568,6 +568,120 @@
     text-align: right;
 }
 
+.ayanas-matsuba-summary-toolbar {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 8px 0 0;
+}
+
+.ayanas-matsuba-summary-button {
+    margin: 0;
+    padding: 8px 16px;
+    border: 1px solid #1a5276;
+    border-radius: 4px;
+    background: #1a5276;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ayanas-matsuba-summary-button:hover {
+    background: #154360;
+    border-color: #154360;
+}
+
+.ayanas-matsuba-summary-button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.ayanas-matsuba-summary-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+}
+
+.ayanas-matsuba-summary-dialog__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.ayanas-matsuba-summary-dialog__panel {
+    position: relative;
+    z-index: 1;
+    width: min(520px, calc(100vw - 32px));
+    max-height: calc(100vh - 64px);
+    margin: 32px auto;
+    padding: 20px 24px;
+    overflow: auto;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", sans-serif;
+}
+
+.ayanas-matsuba-summary-dialog__title {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.ayanas-matsuba-summary-dialog__lead {
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+.ayanas-matsuba-summary-dialog__note {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: #555555;
+}
+
+.ayanas-matsuba-summary-dialog__field {
+    margin: 0 0 16px;
+}
+
+.ayanas-matsuba-summary-dialog__field label {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ayanas-matsuba-summary-dialog__period {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ayanas-matsuba-summary-dialog__period input[type="date"] {
+    padding: 6px 8px;
+    font-size: 14px;
+}
+
+.ayanas-matsuba-summary-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.ayanas-matsuba-summary-dialog__cancel,
+.ayanas-matsuba-summary-dialog__preview {
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.ayanas-matsuba-summary-dialog__preview {
+    border: 1px solid #1a5276;
+    border-radius: 4px;
+    background: #1a5276;
+    color: #fff;
+    font-weight: 700;
+}
+
 /* ========================================
    帳票種別: 納品書 (delivery)
    ======================================== */
@@ -1793,6 +1907,147 @@ body {
     cursor: pointer;
 }
 
+/* ========================================
+   帳票種別: 松葉 合計請求書
+   ======================================== */
+.report-matsuba-summary .page {
+    display: flex;
+    flex-direction: column;
+    gap: 8mm;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 12mm 14mm;
+    box-sizing: border-box;
+}
+
+.report-matsuba-summary .matsuba-summary__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10mm;
+}
+
+.report-matsuba-summary .matsuba-summary__header-left {
+    flex: 1 1 auto;
+    padding-top: 8mm;
+}
+
+.report-matsuba-summary .matsuba-summary__header-right {
+    flex: 0 0 70mm;
+    text-align: right;
+}
+
+.report-matsuba-summary .matsuba-summary__title {
+    margin: 0 0 6mm;
+    font-size: 18pt;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-decoration: underline;
+    text-underline-offset: 1.5mm;
+}
+
+.report-matsuba-summary .matsuba-summary__addressee {
+    margin: 0 0 8mm;
+    font-size: 14pt;
+    font-weight: 700;
+}
+
+.report-matsuba-summary .matsuba-summary__period {
+    margin: 0;
+    font-size: 11pt;
+}
+
+.report-matsuba-summary .matsuba-summary__company {
+    position: relative;
+    display: inline-block;
+    text-align: left;
+}
+
+.report-matsuba-summary .matsuba-summary__company-seal {
+    position: absolute;
+    top: -2mm;
+    right: -4mm;
+    width: 22mm;
+    height: 22mm;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.report-matsuba-summary .matsuba-summary__company-name {
+    margin: 0 0 1mm;
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+.report-matsuba-summary .matsuba-summary__company-reg,
+.report-matsuba-summary .matsuba-summary__company-line {
+    margin: 0;
+    font-size: 8pt;
+    line-height: 1.5;
+}
+
+.report-matsuba-summary .matsuba-summary__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+}
+
+.report-matsuba-summary .matsuba-summary__table th,
+.report-matsuba-summary .matsuba-summary__table td {
+    border: 1px solid #000;
+    padding: 2.5mm 3mm;
+}
+
+.report-matsuba-summary .matsuba-summary__table th {
+    background: #f3f3f3;
+    font-weight: 700;
+    text-align: center;
+}
+
+.report-matsuba-summary .matsuba-summary__col-code {
+    width: 22mm;
+    text-align: center;
+}
+
+.report-matsuba-summary .matsuba-summary__col-name {
+    text-align: left;
+}
+
+.report-matsuba-summary .matsuba-summary__col-amount {
+    width: 28mm;
+    text-align: right;
+}
+
+.report-matsuba-summary .matsuba-summary__totals {
+    width: 80mm;
+    margin: 2mm 0 0 auto;
+    border-collapse: collapse;
+    font-size: 11pt;
+}
+
+.report-matsuba-summary .matsuba-summary__totals th,
+.report-matsuba-summary .matsuba-summary__totals td {
+    padding: 1.5mm 2mm;
+    border-bottom: 1px solid #000;
+}
+
+.report-matsuba-summary .matsuba-summary__totals th {
+    font-weight: 700;
+    text-align: left;
+    width: 36mm;
+}
+
+.report-matsuba-summary .matsuba-summary__totals td {
+    text-align: right;
+}
+
+.report-matsuba-summary .matsuba-summary__totals-grand th,
+.report-matsuba-summary .matsuba-summary__totals-grand td {
+    font-size: 12pt;
+    font-weight: 700;
+    border-bottom: 2px solid #000;
+}
+
 @media print {
 
     html,
@@ -1880,6 +2135,25 @@ body {
         page-break-inside: avoid;
     }
 
+    .report-matsuba-summary .page {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+        max-height: none;
+        overflow: visible;
+        margin: 0 auto;
+        padding: 12mm 14mm;
+    }
+
+    .report-matsuba-summary .matsuba-summary__company-seal {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .report-matsuba-summary .matsuba-summary__table,
+    .report-matsuba-summary .matsuba-summary__totals {
+        page-break-inside: avoid;
+    }
+
     .report-delivery .delivery-footer {
         page-break-inside: avoid;
     }
@@ -1942,7 +2216,8 @@ body {
 
     .report-order .detail-table tbody tr,
     .report-delivery .delivery-detail-table tbody tr,
-    .report-invoice .invoice-detail-table tbody tr {
+    .report-invoice .invoice-detail-table tbody tr,
+    .report-matsuba-summary .matsuba-summary__table tbody tr {
         page-break-inside: avoid;
     }
 
