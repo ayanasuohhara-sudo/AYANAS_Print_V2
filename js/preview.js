@@ -530,7 +530,9 @@ ${buildButtonScriptBody()}
 
         const previewConfig = buildPreviewConfig(config, layout);
 
-        if (layout.reportType === 'delivery' || layout.reportType === 'invoice') {
+        if (layout.reportType === 'delivery'
+            || layout.reportType === 'invoice'
+            || layout.reportType === 'matsuba_summary_invoice') {
             previewConfig.print_orientation = 'portrait';
             previewConfig.paper_size = 'A4';
         }
@@ -567,7 +569,9 @@ ${buildButtonScriptBody()}
 
         html = html.split('<div class="page">').join(`<div class="${Dom.getPageClassName(previewConfig)}">`);
 
-        if (layout.reportType === 'delivery' || layout.reportType === 'invoice') {
+        if (layout.reportType === 'delivery'
+            || layout.reportType === 'invoice'
+            || layout.reportType === 'matsuba_summary_invoice') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
         }
 

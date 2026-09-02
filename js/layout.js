@@ -181,6 +181,25 @@
     });
 
     registerReport({
+        reportType: 'matsuba_summary_invoice',
+        title: '合計請求書',
+        templatePath: 'js/templates/matsuba_summary_invoice.js',
+        templateGlobal: 'MatsubaSummaryInvoiceTemplate',
+        pageClass: 'report-matsuba-summary',
+        barcodeField: '',
+        paperSize: 'A4',
+        orientation: 'portrait',
+        buttonLabel: '松葉 合計請求書',
+        company: { ...INVOICE_COMPANY },
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '0',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
         reportType: 'estimate',
         title: '見積書',
         templatePath: 'js/templates/estimate.js',
