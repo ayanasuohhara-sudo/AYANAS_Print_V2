@@ -105,6 +105,25 @@
     });
 
     registerReport({
+        reportType: 'overseas_outbound_sheet',
+        title: '出庫表',
+        templatePath: 'js/templates/overseas_outbound_sheet.js',
+        templateGlobal: 'OverseasOutboundSheetTemplate',
+        pageClass: 'report-overseas-outbound-sheet',
+        barcodeField: '',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '出庫表',
+        appIds: [OVERSEAS_OUTBOUND_APP_ID],
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '0',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
         reportType: 'overseas_outbound_detail',
         title: '出庫明細表',
         templatePath: 'js/templates/overseas_outbound_detail.js',

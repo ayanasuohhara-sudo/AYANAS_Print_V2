@@ -23,6 +23,8 @@
         kimonoSpec: 'kimono_spec',
         deadline: 'deadline',
         overseasInDate: 'overseas_in_date',
+        scheduledArrivalDate: 'scheduled_arrival_date',
+        cartonNo: 'carton_no',
     };
 
     const RECORDS_LIMIT = 500;
@@ -369,6 +371,152 @@
 
     };
 
+    const filterRecordsByShipDate = (records, shipDateFilter) => records.filter((record) => {
+        return hasShipDate(record) && getShipDate(record) === shipDateFilter;
+    });
+
+    const fetchAllRecordsWithFallback = async (queryCandidates, shipDateFilter = null) => {
+
+        let lastError = null;
+        let bestRecords = [];
+
+        for (let index = 0; index < queryCandidates.length; index += 1) {
+
+            try {
+
+                const records = await fetchAllRecords(queryCandidates[index]);
+                const filteredRecords = shipDateFilter === null
+                    ? records.filter(hasShipDate)
+                    : filterRecordsByShipDate(records, shipDateFilter);
+
+                if (filteredRecords.length > bestRecords.length) {
+                    bestRecords = filteredRecords;
+                }
+
+                const isCatchAllQuery = index === queryCandidates.length - 1;
+
+                if (!isCatchAllQuery && filteredRecords.length > 0) {
+                    return filteredRecords;
+                }
+
+            } catch (error) {
+
+                lastError = error;
+
+                if (!isQueryError(error)) {
+                    throw error;
+                }
+
+            }
+
+        }
+
+        if (bestRecords.length > 0) {
+            return bestRecords;
+        }
+
+        if (lastError) {
+            throw lastError;
+        }
+
+        return [];
+
+    };
+
+    const buildOutboundSheetQueries = (shipDate) => {
+
+        const rangeCondition = buildShipDateRangeCondition(shipDate);
+        const exactCondition = `${FIELDS.shipDate} = "${escapeQueryValue(shipDate)}"`;
+
+        return [
+            `${rangeCondition} order by $id asc`,
+            `${exactCondition} order by $id asc`,
+            'order by $id asc',
+        ];
+
+    };
+
+    const buildAllShipDateListQueries = () => [
+        `${FIELDS.shipDate} >= "${SHIP_DATE_MIN}" order by $id desc`,
+        'order by $id desc',
+    ];
+
+    const getRecordId = (record) => {
+
+        const recordId = Number(record?.$id?.value ?? 0);
+
+        return Number.isNaN(recordId) ? 0 : recordId;
+
+    };
+
+    const buildOutboundSheetRow = (record, orderRecord = null) => {
+
+        const manageNo = getManageNo(record);
+
+        return {
+            record_id: getRecordId(record),
+            carton_no: getDetailFieldValue(record, orderRecord, FIELDS.cartonNo),
+            manage_no: manageNo,
+            customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode),
+            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName),
+            kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType),
+            kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec),
+            scheduled_arrival_date: normalizeDateValue(
+                getDetailFieldValue(record, orderRecord, FIELDS.scheduledArrivalDate)
+            ),
+            deadline: normalizeDateValue(
+                getDetailFieldValue(record, orderRecord, FIELDS.deadline)
+            ),
+        };
+
+    };
+
+    const compareCartonThenRecordId = (left, right) => {
+
+        const cartonCompare = String(left.carton_no ?? '')
+            .localeCompare(String(right.carton_no ?? ''), 'ja', { numeric: true });
+
+        if (cartonCompare !== 0) {
+            return cartonCompare;
+        }
+
+        return (left.record_id ?? 0) - (right.record_id ?? 0);
+
+    };
+
+    const buildCartonSummary = (details) => {
+
+        const counts = new Map();
+
+        details.forEach((detail) => {
+
+            const cartonNo = String(detail.carton_no ?? '').trim() || '（未設定）';
+
+            counts.set(cartonNo, (counts.get(cartonNo) ?? 0) + 1);
+
+        });
+
+        return Array.from(counts.entries())
+            .map(([cartonNo, count]) => ({
+                carton_no: cartonNo,
+                count,
+            }))
+            .sort((left, right) => String(left.carton_no)
+                .localeCompare(String(right.carton_no), 'ja', { numeric: true }));
+
+    };
+
+    const SHEET_VARIANTS = {
+        katsuya: {
+            title: '海外外注 出庫明細表（勝矢和裁用）',
+            includeDeadline: false,
+        },
+        internal: {
+            title: '海外外注 出庫明細表（社内保管用）',
+            includeDeadline: true,
+        },
+    };
+
     /**
      * 未入庫品が存在する出庫日一覧を取得する
      * @returns {Promise<Array<{shipDate: string, count: number}>>}
@@ -378,6 +526,63 @@
         const records = await fetchRecordsWithFallback(buildShipDateListQueries());
 
         return groupRecordsByShipDate(records);
+
+    };
+
+    /**
+     * 出庫実績の出庫日一覧を取得する
+     * @returns {Promise<Array<{shipDate: string, count: number}>>}
+     */
+    OverseasOutbound.fetchOutboundShipDateList = async () => {
+
+        const records = await fetchAllRecordsWithFallback(buildAllShipDateListQueries());
+
+        return groupRecordsByShipDate(records);
+
+    };
+
+    /**
+     * 指定出庫日の出庫表データを取得する
+     * @param {string} shipDate
+     * @param {'katsuya'|'internal'} variant
+     * @returns {Promise<Object>}
+     */
+    OverseasOutbound.fetchOutboundSheetDataByShipDate = async (shipDate, variant = 'katsuya') => {
+
+        const normalizedDate = normalizeDateValue(shipDate);
+        const sheetVariant = SHEET_VARIANTS[variant] ?? SHEET_VARIANTS.katsuya;
+
+        if (!normalizedDate) {
+            throw new Error('出庫日が指定されていません。');
+        }
+
+        const records = dedupeRecordsById(
+            await fetchAllRecordsWithFallback(
+                buildOutboundSheetQueries(normalizedDate),
+                normalizedDate
+            )
+        );
+        const manageNos = records.map((record) => getManageNo(record));
+        const orderMap = await fetchOrderMapByManageNos(manageNos);
+        const details = records
+            .map((record) => buildOutboundSheetRow(record, orderMap.get(getManageNo(record))))
+            .filter((detail) => detail.manage_no !== '')
+            .sort(compareCartonThenRecordId);
+
+        return {
+            header: {
+                ship_date: normalizedDate,
+                total_count: details.length,
+                sheet_variant: variant,
+                sheet_title: sheetVariant.title,
+                include_deadline: sheetVariant.includeDeadline,
+                carton_summary: buildCartonSummary(details),
+            },
+            details,
+            summary: {
+                totalCount: details.length,
+            },
+        };
 
     };
 
