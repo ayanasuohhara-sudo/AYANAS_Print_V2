@@ -323,8 +323,6 @@
 
     };
 
-    MatsubaSummaryInvoice.openPreviewDialog = null;
-
     MatsubaSummaryInvoice.fetchReportData = async ({ billingFrom, billingTo } = {}) => {
 
         const period = MatsubaSummaryInvoice.validatePeriod(billingFrom, billingTo);

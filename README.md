@@ -15,9 +15,11 @@ kintone 帳票印刷専用プラグイン。
 ## ビルド
 
 ```bash
-npm install
+git pull origin main
 npm run pack
 ```
+
+`manifest.json` の `"version"` は **67** です。`private.ppk` は kintone に入っている AYANAS Print（66）と同じ鍵を使ってください。
 
 ## アーキテクチャ
 
@@ -27,4 +29,4 @@ desktop.js → Record.get() → Layout.resolve() → Preview.open() → 印刷
 
 ## Version
 
-3.0.0
+67

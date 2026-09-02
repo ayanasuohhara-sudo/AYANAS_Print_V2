@@ -6,8 +6,8 @@
      * matsuba_summary_index.js
      *
      * 請求書アプリ（App 35）一覧画面に「松葉 合計請求書」ボタンを追加する。
-     * 請求対象期間を確認したうえで 4 顧客を集計し、印刷プレビューを開く。
-     * レコード更新は行わない。
+     * Invoice プラグインは変更しない。請求対象期間を確認したうえで 4 顧客を集計し、
+     * 印刷プレビューを開く。レコード更新は行わない。
      */
 
     const INVOICE_APP_ID = 35;
@@ -15,6 +15,7 @@
     const BUTTON_ID = 'ayanas-matsuba-summary-button';
     const DIALOG_ID = 'ayanas-matsuba-summary-dialog';
     const INVOICE_CREATE_ACTIONS_ID = 'ayanas-invoice-create-actions';
+    const INVOICE_INDEX_TOOLBAR_ID = 'ayanas-invoice-index-toolbar';
 
     let attachRetryTimer = 0;
 
@@ -146,8 +147,6 @@
 
     };
 
-    MatsubaSummaryInvoice.openPreviewDialog = showDialog;
-
     const createButton = () => {
 
         const button = document.createElement('button');
@@ -174,19 +173,39 @@
 
     };
 
-    const attachToInvoiceActions = (button) => {
+    const attachToInvoiceToolbar = (button) => {
 
         const actions = document.getElementById(INVOICE_CREATE_ACTIONS_ID);
 
-        if (!actions) {
+        if (actions) {
+
+            if (button.parentElement !== actions) {
+                actions.appendChild(button);
+            }
+
+            document.getElementById(TOOLBAR_ID)?.remove();
+
+            return true;
+
+        }
+
+        const invoiceToolbar = document.getElementById(INVOICE_INDEX_TOOLBAR_ID);
+
+        if (!invoiceToolbar) {
             return false;
         }
 
-        if (button.parentElement !== actions) {
-            actions.appendChild(button);
+        let ownToolbar = document.getElementById(TOOLBAR_ID);
+
+        if (!ownToolbar) {
+            ownToolbar = createToolbar(button);
+        } else if (button.parentElement !== ownToolbar) {
+            ownToolbar.appendChild(button);
         }
 
-        document.getElementById(TOOLBAR_ID)?.remove();
+        if (ownToolbar.parentElement !== invoiceToolbar) {
+            invoiceToolbar.insertBefore(ownToolbar, invoiceToolbar.firstChild);
+        }
 
         return true;
 
@@ -199,7 +218,6 @@
         }
 
         const toolbar = createToolbar(button);
-
         const headerMenu = kintone.app.getHeaderMenuSpaceElement();
 
         if (headerMenu) {
@@ -223,7 +241,7 @@
             button = createButton();
         }
 
-        if (attachToInvoiceActions(button)) {
+        if (attachToInvoiceToolbar(button)) {
             return;
         }
 
@@ -241,7 +259,7 @@
 
             const existing = document.getElementById(BUTTON_ID) || button;
 
-            if (attachToInvoiceActions(existing)) {
+            if (attachToInvoiceToolbar(existing)) {
                 window.clearInterval(attachRetryTimer);
                 attachRetryTimer = 0;
                 return;
