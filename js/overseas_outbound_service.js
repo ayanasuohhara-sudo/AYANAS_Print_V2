@@ -331,7 +331,7 @@
         }
 
         if (fieldCode === FIELDS.clientName) {
-            return getOrderFieldValue(orderRecord, [FIELDS.clientName, 'customer_name']);
+            return getOrderFieldValue(orderRecord, ['customer_name', FIELDS.clientName]);
         }
 
         return String(getFieldValue(orderRecord, fieldCode) ?? '').trim();
