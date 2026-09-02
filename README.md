@@ -14,25 +14,12 @@ kintone 帳票印刷専用プラグイン。
 
 ## ビルド
 
-**main のままパックすると version 66 の zip ができます。** 必ず次のブランチでパックしてください。
-
 ```bash
-git fetch origin
-git checkout cursor/matsuba-summary-invoice-3f3f
-```
-
-`manifest.json` の `"version"` が **68** であることを確認してから:
-
-```bash
-npm install
+git pull origin main
 npm run pack
 ```
 
-- `private.ppk` は **いま kintone に入っている version 66 と同じ鍵** を使う
-- 別の鍵でパックすると別プラグインになり、元の Print は 66 のまま残る
-- できた `plugin.zip` を kintone システム管理 → プラグイン → 読み込む
-
-パック中に `パックするプラグイン version: 68` と出ない zip は読み込まないでください。
+`manifest.json` の `"version"` は **67** です。`private.ppk` は kintone に入っている AYANAS Print（66）と同じ鍵を使ってください。
 
 ## アーキテクチャ
 
@@ -42,4 +29,4 @@ desktop.js → Record.get() → Layout.resolve() → Preview.open() → 印刷
 
 ## Version
 
-68
+67

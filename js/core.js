@@ -11,7 +11,7 @@
 
     const Core = {};
 
-    Core.VERSION = '68';
+    Core.VERSION = '67';
 
     // -------------------------------------------------------------------------
     // Format (from js/format.js)

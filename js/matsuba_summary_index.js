@@ -154,7 +154,7 @@
         button.id = BUTTON_ID;
         button.type = 'button';
         button.className = 'ayanas-matsuba-summary-button';
-        button.textContent = '松葉 合計請求書 v68';
+        button.textContent = '松葉 合計請求書';
         button.addEventListener('click', showDialog);
 
         return button;

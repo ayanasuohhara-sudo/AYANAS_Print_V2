@@ -16,7 +16,7 @@ console.log('');
 if (Number(version) <= 66) {
     console.error('manifest.json の version が 66 以下です。');
     console.error('このままパックすると kintone の表示は 66 のままです。');
-    console.error('ブランチ cursor/matsuba-summary-invoice-3f3f を checkout してください。');
+    console.error('git pull origin main してからパックしてください。');
     process.exit(1);
 }
 
