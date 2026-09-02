@@ -162,6 +162,7 @@
     assertLayoutLoaded();
     Preview.initialize(getPluginBaseUrl());
     console.info(`[AYANAS Print V3] plugin version ${PLUGIN_VERSION}`);
+    console.warn(`AYANAS Print ${PLUGIN_VERSION} を読み込みました。この表示が 66 のままなら、古い plugin.zip がインストールされています。`);
 
     kintone.events.on('app.record.detail.show', (event) => {
 
