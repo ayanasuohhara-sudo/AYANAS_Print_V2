@@ -231,7 +231,6 @@
     };
 
     const buildShipDateListQueries = () => [
-        `${FIELDS.shipDate} >= "${SHIP_DATE_MIN}" and ${FIELDS.overseasInDate} = "" order by $id desc`,
         `${FIELDS.shipDate} >= "${SHIP_DATE_MIN}" order by $id desc`,
         'order by $id desc',
     ];
@@ -242,9 +241,7 @@
         const exactCondition = `${FIELDS.shipDate} = "${escapeQueryValue(shipDate)}"`;
 
         return [
-            `${rangeCondition} and ${FIELDS.overseasInDate} = "" order by $id desc`,
             `${rangeCondition} order by $id desc`,
-            `${exactCondition} and ${FIELDS.overseasInDate} = "" order by $id desc`,
             `${exactCondition} order by $id desc`,
             'order by $id desc',
         ];

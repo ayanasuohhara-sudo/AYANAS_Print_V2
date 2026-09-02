@@ -16,7 +16,7 @@
     const RECEIVABLE_APP_ID = 37;
     const OVERSEAS_OUTBOUND_APP_ID = 28;
 
-    const PLUGIN_VERSION = '69';
+    const PLUGIN_VERSION = '70';
 
     const BUTTON_ID = 'ayanas-print-button';
     const BUTTON_CLASS = 'ayanas-print-button';

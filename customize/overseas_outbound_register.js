@@ -217,19 +217,34 @@
 
   };
 
+  const isUnreceivedOutboundRecord = (record) => (
+    String(getFieldValue(record, FIELDS.overseasInDate) ?? '').trim() === ''
+  );
+
   const findActiveOutboundRecord = async (manageNo) => {
 
+    const escapedManageNo = escapeQueryValue(manageNo);
     const queries = [
-      FIELDS.manageNo + ' = "' + escapeQueryValue(manageNo) + '" and ' + FIELDS.overseasInDate + ' = "" order by $id desc limit 1',
-      'overseas_manage_no = "' + escapeQueryValue(manageNo) + '" and ' + FIELDS.overseasInDate + ' = "" order by $id desc limit 1',
+      FIELDS.manageNo + ' = "' + escapedManageNo + '" order by $id desc limit 10',
+      FIELDS.overseasManageNo + ' = "' + escapedManageNo + '" order by $id desc limit 10',
+      'overseas_manage_no = "' + escapedManageNo + '" order by $id desc limit 10',
     ];
 
     for (let index = 0; index < queries.length; index += 1) {
 
-      const response = await fetchRecords(OVERSEAS_APP_ID, queries[index]);
+      try {
 
-      if (response.records.length > 0) {
-        return response.records[0];
+        const response = await fetchRecords(OVERSEAS_APP_ID, queries[index]);
+        const activeRecord = (response.records ?? []).find(isUnreceivedOutboundRecord);
+
+        if (activeRecord) {
+          return activeRecord;
+        }
+
+      } catch (error) {
+
+        console.warn('[海外外注出庫] 出庫中レコード検索:', queries[index], error);
+
       }
 
     }
