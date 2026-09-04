@@ -14,11 +14,16 @@
     const OVERSEAS_APP_ID = 28;
     const ORDER_APP_ID = 16;
 
+    const SERVICE_VERSION = '7';
+
     const FIELDS = {
         shipDate: 'ship_date',
         manageNo: 'manage_no',
         customerCode: 'customer_code',
         clientName: 'client_name',
+        customerName: 'customer_name',
+        slipNo: 'slip_no',
+        inCharge: 'in_charge',
         kimonoType: 'kimono_type',
         kimonoSpec: 'kimono_spec',
         deadline: 'deadline',
@@ -248,22 +253,318 @@
 
     };
 
-    const getManageNo = (record, subtableRow = null) => {
+    const INSPECT_NAME_FIELDS = [
+        FIELDS.manageNo,
+        FIELDS.clientName,
+        FIELDS.customerName,
+        FIELDS.slipNo,
+        FIELDS.inCharge,
+        FIELDS.customerCode,
+        FIELDS.kimonoType,
+    ];
 
-        if (subtableRow?.value?.[FIELDS.manageNo]) {
-            const subtableManageNo = String(subtableRow.value[FIELDS.manageNo].value ?? '').trim();
+    const expandManageNoCandidates = (manageNo) => {
 
-            if (subtableManageNo !== '') {
-                return subtableManageNo;
+        const normalized = String(manageNo ?? '').trim();
+
+        if (normalized === '') {
+            return [];
+        }
+
+        const candidates = [normalized];
+        const withoutLeadingZeros = normalized.replace(/^0+(?=\d)/, '');
+
+        if (withoutLeadingZeros !== '' && withoutLeadingZeros !== normalized) {
+            candidates.push(withoutLeadingZeros);
+        }
+
+        if (/^\d+$/.test(normalized)) {
+            const padded9 = normalized.padStart(9, '0');
+
+            if (padded9 !== normalized && !candidates.includes(padded9)) {
+                candidates.push(padded9);
+            }
+        }
+
+        return candidates;
+
+    };
+
+    const pickNameFields = (record) => {
+
+        const picked = {};
+
+        INSPECT_NAME_FIELDS.forEach((fieldCode) => {
+            picked[fieldCode] = String(getFieldValue(record, fieldCode) ?? '').trim();
+        });
+
+        return picked;
+
+    };
+
+    const registerOrderInMap = (orderMap, orderRecord) => {
+
+        const manageNo = String(getFieldValue(orderRecord, FIELDS.manageNo) ?? '').trim();
+
+        if (manageNo === '') {
+            return;
+        }
+
+        expandManageNoCandidates(manageNo).forEach((candidate) => {
+
+            if (!orderMap.has(candidate)) {
+                orderMap.set(candidate, orderRecord);
+            }
+
+        });
+
+    };
+
+    const fetchRecordsByQuery = async (appId, query, limit = 20) => {
+
+        const response = await kintoneApi(
+            kintone.api.url('/k/v1/records', true),
+            'GET',
+            {
+                app: appId,
+                query: `${query} limit ${limit}`,
+            }
+        );
+
+        return Array.isArray(response.records) ? response.records : [];
+
+    };
+
+    const recordMatchesManageNo = (record, manageNo) => {
+
+        const candidates = new Set(expandManageNoCandidates(manageNo));
+        const topLevelValues = [
+            String(getFieldValue(record, FIELDS.manageNo) ?? '').trim(),
+            String(getFieldValue(record, 'overseas_manage_no') ?? '').trim(),
+        ];
+
+        if (topLevelValues.some((value) => value !== '' && candidates.has(value))) {
+            return true;
+        }
+
+        const subtableRows = record?.overseas_details?.value;
+
+        if (!Array.isArray(subtableRows)) {
+            return false;
+        }
+
+        return subtableRows.some((subtableRow) => {
+            const subtableManageNo = getSubtableFieldValue(subtableRow, FIELDS.manageNo);
+            return subtableManageNo !== '' && candidates.has(subtableManageNo);
+        });
+
+    };
+
+    const fetchOutboundRecordsByScan = async (manageNo) => {
+
+        const found = [];
+        const seenIds = new Set();
+        let offset = 0;
+
+        while (offset <= MAX_OFFSET) {
+
+            const response = await fetchRecordsPage('order by $id desc', offset);
+            const records = Array.isArray(response.records) ? response.records : [];
+
+            records.forEach((record) => {
+
+                if (!recordMatchesManageNo(record, manageNo)) {
+                    return;
+                }
+
+                const recordId = String(record?.$id?.value ?? '');
+
+                if (recordId !== '' && !seenIds.has(recordId)) {
+                    seenIds.add(recordId);
+                    found.push(record);
+                }
+
+            });
+
+            if (records.length < RECORDS_LIMIT) {
+                break;
+            }
+
+            offset += RECORDS_LIMIT;
+
+        }
+
+        return found;
+
+    };
+
+    const fetchOrderRecordDirect = async (manageNo) => {
+
+        const candidates = expandManageNoCandidates(manageNo);
+
+        for (let index = 0; index < candidates.length; index += 1) {
+            const candidate = candidates[index];
+            const records = await fetchRecordsByQuery(
+                ORDER_APP_ID,
+                `${FIELDS.manageNo} = "${escapeQueryValue(candidate)}" order by $id desc`
+            );
+
+            if (records.length > 0) {
+                return records[0];
             }
 
         }
 
-        return String(
-            getFieldValue(record, FIELDS.manageNo)
-            || getFieldValue(record, 'overseas_manage_no')
-            || ''
-        ).trim();
+        return null;
+
+    };
+
+    const fetchOutboundRecordsDirect = async (manageNo) => {
+
+        const candidates = expandManageNoCandidates(manageNo);
+        const found = [];
+        const seenIds = new Set();
+
+        const addRecords = (records) => {
+
+            records.forEach((record) => {
+
+                const recordId = String(record?.$id?.value ?? '');
+
+                if (recordId !== '' && !seenIds.has(recordId)) {
+                    seenIds.add(recordId);
+                    found.push(record);
+                }
+
+            });
+
+        };
+
+        // App 28 の manage_no は overseas_details サブテーブル内のため = クエリ不可。
+        // トップレベルの overseas_manage_no のみ試し、なければサブテーブル走査する。
+        for (let index = 0; index < candidates.length; index += 1) {
+            const candidate = candidates[index];
+
+            try {
+
+                const records = await fetchRecordsByQuery(
+                    OVERSEAS_APP_ID,
+                    `overseas_manage_no = "${escapeQueryValue(candidate)}" order by $id desc`
+                );
+
+                addRecords(records);
+
+            } catch (error) {
+
+                if (!isQueryError(error)) {
+                    throw error;
+                }
+
+            }
+
+        }
+
+        if (found.length === 0) {
+            addRecords(await fetchOutboundRecordsByScan(manageNo));
+        }
+
+        return found;
+
+    };
+
+    const extractOutboundNameSources = (record) => {
+
+        const sources = {
+            top: pickNameFields(record),
+            subtable: [],
+        };
+
+        const subtableRows = record?.overseas_details?.value;
+
+        if (!Array.isArray(subtableRows)) {
+            return sources;
+        }
+
+        subtableRows.forEach((subtableRow) => {
+
+            const rowValues = {
+                manage_no: getSubtableFieldValue(subtableRow, FIELDS.manageNo),
+            };
+
+            INSPECT_NAME_FIELDS.forEach((fieldCode) => {
+
+                if (fieldCode === FIELDS.manageNo) {
+                    return;
+                }
+
+                rowValues[fieldCode] = getSubtableFieldValue(subtableRow, fieldCode);
+
+            });
+
+            sources.subtable.push(rowValues);
+
+        });
+
+        return sources;
+
+    };
+
+    const getManageNoCandidates = (record, subtableRow = null) => {
+
+        const candidates = [];
+
+        const appendCandidate = (value) => {
+
+            expandManageNoCandidates(value).forEach((candidate) => {
+
+                if (candidate !== '' && !candidates.includes(candidate)) {
+                    candidates.push(candidate);
+                }
+
+            });
+
+        };
+
+        appendCandidate(getSubtableFieldValue(subtableRow, FIELDS.manageNo));
+        appendCandidate(getFieldValue(record, FIELDS.manageNo));
+        appendCandidate(getFieldValue(record, 'overseas_manage_no'));
+
+        return candidates;
+
+    };
+
+    const getManageNo = (record, subtableRow = null) => {
+
+        const candidates = getManageNoCandidates(record, subtableRow);
+
+        return candidates.length > 0 ? candidates[0] : '';
+
+    };
+
+    const resolveOrderRecord = async (record, subtableRow, orderMap) => {
+
+        const candidates = getManageNoCandidates(record, subtableRow);
+
+        for (let index = 0; index < candidates.length; index += 1) {
+            const orderRecord = orderMap.get(candidates[index]);
+
+            if (orderRecord) {
+                return orderRecord;
+            }
+
+        }
+
+        for (let index = 0; index < candidates.length; index += 1) {
+            const orderRecord = await fetchOrderRecordDirect(candidates[index]);
+
+            if (orderRecord) {
+                registerOrderInMap(orderMap, orderRecord);
+                return orderRecord;
+            }
+
+        }
+
+        return null;
 
     };
 
@@ -294,6 +595,40 @@
 
     };
 
+    const getClientName = (record, orderRecord, subtableRow = null) => {
+
+        if (!orderRecord) {
+            return '';
+        }
+
+        const clientName = String(getFieldValue(orderRecord, FIELDS.clientName) ?? '').trim();
+
+        if (clientName === '') {
+            return '';
+        }
+
+        const orderCustomerName = String(
+            getFieldValue(orderRecord, FIELDS.customerName) ?? ''
+        ).trim();
+        const orderSlipNo = String(getFieldValue(orderRecord, FIELDS.slipNo) ?? '').trim();
+        const orderInCharge = String(getFieldValue(orderRecord, FIELDS.inCharge) ?? '').trim();
+
+        if (orderSlipNo !== '' && clientName === orderSlipNo) {
+            return '';
+        }
+
+        if (orderInCharge !== '' && clientName === orderInCharge) {
+            return '';
+        }
+
+        if (orderCustomerName !== '' && clientName === orderCustomerName) {
+            return '';
+        }
+
+        return clientName;
+
+    };
+
     const getDetailFieldValue = (record, orderRecord, fieldCode, subtableRow = null) => {
 
         const subtableValue = getSubtableFieldValue(subtableRow, fieldCode);
@@ -302,36 +637,14 @@
             return subtableValue;
         }
 
-        if (fieldCode === FIELDS.clientName && subtableRow) {
-            const subtableCustomerName = getSubtableFieldValue(subtableRow, 'customer_name');
-
-            if (subtableCustomerName !== '') {
-                return subtableCustomerName;
-            }
-
-        }
-
         const localValue = String(getFieldValue(record, fieldCode) ?? '').trim();
 
         if (localValue !== '') {
             return localValue;
         }
 
-        if (fieldCode === FIELDS.clientName) {
-            const localCustomerName = String(getFieldValue(record, 'customer_name') ?? '').trim();
-
-            if (localCustomerName !== '') {
-                return localCustomerName;
-            }
-
-        }
-
         if (!orderRecord) {
             return '';
-        }
-
-        if (fieldCode === FIELDS.clientName) {
-            return getOrderFieldValue(orderRecord, ['customer_name', FIELDS.clientName]);
         }
 
         return String(getFieldValue(orderRecord, fieldCode) ?? '').trim();
@@ -384,7 +697,7 @@
         const orderMap = new Map();
         const uniqueManageNos = [...new Set(
             manageNos
-                .map((manageNo) => String(manageNo ?? '').trim())
+                .flatMap((manageNo) => expandManageNoCandidates(manageNo))
                 .filter((manageNo) => manageNo !== '')
         )];
 
@@ -398,13 +711,7 @@
             const response = await fetchOrderRecordsPage(query);
 
             (response.records ?? []).forEach((orderRecord) => {
-
-                const manageNo = String(getFieldValue(orderRecord, FIELDS.manageNo) ?? '').trim();
-
-                if (manageNo !== '' && !orderMap.has(manageNo)) {
-                    orderMap.set(manageNo, orderRecord);
-                }
-
+                registerOrderInMap(orderMap, orderRecord);
             });
 
         }
@@ -420,7 +727,7 @@
         return {
             manage_no: manageNo,
             customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode, subtableRow),
-            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName, subtableRow),
+            client_name: getClientName(record, orderRecord, subtableRow),
             kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType, subtableRow),
             kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec, subtableRow),
             deadline: normalizeDateValue(
@@ -545,7 +852,7 @@
             carton_no: getDetailFieldValue(record, orderRecord, FIELDS.cartonNo, subtableRow),
             manage_no: manageNo,
             customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode, subtableRow),
-            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName, subtableRow),
+            client_name: getClientName(record, orderRecord, subtableRow),
             kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType, subtableRow),
             kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec, subtableRow),
             scheduled_arrival_date: normalizeDateValue(
@@ -650,14 +957,27 @@
             )
         );
         const flattenedRecords = flattenOutboundRecords(records);
-        const manageNos = flattenedRecords.map((item) => getManageNo(item.record, item.subtableRow));
+        const manageNos = flattenedRecords.flatMap((item) => (
+            getManageNoCandidates(item.record, item.subtableRow)
+        ));
         const orderMap = await fetchOrderMapByManageNos(manageNos);
-        const details = flattenedRecords
-            .map((item) => buildOutboundSheetRow(
-                item.record,
-                orderMap.get(getManageNo(item.record, item.subtableRow)),
-                item.subtableRow
-            ))
+        const details = (await Promise.all(
+            flattenedRecords.map(async (item) => {
+
+                const orderRecord = await resolveOrderRecord(
+                    item.record,
+                    item.subtableRow,
+                    orderMap
+                );
+
+                return buildOutboundSheetRow(
+                    item.record,
+                    orderRecord,
+                    item.subtableRow
+                );
+
+            })
+        ))
             .filter((detail) => detail.manage_no !== '')
             .sort(compareCartonThenRecordId);
 
@@ -698,14 +1018,27 @@
             )
         );
         const flattenedRecords = flattenOutboundRecords(records);
-        const manageNos = flattenedRecords.map((item) => getManageNo(item.record, item.subtableRow));
+        const manageNos = flattenedRecords.flatMap((item) => (
+            getManageNoCandidates(item.record, item.subtableRow)
+        ));
         const orderMap = await fetchOrderMapByManageNos(manageNos);
-        const details = flattenedRecords
-            .map((item) => buildDetailRow(
-                item.record,
-                orderMap.get(getManageNo(item.record, item.subtableRow)),
-                item.subtableRow
-            ))
+        const details = (await Promise.all(
+            flattenedRecords.map(async (item) => {
+
+                const orderRecord = await resolveOrderRecord(
+                    item.record,
+                    item.subtableRow,
+                    orderMap
+                );
+
+                return buildDetailRow(
+                    item.record,
+                    orderRecord,
+                    item.subtableRow
+                );
+
+            })
+        ))
             .filter((detail) => detail.manage_no !== '')
             .sort(compareManageNo);
 
@@ -722,8 +1055,114 @@
 
     };
 
+    /**
+     * 管理番号ごとのお客様名データを調査する（ブラウザコンソール用）
+     * @param {string[]} manageNos
+     * @returns {Promise<Array<Object>>}
+     */
+    OverseasOutbound.inspectManageNos = async (manageNos) => {
+
+        const targets = [...new Set(
+            (Array.isArray(manageNos) ? manageNos : [manageNos])
+                .map((manageNo) => String(manageNo ?? '').trim())
+                .filter((manageNo) => manageNo !== '')
+        )];
+
+        const orderMap = new Map();
+        const results = [];
+
+        for (let index = 0; index < targets.length; index += 1) {
+            const manageNo = targets[index];
+            const orderRecord = await fetchOrderRecordDirect(manageNo);
+
+            if (orderRecord) {
+                registerOrderInMap(orderMap, orderRecord);
+            }
+
+            const outboundRecords = await fetchOutboundRecordsDirect(manageNo);
+            const outboundSources = outboundRecords.map((record) => ({
+                record_id: String(record?.$id?.value ?? ''),
+                ship_date: getShipDate(record),
+                sources: extractOutboundNameSources(record),
+            }));
+
+            const flattenedRecords = outboundRecords.flatMap((record) => {
+
+                const subtableRows = record?.overseas_details?.value;
+
+                if (Array.isArray(subtableRows) && subtableRows.length > 0) {
+                    return subtableRows.map((subtableRow) => ({
+                        record,
+                        subtableRow,
+                    }));
+                }
+
+                return [{
+                    record,
+                    subtableRow: null,
+                }];
+
+            });
+
+            const printRows = [];
+
+            for (let rowIndex = 0; rowIndex < flattenedRecords.length; rowIndex += 1) {
+                const item = flattenedRecords[rowIndex];
+                const resolvedOrder = await resolveOrderRecord(
+                    item.record,
+                    item.subtableRow,
+                    orderMap
+                );
+
+                printRows.push({
+                    manage_no: getManageNo(item.record, item.subtableRow),
+                    print_client_name: getClientName(
+                        item.record,
+                        resolvedOrder,
+                        item.subtableRow
+                    ),
+                    order_found: resolvedOrder !== null,
+                    app28_top: pickNameFields(item.record),
+                    app28_subtable: item.subtableRow
+                        ? INSPECT_NAME_FIELDS.reduce((rowValues, fieldCode) => {
+                            rowValues[fieldCode] = getSubtableFieldValue(
+                                item.subtableRow,
+                                fieldCode
+                            );
+                            return rowValues;
+                        }, {})
+                        : null,
+                });
+
+            }
+
+            if (printRows.length === 0 && orderRecord) {
+                printRows.push({
+                    manage_no: manageNo,
+                    print_client_name: getClientName(null, orderRecord, null),
+                    order_found: true,
+                    app28_top: null,
+                    app28_subtable: null,
+                    note: 'App28レコードはサブテーブル走査でも未検出',
+                });
+            }
+
+            results.push({
+                manage_no: manageNo,
+                order: orderRecord ? pickNameFields(orderRecord) : null,
+                outbound_records: outboundSources,
+                print_rows: printRows,
+            });
+
+        }
+
+        return results;
+
+    };
+
     OverseasOutbound.APP_ID = OVERSEAS_APP_ID;
     OverseasOutbound.FIELDS = FIELDS;
+    OverseasOutbound.SERVICE_VERSION = SERVICE_VERSION;
 
     window.OverseasOutbound = OverseasOutbound;
 

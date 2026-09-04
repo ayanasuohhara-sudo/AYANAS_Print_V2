@@ -45,7 +45,7 @@
 | カートン番号 | `carton_no` |
 | 管理番号 | `manage_no` |
 | 顧客コード | `customer_code` |
-| お客様名 | `client_name` または `customer_name`（App28のフォームに存在する方） |
+| お客様名 | `client_name` |
 | 着物種類 | `kimono_type` |
 | 着物仕様 | `kimono_spec` |
 | 納期 | `deadline` |

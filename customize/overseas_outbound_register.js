@@ -278,6 +278,15 @@
 
       Object.keys(properties).forEach(function(fieldCode) {
         app28FieldCodes.add(fieldCode);
+
+        const field = properties[fieldCode];
+
+        if (field && field.type === 'SUBTABLE' && field.fields) {
+          Object.keys(field.fields).forEach(function(subFieldCode) {
+            app28FieldCodes.add(subFieldCode);
+          });
+        }
+
       });
 
       return app28FieldCodes;
@@ -339,14 +348,23 @@
 
   const setPayloadClientName = (payload, clientName) => {
 
-    if (hasApp28Field(FIELDS.customerName)) {
-      setPayloadField(payload, FIELDS.customerName, clientName);
-      return;
-    }
-
     if (hasApp28Field(FIELDS.clientName)) {
       setPayloadField(payload, FIELDS.clientName, clientName);
     }
+
+  };
+
+  const getOrderClientName = (orderRecord) => (
+    getOrderFieldValue(orderRecord, FIELDS.clientName)
+  );
+
+  const getSubtableClientNameFieldCode = () => {
+
+    if (hasApp28Field(FIELDS.clientName)) {
+      return FIELDS.clientName;
+    }
+
+    return null;
 
   };
 
@@ -369,19 +387,20 @@
 
   const buildOverseasDetailsValue = (orderRecord, manageNo) => {
 
-    const clientName = getOrderFieldValue(orderRecord, [
-      FIELDS.customerName,
-      FIELDS.clientName,
-    ]);
+    const clientName = getOrderClientName(orderRecord);
+    const clientNameFieldCode = getSubtableClientNameFieldCode();
 
     const rowValue = {};
 
     const subtableFields = {
       manage_no: manageNo,
       customer_code: getOrderFieldValue(orderRecord, FIELDS.customerCode),
-      customer_name: clientName,
       kimono_type: getOrderFieldValue(orderRecord, FIELDS.kimonoType),
     };
+
+    if (clientNameFieldCode) {
+      subtableFields[clientNameFieldCode] = clientName;
+    }
 
     Object.keys(subtableFields).forEach(function(fieldCode) {
       rowValue[fieldCode] = {
@@ -455,10 +474,7 @@
   const buildOutboundRecordPayload = (formRecord, orderRecord, manageNo) => {
 
     const payload = {};
-    const clientName = getOrderFieldValue(orderRecord, [
-      FIELDS.customerName,
-      FIELDS.clientName,
-    ]);
+    const clientName = getOrderClientName(orderRecord);
 
     setPayloadField(
       payload,

@@ -8,7 +8,7 @@
      * 海外外注 出庫表（勝矢和裁用 / 社内保管用）
      */
 
-    const OVERSEAS_OUTBOUND_SHEET_TEMPLATE_VERSION = '1';
+    const OVERSEAS_OUTBOUND_SHEET_TEMPLATE_VERSION = '3';
 
     const DETAILS_PER_PAGE_FIRST = 18;
     const DETAILS_PER_PAGE_NEXT = 22;

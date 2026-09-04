@@ -279,6 +279,11 @@
             return event;
         }
 
+        console.info(
+            '[AYANAS Print V3] overseas outbound service version',
+            OverseasOutbound.SERVICE_VERSION ?? '(unknown)'
+        );
+
         mountToolbar();
 
         return event;

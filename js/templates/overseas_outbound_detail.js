@@ -8,7 +8,7 @@
      * 海外外注 出庫明細表（A4横・全面）の HTML 文字列を生成する。
      */
 
-    const OVERSEAS_OUTBOUND_DETAIL_TEMPLATE_VERSION = '2';
+    const OVERSEAS_OUTBOUND_DETAIL_TEMPLATE_VERSION = '3';
 
     const DETAILS_PER_PAGE_FIRST = 20;
     const DETAILS_PER_PAGE_NEXT = 24;
