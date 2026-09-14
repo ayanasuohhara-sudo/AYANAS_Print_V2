@@ -89,6 +89,8 @@
 
     const formatCustomerName = (name) => `${String(name ?? '').trim()}様`;
 
+    const formatGeneralCustomerName = (name) => `${String(name ?? '').trim()} 様`;
+
     const resolveCustomerNameFontSize = (name) => {
 
         const length = formatCustomerName(name).length;
@@ -117,9 +119,43 @@
 
     };
 
-    const buildCustomerNameHtml = (name) => {
+    const resolveGeneralCustomerNameFontSize = (name) => {
 
-        const customerName = formatCustomerName(name);
+        const length = formatGeneralCustomerName(name).length;
+
+        if (length <= 12) {
+            return '16pt';
+        }
+
+        if (length <= 18) {
+            return '14pt';
+        }
+
+        if (length <= 24) {
+            return '12pt';
+        }
+
+        if (length <= 32) {
+            return '11pt';
+        }
+
+        return '10pt';
+
+    };
+
+    const buildCustomerNameHtml = (name, options = {}) => {
+
+        const isGeneral = options.general === true;
+        const customerName = isGeneral
+            ? formatGeneralCustomerName(name)
+            : formatCustomerName(name);
+
+        if (isGeneral) {
+            const fontSize = resolveGeneralCustomerNameFontSize(name);
+
+            return `<p class="invoice-customer-panel__name invoice-customer-panel__name--general" style="font-size:${fontSize}">${esc(customerName)}</p>`;
+        }
+
         const fontSize = resolveCustomerNameFontSize(name);
 
         return `<p class="invoice-customer-panel__name" style="font-size:${fontSize}">${esc(customerName)}</p>`;
@@ -160,7 +196,27 @@
 
     };
 
-    const buildCustomerPanelHtml = (header) => {
+    const buildGeneralCustomerCodeHtml = (header) => {
+
+        const customerCode = String(header.customer_code ?? '').trim();
+
+        if (!customerCode) {
+            return '';
+        }
+
+        return `<p class="invoice-customer-panel__code invoice-customer-panel__code--general">顧客コード：${esc(customerCode)}</p>`;
+
+    };
+
+    const buildCustomerPanelHtml = (header, layout = {}) => {
+
+        if (layout.recipientMode === 'general') {
+            return `
+            <div class="invoice-customer-panel invoice-customer-panel--general">
+                ${buildCustomerNameHtml(header.general_client_name, { general: true })}
+                ${buildGeneralCustomerCodeHtml(header)}
+            </div>`;
+        }
 
         const postal = formatPostal(header.customer_postal_code);
         const address = String(header.customer_address ?? '').trim();
@@ -176,7 +232,15 @@
 
     };
 
-    const buildCustomerPanelBriefHtml = (header) => {
+    const buildCustomerPanelBriefHtml = (header, layout = {}) => {
+
+        if (layout.recipientMode === 'general') {
+            return `
+            <div class="invoice-customer-panel invoice-customer-panel--brief invoice-customer-panel--general">
+                ${buildCustomerNameHtml(header.general_client_name, { general: true })}
+                ${buildGeneralCustomerCodeHtml(header)}
+            </div>`;
+        }
 
         const customerCode = String(header.customer_code ?? '').trim();
 
@@ -249,8 +313,8 @@
         return `
 <header class="invoice-header${showFullAddressee ? '' : ' invoice-header--continued'}">
     <div class="invoice-header__left">
-        ${showFullAddressee ? buildCustomerPanelHtml(header) : ''}
-        ${showBriefAddressee ? buildCustomerPanelBriefHtml(header) : ''}
+        ${showFullAddressee ? buildCustomerPanelHtml(header, layout) : ''}
+        ${showBriefAddressee ? buildCustomerPanelBriefHtml(header, layout) : ''}
     </div>
     <div class="invoice-header__right">
         <div class="invoice-header__info">
@@ -385,7 +449,8 @@ ${buildDetailRowsHtml(details)}
     const buildAmountOverviewHtml = (summary, layout = {}) => {
 
         const amounts = resolveSummaryAmounts(summary);
-        const showCarryOver = layout.carryOverMode !== 'none';
+        const showCarryOver = layout.carryOverMode !== 'none'
+            && layout.recipientMode !== 'general';
 
         if (showCarryOver) {
 

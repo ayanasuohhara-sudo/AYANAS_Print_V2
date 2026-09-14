@@ -14,7 +14,7 @@
     const OVERSEAS_APP_ID = 28;
     const ORDER_APP_ID = 16;
 
-    const SERVICE_VERSION = '8';
+    const SERVICE_VERSION = '9';
 
     const FIELDS = {
         shipDate: 'ship_date',
@@ -1039,6 +1039,73 @@
             summary: {
                 totalCount: details.length,
             },
+        };
+
+    };
+
+    /**
+     * 指定出庫日の印刷データを調査する（ブラウザコンソール用）
+     * @param {string} shipDate
+     * @returns {Promise<Object>}
+     */
+    OverseasOutbound.inspectShipDate = async (shipDate) => {
+
+        const normalizedDate = normalizeDateValue(shipDate);
+
+        if (!normalizedDate) {
+            throw new Error('出庫日が指定されていません。');
+        }
+
+        const records = dedupeRecordsById(
+            await fetchAllRecordsWithFallback(
+                buildOutboundSheetQueries(normalizedDate),
+                normalizedDate
+            )
+        );
+        const flattenedRecords = flattenOutboundRecords(records);
+        const manageNos = flattenedRecords.flatMap((item) => (
+            getManageNoCandidates(item.record, item.subtableRow)
+        ));
+        const orderMap = await fetchOrderMapByManageNos(manageNos);
+        const details = (await Promise.all(
+            flattenedRecords.map(async (item) => {
+
+                const orderRecord = await resolveOrderRecord(
+                    item.record,
+                    item.subtableRow,
+                    orderMap
+                );
+
+                return buildOutboundSheetRow(
+                    item.record,
+                    orderRecord,
+                    item.subtableRow
+                );
+
+            })
+        ))
+            .filter((detail) => detail.manage_no !== '');
+
+        return {
+            ship_date: normalizedDate,
+            app28_record_count: records.length,
+            print_detail_count: details.length,
+            manage_nos: details.map((detail) => detail.manage_no),
+            records: records.map((record) => ({
+                record_id: String(record?.$id?.value ?? ''),
+                ship_date: getShipDate(record),
+                carton_no: String(getFieldValue(record, FIELDS.cartonNo) ?? '').trim(),
+                top_manage_no: String(getFieldValue(record, FIELDS.manageNo) ?? '').trim(),
+                subtable_count: Array.isArray(record?.overseas_details?.value)
+                    ? record.overseas_details.value.length
+                    : 0,
+                subtable_manage_nos: Array.isArray(record?.overseas_details?.value)
+                    ? record.overseas_details.value.map((row) => (
+                        getSubtableFieldValue(row, FIELDS.manageNo)
+                    ))
+                    : [],
+            })),
+            details,
         };
 
     };

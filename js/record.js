@@ -289,6 +289,24 @@
 
     };
 
+    const countUniqueDeliveryManageNos = (details) => {
+
+        const manageNos = new Set();
+
+        details.forEach((detail) => {
+
+            const manageNo = String(detail.manage_no ?? '').trim();
+
+            if (manageNo !== '') {
+                manageNos.add(manageNo);
+            }
+
+        });
+
+        return manageNos.size;
+
+    };
+
     const buildDeliveryDetails = (record) => {
 
         const tableField = record[DELIVERY_DETAIL_TABLE_CODE];
@@ -315,11 +333,13 @@
 
         });
 
+        const deliveryPointCount = countUniqueDeliveryManageNos(details);
+
         return {
             details,
             summary: {
-                count: details.length,
-                totalCount: details.length,
+                count: deliveryPointCount,
+                totalCount: deliveryPointCount,
                 totalQty,
                 totalAmount,
             },
@@ -663,6 +683,71 @@
         }
 
     };
+
+    /**
+     * 一般客帳票の宛名（明細 client_name）を判定する
+     * @param {Array<Object>} details - 明細
+     * @param {string} multipleMessage - 複数名時の警告文
+     * @returns {{ ok: true, clientName: string } | { ok: false, message: string }}
+     */
+    const resolveGeneralClientRecipient = (details, multipleMessage) => {
+
+        const names = new Set();
+
+        (Array.isArray(details) ? details : []).forEach((detail) => {
+
+            const name = String(detail?.client_name ?? '').trim();
+
+            if (name !== '') {
+                names.add(name);
+            }
+
+        });
+
+        if (names.size === 0) {
+            return {
+                ok: false,
+                message: 'お客様名が入力されていません。',
+            };
+        }
+
+        if (names.size > 1) {
+            return {
+                ok: false,
+                message: multipleMessage,
+            };
+        }
+
+        return {
+            ok: true,
+            clientName: names.values().next().value,
+        };
+
+    };
+
+    /**
+     * 一般客納品書の宛名（delivery_detail.client_name）を判定する
+     * @param {Array<Object>} details - 納品明細
+     * @returns {{ ok: true, clientName: string } | { ok: false, message: string }}
+     */
+    Record.resolveGeneralDeliveryRecipient = (details) => (
+        resolveGeneralClientRecipient(
+            details,
+            '複数のお客様名が含まれています。一般客納品書を確認してください。'
+        )
+    );
+
+    /**
+     * 一般客請求書の宛名（invoice_detail.client_name）を判定する
+     * @param {Array<Object>} details - 請求明細
+     * @returns {{ ok: true, clientName: string } | { ok: false, message: string }}
+     */
+    Record.resolveGeneralInvoiceRecipient = (details) => (
+        resolveGeneralClientRecipient(
+            details,
+            '複数のお客様名が含まれています。一般客請求書を確認してください。'
+        )
+    );
 
     /**
      * 納品書データを取得する

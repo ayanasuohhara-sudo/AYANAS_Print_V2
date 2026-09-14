@@ -932,16 +932,22 @@
 }
 
 .report-delivery .delivery-page-no {
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
+    position: static;
+    flex: 0 0 auto;
+    align-self: center;
     margin: 0;
+    margin-top: auto;
+    padding-top: 1.5mm;
     font-size: 8pt;
     font-weight: bold;
     line-height: 1.3;
     text-align: center;
     width: auto;
+}
+
+.report-delivery .delivery-footer + .delivery-page-no {
+    margin-top: 0;
+    padding-top: 1mm;
 }
 
 .report-delivery .delivery-doc-item {
@@ -1112,12 +1118,16 @@
 }
 
 .report-delivery .delivery-summary {
-    width: 58mm;
-    margin-left: auto;
     border-collapse: collapse;
     table-layout: fixed;
     font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", "MS Gothic", sans-serif;
     font-weight: 700;
+}
+
+.report-delivery .delivery-summary--horizontal {
+    width: 100%;
+    max-width: 170mm;
+    margin-left: auto;
 }
 
 .report-delivery .delivery-summary th,
@@ -1131,29 +1141,33 @@
     font-weight: 700;
 }
 
-.report-delivery .delivery-summary th {
-    width: 42%;
+.report-delivery .delivery-summary--horizontal th {
+    width: 25%;
     background: #f0f0f0;
-    text-align: left;
+    text-align: center;
     font-weight: 700;
     white-space: nowrap;
+    padding: 1.5mm 2.5mm;
+    font-size: 9.5pt;
+    line-height: 1.3;
 }
 
-.report-delivery .delivery-summary td {
+.report-delivery .delivery-summary--horizontal td {
     text-align: right;
     font-weight: 700;
+    padding: 2mm 2.5mm;
+    font-size: 10.5pt;
+    line-height: 1.3;
 }
 
-.report-delivery .delivery-summary__total th,
-.report-delivery .delivery-summary__total td {
+.report-delivery .delivery-summary__count {
+    text-align: center;
+    font-size: 11pt;
+}
+
+.report-delivery .delivery-summary__total-value {
     background: #ececec;
-    font-size: 9pt;
-    padding-top: 3px;
-    padding-bottom: 3px;
-}
-
-.report-delivery .delivery-summary__total td {
-    font-size: 10pt;
+    font-size: 11.5pt;
 }
 
 /* ========================================
@@ -1317,6 +1331,47 @@
 
 .report-invoice .invoice-customer-panel__code {
     margin-bottom: 0.5mm;
+}
+
+/* 一般客請求書: 宛名のみ（左上バランス調整） */
+.report-invoice--general-recipient .invoice-header__left {
+    display: flex;
+    align-items: center;
+    padding-top: 4mm;
+}
+
+.report-invoice--general-recipient .invoice-customer-panel--general {
+    padding: 0;
+    max-width: 100%;
+}
+
+.report-invoice--general-recipient .invoice-customer-panel__name--general {
+    margin: 0;
+    max-width: 100%;
+    font-weight: 700;
+    line-height: 1.45;
+    letter-spacing: 0.04em;
+}
+
+.report-invoice--general-recipient .invoice-customer-panel__code--general {
+    margin: 2mm 0 0;
+    max-width: 100%;
+    font-size: 9pt;
+    font-weight: 400;
+    line-height: 1.35;
+}
+
+.report-invoice--general-recipient .invoice-customer-panel--brief.invoice-customer-panel--general {
+    padding: 0;
+}
+
+.report-invoice--general-recipient .invoice-header--continued .invoice-header__left {
+    align-items: flex-start;
+    padding-top: 0;
+}
+
+.report-invoice--general-recipient .invoice-header--continued .invoice-customer-panel__name--general {
+    font-size: 12pt !important;
 }
 
 .report-invoice .invoice-title {
@@ -2367,4 +2422,34 @@ body {
         left: var(--invoice-window-left, 15mm);
     }
 
+}
+
+/* ========================================
+   kintone 詳細画面: 印刷ボタン（desktop.js）
+   AYANAS Invoice の詳細ボタンと同系統
+   ======================================== */
+.ayanas-print-button {
+    box-sizing: border-box;
+    margin: 0 8px 0 0;
+    padding: 8px 16px;
+    border: 1px solid #2ecc71;
+    border-radius: 4px;
+    background: #2ecc71;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.ayanas-print-button:hover {
+    background: #27ae60;
+    border-color: #27ae60;
+}
+
+.ayanas-print-button:disabled {
+    opacity: 0.7;
+    cursor: wait;
 }

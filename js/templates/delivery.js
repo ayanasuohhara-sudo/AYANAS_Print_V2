@@ -35,7 +35,7 @@
 
     };
 
-    const formatCustomerName = (name) => `${String(name ?? '').trim()}様`;
+    const formatCustomerName = (name) => `${String(name ?? '').trim()} 様`;
 
     const formatKimonoSubHtml = (type, spec) => {
 
@@ -51,13 +51,15 @@
 
     };
 
-    const buildHeaderHtml = (header, layout) => {
+    const buildHeaderLeftHtml = (header, layout) => {
 
-        const company = getCompanyInfo(layout);
+        if (layout.recipientMode === 'general') {
+            return `
+        <h1 class="delivery-title">納 品 書</h1>
+        <p class="delivery-customer-name">${esc(formatCustomerName(header.general_client_name))}</p>`;
+        }
 
         return `
-<header class="delivery-header">
-    <div class="delivery-header__left">
         <h1 class="delivery-title">納 品 書</h1>
         <dl class="delivery-meta">
             <div class="delivery-meta__item">
@@ -65,7 +67,18 @@
                 <dd>${esc(header.customer_code)}</dd>
             </div>
         </dl>
-        <p class="delivery-customer-name">${esc(formatCustomerName(header.customer_name))}</p>
+        <p class="delivery-customer-name">${esc(formatCustomerName(header.customer_name))}</p>`;
+
+    };
+
+    const buildHeaderHtml = (header, layout) => {
+
+        const company = getCompanyInfo(layout);
+
+        return `
+<header class="delivery-header">
+    <div class="delivery-header__left">
+${buildHeaderLeftHtml(header, layout)}
     </div>
     <div class="delivery-header__right">
         <div class="delivery-header__info">
@@ -170,25 +183,28 @@ ${buildDetailRowsHtml(details)}
             Format.formatNumber = Format.formatMoney;
         }
 
+        const deliveryCount = summary.totalCount ?? 0;
         const subtotal = summary.totalAmount ?? 0;
         const tax = Math.round(subtotal * 0.10);
         const total = subtotal + tax;
 
         return `
 <footer class="delivery-footer delivery-footer--totals">
-    <table class="delivery-summary delivery-summary--totals">
-        <tbody>
+    <table class="delivery-summary delivery-summary--horizontal">
+        <thead>
             <tr>
+                <th>納品点数</th>
                 <th>税抜合計</th>
-                <td>${esc(Format.formatNumber(subtotal))}</td>
-            </tr>
-            <tr>
                 <th>消費税（10％）</th>
-                <td>${esc(Format.formatNumber(tax))}</td>
-            </tr>
-            <tr class="delivery-summary__total">
                 <th>税込合計</th>
-                <td>${esc(Format.formatNumber(total))}</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="delivery-summary__values">
+                <td class="delivery-summary__count">${esc(String(deliveryCount))}</td>
+                <td>${esc(Format.formatNumber(subtotal))}</td>
+                <td>${esc(Format.formatNumber(tax))}</td>
+                <td class="delivery-summary__total-value">${esc(Format.formatNumber(total))}</td>
             </tr>
         </tbody>
     </table>
@@ -214,7 +230,7 @@ ${buildDetailRowsHtml(details)}
                 summary,
                 layout,
                 {
-                    showSummary: index === 0,
+                    showSummary: index === totalPages - 1,
                     pageNumber: index + 1,
                     totalPages,
                 }

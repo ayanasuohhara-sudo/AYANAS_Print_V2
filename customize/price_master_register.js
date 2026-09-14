@@ -2,9 +2,9 @@
   'use strict';
 
   const DELIVERY_APP_ID = 19;
+  const ORDER_APP_ID = 16;
   const PRICE_MASTER_APP_ID = 14;
   const PRODUCT_APP_ID = 13;
-  const ORDER_APP_ID = 16;
 
   const EXCLUDE_SUBCATEGORIES = ['しみぬき'];
 
@@ -24,6 +24,14 @@
     ].join('|');
   }
 
+  function orderRowKey(itemName, itemCode, kimonoSpec) {
+    return [
+      itemName || '',
+      itemCode || '',
+      kimonoSpec || ''
+    ].join('|');
+  }
+
   function buildPriceKey(customerCode, kimonoTypeCode, itemCode, kimonoSpec) {
     return (
       (customerCode || '') + '_' +
@@ -38,23 +46,39 @@
     return Number.isFinite(num) ? num : 0;
   }
 
+  function isDeliveryApp() {
+    return kintone.app.getId() === DELIVERY_APP_ID;
+  }
+
+  function isOrderApp() {
+    return kintone.app.getId() === ORDER_APP_ID;
+  }
+
   function seedFromRecord(record) {
-    if (!record.delivery_detail) {
+    rowPrices.clear();
+
+    if (isDeliveryApp() && record.delivery_detail) {
+      record.delivery_detail.value.forEach(function(row, index) {
+        const key = row.id || ('row-' + index);
+        rowPrices.set(key, toNumber(row.value.unit_price.value));
+      });
       return;
     }
 
-    record.delivery_detail.value.forEach(function(row, index) {
-      const key = row.id || ('row-' + index);
-      rowPrices.set(key, toNumber(row.value.unit_price.value));
-    });
+    if (isOrderApp() && record.detail_table) {
+      record.detail_table.value.forEach(function(row, index) {
+        const key = row.id || ('row-' + index);
+        rowPrices.set(key, toNumber(row.value.unit_price.value));
+      });
+    }
   }
 
-  async function fetchSavedRecord(recordId) {
+  async function fetchSavedRecord(appId, recordId) {
     const resp = await kintone.api(
       kintone.api.url('/k/v1/record.json', true),
       'GET',
       {
-        app: DELIVERY_APP_ID,
+        app: appId,
         id: recordId
       }
     );
@@ -149,7 +173,7 @@
     return 0;
   }
 
-  function resolveItemCode(order, itemName, product) {
+  function resolveItemCodeFromOrder(order, itemName, product) {
     if (order && order.detail_table) {
       for (let i = 0; i < order.detail_table.value.length; i++) {
         const detailRow = order.detail_table.value[i];
@@ -161,6 +185,22 @@
           }
         }
       }
+    }
+
+    if (product && product.item_code) {
+      return product.item_code.value || '';
+    }
+
+    return '';
+  }
+
+  function resolveItemCodeFromRow(row, product) {
+    const code = row.value.item_code
+      ? row.value.item_code.value || ''
+      : '';
+
+    if (code) {
+      return code;
     }
 
     if (product && product.item_code) {
@@ -183,7 +223,7 @@
     return EXCLUDE_SUBCATEGORIES.indexOf(subcategory) >= 0;
   }
 
-  async function collectPendingRegistrations(record) {
+  async function collectPendingFromDelivery(record) {
     const customerCode = record.customer_code.value || '';
 
     if (!customerCode || !record.delivery_detail) {
@@ -233,7 +273,7 @@
       const kimonoTypeCode = order.kimono_type_code.value || '';
       const resolvedKimonoSpec =
         kimonoSpec || order.kimono_spec.value || '';
-      const itemCode = resolveItemCode(order, itemName, product);
+      const itemCode = resolveItemCodeFromOrder(order, itemName, product);
 
       if (!itemCode) {
         continue;
@@ -261,6 +301,82 @@
     }
 
     return pending;
+  }
+
+  async function collectPendingFromOrder(record) {
+    const customerCode = record.customer_code.value || '';
+    const kimonoTypeCode = record.kimono_type_code.value || '';
+    const kimonoSpec = record.kimono_spec.value || '';
+
+    if (!customerCode || !record.detail_table) {
+      return [];
+    }
+
+    const pending = [];
+    const seenKeys = new Set();
+
+    for (let i = 0; i < record.detail_table.value.length; i++) {
+      const row = record.detail_table.value[i];
+      const itemName = row.value.item_name.value || '';
+      const unitPrice = toNumber(row.value.unit_price.value);
+
+      if (!itemName || unitPrice <= 0) {
+        continue;
+      }
+
+      const product = await fetchProduct(itemName);
+
+      if (isRegistrationExcluded(product)) {
+        continue;
+      }
+
+      const itemCode = resolveItemCodeFromRow(row, product);
+
+      if (!itemCode) {
+        continue;
+      }
+
+      const key = orderRowKey(itemName, itemCode, kimonoSpec);
+
+      if (seenKeys.has(key)) {
+        continue;
+      }
+      seenKeys.add(key);
+
+      if (
+        await priceMasterExists(
+          customerCode,
+          kimonoTypeCode,
+          itemCode,
+          kimonoSpec
+        )
+      ) {
+        continue;
+      }
+
+      pending.push({
+        itemName: itemName,
+        unitPrice: unitPrice,
+        customerCode: customerCode,
+        kimonoTypeCode: kimonoTypeCode,
+        itemCode: itemCode,
+        kimonoSpec: kimonoSpec
+      });
+    }
+
+    return pending;
+  }
+
+  async function collectPendingRegistrations(record, appId) {
+    if (appId === DELIVERY_APP_ID) {
+      return collectPendingFromDelivery(record);
+    }
+
+    if (appId === ORDER_APP_ID) {
+      return collectPendingFromOrder(record);
+    }
+
+    return [];
   }
 
   async function registerToPriceMaster(pending) {
@@ -324,32 +440,63 @@
     };
   }
 
+  function promptSelectedRegistrations(pending) {
+    if (pending.length === 1) {
+      const item = pending[0];
+      const message =
+        item.itemName +
+        '：' +
+        item.unitPrice.toLocaleString() +
+        '円\n\n価格マスタに登録しますか？';
+
+      return window.confirm(message) ? [item] : [];
+    }
+
+    const selected = [];
+
+    for (let i = 0; i < pending.length; i++) {
+      const item = pending[i];
+      const message =
+        '（' +
+        (i + 1) +
+        '/' +
+        pending.length +
+        '）\n' +
+        item.itemName +
+        '：' +
+        item.unitPrice.toLocaleString() +
+        '円\n\nこの価格を価格マスタに登録しますか？';
+
+      if (window.confirm(message)) {
+        selected.push(item);
+      }
+    }
+
+    return selected;
+  }
+
   async function processAfterSave(recordId) {
+    const appId = kintone.app.getId();
+
+    if (appId !== DELIVERY_APP_ID && appId !== ORDER_APP_ID) {
+      return;
+    }
+
     try {
-      const record = await fetchSavedRecord(recordId);
-      const pending = await collectPendingRegistrations(record);
+      const record = await fetchSavedRecord(appId, recordId);
+      const pending = await collectPendingRegistrations(record, appId);
 
       if (pending.length === 0) {
         return;
       }
 
-      const message =
-        '以下の価格を価格マスタに登録しますか？\n\n' +
-        pending.map(function(item) {
-          return (
-            '・' +
-            item.itemName +
-            '：' +
-            item.unitPrice.toLocaleString() +
-            '円'
-          );
-        }).join('\n');
+      const selected = promptSelectedRegistrations(pending);
 
-      if (!window.confirm(message)) {
+      if (selected.length === 0) {
         return;
       }
 
-      const result = await registerToPriceMaster(pending);
+      const result = await registerToPriceMaster(selected);
 
       if (result.errors.length > 0) {
         alert(
@@ -382,7 +529,10 @@
       'app.record.edit.show'
     ],
     function(event) {
-      rowPrices.clear();
+      if (!isDeliveryApp() && !isOrderApp()) {
+        return event;
+      }
+
       seedFromRecord(event.record);
       return event;
     }
@@ -393,9 +543,15 @@
       'app.record.create.change.unit_price',
       'app.record.edit.change.unit_price',
       'app.record.create.change.delivery_detail',
-      'app.record.edit.change.delivery_detail'
+      'app.record.edit.change.delivery_detail',
+      'app.record.create.change.detail_table',
+      'app.record.edit.change.detail_table'
     ],
     function(event) {
+      if (!isDeliveryApp() && !isOrderApp()) {
+        return event;
+      }
+
       seedFromRecord(event.record);
       return event;
     }
@@ -407,6 +563,10 @@
       'app.record.edit.submit.success'
     ],
     async function(event) {
+      if (!isDeliveryApp() && !isOrderApp()) {
+        return event;
+      }
+
       await processAfterSave(event.recordId);
       return event;
     }

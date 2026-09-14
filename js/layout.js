@@ -372,6 +372,10 @@
             layout.carryOverMode = printOptions.carryOverMode === 'none' ? 'none' : 'with_carry';
         }
 
+        if (printOptions.recipientMode === 'general') {
+            layout.recipientMode = 'general';
+        }
+
         return layout;
 
     };
