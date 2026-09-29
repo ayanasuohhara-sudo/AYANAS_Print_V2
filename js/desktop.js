@@ -34,9 +34,15 @@
 
     const OVERSEAS_OUTBOUND_APP_ID = 28;
 
+    const OUTSOURCE_OUTBOUND_APP_ID = 27;
+
+    const OUTSOURCE_STATUS_ON_PRINT = '出庫中';
+
+    const OUTSOURCE_STATUS_INBOUND = '入庫';
 
 
-    const PLUGIN_VERSION = '98';
+
+    const PLUGIN_VERSION = '104';
 
 
 
@@ -240,6 +246,73 @@
 
 
 
+    const resolvePrintReportType = (printOptions = {}) => {
+
+        if (typeof printOptions.reportType === 'string' && printOptions.reportType !== '') {
+            return printOptions.reportType;
+        }
+
+        Validation.assertModule(ReportRegistry, 'ReportRegistry', 'resolveReportType');
+
+        return ReportRegistry.resolveReportType(getAppId());
+
+    };
+
+    const applyOutsourceStatusOnPrint = async (printOptions = {}) => {
+
+        if (getAppId() !== OUTSOURCE_OUTBOUND_APP_ID) {
+            return;
+        }
+
+        if (resolvePrintReportType(printOptions) !== 'outsource_outbound_slip') {
+            return;
+        }
+
+        if (typeof kintone === 'undefined' || typeof kintone.api !== 'function') {
+            throw new Error('kintone API が利用できません。');
+        }
+
+        const recordId = kintone.app.record.getId();
+
+        if (recordId === null || recordId === undefined || recordId === '') {
+            throw new Error('レコード ID を取得できません。');
+        }
+
+        const currentRecord = kintone.app.record.get()?.record;
+
+        if (!currentRecord?.outsourcing_status) {
+            throw new Error('outsourcing_status フィールドが見つかりません。');
+        }
+
+        const currentStatus = String(currentRecord.outsourcing_status.value ?? '').trim();
+
+        if (currentStatus === OUTSOURCE_STATUS_INBOUND) {
+            return;
+        }
+
+        if (currentStatus === OUTSOURCE_STATUS_ON_PRINT) {
+            return;
+        }
+
+        await kintone.api(
+            kintone.api.url('/k/v1/record', true),
+            'PUT',
+            {
+                app: OUTSOURCE_OUTBOUND_APP_ID,
+                id: recordId,
+                record: {
+                    outsourcing_status: {
+                        value: OUTSOURCE_STATUS_ON_PRINT,
+                    },
+                },
+            }
+        );
+
+        currentRecord.outsourcing_status.value = OUTSOURCE_STATUS_ON_PRINT;
+        kintone.app.record.set({ record: currentRecord });
+
+    };
+
     const preparePrintData = async (printOptions = {}) => {
 
 
@@ -336,9 +409,21 @@
 
 
 
+            try {
+                await applyOutsourceStatusOnPrint(printOptions);
+            } catch (statusError) {
+
+                console.error('[AYANAS Print V3] outsourcing_status 更新', statusError);
+
+                const statusMessage = statusError instanceof Error
+                    ? statusError.message
+                    : '不明なエラー';
+
+                alert(`状況（outsourcing_status）の更新に失敗しました。\n\n${statusMessage}\n\nプレビューは続行します。`);
+
+            }
+
             assertPreviewLoaded();
-
-
 
             await Preview.open(data, printOptions);
 

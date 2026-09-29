@@ -14,6 +14,7 @@
     const INVOICE_APP_ID = 35;
     const ORDER_APP_ID = 16;
     const OVERSEAS_OUTBOUND_APP_ID = 28;
+    const OUTSOURCE_OUTBOUND_APP_ID = 27;
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -137,6 +138,25 @@
         configDefaults: {
             barcode_type: 'CODE39',
             barcode_visible: '0',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
+        reportType: 'outsource_outbound_slip',
+        title: '外注出庫伝票',
+        templatePath: 'js/templates/outsource_outbound_slip.js',
+        templateGlobal: 'OutsourceOutboundSlipTemplate',
+        pageClass: 'report-order-detail',
+        barcodeField: 'header.manage_no',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '外注出庫伝票',
+        appIds: [OUTSOURCE_OUTBOUND_APP_ID],
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '1',
             page_margin: '0',
         },
         definition: {},

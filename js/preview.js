@@ -77,6 +77,8 @@
         'js/templates/order.js',
         'js/templates/order_detail_shared.js',
         'js/templates/order_detail.js',
+        'js/templates/outsource_outbound_slip_shared.js',
+        'js/templates/outsource_outbound_slip.js',
         'js/templates/overseas_order.js',
         'js/templates/overseas_outbound_detail.js',
         'js/templates/overseas_outbound_sheet.js',
@@ -407,7 +409,9 @@
 
     const getBarcodeDrawOptions = (layout, barcodeType) => {
 
-        if (layout.reportType === 'order_detail' || layout.reportType === 'overseas_order') {
+        if (layout.reportType === 'order_detail'
+            || layout.reportType === 'overseas_order'
+            || layout.reportType === 'outsource_outbound_slip') {
             return {
                 barcode_type: barcodeType,
                 format: barcodeType,
@@ -484,7 +488,12 @@ ${buildButtonScriptBody()}
 
         try {
             svgNodes.forEach(function (svg) {
-                window.Barcode.draw(svg, barcodeValue, barcodeDrawOptions);
+                var nodeValue = svg.getAttribute('data-barcode-value');
+                var value = nodeValue && String(nodeValue).trim() !== '' ? nodeValue : barcodeValue;
+                if (!value) {
+                    return;
+                }
+                window.Barcode.draw(svg, value, barcodeDrawOptions);
             });
         } catch (error) {
             console.error(error);
@@ -542,7 +551,9 @@ ${buildButtonScriptBody()}
             previewConfig.paper_size = 'A4';
         }
 
-        if (layout.reportType === 'order_detail' || layout.reportType === 'overseas_order') {
+        if (layout.reportType === 'order_detail'
+            || layout.reportType === 'overseas_order'
+            || layout.reportType === 'outsource_outbound_slip') {
             previewConfig.print_orientation = 'landscape';
             previewConfig.paper_size = 'A4';
             previewConfig.page_margin = '0';
@@ -583,6 +594,7 @@ ${buildButtonScriptBody()}
 
         if (layout.reportType === 'order_detail'
             || layout.reportType === 'overseas_order'
+            || layout.reportType === 'outsource_outbound_slip'
             || layout.reportType === 'overseas_outbound_detail'
             || layout.reportType === 'overseas_outbound_sheet') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');

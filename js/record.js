@@ -13,7 +13,11 @@
 
     const DELIVERY_APP_ID = 19;
     const INVOICE_APP_ID = 35;
+    const OUTSOURCE_OUTBOUND_APP_ID = 27;
     const CUSTOMER_APP_ID = 8;
+
+    const OUTSOURCE_DETAIL_TABLE_CODE = 'outsource_detail';
+    const OUTSOURCE_PROCESSING_TABLE_CODE = 'processing_details_0';
 
     const CUSTOMER_ADDRESS_FIELDS = [
         'post_no',
@@ -712,6 +716,114 @@
 
     };
 
+    const buildOutsourceProcessingDetails = (record) => {
+
+        const tableField = record[OUTSOURCE_PROCESSING_TABLE_CODE];
+        const rows = Array.isArray(tableField?.value) ? tableField.value : [];
+
+        return rows.map((row) => {
+
+            const fields = row?.value ?? {};
+            const processingDetails = String(getFieldValue(fields, 'processing_details') ?? '').trim();
+            const processingCode = String(getFieldValue(fields, 'processing_code') ?? '').trim();
+            const itemName = processingDetails !== '' ? processingDetails : processingCode;
+
+            return { item_name: itemName };
+
+        }).filter((detail) => String(detail.item_name ?? '').trim() !== '');
+
+    };
+
+    const buildOutsourceOutboundSlipPages = (record) => {
+
+        const source = getCurrentRecord(record);
+        const sharedHeader = {
+            outsource_company_code: getFieldValue(source, 'outsource_company_code'),
+            outsource_company: getFieldValue(source, 'outsource_company'),
+            ship_date: getFieldValue(source, 'ship_date'),
+            return_date: getFieldValue(source, 'return_date'),
+            remarks: getFieldValue(source, 'Notes_for_processing'),
+        };
+
+        const processingDetails = buildOutsourceProcessingDetails(source);
+        const barcodeFilter = String(getFieldValue(source, 'barcode_input') ?? '').trim();
+
+        const tableField = source[OUTSOURCE_DETAIL_TABLE_CODE];
+        const rows = Array.isArray(tableField?.value) ? tableField.value : [];
+
+        const pages = [];
+
+        rows.forEach((row) => {
+
+            const fields = row?.value ?? {};
+            const manageNo = String(getFieldValue(fields, 'manage_no') ?? '').trim();
+
+            if (manageNo === '') {
+                return;
+            }
+
+            if (barcodeFilter !== '' && manageNo !== barcodeFilter) {
+                return;
+            }
+
+            pages.push({
+                header: {
+                    ...sharedHeader,
+                    manage_no: manageNo,
+                    customer_code: getFieldValue(fields, 'customer_code'),
+                    client_name: getFieldValue(fields, 'client_name'),
+                    kimono_type: getFieldValue(fields, 'kimono_type'),
+                },
+                details: processingDetails,
+            });
+
+        });
+
+        if (pages.length === 0) {
+            throw new Error('印刷対象の外注明細がありません。（管理番号を確認してください）');
+        }
+
+        return pages;
+
+    };
+
+    const buildOutsourceOutboundSlipReportData = (record) => {
+
+        const pages = buildOutsourceOutboundSlipPages(record);
+        const first = pages[0];
+
+        return {
+            header: first.header,
+            details: first.details,
+            summary: {
+                count: pages.length,
+                totalCount: pages.length,
+                totalQty: 0,
+                totalAmount: 0,
+            },
+            pages,
+        };
+
+    };
+
+    /**
+     * 外注出庫伝票（App 27）データを取得する
+     * @returns {Object} 帳票データ
+     */
+    Record.getOutsourceOutboundSlipData = (record) => {
+
+        try {
+
+            return buildOutsourceOutboundSlipReportData(record);
+
+        } catch (error) {
+
+            wrapRecordError(error, 'Record.getOutsourceOutboundSlipData');
+
+        }
+
+    };
+
     /**
      * 一般客帳票の宛名（明細 client_name）を判定する
      * @param {Array<Object>} details - 明細
@@ -888,6 +1000,10 @@
 
             if (appId === INVOICE_APP_ID) {
                 return Record.getInvoiceDataAsync(record);
+            }
+
+            if (appId === OUTSOURCE_OUTBOUND_APP_ID) {
+                return Record.getOutsourceOutboundSlipData(record);
             }
 
             return Record.getOrderData(record);
