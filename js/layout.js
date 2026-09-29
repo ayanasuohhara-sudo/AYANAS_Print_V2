@@ -162,6 +162,24 @@
     });
 
     registerReport({
+        reportType: 'overseas_order',
+        title: '海外用受注表',
+        templatePath: 'js/templates/overseas_order.js',
+        templateGlobal: 'OverseasOrderTemplate',
+        pageClass: 'report-overseas-order',
+        barcodeField: 'manage_no',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '海外用受注表',
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '1',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
         reportType: 'delivery',
         title: '納品書',
         templatePath: 'js/templates/delivery.js',

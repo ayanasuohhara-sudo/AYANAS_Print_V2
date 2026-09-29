@@ -22,6 +22,8 @@
 
 
 
+    const ORDER_APP_ID = 16;
+
     const DELIVERY_APP_ID = 19;
 
     const INVOICE_APP_ID = 35;
@@ -34,7 +36,7 @@
 
 
 
-    const PLUGIN_VERSION = '90';
+    const PLUGIN_VERSION = '98';
 
 
 
@@ -444,6 +446,34 @@
 
 
 
+    const ORDER_DETAIL_BUTTON_ID = 'ayanas-print-button-order-detail';
+
+    const OVERSEAS_ORDER_BUTTON_ID = 'ayanas-print-button-overseas-order';
+
+    const appendOrderPrintButtons = (space) => {
+
+        if (!document.getElementById(ORDER_DETAIL_BUTTON_ID)) {
+            space.appendChild(createPrintButton({
+                id: ORDER_DETAIL_BUTTON_ID,
+                label: '受注明細表',
+                printOptions: {
+                    reportType: 'order_detail',
+                },
+            }));
+        }
+
+        if (!document.getElementById(OVERSEAS_ORDER_BUTTON_ID)) {
+            space.appendChild(createPrintButton({
+                id: OVERSEAS_ORDER_BUTTON_ID,
+                label: '海外用受注表',
+                printOptions: {
+                    reportType: 'overseas_order',
+                },
+            }));
+        }
+
+    };
+
     const appendDeliveryPrintButtons = (space) => {
 
 
@@ -512,6 +542,8 @@
 
         document.getElementById('ayanas-print-button-order-detail')?.remove();
 
+        document.getElementById('ayanas-print-button-overseas-order')?.remove();
+
 
 
         const space = kintone.app.record.getHeaderMenuSpaceElement();
@@ -539,6 +571,16 @@
         if (getAppId() === INVOICE_APP_ID) {
 
             appendInvoicePrintButtons(space);
+
+            return event;
+
+        }
+
+
+
+        if (getAppId() === ORDER_APP_ID) {
+
+            appendOrderPrintButtons(space);
 
             return event;
 

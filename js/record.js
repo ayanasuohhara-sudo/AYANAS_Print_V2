@@ -37,6 +37,34 @@
         'kimono_spec',
     ];
 
+    /** 海外用受注表（App 16・右半分） */
+    const OVERSEAS_ORDER_HEADER_FIELDS = [
+        'overseas_color',
+        'overseas_pattern',
+        'overseas_embroidery',
+        'overseas_tailoring',
+        'overseas_mat_seiden',
+        'overseas_weave_chirimen',
+        'overseas_acc_douura',
+        'overseas_mat_kasen',
+        'overseas_weave_hiraori',
+        'overseas_acc_eriura',
+        'overseas_mat_asu',
+        'overseas_weave_ayaori',
+        'overseas_acc_hgake',
+        'overseas_mat_wata',
+        'overseas_weave_shaori',
+        'overseas_acc_hiyoku',
+        'overseas_weave_tsumugi',
+        'overseas_acc_sefuse',
+        'overseas_acc_haneri',
+        'overseas_acc_erinuno',
+        'overseas_acc_erishin',
+        'overseas_acc_emon',
+        'overseas_acc_iseshiki',
+        'overseas_acc_kataura',
+    ];
+
     /** 受注票（App 16）明細フィールド */
     const ORDER_DETAIL_FIELDS = {
         string: ['item_code', 'item_name'],
@@ -232,7 +260,7 @@
 
         const header = {};
 
-        ORDER_HEADER_FIELDS.forEach((fieldCode) => {
+        [...ORDER_HEADER_FIELDS, ...OVERSEAS_ORDER_HEADER_FIELDS].forEach((fieldCode) => {
             header[fieldCode] = getFieldValue(record, fieldCode);
         });
 

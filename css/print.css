@@ -192,6 +192,7 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
+    justify-content: center;
     width: 297mm;
     min-height: 210mm;
     max-height: 210mm;
@@ -212,21 +213,43 @@
     background: #ffffff;
 }
 
+.report-order-detail .order-detail-page {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.report-order-detail .order-detail-page::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    border-left: 1px dashed #999999;
+    pointer-events: none;
+    z-index: 1;
+}
+
 .report-order-detail .order-detail-sheet {
-    flex: 0 0 148mm;
-    width: 148mm;
-    max-width: 148mm;
+    flex: 0 0 50%;
+    width: 50%;
+    max-width: 50%;
     min-height: 210mm;
     box-sizing: border-box;
-    padding: 5mm 3mm 4mm;
     overflow: hidden;
 }
 
-.report-order-detail .order-detail-blank {
-    flex: 1 1 auto;
-    width: 149mm;
-    min-height: 210mm;
-    background: #ffffff;
+.report-order-detail .order-detail-sheet--left {
+    padding: 5mm 2mm 4mm 5mm;
+}
+
+.report-order-detail .order-detail-sheet--right {
+    padding: 5mm 5mm 4mm 2mm;
 }
 
 .report-order-detail .order-detail-title {
@@ -241,9 +264,13 @@
 
 .report-order-detail .order-detail-table {
     width: 100%;
+    max-width: 136mm;
     border-collapse: collapse;
     table-layout: fixed;
-    margin: 0 0 4mm;
+    margin: 0 auto 4mm;
+    box-sizing: border-box;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
 }
 
 .report-order-detail .order-detail-table th,
@@ -314,25 +341,259 @@
     width: auto;
 }
 
-.report-order-detail .order-detail-barcode {
+.report-order-detail .order-detail-barcode,
+.report-overseas-order .order-detail-barcode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 2mm;
-    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.report-order-detail .order-detail-barcode__svg {
+.report-order-detail .order-detail-barcode__svg,
+.report-overseas-order .order-detail-barcode__svg {
     display: block;
-    width: 92mm;
+    flex: 0 0 auto;
+    width: 88mm;
+    max-width: calc(100% - 2mm);
     height: 22mm;
-    max-width: 100%;
-    margin: 0 auto;
+    margin: 0;
 }
 
-.report-order-detail .order-detail-barcode__value {
+.report-order-detail .order-detail-barcode__value,
+.report-overseas-order .order-detail-barcode__value {
+    flex: 0 0 auto;
     margin: 2mm 0 0;
+    padding: 0;
+    width: 88mm;
+    max-width: calc(100% - 2mm);
     font-size: 14pt;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: 0.04em;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* ========================================
+   帳票種別: 海外用受注表 (overseas_order)
+   ======================================== */
+.report-overseas-order .page {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    width: 297mm;
+    min-height: 210mm;
+    max-height: 210mm;
+    height: 210mm;
+    margin: 0 auto 10px;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", "MS Gothic", sans-serif;
+    font-size: 14pt;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #000000;
+    background: #ffffff;
+}
+
+.report-overseas-order .order-detail-page,
+.report-overseas-order .overseas-order-page {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.report-overseas-order .order-detail-page::after,
+.report-overseas-order .overseas-order-page::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    border-left: 1px dashed #999999;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.report-overseas-order .order-detail-sheet {
+    flex: 0 0 50%;
+    width: 50%;
+    max-width: 50%;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.report-overseas-order .overseas-order-sheet {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+.report-overseas-order .order-detail-sheet--left {
+    padding: 5mm 2mm 4mm 5mm;
+}
+
+.report-overseas-order .order-detail-sheet--right,
+.report-overseas-order .overseas-order-sheet {
+    padding: 5mm 5mm 4mm 2mm;
+}
+
+.report-overseas-order .order-detail-table {
+    width: 100%;
+    max-width: 136mm;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0 auto 4mm;
+    box-sizing: border-box;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
+
+.report-overseas-order .order-detail-table th,
+.report-overseas-order .order-detail-table td {
+    border: 1px solid #000000;
+    padding: 1.5mm 2mm;
+    vertical-align: middle;
+    line-height: 1.35;
+    color: #000000;
+}
+
+.report-overseas-order .order-detail-table th.order-detail-table__label,
+.report-overseas-order .order-detail-table th.order-detail-table__label--single,
+.report-overseas-order .order-detail-table th.order-detail-table__label--pair {
+    font-size: 10pt;
+    font-weight: 400;
+}
+
+.report-overseas-order .order-detail-table td.order-detail-table__value,
+.report-overseas-order .order-detail-table td.order-detail-table__value--single,
+.report-overseas-order .order-detail-table td.order-detail-table__value--pair {
+    font-size: 14pt;
+    font-weight: 700;
+}
+
+.report-overseas-order .order-detail-title {
+    margin: 0 0 4mm;
+    padding: 0;
+    font-size: 16pt;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+}
+
+.report-overseas-order .overseas-order-table {
+    width: 100%;
+    max-width: 136mm;
+    margin: 0 auto;
+    border-collapse: collapse;
+    table-layout: fixed;
+    box-sizing: border-box;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    flex: 0 0 auto;
+}
+
+.report-overseas-order .overseas-order-table th,
+.report-overseas-order .overseas-order-table td {
+    border: 1px solid #000000;
+    padding: 0.9mm 1.5mm;
+    vertical-align: middle;
+    font-size: 10.5pt;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.report-overseas-order .overseas-order-table__label {
+    width: 22%;
+    font-size: 10pt;
+    font-weight: 400;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.report-overseas-order .overseas-order-table__value {
+    font-size: 12pt;
+    font-weight: 700;
+    text-align: left;
+    word-break: break-word;
+}
+
+.report-overseas-order .overseas-order-table__value--wide {
+    width: 78%;
+}
+
+.report-overseas-order .overseas-order-table__row--spacer td {
+    height: 1mm;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    padding: 0;
+    line-height: 0;
+}
+
+.report-overseas-order .overseas-order-table__row--header th {
+    font-size: 10pt;
+    font-weight: 400;
+    text-align: center;
+    height: 10mm;
+    box-sizing: border-box;
+}
+
+.report-overseas-order .overseas-order-table tbody tr:not(.overseas-order-table__row--spacer) th,
+.report-overseas-order .overseas-order-table tbody tr:not(.overseas-order-table__row--spacer) td {
+    height: 10mm;
+    box-sizing: border-box;
+}
+
+.report-overseas-order .overseas-order-table__cell {
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 0.6mm;
+    padding-bottom: 0.6mm;
+}
+
+.report-overseas-order .overseas-order-table__cell--empty {
+    background: #ffffff;
+}
+
+.report-overseas-order .overseas-order-table__item-label {
+    display: block;
+    font-size: 8pt;
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+.report-overseas-order .overseas-order-table__mark {
+    display: block;
+    font-size: 11pt;
+    font-weight: 700;
+    line-height: 1.1;
+    min-height: 0;
+}
+
+.report-overseas-order .overseas-order-table__choice {
+    text-align: center;
+    font-size: 12pt;
+}
+
+.report-overseas-order .overseas-order-table__choice-label {
+    display: block;
+    font-size: 9pt;
+    font-weight: 400;
 }
 
 /* ========================================
@@ -2342,9 +2603,75 @@ body {
         page-break-inside: avoid;
     }
 
-    .report-order-detail .order-detail-sheet {
+    .report-order-detail .order-detail-page::after {
+        border-left-color: #cccccc;
+    }
+
+    .report-order-detail .order-detail-sheet--left {
+        padding: 5mm 2mm 4mm 6mm;
+        overflow: visible;
         print-color-adjust: exact;
         -webkit-print-color-adjust: exact;
+    }
+
+    .report-order-detail .order-detail-sheet--right {
+        padding: 5mm 6mm 4mm 2mm;
+        overflow: visible;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .report-order-detail .order-detail-table {
+        max-width: 132mm;
+        border-left-width: 1px;
+        border-left-style: solid;
+        border-left-color: #000000;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-right-color: #000000;
+    }
+
+    .report-overseas-order .page {
+        width: 297mm;
+        min-height: 210mm;
+        max-height: 210mm;
+        height: 210mm;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        overflow: hidden;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+
+    .report-overseas-order .order-detail-sheet--left {
+        padding: 5mm 2mm 4mm 6mm;
+        overflow: visible;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .report-overseas-order .order-detail-sheet--right,
+    .report-overseas-order .overseas-order-sheet {
+        padding: 5mm 6mm 5mm 2mm;
+        overflow: hidden;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .report-overseas-order .overseas-order-table th,
+    .report-overseas-order .overseas-order-table td {
+        padding: 0.8mm 1.5mm;
+    }
+
+    .report-overseas-order .overseas-order-table tbody tr:not(.overseas-order-table__row--spacer) th,
+    .report-overseas-order .overseas-order-table tbody tr:not(.overseas-order-table__row--spacer) td {
+        height: 10mm;
+    }
+
+    .report-overseas-order .order-detail-table,
+    .report-overseas-order .overseas-order-table {
+        max-width: 132mm;
     }
 
     .report-overseas-outbound-detail .page {
