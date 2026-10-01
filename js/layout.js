@@ -219,6 +219,24 @@
     });
 
     registerReport({
+        reportType: 'delivery_matsuba',
+        title: '納品書（松葉店用）',
+        templatePath: 'js/templates/delivery_matsuba.js',
+        templateGlobal: 'DeliveryMatsubaTemplate',
+        pageClass: 'report-delivery report-delivery--matsuba',
+        barcodeField: 'barcode_manage_no',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '松葉店用 納品書',
+        company: { ...DEFAULT_COMPANY },
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '0',
+        },
+        definition: DeliveryDefinition,
+    });
+
+    registerReport({
         reportType: 'invoice',
         title: '請求書',
         templatePath: 'js/templates/invoice.js',

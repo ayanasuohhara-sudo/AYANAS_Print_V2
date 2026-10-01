@@ -365,7 +365,7 @@
             + `</tr>`
             + `<tr class="detail-row detail-row--secondary">`
             + `<td class="detail-cell--stack detail-cell--delivery-no">${esc(detail.delivery_no)}</td>`
-            + `<td class="detail-cell--stack detail-cell--manage-no">${esc(detail.manage_no)}</td>`
+            + `<td class="detail-cell--stack detail-cell--manage-no">${esc(detail._showManageNo ? detail.manage_no : '')}</td>`
             + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.in_charge)}</td>`
             + `</tr>`;
@@ -604,7 +604,8 @@ ${buildDetailRowsHtml(details)}
 
         Validation.assertDetailReportData(data);
 
-        const { header, details, summary } = data;
+        const { header, summary } = data;
+        const details = Core.Report.annotateManageNoVisibility(data.details);
         const detailPages = buildInvoiceDetailPages(details);
         const totalPages = detailPages.length;
         const pagesHtml = detailPages.map((pageDetails, index) => (

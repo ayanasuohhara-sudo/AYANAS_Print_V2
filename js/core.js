@@ -633,6 +633,29 @@ ${bodyInner}
 
         },
 
+        /** 同一 manage_no は帳票全体で先頭行のみ表示 */
+        annotateManageNoVisibility(details) {
+
+            let previousManageNo = null;
+
+            return (Array.isArray(details) ? details : []).map((detail) => {
+
+                const manageNo = String(detail?.manage_no ?? '').trim();
+                const showManageNo = manageNo !== '' && manageNo !== previousManageNo;
+
+                if (manageNo !== '') {
+                    previousManageNo = manageNo;
+                }
+
+                return {
+                    ...detail,
+                    _showManageNo: showManageNo,
+                };
+
+            });
+
+        },
+
         getCompanyInfo(layout = {}, defaultCompany = {}) {
 
             const source = layout.company ?? defaultCompany;

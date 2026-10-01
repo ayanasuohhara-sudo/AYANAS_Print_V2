@@ -83,6 +83,7 @@
         'js/templates/overseas_outbound_detail.js',
         'js/templates/overseas_outbound_sheet.js',
         'js/templates/delivery.js',
+        'js/templates/delivery_matsuba.js',
         'js/templates/invoice.js',
         'js/templates/invoice_window.js',
         'js/templates/estimate.js',
@@ -545,6 +546,7 @@ ${buildButtonScriptBody()}
         const previewConfig = buildPreviewConfig(config, layout);
 
         if (layout.reportType === 'delivery'
+            || layout.reportType === 'delivery_matsuba'
             || layout.reportType === 'invoice'
             || layout.reportType === 'matsuba_summary_invoice') {
             previewConfig.print_orientation = 'portrait';
@@ -587,6 +589,7 @@ ${buildButtonScriptBody()}
         html = html.split('<div class="page">').join(`<div class="${Dom.getPageClassName(previewConfig)}">`);
 
         if (layout.reportType === 'delivery'
+            || layout.reportType === 'delivery_matsuba'
             || layout.reportType === 'invoice'
             || layout.reportType === 'matsuba_summary_invoice') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');

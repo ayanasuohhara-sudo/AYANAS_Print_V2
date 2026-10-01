@@ -124,8 +124,10 @@ ${buildHeaderLeftHtml(header, layout)}
             return buildEmptyDetailPairHtml();
         }
 
+        const manageNoText = detail._showManageNo ? detail.manage_no : '';
+
         return `<tr class="detail-row detail-row--primary">`
-            + `<td class="detail-cell--merged" rowspan="2">${esc(detail.manage_no)}</td>`
+            + `<td class="detail-cell--merged" rowspan="2">${esc(manageNoText)}</td>`
             + `<td class="detail-cell--merged" rowspan="2">${esc(detail.client_name)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.slip_no)}</td>`
@@ -220,7 +222,8 @@ ${buildDetailRowsHtml(details)}
 
         Validation.assertDetailReportData(data);
 
-        const { header, details, summary } = data;
+        const { header, summary } = data;
+        const details = Core.Report.annotateManageNoVisibility(data.details);
         const detailPages = Core.Report.buildDetailPages(details, DETAILS_PER_PAGE);
         const totalPages = detailPages.length;
         const pagesHtml = detailPages.map((pageDetails, index) => (

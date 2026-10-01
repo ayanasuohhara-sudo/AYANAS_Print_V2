@@ -1365,6 +1365,51 @@
     width: 14%;
 }
 
+.report-delivery--matsuba .delivery-subtitle {
+    margin: 0 0 2mm;
+    font-size: 10pt;
+    font-weight: 700;
+    text-align: left;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(1),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(1) {
+    width: 16%;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(2),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(2) {
+    width: 18%;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(3),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(3) {
+    width: 32%;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(4),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(4) {
+    width: 18%;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(5),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(5) {
+    width: 16%;
+}
+
+.report-delivery--matsuba .delivery-footer--matsuba {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 2mm;
+}
+
+.report-delivery--matsuba .delivery-matsuba-count {
+    margin: 0;
+    font-size: 10pt;
+    font-weight: 700;
+}
+
 .report-delivery .delivery-footer {
     margin-top: auto;
     padding-top: 1mm;
@@ -1427,7 +1472,7 @@
 }
 
 .report-delivery .delivery-summary__total-value {
-    background: #ececec;
+    background: #ffffff;
     font-size: 11.5pt;
 }
 

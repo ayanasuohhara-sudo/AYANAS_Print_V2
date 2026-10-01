@@ -42,7 +42,7 @@
 
 
 
-    const PLUGIN_VERSION = '104';
+    const PLUGIN_VERSION = '107';
 
 
 
@@ -51,6 +51,10 @@
     const GENERAL_DELIVERY_BUTTON_ID = 'ayanas-print-button-delivery-general';
 
     const GENERAL_DELIVERY_BUTTON_LABEL = '一般客 納品書';
+
+    const MATSUBA_DELIVERY_BUTTON_ID = 'ayanas-print-button-delivery-matsuba';
+
+    const MATSUBA_DELIVERY_BUTTON_LABEL = '松葉店用 納品書';
 
     const GENERAL_INVOICE_BUTTON_ID = 'ayanas-print-button-invoice-general';
 
@@ -595,7 +599,15 @@
 
         }
 
-
+        if (!document.getElementById(MATSUBA_DELIVERY_BUTTON_ID)) {
+            space.appendChild(createPrintButton({
+                id: MATSUBA_DELIVERY_BUTTON_ID,
+                label: MATSUBA_DELIVERY_BUTTON_LABEL,
+                printOptions: {
+                    reportType: 'delivery_matsuba',
+                },
+            }));
+        }
 
     };
 
@@ -674,6 +686,8 @@
 
 
         document.getElementById(GENERAL_DELIVERY_BUTTON_ID)?.remove();
+
+        document.getElementById(MATSUBA_DELIVERY_BUTTON_ID)?.remove();
 
         document.getElementById(GENERAL_INVOICE_BUTTON_ID)?.remove();
 
