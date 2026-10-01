@@ -8,9 +8,13 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '49';
+    const INVOICE_TEMPLATE_VERSION = '53';
     const DETAILS_PER_PAGE_FIRST = 17;
+    /** 繰越あり（金額1段表示）も通常と同じ明細枠 */
+    const DETAILS_PER_PAGE_FIRST_CARRY = 17;
     const DETAILS_PER_PAGE_NEXT = 26;
+    const DETAILS_PER_PAGE_FIRST_MIN = 12;
+    const FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION = {};
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -405,9 +409,14 @@ ${buildDetailRowsHtml(details)}
             ?? summary.monthlyBillingAmount
             ?? total;
 
+        const carryForwardAmount = carryOver - paymentAmount;
+        const adjustmentAmount = toNumber(summary.adjustmentAmount ?? summary.discountAmount);
+
         return {
             carryOver,
             paymentAmount,
+            carryForwardAmount,
+            adjustmentAmount,
             subtotal,
             tax,
             total,
@@ -416,7 +425,26 @@ ${buildDetailRowsHtml(details)}
 
     };
 
-    const buildBillingMetaBarHtml = (header) => {
+    const toNumber = (value) => {
+
+        if (value === null || value === undefined || value === '') {
+            return 0;
+        }
+
+        const number = Number(value);
+
+        return Number.isFinite(number) ? number : 0;
+
+    };
+
+    const buildBillingMetaBarHtml = (header, summary, layout = {}) => {
+
+        const showCarryOver = layout.carryOverMode !== 'none'
+            && layout.recipientMode !== 'general';
+
+        if (showCarryOver) {
+            return '';
+        }
 
         const closingDate = String(header.closing_date ?? '').trim();
         const billingPeriod = formatBillingPeriodLabel(header);
@@ -457,24 +485,28 @@ ${buildDetailRowsHtml(details)}
             return `
 
 <div class="invoice-amount-overview">
-    <table class="invoice-summary invoice-summary--overview">
+    <table class="invoice-summary invoice-summary--overview invoice-summary--overview-carry-combined">
         <thead>
             <tr>
-                <th>前回請求額</th>
-                <th>今回入金額</th>
                 <th>小計</th>
                 <th>消費税</th>
-                <th>税込合計</th>
-                <th class="invoice-amount-overview__current-head">今回ご請求金額</th>
+                <th>税込金額</th>
+                <th>前回請求額</th>
+                <th>入金額</th>
+                <th>繰越額</th>
+                <th>調整額</th>
+                <th class="invoice-amount-overview__current-head">今回請求額</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="num">${esc(Format.formatMoney(amounts.carryOver))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.paymentAmount))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.subtotal))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.tax))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.total))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.carryOver))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.paymentAmount))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.carryForwardAmount))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.adjustmentAmount))}</td>
                 <td class="num invoice-amount-overview__current">${esc(Format.formatMoney(amounts.currentBillingAmount))}</td>
             </tr>
         </tbody>
@@ -544,21 +576,66 @@ ${buildDetailRowsHtml(details)}
 
     };
 
-    const buildInvoiceDetailPages = (details) => {
+    const usesCarryOverLayout = (layout = {}) => (
+        layout.carryOverMode !== 'none'
+        && layout.recipientMode !== 'general'
+    );
 
+    const estimateHeaderDetailReduction = (header = {}) => {
+
+        const address = String(header.customer_address ?? '').trim();
+        const name = String(header.customer_name ?? '').trim();
+        let reduction = 0;
+
+        if (address.length > 42) {
+            reduction += 1;
+        }
+
+        if (address.length > 84) {
+            reduction += 1;
+        }
+
+        if (name.length > 28) {
+            reduction += 1;
+        }
+
+        return reduction;
+
+    };
+
+    const resolveFirstPageDetailCapacity = (layout, header) => {
+
+        let capacity = usesCarryOverLayout(layout)
+            ? DETAILS_PER_PAGE_FIRST_CARRY
+            : DETAILS_PER_PAGE_FIRST;
+
+        capacity -= estimateHeaderDetailReduction(header);
+
+        const customerCode = String(header?.customer_code ?? '').trim().toUpperCase();
+        const customerReduction = FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION[customerCode] ?? 0;
+
+        capacity -= customerReduction;
+
+        return Math.max(DETAILS_PER_PAGE_FIRST_MIN, capacity);
+
+    };
+
+    const buildInvoiceDetailPages = (details, layout = {}, header = {}) => {
+
+        const firstPageSize = resolveFirstPageDetailCapacity(layout, header);
         const pages = [];
 
         if (!Array.isArray(details) || details.length === 0) {
-            pages.push(Core.Report.padPageDetails([], DETAILS_PER_PAGE_FIRST));
+            pages.push(Core.Report.padPageDetails([], firstPageSize));
             return pages;
         }
 
         pages.push(Core.Report.padPageDetails(
-            details.slice(0, DETAILS_PER_PAGE_FIRST),
-            DETAILS_PER_PAGE_FIRST
+            details.slice(0, firstPageSize),
+            firstPageSize
         ));
 
-        let index = DETAILS_PER_PAGE_FIRST;
+        let index = firstPageSize;
 
         while (index < details.length) {
 
@@ -586,7 +663,7 @@ ${buildDetailRowsHtml(details)}
         return `
     ${windowAddressHtml}
     ${buildHeaderHtml(header, layout, { pageNumber, totalPages }, config)}
-    ${isPage1 ? buildBillingMetaBarHtml(header) : ''}
+    ${isPage1 ? buildBillingMetaBarHtml(header, summary, layout) : ''}
     ${isPage1 ? buildAmountOverviewHtml(summary, layout) : ''}
     ${buildDetailTableHtml(pageDetails)}
     ${isPage1 ? buildPage1FooterHtml(summary) : ''}
@@ -606,10 +683,21 @@ ${buildDetailRowsHtml(details)}
 
         const { header, summary } = data;
         const details = Core.Report.annotateManageNoVisibility(data.details);
-        const detailPages = buildInvoiceDetailPages(details);
+        const detailPages = buildInvoiceDetailPages(details, layout, header);
         const totalPages = detailPages.length;
-        const pagesHtml = detailPages.map((pageDetails, index) => (
-            `<div class="page">${buildPageHtml(
+        const carryFirstPage = usesCarryOverLayout(layout);
+        const pagesHtml = detailPages.map((pageDetails, index) => {
+            const pageClasses = ['page'];
+
+            if (index === 0) {
+                pageClasses.push('page--invoice-first');
+
+                if (carryFirstPage) {
+                    pageClasses.push('page--invoice-carry-first');
+                }
+            }
+
+            return `<div class="${pageClasses.join(' ')}">${buildPageHtml(
                 header,
                 pageDetails,
                 summary,
@@ -620,8 +708,8 @@ ${buildDetailRowsHtml(details)}
                 },
                 config
             )}
-</div>`
-        )).join('\n');
+</div>`;
+        }).join('\n');
 
         return Common.buildDocumentHtml({
             title: '請求書',

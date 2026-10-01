@@ -108,6 +108,8 @@
         'carry_over',
         'invoice_amount',
         'payment_amount',
+        'discount_amount',
+        'adjustment_amount',
     ];
 
     /** 請求書（App 35）明細テーブル */
@@ -629,6 +631,8 @@
         const total = toNumber(getFieldValue(record, 'total'));
         const carryOver = toNumber(getFieldValue(record, 'carry_over'));
         const paymentAmount = toNumber(getFieldValue(record, 'payment_amount'));
+        const adjustmentAmount = toNumber(getFieldValue(record, 'adjustment_amount'))
+            || toNumber(getFieldValue(record, 'discount_amount'));
         const invoiceAmount = toNumber(getFieldValue(record, 'invoice_amount'));
         const resolvedSubtotal = subtotal || details.reduce((sum, detail) => sum + detail.amount, 0);
         const resolvedTotal = total || (resolvedSubtotal + tax);
@@ -642,6 +646,7 @@
             total: resolvedTotal,
             carryOver,
             paymentAmount,
+            adjustmentAmount,
             invoiceAmount: currentBillingAmount,
             currentBillingAmount,
             monthlyBillingAmount: currentBillingAmount,
