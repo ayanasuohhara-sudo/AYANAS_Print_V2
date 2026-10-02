@@ -4,12 +4,12 @@
     /**
      * 入金管理 App 21（V2）
      * payment_create.js — 充当集計・請求書 App 35 同期
-     * PAYMENT_JS_VERSION: 2.0.12
+     * PAYMENT_JS_VERSION: 2.0.16
      *
      * グローバル名 PaymentCreateV2（AYANAS Invoice プラグインの PaymentCreate と衝突しない）
      */
 
-    const PAYMENT_JS_VERSION = '2.0.12';
+    const PAYMENT_JS_VERSION = '2.0.16';
 
     const PaymentCreateV2 = {};
 
@@ -976,6 +976,32 @@
      * 今回充当額が未入力（合計0）で今回消込額があるとき、明細へ充当案を入れる。
      * ユーザーが既に充当額を入れている場合は何もしない。
      */
+    /**
+     * 今回消込額（入金＋手数料＋値引き）と充当額合計を一致させる。
+     * 手数料だけ後から載った場合など、部分充当が残っているときも再按分する。
+     */
+    PaymentCreateV2.syncAllocationAmountsWithWriteoff = (record) => {
+
+        const writeoff = PaymentCreateV2.computeWriteoffAmount(record);
+
+        if (writeoff <= 0) {
+            return false;
+        }
+
+        const allocationTotal = PaymentCreateV2.sumAllocationAmount(record);
+        const needsResuggest = Math.abs(writeoff - allocationTotal) > 0.0001;
+
+        if (needsResuggest) {
+            PaymentCreateV2.suggestAllocationAmounts(record);
+        }
+
+        PaymentCreateV2.splitWriteoffToRows(record);
+        PaymentCreateV2.applyHeaderCalculations(record);
+
+        return needsResuggest;
+
+    };
+
     PaymentCreateV2.autoFillAllocationIfEmpty = (record) => {
 
         const writeoff = PaymentCreateV2.computeWriteoffAmount(record);
@@ -985,7 +1011,7 @@
         }
 
         if (PaymentCreateV2.sumAllocationAmount(record) > 0) {
-            return false;
+            return PaymentCreateV2.syncAllocationAmountsWithWriteoff(record);
         }
 
         const table = record[PAYMENT_FIELDS.allocationTable];
@@ -1248,6 +1274,119 @@
         const nextSeq = Number.isFinite(lastSeq) ? lastSeq + 1 : 1;
 
         return `${prefix}${String(nextSeq).padStart(3, '0')}`;
+
+    };
+
+    /**
+     * REST API POST 用。ルックアップの自動コピーは使わず、キーと JS 計算値のみ送る。
+     * （lookup:true はコピー元の「重複禁止」設定が無いと CB 系エラーになるため）
+     */
+    PaymentCreateV2.buildRestRecordBodyForCreate = (record) => {
+
+        const headerLookupCopyOmit = new Set([
+            PAYMENT_FIELDS.customerName,
+            PAYMENT_FIELDS.clientName,
+        ]);
+
+        const rowLookupCopyOmit = new Set([
+            ALLOCATION_FIELDS.invoiceRecordId,
+            ALLOCATION_FIELDS.invoiceDate,
+            ALLOCATION_FIELDS.invoiceAmount,
+            ALLOCATION_FIELDS.billingTargetAmount,
+        ]);
+
+        const apiRecord = {};
+
+        Object.entries(record).forEach(([fieldCode, field]) => {
+
+            if (!field || typeof field !== 'object' || fieldCode.startsWith('$')) {
+                return;
+            }
+
+            if (headerLookupCopyOmit.has(fieldCode)) {
+                return;
+            }
+
+            if (fieldCode === PAYMENT_FIELDS.allocationTable || field.type === 'SUBTABLE') {
+
+                const rows = Array.isArray(field.value) ? field.value : [];
+
+                apiRecord[fieldCode] = {
+                    value: rows.map((row) => {
+
+                        const rowValue = row?.value ?? {};
+                        const apiRow = {};
+
+                        Object.entries(rowValue).forEach(([subCode, subField]) => {
+
+                            if (!subField || typeof subField !== 'object' || rowLookupCopyOmit.has(subCode)) {
+                                return;
+                            }
+
+                            apiRow[subCode] = { value: subField.value ?? '' };
+
+                        });
+
+                        return { value: apiRow };
+
+                    }),
+                };
+
+                return;
+
+            }
+
+            apiRecord[fieldCode] = { value: field.value ?? '' };
+
+        });
+
+        return apiRecord;
+
+    };
+
+    PaymentCreateV2.createPaymentRecordViaApi = async (record) => {
+
+        const errors = PaymentCreateV2.validateRecord(record);
+
+        if (errors.length > 0) {
+            throw new Error(errors.join('\n'));
+        }
+
+        const paymentDate = getFieldValue(record, PAYMENT_FIELDS.paymentDate);
+
+        if (!String(getFieldValue(record, PAYMENT_FIELDS.paymentNo)).trim()) {
+            record[PAYMENT_FIELDS.paymentNo] = {
+                type: 'SINGLE_LINE_TEXT',
+                value: await PaymentCreateV2.generatePaymentNo(paymentDate),
+            };
+        }
+
+        if (!String(getFieldValue(record, PAYMENT_FIELDS.paymentRecordStatus)).trim()) {
+            record[PAYMENT_FIELDS.paymentRecordStatus] = {
+                type: 'DROP_DOWN',
+                value: RECORD_STATUS_ACTIVE,
+            };
+        }
+
+        const apiRecord = PaymentCreateV2.buildRestRecordBodyForCreate(record);
+
+        const createResponse = await kintone.api(kintone.api.url('/k/v1/record', true), 'POST', {
+            app: PAYMENT_APP_ID,
+            record: apiRecord,
+        });
+
+        const savedResponse = await kintone.api(kintone.api.url('/k/v1/record', true), 'GET', {
+            app: PAYMENT_APP_ID,
+            id: createResponse.id,
+        });
+
+        await PaymentCreateV2.syncInvoicesForPaymentRecord(savedResponse.record);
+
+        return {
+            paymentNo: getFieldValue(savedResponse.record, PAYMENT_FIELDS.paymentNo),
+            recordId: createResponse.id,
+            record: savedResponse.record,
+        };
 
     };
 

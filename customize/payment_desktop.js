@@ -42,6 +42,21 @@
     let invoiceNosBeforeEdit = [];
     let invoiceNosBeforeDelete = [];
     let isApplyingRecord = false;
+    let deferredShowRunning = false;
+    let scheduleAutoSaveStarted = false;
+
+    const SEED_HEADER_FIELD_CODES = [
+        F.paymentDate,
+        F.paymentMethod,
+        F.paymentAmount,
+        F.fee,
+        F.discountAmount,
+        F.customerCode,
+    ];
+
+    const sleep = (ms) => new Promise((resolve) => {
+        window.setTimeout(resolve, ms);
+    });
 
     /** プラグイン（AYANAS Invoice 等）より後に実行する */
     const scheduleAfterPlugins = (callback) => {
@@ -152,13 +167,35 @@
 
     const applyRecordToScreen = (record, options = {}) => {
 
-        const { includeAllocationTable = false } = options;
+        const {
+            includeAllocationTable = false,
+            includeSeedHeader = false,
+            customerLookup = false,
+        } = options;
 
         if (isApplyingRecord) {
             return;
         }
 
         const patch = {};
+
+        if (includeSeedHeader) {
+
+            SEED_HEADER_FIELD_CODES.forEach((fieldCode) => {
+
+                if (!record[fieldCode]) {
+                    return;
+                }
+
+                patch[fieldCode] = { ...record[fieldCode] };
+
+                if (fieldCode === F.customerCode && customerLookup) {
+                    patch[fieldCode].lookup = true;
+                }
+
+            });
+
+        }
 
         CALCULATED_HEADER_FIELD_CODES.forEach((fieldCode) => {
 
@@ -338,9 +375,63 @@
         const params = new URLSearchParams(window.location.search);
         const customerCode = params.get('customer_code');
         const invoiceNo = params.get('invoice_no');
+        const fromSchedule = params.get('from_schedule') === '1';
 
-        if (customerCode && !record[F.customerCode]?.value) {
-            record[F.customerCode].value = customerCode;
+        const setIfEmpty = (fieldCode, rawValue) => {
+
+            if (rawValue === null || rawValue === undefined || String(rawValue).trim() === '') {
+                return;
+            }
+
+            const field = record[fieldCode];
+
+            if (!field || typeof field !== 'object') {
+                return;
+            }
+
+            if (!String(field.value ?? '').trim()) {
+                field.value = String(rawValue).trim();
+            }
+
+        };
+
+        if (customerCode && record[F.customerCode]) {
+
+            record[F.customerCode].value = customerCode.trim();
+
+            if (fromSchedule) {
+                record[F.customerCode].lookup = true;
+            }
+
+        }
+
+        if (fromSchedule) {
+
+            setIfEmpty(F.paymentDate, params.get('payment_date'));
+            setIfEmpty(F.paymentMethod, params.get('payment_method'));
+            setIfEmpty(F.paymentAmount, params.get('payment_amount'));
+            setIfEmpty(F.fee, params.get('fee'));
+            setIfEmpty(F.discountAmount, params.get('discount_amount'));
+
+        }
+
+        if (fromSchedule && customerCode && !invoiceNo) {
+
+            if (!record[F.allocationTable] || typeof record[F.allocationTable] !== 'object') {
+                record[F.allocationTable] = { type: 'SUBTABLE', value: [] };
+            }
+
+            const paymentRecords = await PaymentCreateV2.fetchAllActivePaymentRecords();
+            const openInvoices = await PaymentCreateV2.fetchOpenInvoicesForCustomer(customerCode, getRecordId(record));
+
+            record[F.allocationTable].value = openInvoices.map((invoiceRecord) => (
+                PaymentCreateV2.buildAllocationRowFromInvoice(invoiceRecord, paymentRecords, getRecordId(record))
+            ));
+
+            PaymentCreateV2.syncAllocationAmountsWithWriteoff(record);
+
+            return;
+
         }
 
         if (!invoiceNo) {
@@ -448,6 +539,159 @@
 
     };
 
+    const isScheduleAutoSave = () => {
+
+        const params = new URLSearchParams(window.location.search);
+
+        return params.get('from_schedule') === '1' && params.get('auto_save') === '1';
+
+    };
+
+    const getScheduleChannel = () => new URLSearchParams(window.location.search).get('channel') ?? '';
+
+    const notifyScheduleOpener = (payload) => {
+
+        const channel = getScheduleChannel();
+
+        if (!isScheduleAutoSave() || !channel) {
+            return;
+        }
+
+        try {
+
+            window.opener?.postMessage({
+                channel,
+                ...payload,
+            }, window.location.origin);
+
+        } catch (error) {
+
+            console.warn('[payment_desktop] notify opener', error);
+
+        }
+
+    };
+
+    const clickRecordSaveButton = () => {
+
+        const selectors = [
+            '.gaia-ui-actionmenu-save',
+            'button[data-cy="record-save-gaia"]',
+            '.contents-bottommenu .gaia-ui-actionmenu-save',
+        ];
+
+        for (let index = 0; index < selectors.length; index += 1) {
+
+            const button = document.querySelector(selectors[index]);
+
+            if (button && !button.disabled) {
+                button.click();
+                return true;
+            }
+
+        }
+
+        return false;
+
+    };
+
+    const waitScheduleRecordReady = async () => {
+
+        const params = new URLSearchParams(window.location.search);
+        const expectedCode = String(params.get('customer_code') ?? '').trim();
+        const expectedAmount = Number(params.get('payment_amount') ?? 0);
+
+        for (let attempt = 0; attempt < 40; attempt += 1) {
+
+            const { record } = kintone.app.record.get();
+            const code = String(record[F.customerCode]?.value ?? '').trim();
+            const paymentAmount = Number(record[F.paymentAmount]?.value ?? 0);
+            const rows = record[F.allocationTable]?.value ?? [];
+
+            const hasInvoiceRow = rows.some((row) => (
+                String(row?.value?.[AF.invoiceNo]?.value ?? '').trim() !== ''
+            ));
+
+            const hasAllocation = rows.some((row) => (
+                Number(row?.value?.[AF.allocationAmount]?.value ?? 0) > 0
+            ));
+
+            const writeoff = PaymentCreateV2.computeWriteoffAmount(record);
+            const allocationTotal = PaymentCreateV2.sumAllocationAmount(record);
+            const writeoffMatched = Math.abs(writeoff - allocationTotal) <= 0.0001;
+
+            if (
+                code === expectedCode
+                && paymentAmount === expectedAmount
+                && hasInvoiceRow
+                && hasAllocation
+                && writeoffMatched
+            ) {
+                return true;
+            }
+
+            await sleep(250);
+
+        }
+
+        return false;
+
+    };
+
+    const runAutoSaveFromSchedule = async () => {
+
+        if (!isScheduleAutoSave() || scheduleAutoSaveStarted) {
+            return;
+        }
+
+        scheduleAutoSaveStarted = true;
+
+        const ready = await waitScheduleRecordReady();
+
+        if (!ready) {
+            notifyScheduleOpener({
+                type: 'ayanas-payment-failed',
+                message: '入金画面への値の反映または充当明細の準備が完了しませんでした。App 21 で内容を確認して保存してください。',
+            });
+            return;
+        }
+
+        try {
+
+            const current = kintone.app.record.get();
+            const record = current.record;
+            const excludeId = getRecordId(record);
+
+            await PaymentCreateV2.refreshRowSnapshots(record, excludeId);
+            PaymentCreateV2.syncAllocationAmountsWithWriteoff(record);
+
+            applyRecordToScreen(record, {
+                includeAllocationTable: true,
+                includeSeedHeader: false,
+            });
+
+        } catch (error) {
+
+            console.error('[payment_desktop] schedule reconcile before save', error);
+            notifyScheduleOpener({
+                type: 'ayanas-payment-failed',
+                message: error?.message ?? String(error),
+            });
+            return;
+
+        }
+
+        await sleep(400);
+
+        if (!clickRecordSaveButton()) {
+            notifyScheduleOpener({
+                type: 'ayanas-payment-failed',
+                message: '保存ボタンが見つかりません。App 21 画面で手動保存してください。',
+            });
+        }
+
+    };
+
     const onShow = (event) => {
 
         hideInternalColumns(event);
@@ -457,7 +701,13 @@
             invoiceNosBeforeEdit = PaymentCreateV2.collectInvoiceNosFromRecord(event.record);
         }
 
-        scheduleAfterPlugins(async () => {
+        const runDeferredShowWork = async () => {
+
+            if (deferredShowRunning) {
+                return;
+            }
+
+            deferredShowRunning = true;
 
             ensureCustomerLookupEditable();
 
@@ -465,24 +715,68 @@
 
                 const current = kintone.app.record.get().record;
                 const excludeId = getRecordId(current);
+                const fromSchedule = new URLSearchParams(window.location.search).get('from_schedule') === '1';
 
                 await applyUrlSeedParams(current);
                 await runCustomerRefresh(current, excludeId);
 
                 applyRecordToScreen(current, {
+                    includeSeedHeader: fromSchedule,
+                    customerLookup: fromSchedule,
                     includeAllocationTable: hasAllocationRows(current),
                 });
 
-                await renderHistoryPanel(current[F.customerCode]?.value);
+                if (fromSchedule) {
+                    await sleep(300);
+
+                    const synced = kintone.app.record.get().record;
+
+                    await PaymentCreateV2.refreshRowSnapshots(synced, excludeId);
+                    PaymentCreateV2.syncAllocationAmountsWithWriteoff(synced);
+
+                    applyRecordToScreen(synced, {
+                        includeSeedHeader: true,
+                        customerLookup: false,
+                        includeAllocationTable: true,
+                    });
+
+                    await runCustomerRefresh(synced, excludeId);
+
+                    applyRecordToScreen(kintone.app.record.get().record, {
+                        includeAllocationTable: true,
+                    });
+                }
+
+                await renderHistoryPanel(kintone.app.record.get().record[F.customerCode]?.value);
+
+                await runAutoSaveFromSchedule();
 
             } catch (error) {
 
                 console.error('[payment_desktop] show (deferred)', error);
-                window.alert(`画面の初期表示に失敗しました。\n${error.message ?? error}`);
+
+                if (isScheduleAutoSave()) {
+                    notifyScheduleOpener({
+                        type: 'ayanas-payment-failed',
+                        message: error?.message ?? String(error),
+                    });
+                } else {
+                    window.alert(`画面の初期表示に失敗しました。\n${error.message ?? error}`);
+                }
 
             }
 
-        });
+        };
+
+        if (isScheduleAutoSave()) {
+            window.setTimeout(() => {
+                void runDeferredShowWork();
+            }, 250);
+        } else {
+            scheduleAfterPlugins(() => {
+                void runDeferredShowWork();
+            });
+        }
 
         return event;
 
@@ -581,12 +875,48 @@
 
             await PaymentCreateV2.syncInvoicesForPaymentRecord(saved, extra);
 
+            if (isScheduleAutoSave()) {
+
+                notifyScheduleOpener({
+                    type: 'ayanas-payment-saved',
+                    paymentNo: String(saved[F.paymentNo]?.value ?? '').trim(),
+                    recordId: event.recordId,
+                });
+
+                window.setTimeout(() => {
+                    window.close();
+                }, 200);
+
+            }
+
         } catch (error) {
 
             console.error('[payment_desktop] sync failed', error);
-            window.alert(`入金は保存されましたが、請求書の更新に失敗しました。\n${error.message ?? error}`);
+
+            const message = `入金は保存されましたが、請求書の更新に失敗しました。\n${error.message ?? error}`;
+
+            if (isScheduleAutoSave()) {
+                notifyScheduleOpener({ type: 'ayanas-payment-failed', message });
+            } else {
+                window.alert(message);
+            }
 
         }
+
+        return event;
+
+    };
+
+    const onCreateSubmitFailed = (event) => {
+
+        if (!isScheduleAutoSave() || !event.error) {
+            return event;
+        }
+
+        notifyScheduleOpener({
+            type: 'ayanas-payment-failed',
+            message: String(event.error),
+        });
 
         return event;
 
@@ -645,6 +975,8 @@
         'app.record.create.submit',
         'app.record.edit.submit',
     ], prepareSubmit);
+
+    kintone.events.on('app.record.create.submit', onCreateSubmitFailed);
 
     kintone.events.on([
         'app.record.create.submit.success',
