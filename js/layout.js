@@ -15,7 +15,6 @@
     const ORDER_APP_ID = 16;
     const OVERSEAS_OUTBOUND_APP_ID = 28;
     const OUTSOURCE_OUTBOUND_APP_ID = 27;
-
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
         postalCode: '〒631-0078',
@@ -254,6 +253,33 @@
         },
         definition: InvoiceDefinition,
     });
+
+    if (typeof MasterListRegistry !== 'undefined' && typeof MasterListRegistry.getAll === 'function') {
+
+        MasterListRegistry.getAll().forEach((masterListDef) => {
+
+            registerReport({
+                reportType: masterListDef.reportType,
+                title: masterListDef.documentTitle,
+                templatePath: 'js/templates/master_list.js',
+                templateGlobal: 'MasterListTemplate',
+                pageClass: 'report-master-list',
+                barcodeField: '',
+                paperSize: 'A4',
+                orientation: 'landscape',
+                buttonLabel: masterListDef.buttonLabel,
+                appIds: [masterListDef.appId],
+                configDefaults: {
+                    barcode_type: 'CODE39',
+                    barcode_visible: '0',
+                    page_margin: '0',
+                },
+                definition: {},
+            });
+
+        });
+
+    }
 
     registerReport({
         reportType: 'matsuba_summary_invoice',

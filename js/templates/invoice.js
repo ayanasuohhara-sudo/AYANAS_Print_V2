@@ -397,20 +397,27 @@ ${buildDetailRowsHtml(details)}
     </tbody>
 </table>`;
 
-    const resolveSummaryAmounts = (summary) => {
+    const resolveSummaryAmounts = (summary, options = {}) => {
+
+        const { includeCarryForwardInCurrentBilling = false } = options;
 
         const subtotal = summary.subtotal ?? summary.totalAmount ?? 0;
         const tax = summary.tax ?? 0;
         const total = summary.total || (subtotal + tax);
         const carryOver = summary.carryOver ?? 0;
         const paymentAmount = summary.paymentAmount ?? 0;
-        const currentBillingAmount = summary.currentBillingAmount
+
+        const carryForwardAmount = carryOver - paymentAmount;
+        const adjustmentAmount = toNumber(summary.adjustmentAmount ?? summary.discountAmount);
+
+        let currentBillingAmount = summary.currentBillingAmount
             ?? summary.invoiceAmount
             ?? summary.monthlyBillingAmount
             ?? total;
 
-        const carryForwardAmount = carryOver - paymentAmount;
-        const adjustmentAmount = toNumber(summary.adjustmentAmount ?? summary.discountAmount);
+        if (includeCarryForwardInCurrentBilling) {
+            currentBillingAmount = carryForwardAmount + total - adjustmentAmount;
+        }
 
         return {
             carryOver,
@@ -476,9 +483,12 @@ ${buildDetailRowsHtml(details)}
 
     const buildAmountOverviewHtml = (summary, layout = {}) => {
 
-        const amounts = resolveSummaryAmounts(summary);
         const showCarryOver = layout.carryOverMode !== 'none'
             && layout.recipientMode !== 'general';
+
+        const amounts = resolveSummaryAmounts(summary, {
+            includeCarryForwardInCurrentBilling: showCarryOver,
+        });
 
         if (showCarryOver) {
 
@@ -488,25 +498,25 @@ ${buildDetailRowsHtml(details)}
     <table class="invoice-summary invoice-summary--overview invoice-summary--overview-carry-combined">
         <thead>
             <tr>
-                <th>小計</th>
-                <th>消費税</th>
-                <th>税込金額</th>
-                <th>前回請求額</th>
-                <th>入金額</th>
+                <th>前回御請求額</th>
+                <th>御入金額</th>
                 <th>繰越額</th>
                 <th>調整額</th>
-                <th class="invoice-amount-overview__current-head">今回請求額</th>
+                <th>当月小計</th>
+                <th>消費税</th>
+                <th>税込金額</th>
+                <th class="invoice-amount-overview__current-head">今回御請求額</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="num">${esc(Format.formatMoney(amounts.subtotal))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.tax))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.total))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.carryOver))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.paymentAmount))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.carryForwardAmount))}</td>
                 <td class="num">${esc(Format.formatMoney(amounts.adjustmentAmount))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.subtotal))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.tax))}</td>
+                <td class="num">${esc(Format.formatMoney(amounts.total))}</td>
                 <td class="num invoice-amount-overview__current">${esc(Format.formatMoney(amounts.currentBillingAmount))}</td>
             </tr>
         </tbody>

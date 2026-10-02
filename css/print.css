@@ -1559,10 +1559,10 @@
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 22mm;
+    width: 25mm;
     max-width: 45%;
     height: auto;
-    max-height: 22mm;
+    max-height: 25mm;
     object-fit: contain;
     pointer-events: none;
     z-index: 0;
@@ -2497,8 +2497,8 @@ body {
     position: absolute;
     top: -2mm;
     right: -4mm;
-    width: 22mm;
-    height: 22mm;
+    width: 25mm;
+    height: 25mm;
     object-fit: contain;
     pointer-events: none;
 }
@@ -2576,6 +2576,162 @@ body {
     font-size: 12pt;
     font-weight: 700;
     border-bottom: 2px solid #000;
+}
+
+.ayanas-customer-list-toolbar,
+.ayanas-master-list-toolbar {
+    display: inline-flex;
+    gap: 8px;
+    margin: 0 8px 8px 0;
+}
+
+.ayanas-customer-list-button,
+.ayanas-master-list-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #fff;
+    background: #3498db;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.ayanas-customer-list-button:hover,
+.ayanas-master-list-button:hover {
+    background: #2980b9;
+}
+
+.ayanas-customer-list-button:disabled,
+.ayanas-master-list-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.report-customer-list .page,
+.report-master-list .page {
+    padding: 3mm 5mm;
+}
+
+.report-customer-list .customer-list__header,
+.report-master-list .customer-list__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5mm;
+}
+
+.report-customer-list .customer-list__header--compact,
+.report-master-list .customer-list__header--compact {
+    margin-bottom: 1.5mm;
+}
+
+.report-customer-list .customer-list__title,
+.report-master-list .customer-list__title {
+    margin: 0;
+    font-size: 16pt;
+    font-weight: 700;
+}
+
+.report-customer-list .customer-list__title--compact,
+.report-master-list .customer-list__title--compact {
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+.report-customer-list .customer-list__page-label,
+.report-master-list .customer-list__page-label {
+    font-size: 9pt;
+    font-weight: 400;
+}
+
+.report-customer-list .customer-list__meta,
+.report-master-list .customer-list__meta {
+    text-align: right;
+    font-size: 8pt;
+    line-height: 1.5;
+}
+
+.report-customer-list .customer-list__meta p,
+.report-master-list .customer-list__meta p {
+    margin: 0;
+}
+
+.report-customer-list .customer-list__table,
+.report-master-list .customer-list__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.5pt;
+    table-layout: fixed;
+    line-height: 1.2;
+}
+
+.report-customer-list .customer-list__table th,
+.report-customer-list .customer-list__table td,
+.report-master-list .customer-list__table th,
+.report-master-list .customer-list__table td {
+    border: 1px solid #000;
+    padding: 1mm 1.5mm;
+    vertical-align: middle;
+    word-break: break-all;
+}
+
+.report-customer-list .customer-list__table th,
+.report-master-list .customer-list__table th {
+    background: #f3f3f3;
+    font-weight: 700;
+    text-align: center;
+}
+
+.report-customer-list .customer-list__col-code,
+.report-master-list .customer-list__col-code {
+    width: 16mm;
+    text-align: center;
+}
+
+.report-customer-list .customer-list__col-name,
+.report-master-list .customer-list__col-name {
+    width: auto;
+    text-align: left;
+}
+
+.report-customer-list .customer-list__col-name--pair-end,
+.report-master-list .customer-list__col-name--pair-end {
+    border-right: 2px solid #000;
+}
+
+.report-customer-list .customer-list__empty,
+.report-master-list .customer-list__empty {
+    text-align: center;
+    padding: 6mm;
+}
+
+.report-customer-list .customer-list__group,
+.report-master-list .customer-list__group {
+    margin-bottom: 2mm;
+}
+
+.report-customer-list .customer-list__group:last-child,
+.report-master-list .customer-list__group:last-child {
+    margin-bottom: 0;
+}
+
+.report-customer-list .customer-list__group-title,
+.report-master-list .customer-list__group-title {
+    margin: 0 0 1.5mm;
+    font-size: 10pt;
+    font-weight: 700;
+}
+
+.report-customer-list .customer-list__group-count,
+.report-master-list .customer-list__group-count {
+    font-size: 8.5pt;
+    font-weight: 400;
+    margin-left: 1mm;
+}
+
+.report-customer-list .customer-list__table--group,
+.report-master-list .customer-list__table--group {
+    margin-bottom: 1mm;
 }
 
 @media print {
