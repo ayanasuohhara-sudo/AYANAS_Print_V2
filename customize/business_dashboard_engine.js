@@ -97,7 +97,21 @@
 
     };
 
-    const buildLogisticsMetrics = async (period) => {
+    const fetchLogisticsInboundCache = async () => {
+
+        const L = CFG().LOGISTICS;
+        const inboundRollupQuery = 'order by レコード番号 asc';
+
+        const [inbound27, inbound74] = await Promise.all([
+            fetchAllRecords(L.outsource.appId, inboundRollupQuery, [L.outsource.detailTable]),
+            fetchAllRecords(L.wasai.appId, inboundRollupQuery, [L.wasai.linesTable]),
+        ]);
+
+        return { inbound27, inbound74 };
+
+    };
+
+    const buildLogisticsMetrics = async (period, inboundCache) => {
 
         const start = period.orderStart;
         const end = period.orderEnd;
@@ -113,7 +127,6 @@
 
         const o27 = L.outsource;
         const outbound27Query = `${o27.shipDate} >= "${escapeQueryValue(start)}" and ${o27.shipDate} <= "${escapeQueryValue(end)}" order by レコード番号 asc`;
-        const inbound27Query = `${o27.detailTable}.${o27.lineInDate} >= "${escapeQueryValue(start)}" and ${o27.detailTable}.${o27.lineInDate} <= "${escapeQueryValue(end)}" order by レコード番号 asc`;
 
         const o28 = L.overseas;
         const outbound28Query = `${o28.shipDate} >= "${escapeQueryValue(start)}" and ${o28.shipDate} <= "${escapeQueryValue(end)}" order by レコード番号 asc`;
@@ -122,8 +135,13 @@
         const o74 = L.wasai;
         const shipField = o74.shipDateFields[0];
         const outbound74Query = `${shipField} >= "${escapeQueryValue(start)}" and ${shipField} <= "${escapeQueryValue(end)}" order by レコード番号 asc`;
-        const inbound74Query = `${o74.linesTable}.${o74.lineInboundDate} >= "${escapeQueryValue(start)}" and ${o74.linesTable}.${o74.lineInboundDate} <= "${escapeQueryValue(end)}" order by レコード番号 asc`;
-
+        const inboundRollupQuery = 'order by レコード番号 asc';
+        const inbound27Promise = inboundCache?.inbound27
+            ? Promise.resolve(inboundCache.inbound27)
+            : fetchAllRecords(o27.appId, inboundRollupQuery, [o27.detailTable]);
+        const inbound74Promise = inboundCache?.inbound74
+            ? Promise.resolve(inboundCache.inbound74)
+            : fetchAllRecords(o74.appId, inboundRollupQuery, [o74.linesTable]);
         const [
             outbound27,
             inbound27,
@@ -133,11 +151,11 @@
             inbound74,
         ] = await Promise.all([
             fetchAllRecords(o27.appId, outbound27Query, [o27.shipDate, o27.detailTable]),
-            fetchAllRecords(o27.appId, inbound27Query, [o27.detailTable]),
+            inbound27Promise,
             fetchAllRecords(o28.appId, outbound28Query, [o28.shipDate, o28.overseasManageNo, o28.manageNo, o28.detailsTable]),
             fetchAllRecords(o28.appId, inbound28Query, [o28.inboundDate, o28.overseasManageNo, o28.manageNo, o28.detailsTable]),
             fetchAllRecords(o74.appId, outbound74Query, [...o74.shipDateFields, o74.linesTable]),
-            fetchAllRecords(o74.appId, inbound74Query, [o74.linesTable]),
+            inbound74Promise,
         ]);
 
         const outbound27Set = new Set();
@@ -416,6 +434,17 @@
             end = String(customEnd ?? '').trim() || start;
             label = `${start} 〜 ${end}`;
 
+        } else if (preset === 'fiscal_year' && parts) {
+
+            // 今年度 = 6/1 〜 翌5/31（JST）
+            const fyStartYear = parts.m >= 6 ? parts.y : parts.y - 1;
+            const rangeStart = formatYmd(new Date(fyStartYear, 5, 1));
+            const rangeEnd = formatYmd(new Date(fyStartYear + 1, 4, 31));
+
+            start = rangeStart;
+            end = rangeEnd;
+            label = CFG().UI.periodFiscalYear;
+
         }
 
         if (start > end) {
@@ -652,6 +681,7 @@
             summary: {
                 openKimono: 0,
                 openPoints: 0,
+                openAmount: 0,
                 overdueKimono: 0,
                 within7Kimono: 0,
                 thisMonthKimono: 0,
@@ -725,6 +755,7 @@
             of.itemCode,
             of.itemName,
             of.qty,
+            of.amount,
         ];
 
         const deliveryFields = [df.detailTable];
@@ -759,9 +790,10 @@
         const app16ManageNos = new Set();
         const pipelineQtyStats = { totalLines: 0, nonOneLineCount: 0 };
 
-        const recordPoints = (record) => {
+        const recordPointsAndAmount = (record) => {
 
             let points = 0;
+            let amount = 0;
             const table = record[of.detailTable];
             const rows = Array.isArray(table?.value) ? table.value : [];
 
@@ -774,10 +806,11 @@
                 }
 
                 points += lineQty(rowValue[of.qty]?.value, pipelineQtyStats);
+                amount += toNumber(rowValue[of.amount]?.value);
 
             });
 
-            return points;
+            return { points, amount };
 
         };
 
@@ -792,7 +825,7 @@
             app16ManageNos.add(manageNo);
 
             const recordId = Number(record.$id?.value ?? 0);
-            const points = recordPoints(record);
+            const totals = recordPointsAndAmount(record);
             let group = groups.get(manageNo);
 
             if (!group) {
@@ -800,6 +833,7 @@
                     manageNo,
                     records: [],
                     points: 0,
+                    amount: 0,
                     maxRecordId: 0,
                     displayRecord: record,
                 };
@@ -807,7 +841,8 @@
             }
 
             group.records.push(record);
-            group.points += points;
+            group.points += totals.points;
+            group.amount += totals.amount;
 
             if (recordId >= group.maxRecordId) {
                 group.maxRecordId = recordId;
@@ -897,6 +932,7 @@
 
             segmentState.summary.openKimono += 1;
             segmentState.summary.openPoints += group.points;
+            segmentState.summary.openAmount += group.amount;
 
             if (flags.overdue) {
                 segmentState.summary.overdueKimono += 1;
@@ -985,6 +1021,7 @@
         const sumSummary = (left, right) => ({
             openKimono: left.openKimono + right.openKimono,
             openPoints: left.openPoints + right.openPoints,
+            openAmount: left.openAmount + right.openAmount,
             overdueKimono: left.overdueKimono + right.overdueKimono,
             within7Kimono: left.within7Kimono + right.within7Kimono,
             thisMonthKimono: left.thisMonthKimono + right.thisMonthKimono,
@@ -1050,6 +1087,290 @@
                 templateExportNote: '_tmp_app16_export の template.json には process_status / location_status の選択肢定義がありません。工程・保管場所の行ラベルは集計時の App16 実値です。',
                 pipelineQtyStats,
             },
+        };
+
+    };
+
+    const classifyOverviewBucket = (subcategoriesOnOrder) => {
+
+        const subs = new Set(subcategoriesOnOrder.map((s) => String(s ?? '').trim()).filter(Boolean));
+
+        if (subs.has('海外仕立')) {
+            return 'overseas';
+        }
+
+        if (subs.has('国内仕立')) {
+            return 'domestic';
+        }
+
+        if (subs.has('帯仕立')) {
+            return 'obi';
+        }
+
+        const sekkaiNames = CFG().SEKKAI_SUBCATEGORIES;
+
+        for (let index = 0; index < sekkaiNames.length; index += 1) {
+
+            if (subs.has(sekkaiNames[index])) {
+                return 'sekkai';
+            }
+
+        }
+
+        if (subs.has('修理')) {
+            return 'repair';
+        }
+
+        return 'other';
+
+    };
+
+    const emptyOverviewCategoryCounts = () => {
+
+        const row = {};
+
+        CFG().OVERVIEW_CATEGORY_COLUMNS.forEach((col) => {
+
+            row[col.id] = 0;
+
+        });
+
+        return row;
+
+    };
+
+    const computeOverviewPeriodSnapshot = (orders, deliveries, productLookup, logistics, pipeline) => {
+
+        const of = F().order;
+        const df = F().delivery;
+        const categoryIds = CFG().OVERVIEW_CATEGORY_COLUMNS.map((col) => col.id);
+
+        const makeSegment = () => ({
+            orderKimono: 0,
+            orderAmount: 0,
+            deliveryKimono: 0,
+            deliveryAmount: 0,
+            wipKimono: 0,
+            wipAmount: 0,
+            logistics: {
+                overseasOut: logistics.overseas.outbound,
+                overseasIn: logistics.overseas.inbound,
+                wasaiOut: logistics.wasai.outbound,
+                wasaiIn: logistics.wasai.inbound,
+                outsourceOut: logistics.outsource.outbound,
+                outsourceIn: logistics.outsource.inbound,
+            },
+            orderCategories: emptyOverviewCategoryCounts(),
+            deliveryCategories: emptyOverviewCategoryCounts(),
+        });
+
+        const segments = {
+            honsha: makeSegment(),
+            ayanas: makeSegment(),
+            total: makeSegment(),
+        };
+
+        const orderKimonoAll = {
+            honsha: new Set(),
+            ayanas: new Set(),
+        };
+
+        const deliveryKimonoAll = {
+            honsha: new Set(),
+            ayanas: new Set(),
+        };
+
+        const orderKimonoByCategory = {
+            honsha: new Map(),
+            ayanas: new Map(),
+        };
+
+        const deliveryKimonoByCategory = {
+            honsha: new Map(),
+            ayanas: new Map(),
+        };
+
+        categoryIds.forEach((id) => {
+
+            orderKimonoByCategory.honsha.set(id, new Set());
+            orderKimonoByCategory.ayanas.set(id, new Set());
+            deliveryKimonoByCategory.honsha.set(id, new Set());
+            deliveryKimonoByCategory.ayanas.set(id, new Set());
+
+        });
+
+        const orderQtyStats = { totalLines: 0, nonOneLineCount: 0 };
+        const deliveryQtyStats = { totalLines: 0, nonOneLineCount: 0 };
+
+        orders.forEach((record) => {
+
+            const manageNo = String(getFieldValue(record, of.manageNo)).trim();
+            const customerCode = String(getFieldValue(record, of.customerCode)).trim();
+            const segmentKey = segmentKeyForCustomer(customerCode);
+            const table = record[of.detailTable];
+            const rows = Array.isArray(table?.value) ? table.value : [];
+            const subcategoriesOnOrder = [];
+            let orderAmount = 0;
+
+            rows.forEach((row) => {
+
+                const rowValue = row?.value ?? {};
+
+                if (isEmptyOrderDetail(rowValue)) {
+                    return;
+                }
+
+                const itemCode = rowValue[of.itemCode]?.value;
+                const itemName = rowValue[of.itemName]?.value;
+                const subcategory = resolveSubcategory(itemCode, itemName, productLookup);
+
+                if (subcategory) {
+                    subcategoriesOnOrder.push(subcategory);
+                }
+
+                orderAmount += toNumber(rowValue[of.amount]?.value);
+                lineQty(rowValue[of.qty]?.value, orderQtyStats);
+
+            });
+
+            if (!manageNo) {
+                return;
+            }
+
+            segments[segmentKey].orderAmount += orderAmount;
+            segments.total.orderAmount += orderAmount;
+            orderKimonoAll[segmentKey].add(manageNo);
+
+            const bucket = classifyOverviewBucket(subcategoriesOnOrder);
+
+            orderKimonoByCategory[segmentKey].get(bucket).add(manageNo);
+
+        });
+
+        deliveries.forEach((record) => {
+
+            const customerCode = String(getFieldValue(record, df.customerCode)).trim();
+            const segmentKey = segmentKeyForCustomer(customerCode);
+            const table = record[df.detailTable];
+            const rows = Array.isArray(table?.value) ? table.value : [];
+
+            rows.forEach((row) => {
+
+                const rowValue = row?.value ?? {};
+
+                if (isEmptyDeliveryDetail(rowValue)) {
+                    return;
+                }
+
+                const manageNo = String(rowValue[df.manageNo]?.value ?? '').trim();
+                const itemName = rowValue[df.itemName]?.value;
+                const subcategory = resolveSubcategory('', itemName, productLookup);
+                const amount = toNumber(rowValue[df.amount]?.value);
+                const bucket = classifyOverviewBucket(subcategory ? [subcategory] : []);
+
+                segments[segmentKey].deliveryAmount += amount;
+                segments.total.deliveryAmount += amount;
+                lineQty(rowValue[df.qty]?.value, deliveryQtyStats);
+
+                if (manageNo) {
+                    deliveryKimonoAll[segmentKey].add(manageNo);
+                    deliveryKimonoByCategory[segmentKey].get(bucket).add(manageNo);
+                }
+
+            });
+
+        });
+
+        ['honsha', 'ayanas'].forEach((segmentKey) => {
+
+            categoryIds.forEach((id) => {
+
+                segments[segmentKey].orderCategories[id] = orderKimonoByCategory[segmentKey].get(id).size;
+                segments[segmentKey].deliveryCategories[id] = deliveryKimonoByCategory[segmentKey].get(id).size;
+
+            });
+
+            segments[segmentKey].orderKimono = orderKimonoAll[segmentKey].size;
+            segments[segmentKey].deliveryKimono = deliveryKimonoAll[segmentKey].size;
+
+            segments[segmentKey].wipKimono = pipeline[segmentKey].summary.openKimono;
+            segments[segmentKey].wipAmount = pipeline[segmentKey].summary.openAmount;
+
+        });
+
+        categoryIds.forEach((id) => {
+
+            segments.total.orderCategories[id] = segments.honsha.orderCategories[id]
+                + segments.ayanas.orderCategories[id];
+            segments.total.deliveryCategories[id] = segments.honsha.deliveryCategories[id]
+                + segments.ayanas.deliveryCategories[id];
+
+        });
+
+        segments.total.orderKimono = orderKimonoAll.honsha.size + orderKimonoAll.ayanas.size;
+        segments.total.deliveryKimono = deliveryKimonoAll.honsha.size + deliveryKimonoAll.ayanas.size;
+        segments.total.wipKimono = segments.honsha.wipKimono + segments.ayanas.wipKimono;
+        segments.total.wipAmount = segments.honsha.wipAmount + segments.ayanas.wipAmount;
+
+        segments.total.logistics = { ...segments.honsha.logistics };
+
+        return segments;
+
+    };
+
+    const buildOverviewMetrics = async (productLookup, pipeline, inboundCache) => {
+
+        const of = F().order;
+        const df = F().delivery;
+        const periodDefs = [
+            { key: 'today', preset: 'today' },
+            { key: 'this_month', preset: 'this_month' },
+            { key: 'fiscal_year', preset: 'fiscal_year' },
+        ];
+
+        const snapshots = {};
+
+        await Promise.all(periodDefs.map(async (def) => {
+
+            const period = resolvePeriod(def.preset);
+            const orderQuery = `${of.orderDate} >= "${escapeQueryValue(period.orderStart)}" and ${of.orderDate} <= "${escapeQueryValue(period.orderEnd)}" order by ${of.orderDate} asc, レコード番号 asc`;
+            const deliveryQuery = `${df.deliveryDate} >= "${escapeQueryValue(period.deliveryStart)}" and ${df.deliveryDate} <= "${escapeQueryValue(period.deliveryEnd)}" order by ${df.deliveryDate} asc, レコード番号 asc`;
+            const orderFields = [
+                of.manageNo,
+                of.customerCode,
+                of.detailTable,
+                of.itemCode,
+                of.itemName,
+                of.qty,
+                of.amount,
+            ];
+            const deliveryFields = [
+                df.customerCode,
+                df.detailTable,
+                df.manageNo,
+                df.itemName,
+                df.qty,
+                df.amount,
+            ];
+
+            const [orders, deliveries, logistics] = await Promise.all([
+                fetchAllRecords(CFG().ORDER_APP_ID, orderQuery, orderFields),
+                fetchAllRecords(CFG().DELIVERY_APP_ID, deliveryQuery, deliveryFields),
+                buildLogisticsMetrics(period, inboundCache),
+            ]);
+
+            snapshots[def.key] = {
+                period,
+                segments: computeOverviewPeriodSnapshot(orders, deliveries, productLookup, logistics, pipeline),
+            };
+
+        }));
+
+        return {
+            periodRows: periodDefs.map((def) => def.key),
+            snapshots,
+            wipNote: '在庫残数・在庫金額＝受注残（App16−App19）の着物枚数・明細税抜金額。期間行ごとに同じ時点値です。',
+            logisticsNote: '出庫・入庫は全社合計（取引先別未分割）。全体行に表示します。',
         };
 
     };
@@ -1457,9 +1778,14 @@
             },
         }));
 
-        const logistics = await buildLogisticsMetrics(period);
+        const inboundCache = await fetchLogisticsInboundCache();
 
-        const pipeline = await buildPipelineMetrics(productLookup);
+        const [logistics, pipeline] = await Promise.all([
+            buildLogisticsMetrics(period, inboundCache),
+            buildPipelineMetrics(productLookup),
+        ]);
+
+        const overview = await buildOverviewMetrics(productLookup, pipeline, inboundCache);
 
         const customers = [...customersMap.values()].map((row) => ({
             customerCode: row.customerCode,
@@ -1572,6 +1898,7 @@
                 processing: a550Processing,
             },
             pipeline,
+            overview,
         };
 
     };

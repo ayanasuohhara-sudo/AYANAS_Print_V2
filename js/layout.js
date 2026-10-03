@@ -15,6 +15,8 @@
     const ORDER_APP_ID = 16;
     const OVERSEAS_OUTBOUND_APP_ID = 28;
     const OUTSOURCE_OUTBOUND_APP_ID = 27;
+    const WASAI_OUTBOUND_APP_ID = 74;
+    const WASAI_PAYMENT_APP_ID = 75;
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
         postalCode: '〒631-0078',
@@ -156,6 +158,44 @@
         configDefaults: {
             barcode_type: 'CODE39',
             barcode_visible: '1',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
+        reportType: 'wasai_outbound_slip',
+        title: '和裁士出庫伝票',
+        templatePath: 'js/templates/outsource_outbound_slip.js',
+        templateGlobal: 'WasaiOutboundSlipTemplate',
+        pageClass: 'report-order-detail',
+        barcodeField: 'header.manage_no',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '和裁士出庫伝票',
+        appIds: [WASAI_OUTBOUND_APP_ID],
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '1',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
+        reportType: 'wasai_payment_statement',
+        title: '和裁士支払明細書',
+        templatePath: 'js/templates/estimate.js',
+        templateGlobal: 'WasaiPaymentStatementTemplate',
+        pageClass: 'report-wasai-payment-statement',
+        barcodeField: '',
+        paperSize: 'A4',
+        orientation: 'portrait',
+        buttonLabel: '支払明細書 印刷',
+        appIds: [WASAI_PAYMENT_APP_ID],
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '0',
             page_margin: '0',
         },
         definition: {},

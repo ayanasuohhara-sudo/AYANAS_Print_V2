@@ -6,6 +6,8 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
 .ayanas-bd-root {
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
   color: #0f172a;
   background: #f1f5f9;
   min-height: 100vh;
@@ -19,7 +21,7 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
 
 .ayanas-bd-title {
   margin: 0 0 8px;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
 }
 
@@ -46,19 +48,19 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
 }
 
 .ayanas-bd-period-label {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #0f172a;
 }
 
 .ayanas-bd-period-range {
-  font-size: 13px;
+  font-size: 15px;
   color: #334155;
   font-variant-numeric: tabular-nums;
 }
 
 .ayanas-bd-period-basis {
-  font-size: 11px;
+  font-size: 13px;
   color: #64748b;
 }
 
@@ -70,8 +72,8 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
 }
 
 .ayanas-bd-btn--seg {
-  font-size: 12px;
-  padding: 4px 10px;
+  font-size: 14px;
+  padding: 5px 12px;
 }
 
 .ayanas-bd-period {
@@ -87,7 +89,7 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
   align-items: center;
   gap: 10px;
   margin-bottom: 8px;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .ayanas-bd-custom.is-hidden {
@@ -98,8 +100,8 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
   border: 1px solid #cbd5e1;
   background: #fff;
   border-radius: 4px;
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 7px 14px;
+  font-size: 15px;
   cursor: pointer;
 }
 
@@ -128,13 +130,13 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
 
 .ayanas-bd-section__title {
   margin: 0 0 10px;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
 }
 
 .ayanas-bd-note {
   margin: 0 0 8px;
-  font-size: 12px;
+  font-size: 14px;
   color: #b45309;
 }
 
@@ -144,7 +146,7 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
 
 .ayanas-bd-subsection__title {
   margin: 16px 0 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -152,9 +154,35 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
   border-color: #cbd5e1;
 }
 
+.ayanas-bd-section--overview {
+  border-color: #2563eb;
+  background: #fff;
+}
+
+.ayanas-bd-overview-scroll {
+  overflow-x: auto;
+  margin-bottom: 14px;
+}
+
+.ayanas-bd-overview-table {
+  min-width: 960px;
+  font-size: 14px;
+}
+
+.ayanas-bd-overview-table th,
+.ayanas-bd-overview-table td {
+  white-space: nowrap;
+}
+
+.ayanas-bd-overview-seg {
+  font-weight: 600;
+  background: #f8fafc;
+  vertical-align: middle;
+}
+
 .ayanas-bd-pipeline-list-toggle {
   margin-top: 12px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
 }
 
@@ -164,19 +192,92 @@ body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
 
 .ayanas-bd-muted {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.ayanas-bd-section--money {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.ayanas-bd-money-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.ayanas-bd-money-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.ayanas-bd-money-card__label {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.ayanas-bd-money-card__value {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ayanas-bd-money-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.ayanas-bd-money-search {
+  min-width: 200px;
+  padding: 6px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 15px;
+}
+
+.ayanas-bd-money-link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.ayanas-bd-money-link:hover {
+  text-decoration: underline;
+}
+
+.ayanas-bd-money-history__msg {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.ayanas-bd-money-history__msg--err {
+  color: #b91c1c;
+}
+
+.ayanas-bd-money-history__warn {
+  margin: 0 0 6px;
+  font-size: 11px;
+  color: #b45309;
 }
 
 .ayanas-bd-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .ayanas-bd-table th,
 .ayanas-bd-table td {
   border-bottom: 1px solid #eef2f7;
-  padding: 8px 10px;
+  padding: 10px 12px;
   text-align: left;
 }
 
@@ -206,6 +307,7 @@ button.ayanas-bd-toggle {
   cursor: pointer;
   margin-right: 4px;
   color: #64748b;
+  font-size: 15px;
 }
 
 .ayanas-bd-nested {
@@ -217,20 +319,20 @@ button.ayanas-bd-toggle {
 }
 
 .ayanas-bd-nested__title {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #475569;
   margin-bottom: 6px;
 }
 
 .ayanas-bd-table--nested {
-  font-size: 12px;
+  font-size: 14px;
   margin-bottom: 10px;
 }
 
 .ayanas-bd-message,
 .ayanas-bd-meta {
-  font-size: 13px;
+  font-size: 15px;
   color: #64748b;
 }
 
@@ -248,7 +350,7 @@ button.ayanas-bd-toggle {
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .ayanas-bd-meta-details summary {
@@ -263,7 +365,7 @@ button.ayanas-bd-toggle {
 
 .ayanas-bd-footer {
   margin: 16px 0 0;
-  font-size: 11px;
+  font-size: 13px;
   color: #94a3b8;
   text-align: right;
 }

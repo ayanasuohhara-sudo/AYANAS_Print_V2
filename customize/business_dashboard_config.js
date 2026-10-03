@@ -3,13 +3,13 @@
 
     /**
      * 業務ダッシュボード — 定数
-     * BUSINESS_DASHBOARD_VERSION: 1.5.0
+     * BUSINESS_DASHBOARD_VERSION: 1.6.3
      *
      * kintone で「業務ダッシュボード」アプリ作成後、
      * BUSINESS_DASHBOARD_APP_ID を実 ID に差し替えてください（0 のままでは一覧 UI は起動しません）。
      */
 
-    const BUSINESS_DASHBOARD_VERSION = '1.5.0';
+    const BUSINESS_DASHBOARD_VERSION = '1.6.3';
 
     /** 業務ダッシュボード（kintone ホストアプリ） */
     const BUSINESS_DASHBOARD_APP_ID = 82;
@@ -39,6 +39,26 @@
             segmentAyanas: 'ayanas店舗',
             segmentTotal: '全体',
             sectionSummary: '全体サマリー',
+            sectionOverview: '全体状況',
+            periodFiscalYear: '今年度',
+            overviewRowToday: '本日',
+            overviewRowMonth: '今月',
+            overviewRowFiscal: '今年度',
+            overviewSegmentStore: '店舗',
+            overviewBlockOrder: '受注',
+            overviewBlockDelivery: '納品',
+            overviewColOrderKimono: '受注枚数',
+            overviewColOrderAmount: '受注金額',
+            overviewColDeliveryKimono: '納品枚数',
+            overviewColDeliveryAmount: '納品金額',
+            overviewColWipKimono: '在庫残数',
+            overviewColWipAmount: '在庫金額',
+            overviewColOverseasOut: '海外出庫数',
+            overviewColOverseasIn: '海外入庫数',
+            overviewColWasaiOut: '和裁士出庫数',
+            overviewColWasaiIn: '和裁士入庫数',
+            overviewColOutsourceOut: '外注出庫数',
+            overviewColOutsourceIn: '外注入庫数',
             sectionTailoring: '仕立',
             sectionLogistics: '出庫・入庫（管理番号数）',
             logisticsNote: '出庫＝各アプリの出庫日 / 入庫＝各アプリの入庫完了日。件数は distinct manage_no です（inbound_unified_config.js のフィールド定義に準拠）。',
@@ -83,7 +103,22 @@
             colProcessStatus: 'process_status',
             colLocationStatus: 'location_status',
             emptyStatusLabel: '（未設定）',
+            sectionMoney: '④ お金（売掛・入金）',
+            moneyBasisNote: 'App35 請求済 × App21 入金充当。期間ツールバーとは独立（売掛は時点・今月入金は当月）。',
+            moneySourceNote: '集計ロジックは App22 売掛管理と同一（CAYANAS_AREngine）。',
+            moneyFullArLink: '売掛管理（App22）で全列表示',
+            moneyDepsMissing: '④を表示するには App82 に ar_config.js → payment_create.js → ar_engine.js → business_dashboard_money.js を business_dashboard_desktop.js より前に登録してください。',
+            moneyErrorPrefix: '売掛集計に失敗しました。',
         },
+        /** 全体状況 — 受注/納品ブロックの列（Excel 全体状況.xlsx 準拠） */
+        OVERVIEW_CATEGORY_COLUMNS: [
+            { id: 'overseas', label: '海外仕立' },
+            { id: 'domestic', label: '国内仕立' },
+            { id: 'sekkai', label: '悉皆' },
+            { id: 'repair', label: '修理・直し' },
+            { id: 'obi', label: '帯仕立' },
+            { id: 'other', label: 'その他' },
+        ],
         /** ②現場 — 加工分類行（App13.subcategory 照合、未知はその他） */
         PIPELINE_PROCESSING_LABELS: [
             '海外仕立',

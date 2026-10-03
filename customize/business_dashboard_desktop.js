@@ -459,55 +459,163 @@
 
     };
 
-    const segmentCells = (getter) => {
-        const s = lastReport?.summary;
+    const renderOverviewMainRow = (segmentData, showLogistics) => {
 
-        if (!s) {
-            return '<td class="num">0</td><td class="num">0</td><td class="num">0</td>';
-        }
+        const log = segmentData.logistics || {};
+        const dash = '—';
 
         return `
-  <td class="num">${formatInt(getter(s.honsha))}</td>
-  <td class="num">${formatInt(getter(s.ayanas))}</td>
-  <td class="num">${formatInt(getter(s.total))}</td>`;
+  <td class="num">${formatInt(segmentData.orderKimono)}</td>
+  <td class="num">${formatYen(segmentData.orderAmount)}</td>
+  <td class="num">${formatInt(segmentData.deliveryKimono)}</td>
+  <td class="num">${formatYen(segmentData.deliveryAmount)}</td>
+  <td class="num">${formatInt(segmentData.wipKimono)}</td>
+  <td class="num">${formatYen(segmentData.wipAmount)}</td>
+  <td class="num">${showLogistics ? formatInt(log.overseasOut) : dash}</td>
+  <td class="num">${showLogistics ? formatInt(log.overseasIn) : dash}</td>
+  <td class="num">${showLogistics ? formatInt(log.wasaiOut) : dash}</td>
+  <td class="num">${showLogistics ? formatInt(log.wasaiIn) : dash}</td>
+  <td class="num">${showLogistics ? formatInt(log.outsourceOut) : dash}</td>
+  <td class="num">${showLogistics ? formatInt(log.outsourceIn) : dash}</td>`;
 
     };
 
-    const renderSummaryTable = () => {
+    const renderOverviewCategoryRow = (segmentData, kind) => {
+
+        const cols = cfg().OVERVIEW_CATEGORY_COLUMNS;
+        const bucket = kind === 'order' ? segmentData.orderCategories : segmentData.deliveryCategories;
+
+        return cols.map((col) => (
+            `<td class="num">${formatInt(bucket?.[col.id] ?? 0)}</td>`
+        )).join('');
+
+    };
+
+    const renderOverallStatus = () => {
 
         const u = ui();
-        const s = lastReport?.summary;
+        const overview = lastReport?.overview;
 
-        return `
-<section class="ayanas-bd-section">
-  <h2 class="ayanas-bd-section__title">${escapeHtml(u.sectionSummary)}</h2>
-  <p class="ayanas-bd-note">${escapeHtml(u.orderAmountNote)}</p>
-  <table class="ayanas-bd-table ayanas-bd-table--summary">
+        if (!overview?.snapshots) {
+            return '';
+        }
+
+        const periodLabel = {
+            today: u.overviewRowToday,
+            this_month: u.overviewRowMonth,
+            fiscal_year: u.overviewRowFiscal,
+        };
+
+        const segmentGroups = [
+            { key: 'honsha', label: u.segmentHonsha, showLogistics: false },
+            { key: 'ayanas', label: u.overviewSegmentStore, showLogistics: false },
+            { key: 'total', label: u.segmentTotal, showLogistics: true },
+        ];
+
+        const periodKeys = overview.periodRows || ['today', 'this_month', 'fiscal_year'];
+
+        let mainBody = '';
+
+        segmentGroups.forEach((group) => {
+
+            periodKeys.forEach((periodKey, index) => {
+
+                const snap = overview.snapshots[periodKey];
+                const segmentData = snap?.segments?.[group.key] || {};
+                const periodCell = periodLabel[periodKey] || periodKey;
+                const groupCell = index === 0
+                    ? `<td class="ayanas-bd-overview-seg" rowspan="${periodKeys.length}">${escapeHtml(group.label)}</td>`
+                    : '';
+
+                mainBody += `
+<tr>
+  ${groupCell}
+  <td>${escapeHtml(periodCell)}</td>
+  ${renderOverviewMainRow(segmentData, group.showLogistics)}
+</tr>`;
+
+            });
+
+        });
+
+        const categoryHeader = cfg().OVERVIEW_CATEGORY_COLUMNS
+            .map((col) => `<th class="num">${escapeHtml(col.label)}</th>`)
+            .join('');
+
+        const renderCategoryBlock = (title, kind) => {
+
+            let body = '';
+
+            segmentGroups.forEach((group) => {
+
+                periodKeys.forEach((periodKey, index) => {
+
+                    const snap = overview.snapshots[periodKey];
+                    const segmentData = snap?.segments?.[group.key] || {};
+                    const periodCell = periodLabel[periodKey] || periodKey;
+                    const groupCell = index === 0
+                        ? `<td class="ayanas-bd-overview-seg" rowspan="${periodKeys.length}">${escapeHtml(group.label)}</td>`
+                        : '';
+
+                    body += `
+<tr>
+  ${groupCell}
+  <td>${escapeHtml(periodCell)}</td>
+  ${renderOverviewCategoryRow(segmentData, kind)}
+</tr>`;
+
+                });
+
+            });
+
+            return `
+<h3 class="ayanas-bd-subsection__title">${escapeHtml(title)}</h3>
+<div class="ayanas-bd-overview-scroll">
+  <table class="ayanas-bd-table ayanas-bd-overview-table">
     <thead>
       <tr>
         <th></th>
-        <th>${escapeHtml(u.segmentHonsha)}</th>
-        <th>${escapeHtml(u.segmentAyanas)}</th>
-        <th>${escapeHtml(u.segmentTotal)}</th>
+        <th></th>
+        ${categoryHeader}
       </tr>
     </thead>
-    <tbody>
-      <tr><th>受注着物枚数</th>${segmentCells((x) => x.orderKimono)}</tr>
-      <tr><th>納品着物枚数</th>${segmentCells((x) => x.deliveryKimono)}</tr>
-      <tr><th>加工受注点数</th>${segmentCells((x) => x.orderPoints)}</tr>
-      <tr><th>加工納品点数</th>${segmentCells((x) => x.deliveryPoints)}</tr>
-      <tr><th>受注金額</th>
-        <td class="num">${formatYen(s?.honsha?.orderAmount)}</td>
-        <td class="num">${formatYen(s?.ayanas?.orderAmount)}</td>
-        <td class="num">${formatYen(s?.total?.orderAmount)}</td>
-      </tr>
-      <tr><th>納品金額（税抜）</th>
-        <td class="num">${formatYen(s?.honsha?.deliveryAmount)}</td>
-        <td class="num">${formatYen(s?.ayanas?.deliveryAmount)}</td>
-        <td class="num">${formatYen(s?.total?.deliveryAmount)}</td>
-      </tr>
-    </tbody>
+    <tbody>${body}</tbody>
   </table>
+</div>`;
+
+        };
+
+        return `
+<section class="ayanas-bd-section ayanas-bd-section--overview">
+  <h2 class="ayanas-bd-section__title">${escapeHtml(u.sectionOverview)}</h2>
+  <p class="ayanas-bd-note ayanas-bd-note--muted">${escapeHtml(overview.wipNote || '')}</p>
+  <p class="ayanas-bd-note ayanas-bd-note--muted">${escapeHtml(overview.logisticsNote || '')}</p>
+  <p class="ayanas-bd-note">${escapeHtml(u.orderAmountNote)}</p>
+  <div class="ayanas-bd-overview-scroll">
+    <table class="ayanas-bd-table ayanas-bd-overview-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+          <th class="num">${escapeHtml(u.overviewColOrderKimono)}</th>
+          <th class="num">${escapeHtml(u.overviewColOrderAmount)}</th>
+          <th class="num">${escapeHtml(u.overviewColDeliveryKimono)}</th>
+          <th class="num">${escapeHtml(u.overviewColDeliveryAmount)}</th>
+          <th class="num">${escapeHtml(u.overviewColWipKimono)}</th>
+          <th class="num">${escapeHtml(u.overviewColWipAmount)}</th>
+          <th class="num">${escapeHtml(u.overviewColOverseasOut)}</th>
+          <th class="num">${escapeHtml(u.overviewColOverseasIn)}</th>
+          <th class="num">${escapeHtml(u.overviewColWasaiOut)}</th>
+          <th class="num">${escapeHtml(u.overviewColWasaiIn)}</th>
+          <th class="num">${escapeHtml(u.overviewColOutsourceOut)}</th>
+          <th class="num">${escapeHtml(u.overviewColOutsourceIn)}</th>
+        </tr>
+      </thead>
+      <tbody>${mainBody}</tbody>
+    </table>
+  </div>
+  ${renderCategoryBlock(u.overviewBlockOrder, 'order')}
+  ${renderCategoryBlock(u.overviewBlockDelivery, 'delivery')}
 </section>`;
 
     };
@@ -941,8 +1049,9 @@
         root.innerHTML = `
 <div class="ayanas-bd-layout">
 ${renderToolbar()}
-${renderSummaryTable()}
+${renderOverallStatus()}
 ${renderPipeline()}
+${typeof CAYANAS_BusinessDashboardMoney !== 'undefined' ? CAYANAS_BusinessDashboardMoney.renderSection(lastReport) : ''}
 ${renderLogistics()}
 ${renderKimonoTypeSpec()}
 ${renderTailoring()}
@@ -1065,6 +1174,17 @@ ${renderMeta()}
 
         });
 
+        if (typeof CAYANAS_BusinessDashboardMoney !== 'undefined') {
+            CAYANAS_BusinessDashboardMoney.bindEvents(root, {
+                arReport: lastReport?.ar,
+                rerender: () => {
+                    renderAll(root);
+                    bindEvents(root);
+                },
+                reloadAll: () => loadAndRender(root),
+            });
+        }
+
     };
 
     const loadAndRender = async (root) => {
@@ -1073,11 +1193,34 @@ ${renderMeta()}
 
         try {
 
-            lastReport = await CAYANAS_BusinessDashboardEngine.buildReport({
+            if (typeof CAYANAS_BusinessDashboardMoney !== 'undefined') {
+                CAYANAS_BusinessDashboardMoney.clearCachesOnReload();
+            }
+
+            const businessPromise = CAYANAS_BusinessDashboardEngine.buildReport({
                 preset: activePreset,
                 customStart,
                 customEnd,
             });
+
+            let arReport = null;
+            let arError = null;
+
+            const arPromise = (typeof CAYANAS_AREngine !== 'undefined')
+                ? CAYANAS_AREngine.buildReport().catch((error) => {
+                    arError = error;
+                    return null;
+                })
+                : Promise.resolve(null);
+
+            const [businessReport, arResult] = await Promise.all([businessPromise, arPromise]);
+
+            arReport = arResult;
+            lastReport = {
+                ...businessReport,
+                ar: arReport,
+                arError,
+            };
 
             renderAll(root);
             bindEvents(root);
@@ -1086,7 +1229,11 @@ ${renderMeta()}
 
             console.error('[ayanas-business-dashboard]', error);
 
-            root.innerHTML = `<div class="ayanas-bd-error">${escapeHtml(ui().errorPrefix)} ${escapeHtml(error.message || String(error))}</div>`;
+            const apiMessage = error?.message
+                || error?.error?.message
+                || (typeof error === 'object' ? JSON.stringify(error) : String(error));
+
+            root.innerHTML = `<div class="ayanas-bd-error">${escapeHtml(ui().errorPrefix)} ${escapeHtml(apiMessage)}</div>`;
 
         }
 

@@ -3034,3 +3034,132 @@ body {
     opacity: 0.7;
     cursor: wait;
 }
+
+/* ========================================
+   kintone / プレビュー: 印刷ボタン共通（見やすいサイズ）
+   ======================================== */
+.ayanas-print-button,
+.ayanas-customer-list-button,
+.ayanas-master-list-button,
+.ayanas-overseas-outbound-button,
+.ayanas-overseas-outbound-row__print,
+.ayanas-overseas-outbound-dialog__close,
+.ayanas-matsuba-summary-button,
+.ayanas-matsuba-summary-dialog__cancel,
+.ayanas-matsuba-summary-dialog__preview,
+.buttons button {
+    min-height: 44px;
+    padding: 11px 24px;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+/* ========================================
+   和裁士支払明細書（App 75・A4縦）
+   ======================================== */
+.report-wasai-payment-statement .page,
+.report-wasai-payment-statement .page.page--a4 {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 12mm 10mm;
+    box-sizing: border-box;
+}
+
+.report-wasai-payment-statement .wps-title {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.report-wasai-payment-statement .wps-header-grid {
+    display: grid;
+    grid-template-columns: 7em 1fr;
+    gap: 4px 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.report-wasai-payment-statement .wps-label {
+    font-weight: 700;
+}
+
+.report-wasai-payment-statement .wps-issuer {
+    margin: 4px 0 8px;
+    font-size: 12px;
+}
+
+.report-wasai-payment-statement .wps-page-no {
+    margin: 0 0 10px;
+    text-align: right;
+    font-size: 11px;
+    color: #444;
+}
+
+.report-wasai-payment-statement .wps-header--continued {
+    margin-bottom: 4px;
+}
+
+.report-wasai-payment-statement .wps-title--continued {
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.report-wasai-payment-statement .wps-header-grid--continued {
+    margin-bottom: 2px;
+}
+
+.report-wasai-payment-statement .wps-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    table-layout: fixed;
+}
+
+.report-wasai-payment-statement .wps-table th,
+.report-wasai-payment-statement .wps-table td {
+    border: 1px solid #333;
+    padding: 4px 5px;
+    vertical-align: top;
+    word-break: break-all;
+}
+
+.report-wasai-payment-statement .wps-table th {
+    background: #eef2f7;
+    font-weight: 700;
+    text-align: center;
+}
+
+.report-wasai-payment-statement .wps-col-no { width: 2.2em; text-align: center; }
+.report-wasai-payment-statement .wps-col-manage { width: 11%; }
+.report-wasai-payment-statement .wps-col-date { width: 8%; }
+.report-wasai-payment-statement .wps-col-type { width: 10%; }
+.report-wasai-payment-statement .wps-col-spec { width: 7%; }
+.report-wasai-payment-statement .wps-col-process { width: 22%; }
+.report-wasai-payment-statement .wps-col-money { width: 10%; }
+.report-wasai-payment-statement .wps-col-rate { width: 7%; }
+.report-wasai-payment-statement .wps-num { text-align: right; white-space: nowrap; }
+
+.report-wasai-payment-statement .wps-summary {
+    margin-top: 12px;
+}
+
+.report-wasai-payment-statement .wps-summary-table {
+    margin-left: auto;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 16em;
+}
+
+.report-wasai-payment-statement .wps-summary-table th,
+.report-wasai-payment-statement .wps-summary-table td {
+    border: 1px solid #333;
+    padding: 6px 10px;
+}
+
+.report-wasai-payment-statement .wps-summary-table th {
+    background: #eef2f7;
+    text-align: left;
+    width: 9em;
+}

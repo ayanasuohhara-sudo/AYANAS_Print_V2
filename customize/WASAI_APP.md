@@ -108,6 +108,14 @@
 
 **`wasai_inbound.js` は kintone に登録しない。** `docs/INBOUND_UNIFIED_*` も触らない。
 
+### 和裁士出庫伝票（AYANAS Print プラグイン）
+
+- **App 74** レコード詳細 → **和裁士出庫伝票** ボタン（外注出庫伝票と同じ A4 横・左半分×2）
+- **加工内容**: App16 `detail_table` の **`item_name`**（App13 中分類が「国内仕立」「修理」「修理・直し」の行のみ）
+- **備考**: App74 の備考（`remarks` 等）を入力したときだけ伝票に印刷（未入力・`-` は非表示）
+- 出庫時に保存した **`wasai_payment_item_snapshots`** があればそちらを優先。なければ受注を再取得
+- プラグイン **v125** 以降。`npm run pack` 後に kintone へ再アップロード
+
 ### 1. 出庫（74）
 
 1. W1（73）に和裁士1件、`registration_status = 有効`
@@ -132,6 +140,8 @@
 4. **保留** → `line_status = 保留`（支払対象外）
 
 ### 4. 支払明細（75）
+
+**印刷**: レコード詳細 → AYANAS Print **支払明細書 印刷**（`payment_statement_lines` の保存値を使用。v127+）。詳細は `docs/WASAI_PAYMENT_STATEMENT_PRINT.md`。
 
 1. 一覧 **支払明細作成** → 和裁士コード・入庫月（手順2の `inbound_date` の年月）
 2. プレビュー件数・合計を確認 → 作成

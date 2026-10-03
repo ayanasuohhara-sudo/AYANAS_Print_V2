@@ -107,7 +107,7 @@
 
         const text = String(remarks ?? '').trim();
 
-        if (text === '') {
+        if (text === '' || text === '-') {
             return '';
         }
 
@@ -115,17 +115,27 @@
 
     };
 
-    OutsourceOutboundSlipShared.buildTableHtml = (header, details) => {
+    const buildTableHtmlWithRowDefinitions = (header, details, rowDefinitions) => {
 
-        const rowsHtml = OutsourceOutboundSlipShared.ROW_DEFINITIONS.map((row) => {
+        const rowsHtml = rowDefinitions.map((row) => {
 
             if (row.type === 'pair') {
                 return buildPairRowHtml(row.items, header);
             }
 
+            const cellValue = OutsourceOutboundSlipShared.formatFieldValue(
+                header[row.field],
+                row.format,
+                row.suffix
+            );
+
+            if (row.skipIfEmpty && cellValue === '') {
+                return '';
+            }
+
             return buildSingleRowHtml(
                 row.label,
-                OutsourceOutboundSlipShared.formatFieldValue(header[row.field], row.format, row.suffix),
+                cellValue,
                 { wrap: row.wrap }
             );
 
@@ -147,6 +157,52 @@
 </table>`;
 
     };
+
+    OutsourceOutboundSlipShared.buildTableHtml = (header, details) => (
+        buildTableHtmlWithRowDefinitions(header, details, OutsourceOutboundSlipShared.ROW_DEFINITIONS)
+    );
+
+    const WasaiOutboundSlipShared = {};
+
+    WasaiOutboundSlipShared.ROW_DEFINITIONS = [
+        { type: 'single', label: '和裁士コード', field: 'wasai_code' },
+        { type: 'single', label: '和裁士名', field: 'wasai_name', wrap: true },
+        { type: 'single', label: '屋号', field: 'trade_name', wrap: true, skipIfEmpty: true },
+        {
+            type: 'pair',
+            items: [
+                { label: '出庫日', field: 'ship_date', format: 'date' },
+                { label: '納期', field: 'return_date', format: 'date' },
+            ],
+        },
+        {
+            type: 'pair',
+            items: [
+                { label: '管理番号', field: 'manage_no' },
+                { label: '顧客コード', field: 'customer_code' },
+            ],
+        },
+        { type: 'single', label: 'お客様名', field: 'client_name', wrap: true, suffix: ' 様' },
+        { type: 'single', label: '着物種類', field: 'kimono_type', wrap: true },
+    ];
+
+    WasaiOutboundSlipShared.buildTableHtml = (header, details) => (
+        buildTableHtmlWithRowDefinitions(header, details, WasaiOutboundSlipShared.ROW_DEFINITIONS)
+    );
+
+    WasaiOutboundSlipShared.buildSheetHtml = (
+        header,
+        details,
+        manageNo,
+        layoutSide,
+        title = '和裁士出庫伝票',
+        barcodeId = layoutSide
+    ) => `
+<div class="order-detail-sheet order-detail-sheet--${esc(layoutSide)}">
+    <h1 class="order-detail-title">${esc(title)}</h1>
+    ${WasaiOutboundSlipShared.buildTableHtml(header, details)}
+    ${OutsourceOutboundSlipShared.buildBarcodeHtml(manageNo, barcodeId)}
+</div>`;
 
     OutsourceOutboundSlipShared.buildBarcodeHtml = (manageNo, side) => `
 
@@ -170,5 +226,6 @@
 </div>`;
 
     window.OutsourceOutboundSlipShared = OutsourceOutboundSlipShared;
+    window.WasaiOutboundSlipShared = WasaiOutboundSlipShared;
 
 })();
