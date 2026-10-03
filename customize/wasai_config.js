@@ -6,7 +6,7 @@
    * WASAI_JS_VERSION: 1.0.0
    */
 
-  const WASAI_JS_VERSION = '1.0.2';
+  const WASAI_JS_VERSION = '1.0.4';
 
   const APP = {
     order: 16,
@@ -431,7 +431,7 @@
       return '';
     }
 
-    return formatDateYmd(new Date(year, month, 0));
+    return formatDateYmd(new Date(year, month + 1, 0));
   };
 
   const inboundPeriodBounds = (ym) => {

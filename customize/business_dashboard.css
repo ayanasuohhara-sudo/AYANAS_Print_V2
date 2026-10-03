@@ -1,0 +1,277 @@
+body.ayanas-business-dashboard-active .contents-gaia .recordlist-gaia,
+body.ayanas-business-dashboard-active .contents-gaia .recordlist-header-gaia {
+  display: none !important;
+}
+
+.ayanas-bd-root {
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #0f172a;
+  background: #f1f5f9;
+  min-height: 100vh;
+}
+
+.ayanas-bd-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 16px 32px;
+}
+
+.ayanas-bd-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.ayanas-bd-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: rgba(241, 245, 249, 0.95);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.ayanas-bd-period-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.ayanas-bd-period-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.ayanas-bd-period-range {
+  font-size: 13px;
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+
+.ayanas-bd-period-basis {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.ayanas-bd-segment {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.ayanas-bd-btn--seg {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.ayanas-bd-period {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.ayanas-bd-custom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.ayanas-bd-custom.is-hidden {
+  display: none;
+}
+
+.ayanas-bd-btn {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ayanas-bd-btn.is-active,
+.ayanas-bd-btn--primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.ayanas-bd-btn--primary:not(.is-active) {
+  background: #1d4ed8;
+}
+
+.ayanas-bd-section {
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.ayanas-bd-section--a550 {
+  background: #f8fafc;
+}
+
+.ayanas-bd-section__title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.ayanas-bd-note {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #b45309;
+}
+
+.ayanas-bd-note--muted {
+  color: #64748b;
+}
+
+.ayanas-bd-subsection__title {
+  margin: 16px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ayanas-bd-section--pipeline {
+  border-color: #cbd5e1;
+}
+
+.ayanas-bd-pipeline-list-toggle {
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ayanas-bd-nested--standalone {
+  margin-top: 8px;
+}
+
+.ayanas-bd-muted {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.ayanas-bd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ayanas-bd-table th,
+.ayanas-bd-table td {
+  border-bottom: 1px solid #eef2f7;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.ayanas-bd-table th {
+  background: #f1f5f9;
+  font-weight: 600;
+}
+
+.ayanas-bd-table td.num,
+.ayanas-bd-table th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ayanas-bd-table--summary tbody th {
+  width: 160px;
+  background: #f8fafc;
+}
+
+.ayanas-bd-toggle-cell {
+  white-space: nowrap;
+}
+
+button.ayanas-bd-toggle {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  margin-right: 4px;
+  color: #64748b;
+}
+
+.ayanas-bd-nested {
+  margin: 8px 8px 8px 28px;
+  padding: 10px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 4px;
+}
+
+.ayanas-bd-nested__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.ayanas-bd-table--nested {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.ayanas-bd-message,
+.ayanas-bd-meta {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.ayanas-bd-error {
+  padding: 12px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+}
+
+.ayanas-bd-meta-details {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.ayanas-bd-meta-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #475569;
+}
+
+.ayanas-bd-meta-details__body {
+  margin-top: 8px;
+}
+
+.ayanas-bd-footer {
+  margin: 16px 0 0;
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: right;
+}
+
+.ayanas-bd-table--summary tbody tr:nth-child(even) th {
+  background: #f1f5f9;
+}
+
+.ayanas-bd-table tbody tr:hover td {
+  background: #f8fafc;
+}

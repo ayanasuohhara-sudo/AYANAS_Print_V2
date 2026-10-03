@@ -56,7 +56,13 @@
     }
 
     const total = preview.reduce(function(sum, entry) {
-      return sum + W.toNumber(W.getFieldValue(entry.lineValues, W.LINE.paymentAmount));
+      const paymentAmount = W.getFieldValue(entry.lineValues, W.LINE.paymentAmount);
+      const base = W.getFieldValue(entry.lineValues, W.LINE.basePaymentAmount);
+      const amount = paymentAmount !== '' && paymentAmount != null
+        ? W.toNumber(paymentAmount)
+        : W.toNumber(base);
+
+      return sum + amount;
     }, 0);
 
     const ok = window.confirm(
@@ -106,7 +112,7 @@
     btn.style.margin = '8px';
     btn.onclick = function() {
       promptCreate().catch(function(err) {
-        window.alert(err.message || String(err));
+        window.alert(W.formatKintoneError(err));
       });
     };
 
@@ -134,7 +140,7 @@
       btn.style.marginRight = '8px';
       btn.onclick = function() {
         handler().catch(function(err) {
-          window.alert(err.message || String(err));
+          window.alert(W.formatKintoneError(err));
         });
       };
 

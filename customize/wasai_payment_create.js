@@ -36,6 +36,91 @@
     W.INSPECTION.ng,
   ];
 
+  /** App75 実フォーム照合（period_fro 等の誤記含む） */
+  const PAYMENT_HEADER_FIELD_CANDIDATES = {
+    paymentStatementNo: ['payment_statement_no'],
+    wasaiCode: ['wasai_code'],
+    wasaiName: ['wasai_name'],
+    tradeName: ['trade_name'],
+    periodFrom: ['period_fro', 'period_from'],
+    periodTo: ['period_to'],
+    inboundPeriodYm: ['inbound_period_ym'],
+    paymentDueDate: ['payment_due_date'],
+    paymentTotal: ['payment_total'],
+    paymentStatus: ['payment_status'],
+    paymentStatementLines: ['payment_statement_lines'],
+  };
+
+  let paymentFormProperties = null;
+
+  const loadPaymentFormProperties = async () => {
+    if (paymentFormProperties) {
+      return paymentFormProperties;
+    }
+
+    const resp = await kintone.api(
+      kintone.api.url('/k/v1/app/form/fields.json', true),
+      'GET',
+      { app: W.APP.wasaiPayment }
+    );
+
+    paymentFormProperties = resp.properties || {};
+    return paymentFormProperties;
+  };
+
+  const resolvePaymentFieldCode = (properties, logicalKey) => {
+    const candidates = PAYMENT_HEADER_FIELD_CANDIDATES[logicalKey];
+
+    if (!candidates) {
+      return W.F[logicalKey] || logicalKey;
+    }
+
+    for (let i = 0; i < candidates.length; i += 1) {
+      if (properties[candidates[i]]) {
+        return candidates[i];
+      }
+    }
+
+    return candidates[0];
+  };
+
+  const buildPaymentPostRecord = async (headerValues, detailRows) => {
+    const properties = await loadPaymentFormProperties();
+    const record = {};
+
+    Object.keys(headerValues).forEach(function(logicalKey) {
+      const fieldCode = resolvePaymentFieldCode(properties, logicalKey);
+      const fieldProp = properties[fieldCode];
+
+      if (!fieldProp) {
+        return;
+      }
+
+      let scalar = headerValues[logicalKey];
+
+      if (scalar === null || scalar === undefined || scalar === '') {
+        return;
+      }
+
+      if (fieldProp.type === 'DROP_DOWN' || fieldProp.type === 'RADIO_BUTTON') {
+        scalar = W.pickDropdownValue(fieldProp, [String(scalar)], String(scalar));
+      } else {
+        scalar = String(scalar);
+      }
+
+      record[fieldCode] = { value: scalar };
+    });
+
+    const linesCode = resolvePaymentFieldCode(properties, 'paymentStatementLines');
+    const linesProp = properties[linesCode];
+
+    if (linesProp && Array.isArray(detailRows) && detailRows.length > 0) {
+      record[linesCode] = { value: detailRows };
+    }
+
+    return record;
+  };
+
   const flattenPayableLines = (records) => {
     const result = [];
 
@@ -125,13 +210,23 @@
       [PAYMENT_DETAIL.paymentRate]: { value: W.getFieldValue(entry.lineValues, W.LINE.paymentRate) },
       [PAYMENT_DETAIL.basePaymentAmount]: { value: W.getFieldValue(entry.lineValues, W.LINE.basePaymentAmount) },
       [PAYMENT_DETAIL.adjustmentAmount]: { value: W.getFieldValue(entry.lineValues, W.LINE.adjustmentAmount) },
-      [PAYMENT_DETAIL.linePaymentAmount]: { value: W.getFieldValue(entry.lineValues, W.LINE.paymentAmount) },
+      [PAYMENT_DETAIL.linePaymentAmount]: { value: String(getLinePaymentAmount(entry.lineValues)) },
       [PAYMENT_DETAIL.eligibleLineCount]: { value: W.getFieldValue(entry.lineValues, W.LINE.eligibleLineCount) },
     },
   });
 
+  const getLinePaymentAmount = (lineValues) => {
+    const paymentAmount = W.getFieldValue(lineValues, W.LINE.paymentAmount);
+
+    if (paymentAmount !== '' && paymentAmount !== null && paymentAmount !== undefined) {
+      return W.toNumber(paymentAmount);
+    }
+
+    return W.toNumber(W.getFieldValue(lineValues, W.LINE.basePaymentAmount));
+  };
+
   const sumPaymentTotal = (entries) => entries.reduce(function(sum, entry) {
-    return sum + W.toNumber(W.getFieldValue(entry.lineValues, W.LINE.paymentAmount));
+    return sum + getLinePaymentAmount(entry.lineValues);
   }, 0);
 
   const markOutboundLines = async (entries, patch, paymentStatementNo) => {
@@ -218,26 +313,29 @@
     const paymentTotal = sumPaymentTotal(payable);
     const dueDate = W.paymentDueDateForInboundYm(inboundYm);
 
+    const postRecord = await buildPaymentPostRecord({
+      paymentStatementNo: paymentStatementNo,
+      wasaiCode: wasaiCode,
+      wasaiName: wasaiName || '',
+      tradeName: tradeName || '',
+      periodFrom: bounds.from,
+      periodTo: bounds.to,
+      inboundPeriodYm: inboundYm,
+      paymentDueDate: dueDate,
+      paymentTotal: String(paymentTotal),
+      paymentStatus: W.PAYMENT_STATUS.drafting,
+    }, payable.map(buildPaymentDetailRow));
+
+    if (Object.keys(postRecord).length === 0) {
+      throw new Error('App75にPOST可能なフィールドがありません。フォーム設定を確認してください。');
+    }
+
     const resp = await kintone.api(
       kintone.api.url('/k/v1/record.json', true),
       'POST',
       {
         app: W.APP.wasaiPayment,
-        record: {
-          [W.F.paymentStatementNo]: { value: paymentStatementNo },
-          [W.F.wasaiCode]: { value: wasaiCode },
-          [W.F.wasaiName]: { value: wasaiName || '' },
-          [W.F.tradeName]: { value: tradeName || '' },
-          [W.F.periodFrom]: { value: bounds.from },
-          [W.F.periodTo]: { value: bounds.to },
-          [W.F.inboundPeriodYm]: { value: inboundYm },
-          [W.F.paymentDueDate]: { value: dueDate },
-          [W.F.paymentTotal]: { value: String(paymentTotal) },
-          [W.F.paymentStatus]: { value: W.PAYMENT_STATUS.drafting },
-          [W.F.paymentStatementLines]: {
-            value: payable.map(buildPaymentDetailRow),
-          },
-        },
+        record: postRecord,
       }
     );
 
@@ -355,7 +453,7 @@
 
     await markOutboundLines(entries, {
       [W.LINE.billingStatus]: W.BILLING_STATUS.unbilled,
-      [W.LINE.lineStatus]: W.LINE_STATUS.payTarget,
+      [W.LINE.lineStatus]: W.LINE_STATUS.inspectionOk,
       [W.LINE.paymentStatementNo]: '',
     }, '');
 

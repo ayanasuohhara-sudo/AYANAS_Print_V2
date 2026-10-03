@@ -1,0 +1,369 @@
+body.ayanas-ar-active .recordlist-gaia {
+  display: none !important;
+}
+
+body.ayanas-ar-active .recordlist-header-gaia .recordlist-add-gaia {
+  display: none !important;
+}
+
+.ayanas-ar-root {
+  box-sizing: border-box;
+  margin: 0 0 16px;
+  padding: 16px 20px 20px;
+  background: #f7f9fb;
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  font-size: 13px;
+  color: #222;
+}
+
+.ayanas-ar-root *,
+.ayanas-ar-root *::before,
+.ayanas-ar-root *::after {
+  box-sizing: border-box;
+}
+
+.ayanas-ar-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.ayanas-ar-head__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ayanas-ar-head__meta {
+  color: #666;
+  font-size: 12px;
+}
+
+.ayanas-ar-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ayanas-ar-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.ayanas-ar-card__label {
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.ayanas-ar-card__value {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ayanas-ar-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ayanas-ar-btn {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.ayanas-ar-btn:hover {
+  background: #f1f5f9;
+}
+
+.ayanas-ar-btn--primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.ayanas-ar-btn--primary:hover {
+  background: #1d4ed8;
+}
+
+.ayanas-ar-btn.is-active {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #fff;
+}
+
+.ayanas-ar-search {
+  min-width: 200px;
+  padding: 6px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+}
+
+.ayanas-ar-table-wrap {
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.ayanas-ar-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1200px;
+}
+
+.ayanas-ar-table th,
+.ayanas-ar-table td {
+  border-bottom: 1px solid #eef2f7;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.ayanas-ar-table th {
+  background: #f8fafc;
+  font-weight: 600;
+  font-size: 11px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.ayanas-ar-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ayanas-ar-row--customer:hover {
+  background: #f8fafc;
+}
+
+.ayanas-ar-row--customer.is-overdue td {
+  background: #fff7ed;
+}
+
+.ayanas-ar-toggle-cell {
+  width: 2em;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.ayanas-ar-toggle {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 2px 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #334155;
+}
+
+.ayanas-ar-toggle:hover {
+  color: #2563eb;
+}
+
+.ayanas-ar-breakdown {
+  margin: 4px 8px 12px 24px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.ayanas-ar-breakdown__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.ayanas-ar-breakdown__empty {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.ayanas-ar-breakdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ayanas-ar-breakdown-table th,
+.ayanas-ar-breakdown-table td {
+  border-bottom: 1px solid #eef2f7;
+  padding: 6px 8px;
+  white-space: nowrap;
+}
+
+.ayanas-ar-breakdown-table th {
+  background: #f1f5f9;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.ayanas-ar-breakdown-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ayanas-ar-payment-register-cell {
+  text-align: center;
+}
+
+a.ayanas-ar-payment-register {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: #2563eb;
+  border-radius: 4px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+a.ayanas-ar-payment-register:hover {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.ayanas-ar-invoice-toggle-cell {
+  width: 28px;
+  text-align: center;
+}
+
+button.ayanas-ar-invoice-toggle {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1.2;
+  color: #64748b;
+  padding: 2px 4px;
+}
+
+button.ayanas-ar-invoice-toggle:hover {
+  color: #2563eb;
+}
+
+.ayanas-ar-row--payment-history td {
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
+.ayanas-ar-payment-history {
+  margin: 0 8px 10px 36px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 4px;
+}
+
+.ayanas-ar-payment-history__title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.ayanas-ar-payment-history__message {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.ayanas-ar-payment-history__message--error {
+  color: #b91c1c;
+}
+
+.ayanas-ar-payment-history__warn {
+  margin: 0 0 6px;
+  font-size: 11px;
+  color: #b45309;
+}
+
+.ayanas-ar-payment-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.ayanas-ar-payment-history-table th,
+.ayanas-ar-payment-history-table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 5px 8px;
+  white-space: nowrap;
+}
+
+.ayanas-ar-payment-history-table th {
+  background: #eef2f7;
+  font-weight: 600;
+  font-size: 10px;
+}
+
+.ayanas-ar-payment-history-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ayanas-ar-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ayanas-ar-status--unpaid {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ayanas-ar-status--partial {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.ayanas-ar-status--paid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.ayanas-ar-link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.ayanas-ar-link:hover {
+  text-decoration: underline;
+}
+
+.ayanas-ar-message {
+  padding: 12px;
+  color: #64748b;
+}
+
+.ayanas-ar-error {
+  color: #b91c1c;
+  padding: 12px;
+  background: #fef2f2;
+  border-radius: 4px;
+}
