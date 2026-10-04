@@ -417,7 +417,7 @@
 
     return in28 === d
       && st28 === C.OVERSEAS_STATUS_RETURNED
-      && process === C.ORDER_PROCESS.returnOutsource
+      && process === C.ORDER_PROCESS.returnOverseas
       && location === C.ORDER_LOCATION.hq
       && od16 === d;
   };
@@ -499,7 +499,7 @@
         app: C.APP.order,
         id: orderId,
         record: {
-          [C.ORDER.processStatus]: { value: C.ORDER_PROCESS.returnOutsource },
+          [C.ORDER.processStatus]: { value: C.ORDER_PROCESS.returnOverseas },
           [C.ORDER.locationStatus]: { value: C.ORDER_LOCATION.hq },
           [C.ORDER.overseasInDate]: { value: d },
         },

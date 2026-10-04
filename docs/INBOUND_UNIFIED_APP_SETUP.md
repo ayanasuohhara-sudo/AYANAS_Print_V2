@@ -278,7 +278,7 @@ kintone は **アプリ間トランザクションなし** のため、次の順
 
 | 区分 | 出庫側（先） | App 16（後） |
 |------|-------------|--------------|
-| **海外外注** | App **28**: `overseas_in_date` = **D**、`overseas_status` = **`全戻り`** | `process_status` = **`外注戻り`**、`location_status` = **`本社`**、`overseas_in_date` = **D** |
+| **海外外注** | App **28**: `overseas_in_date` = **D**、`overseas_status` = **`全戻り`** | `process_status` = **`海外戻り`**、`location_status` = **`本社`**、`overseas_in_date` = **D** |
 | **国内外注** | App **27** 該当行: **`line_in_date`** = **D**（同一行の `manage_no` 一致） | 上記に加え **`outsource_in_date`** = **D** |
 | **和裁士** | App **74** 該当行: **`inbound_date`** = **D**、`line_status` = **`入庫済`** | `process_status` = **`和裁士戻り`**、`location_status` = **`本社`**、`wasai_in_date` = **D**（フィールドがある場合） |
 

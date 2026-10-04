@@ -133,6 +133,7 @@
     overseasActive: '海外外注中',
     wasaiActive: '和裁士作業中',
     returnOutsource: '外注戻り',
+    returnOverseas: '海外戻り',
     returnWasai: '和裁士戻り',
   };
 
