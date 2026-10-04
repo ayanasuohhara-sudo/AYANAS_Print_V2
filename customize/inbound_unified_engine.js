@@ -495,15 +495,30 @@
     orderRec = await C.fetchRecord(C.APP.order, orderId);
 
     if (!isOverseasTargetMet(await C.fetchRecord(C.APP.overseasOutbound, recordId), orderRec, d)) {
-      await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
-        app: C.APP.order,
-        id: orderId,
-        record: {
-          [C.ORDER.processStatus]: { value: C.ORDER_PROCESS.returnOverseas },
-          [C.ORDER.locationStatus]: { value: C.ORDER_LOCATION.hq },
-          [C.ORDER.overseasInDate]: { value: d },
-        },
-      });
+      const overseasOrderBase = {
+        [C.ORDER.processStatus]: { value: C.ORDER_PROCESS.returnOverseas },
+        [C.ORDER.locationStatus]: { value: C.ORDER_LOCATION.hq },
+        [C.ORDER.overseasInDate]: { value: d },
+      };
+      const overseasOrderWithWork = {
+        ...overseasOrderBase,
+        [C.ORDER.workStatus]: { value: C.ORDER_WORK.finishInProgress },
+      };
+
+      try {
+        await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
+          app: C.APP.order,
+          id: orderId,
+          record: overseasOrderWithWork,
+        });
+      } catch (putErr) {
+        console.warn('[inbound_engine] 海外戻り work_status 付き PUT 失敗。work なしで再試行:', putErr);
+        await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
+          app: C.APP.order,
+          id: orderId,
+          record: overseasOrderBase,
+        });
+      }
     }
   };
 

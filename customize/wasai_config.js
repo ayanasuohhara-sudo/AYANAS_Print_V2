@@ -91,8 +91,11 @@
     detailTable: 'detail_table',
     processStatus: 'process_status',
     locationStatus: 'location_status',
+    workStatus: 'work_status',
     wasaiInDate: 'wasai_in_date',
   };
+
+  const ORDER_WORK_FINISH_IN_PROGRESS = '仕上げ中';
 
   const ELIGIBLE_SUBCATEGORIES = ['国内仕立', '修理'];
   const A550_CUSTOMER_CODE = 'A550';
@@ -474,6 +477,7 @@
     const properties = await loadOrderFormProperties();
     const processField = properties[ORDER.processStatus];
     const locationField = properties[ORDER.locationStatus];
+    const workField = properties[ORDER.workStatus];
 
     const processCandidates = mode === 'outbound'
       ? [ORDER_WASAI_PROCESS, '和裁士作業中']
@@ -499,6 +503,19 @@
       [ORDER.processStatus]: { value: processValue },
       [ORDER.locationStatus]: { value: locationValue },
     };
+
+    if (mode === 'inbound' && workField) {
+      const workValue = pickDropdownValue(
+        workField,
+        [ORDER_WORK_FINISH_IN_PROGRESS],
+        '',
+        true
+      );
+
+      if (workValue) {
+        record[ORDER.workStatus] = { value: workValue };
+      }
+    }
 
     if (mode === 'inbound' && inboundDateYmd && properties[ORDER.wasaiInDate]) {
       record[ORDER.wasaiInDate] = { value: inboundDateYmd };

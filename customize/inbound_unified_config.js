@@ -66,6 +66,11 @@
     outsourceInDate: 'outsource_in_date',
     overseasInDate: 'overseas_in_date',
     wasaiInDate: 'wasai_in_date',
+    workStatus: 'work_status',
+  };
+
+  const ORDER_WORK = {
+    finishInProgress: '仕上げ中',
   };
 
   const OUT27 = {
@@ -255,6 +260,7 @@
     ROUTE: ROUTE,
     SOURCE_APP: SOURCE_APP,
     ORDER_PROCESS: ORDER_PROCESS,
+    ORDER_WORK: ORDER_WORK,
     ORDER_LOCATION: ORDER_LOCATION,
     OVERSEAS_STATUS_RETURNED: OVERSEAS_STATUS_RETURNED,
     OUT27_STATUS_INBOUND: OUT27_STATUS_INBOUND,

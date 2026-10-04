@@ -7,7 +7,7 @@
      * tone は app_nav_banner.css の色クラス（例: blue, teal）
      */
 
-    const APP_NAV_BANNER_VERSION = '1.1.2';
+    const APP_NAV_BANNER_VERSION = '1.1.3';
 
     window.CAYANAS_APP_NAV = {
         VERSION: APP_NAV_BANNER_VERSION,
@@ -27,8 +27,9 @@
                 links: [
                     { appId: 16, label: '受注登録', tone: 'blue' },
                     { appId: 19, label: '納品書', tone: 'teal' },
-                    { appId: 30, label: '完了登録', tone: 'amber' },
-                    { appId: 34, label: '保管場所移動', tone: 'green' },
+                    { appId: 34, label: '社内入庫', tone: 'green' },
+                    { appId: 84, label: '社内作業登録', tone: 'slate' },
+                    { appId: 30, label: '検品・仕上げ完了', tone: 'amber' },
                 ],
             },
             {
@@ -41,7 +42,7 @@
             {
                 label: '物流',
                 links: [
-                    { appId: 78, label: '入庫登録', tone: 'cyan' },
+                    { appId: 78, label: '外注入庫', tone: 'cyan' },
                     { appId: 27, label: '外注出庫', tone: 'sky' },
                     { appId: 28, label: '海外外注出庫', tone: 'purple' },
                     { appId: 74, label: '和裁士出庫', tone: 'lime' },
