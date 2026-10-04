@@ -57,6 +57,43 @@
 
     };
 
+    const hasProcessingUnitPrice = (unitPrice) => {
+
+        if (unitPrice === null || unitPrice === undefined || unitPrice === '') {
+            return false;
+        }
+
+        const number = Number(unitPrice);
+
+        return !Number.isNaN(number);
+
+    };
+
+    const buildProcessingLineHtml = (detail) => {
+
+        const itemName = String(detail?.item_name ?? '').trim();
+        const unitPrice = detail?.unit_price;
+        const hasPrice = hasProcessingUnitPrice(unitPrice);
+
+        if (itemName === '' && !hasPrice) {
+            return '';
+        }
+
+        const priceText = hasPrice ? Format.formatMoney(unitPrice) : '';
+
+        if (priceText === '') {
+            return `<div class="order-detail-processing-line">${esc(itemName)}</div>`;
+        }
+
+        return (
+            `<div class="order-detail-processing-line">`
+            + `<span class="order-detail-processing-line__name">${esc(itemName)}</span>`
+            + `<span class="order-detail-processing-line__price">${esc(priceText)}</span>`
+            + `</div>`
+        );
+
+    };
+
     OrderDetailShared.buildProcessingContentHtml = (details) => {
 
         if (!Array.isArray(details)) {
@@ -64,10 +101,9 @@
         }
 
         return details
-            .map((detail) => String(detail?.item_name ?? '').trim())
-            .filter((itemName) => itemName !== '')
-            .map((itemName) => esc(itemName))
-            .join('<br>');
+            .map((detail) => buildProcessingLineHtml(detail))
+            .filter((lineHtml) => lineHtml !== '')
+            .join('');
 
     };
 
@@ -148,12 +184,90 @@
     <p class="order-detail-barcode__value">${esc(manageNo)}</p>
 </div>`;
 
-    OrderDetailShared.buildSheetHtml = (header, details, manageNo, side, title = '受注明細表') => `
+    const withHonorific = (value) => {
+
+        const text = String(value ?? '').trim();
+
+        if (text === '') {
+            return '';
+        }
+
+        return `${text} 様`;
+
+    };
+
+    const joinProductName = (header) => {
+
+        const type = String(header?.kimono_type ?? '').trim();
+        const spec = String(header?.kimono_spec ?? '').trim();
+
+        if (type && spec) {
+            return `${type}\u3000${spec}`;
+        }
+
+        return type || spec;
+
+    };
+
+    OrderDetailShared.buildSleeveTagTableHtml = (header) => {
+
+        const customerName = withHonorific(header?.customer_name);
+        const clientName = withHonorific(header?.client_name);
+        const productName = joinProductName(header);
+        const manageNo = String(header?.manage_no ?? '').trim();
+        const slipNo = String(header?.slip_no ?? '').trim();
+        const inCharge = String(header?.in_charge ?? '').trim();
+
+        return `
+<table class="order-sleeve-tag-table">
+    <colgroup>
+        <col class="order-sleeve-tag-table__col-label">
+        <col class="order-sleeve-tag-table__col-value-wide">
+        <col class="order-sleeve-tag-table__col-value-wide">
+        <col class="order-sleeve-tag-table__col-label-sub">
+        <col class="order-sleeve-tag-table__col-value-sub">
+    </colgroup>
+    <tbody>
+        <tr class="order-sleeve-tag-table__row">
+            <th class="order-sleeve-tag-table__label">お得意様名</th>
+            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--wide" colspan="4">${esc(customerName)}</td>
+        </tr>
+        <tr class="order-sleeve-tag-table__row">
+            <th class="order-sleeve-tag-table__label">お客様名</th>
+            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--wide" colspan="4">${esc(clientName)}</td>
+        </tr>
+        <tr class="order-sleeve-tag-table__row">
+            <th class="order-sleeve-tag-table__label">商品名</th>
+            <td class="order-sleeve-tag-table__value" colspan="2">${esc(productName)}</td>
+            <th class="order-sleeve-tag-table__label order-sleeve-tag-table__label--sub">管理番号</th>
+            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--sub">${esc(manageNo)}</td>
+        </tr>
+        <tr class="order-sleeve-tag-table__row">
+            <th class="order-sleeve-tag-table__label">伝票番号</th>
+            <td class="order-sleeve-tag-table__value" colspan="2">${esc(slipNo)}</td>
+            <th class="order-sleeve-tag-table__label order-sleeve-tag-table__label--sub">係様名</th>
+            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--sub">${esc(inCharge)}</td>
+        </tr>
+    </tbody>
+</table>`;
+
+    };
+
+    OrderDetailShared.buildSheetHtml = (header, details, manageNo, side, title = '受注明細表') => {
+
+        const sleeveTagHtml = side === 'left'
+            ? OrderDetailShared.buildSleeveTagTableHtml(header)
+            : '';
+
+        return `
 <div class="order-detail-sheet order-detail-sheet--${esc(side)}">
     <h1 class="order-detail-title">${esc(title)}</h1>
     ${OrderDetailShared.buildTableHtml(header, details)}
     ${OrderDetailShared.buildBarcodeHtml(manageNo, side)}
+    ${sleeveTagHtml}
 </div>`;
+
+    };
 
     window.OrderDetailShared = OrderDetailShared;
 

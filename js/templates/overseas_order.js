@@ -19,7 +19,7 @@
      *   overseas_acc_emon, overseas_acc_iseshiki, overseas_acc_kataura
      */
 
-    const OVERSEAS_ORDER_TEMPLATE_VERSION = '2';
+    const OVERSEAS_ORDER_TEMPLATE_VERSION = '4';
 
     const esc = (value) => Format.escapeHtml(value);
 

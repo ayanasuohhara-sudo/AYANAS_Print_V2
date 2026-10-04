@@ -19,15 +19,13 @@
 
     };
 
-    const tagFieldControls = () => {
+    const tagFieldControls = (record) => {
 
         if (typeof kintone.app.record?.getFieldElement !== 'function') {
             return;
         }
 
-        const record = kintone.app.record.get()?.record;
-
-        if (!record) {
+        if (!record || typeof record !== 'object') {
             return;
         }
 
@@ -73,19 +71,20 @@
 
     };
 
-    const refreshLayout = () => {
+    const refreshLayout = (record) => {
 
-        tagFieldControls();
+        tagFieldControls(record);
         clearFormInlineWidths();
 
     };
 
-    const enableUi = () => {
+    const enableUi = (record) => {
 
         document.body.classList.add(BODY_CLASS);
-        refreshLayout();
-        window.setTimeout(refreshLayout, 0);
-        window.setTimeout(refreshLayout, 300);
+        const run = () => refreshLayout(record);
+        run();
+        window.setTimeout(run, 0);
+        window.setTimeout(run, 300);
 
     };
 
@@ -101,7 +100,7 @@
             return event;
         }
 
-        enableUi();
+        enableUi(event.record);
 
         return event;
 

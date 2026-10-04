@@ -325,6 +325,32 @@
     vertical-align: top;
 }
 
+.report-order-detail .order-detail-processing-line,
+.report-overseas-order .order-detail-processing-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2mm;
+}
+
+.report-order-detail .order-detail-processing-line + .order-detail-processing-line,
+.report-overseas-order .order-detail-processing-line + .order-detail-processing-line {
+    margin-top: 1.2mm;
+}
+
+.report-order-detail .order-detail-processing-line__name,
+.report-overseas-order .order-detail-processing-line__name {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.report-order-detail .order-detail-processing-line__price,
+.report-overseas-order .order-detail-processing-line__price {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    text-align: right;
+}
+
 .report-order-detail .order-detail-table__col-label-single {
     width: 38mm;
 }
@@ -374,6 +400,53 @@
     letter-spacing: 0.04em;
     text-align: center;
     box-sizing: border-box;
+}
+
+.report-order-detail .order-sleeve-tag-table,
+.report-overseas-order .order-sleeve-tag-table {
+    width: 100%;
+    margin-top: 3mm;
+    border-collapse: collapse;
+    table-layout: fixed;
+    box-sizing: border-box;
+}
+
+.report-order-detail .order-sleeve-tag-table th,
+.report-order-detail .order-sleeve-tag-table td,
+.report-overseas-order .order-sleeve-tag-table th,
+.report-overseas-order .order-sleeve-tag-table td {
+    border: 1px solid #000000;
+    padding: 1.2mm 1.5mm;
+    vertical-align: middle;
+    line-height: 1.35;
+    font-size: 11pt;
+    font-weight: 700;
+    text-align: left;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.report-order-detail .order-sleeve-tag-table th,
+.report-overseas-order .order-sleeve-tag-table th {
+    font-size: 10pt;
+    font-weight: 400;
+    white-space: nowrap;
+    background: #ffffff;
+}
+
+.report-order-detail .order-sleeve-tag-table__col-label,
+.report-overseas-order .order-sleeve-tag-table__col-label {
+    width: 22mm;
+}
+
+.report-order-detail .order-sleeve-tag-table__col-label-sub,
+.report-overseas-order .order-sleeve-tag-table__col-label-sub {
+    width: 18mm;
+}
+
+.report-order-detail .order-sleeve-tag-table__col-value-sub,
+.report-overseas-order .order-sleeve-tag-table__col-value-sub {
+    width: auto;
 }
 
 /* ========================================

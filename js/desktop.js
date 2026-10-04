@@ -539,6 +539,89 @@
 
     const OVERSEAS_ORDER_BUTTON_ID = 'ayanas-print-button-overseas-order';
 
+    const getPrintButtonsMountSpace = () => {
+
+        if (typeof kintone === 'undefined') {
+            return null;
+        }
+
+        if (typeof kintone.app?.record?.getHeaderMenuSpaceElement === 'function') {
+            const menuSpace = kintone.app.record.getHeaderMenuSpaceElement();
+
+            if (menuSpace) {
+                return menuSpace;
+            }
+        }
+
+        if (typeof kintone.app?.getHeaderSpaceElement === 'function') {
+            const headerSpace = kintone.app.getHeaderSpaceElement();
+
+            if (headerSpace) {
+                return headerSpace;
+            }
+        }
+
+        return null;
+
+    };
+
+    const mountPrintButtonsOnRecordShow = () => {
+
+        if (!shouldShowPrintButton()) {
+            return;
+        }
+
+        document.getElementById('ayanas-print-button-order')?.remove();
+
+        document.getElementById('ayanas-print-button-order-detail')?.remove();
+
+        document.getElementById('ayanas-print-button-overseas-order')?.remove();
+
+        const space = getPrintButtonsMountSpace();
+
+        if (!space) {
+            console.warn(
+                '[AYANAS Print V3] 印刷ボタン用スペースがありません。'
+                + 'フォームに「ヘッダーのメニューのスペース」またはヘッダースペースを追加してください。'
+            );
+            return;
+        }
+
+        if (getAppId() === DELIVERY_APP_ID) {
+            appendDeliveryPrintButtons(space);
+            return;
+        }
+
+        if (getAppId() === INVOICE_APP_ID) {
+            appendInvoicePrintButtons(space);
+            return;
+        }
+
+        if (getAppId() === ORDER_APP_ID) {
+            appendOrderPrintButtons(space);
+            return;
+        }
+
+        document.getElementById(GENERAL_DELIVERY_BUTTON_ID)?.remove();
+
+        document.getElementById(MATSUBA_DELIVERY_BUTTON_ID)?.remove();
+
+        document.getElementById(GENERAL_INVOICE_BUTTON_ID)?.remove();
+
+        if (document.getElementById(BUTTON_ID)) {
+            return;
+        }
+
+        space.appendChild(createPrintButton({
+
+            id: BUTTON_ID,
+
+            label: getButtonLabel(),
+
+        }));
+
+    };
+
     const appendOrderPrintButtons = (space) => {
 
         if (!document.getElementById(ORDER_DETAIL_BUTTON_ID)) {
@@ -617,7 +700,11 @@
 
     assertLayoutLoaded();
 
-    Preview.initialize(getPluginBaseUrl());
+    try {
+        Preview.initialize(getPluginBaseUrl());
+    } catch (initError) {
+        console.error('[AYANAS Print V3] Preview.initialize に失敗しました', initError);
+    }
 
     console.info(`[AYANAS Print V3] plugin version ${PLUGIN_VERSION}`);
 
@@ -625,95 +712,10 @@
 
     kintone.events.on('app.record.detail.show', (event) => {
 
-
-
-        if (!shouldShowPrintButton()) {
-
-            return event;
-
-        }
-
-
-
-        document.getElementById('ayanas-print-button-order')?.remove();
-
-        document.getElementById('ayanas-print-button-order-detail')?.remove();
-
-        document.getElementById('ayanas-print-button-overseas-order')?.remove();
-
-
-
-        const space = kintone.app.record.getHeaderMenuSpaceElement();
-
-
-
-        if (!space) {
-
-            return event;
-
-        }
-
-
-
-        if (getAppId() === DELIVERY_APP_ID) {
-
-            appendDeliveryPrintButtons(space);
-
-            return event;
-
-        }
-
-
-
-        if (getAppId() === INVOICE_APP_ID) {
-
-            appendInvoicePrintButtons(space);
-
-            return event;
-
-        }
-
-
-
-        if (getAppId() === ORDER_APP_ID) {
-
-            appendOrderPrintButtons(space);
-
-            return event;
-
-        }
-
-
-
-        document.getElementById(GENERAL_DELIVERY_BUTTON_ID)?.remove();
-
-        document.getElementById(MATSUBA_DELIVERY_BUTTON_ID)?.remove();
-
-        document.getElementById(GENERAL_INVOICE_BUTTON_ID)?.remove();
-
-
-
-        if (document.getElementById(BUTTON_ID)) {
-
-            return event;
-
-        }
-
-
-
-        space.appendChild(createPrintButton({
-
-            id: BUTTON_ID,
-
-            label: getButtonLabel(),
-
-        }));
-
-
+        setTimeout(mountPrintButtonsOnRecordShow, 0);
+        setTimeout(mountPrintButtonsOnRecordShow, 200);
 
         return event;
-
-
 
     });
 
