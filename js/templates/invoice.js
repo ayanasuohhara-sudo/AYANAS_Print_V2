@@ -8,10 +8,10 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '53';
+    const INVOICE_TEMPLATE_VERSION = '56';
     const DETAILS_PER_PAGE_FIRST = 17;
-    /** 繰越あり（金額1段表示）も通常と同じ明細枠 */
-    const DETAILS_PER_PAGE_FIRST_CARRY = 17;
+    /** 繰越ありは締日表と金額2段があるため、1ページ目の明細を2行減らす */
+    const DETAILS_PER_PAGE_FIRST_CARRY = 15;
     const DETAILS_PER_PAGE_NEXT = 26;
     const DETAILS_PER_PAGE_FIRST_MIN = 12;
     const FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION = {};
@@ -444,16 +444,25 @@ ${buildDetailRowsHtml(details)}
 
     };
 
-    const buildBillingMetaBarHtml = (header, summary, layout = {}) => {
+    const formatClosingDateLabel = (value) => {
 
-        const showCarryOver = layout.carryOverMode !== 'none'
-            && layout.recipientMode !== 'general';
+        const text = String(value ?? '').trim();
 
-        if (showCarryOver) {
+        if (!text) {
             return '';
         }
 
-        const closingDate = String(header.closing_date ?? '').trim();
+        if (/^\d{4}-\d{2}-\d{2}/.test(text) || /^\d{4}\/\d{2}\/\d{2}/.test(text)) {
+            return Format.formatDate(text.slice(0, 10));
+        }
+
+        return text;
+
+    };
+
+    const buildBillingMetaBarHtml = (header) => {
+
+        const closingDate = formatClosingDateLabel(header.closing_date);
         const billingPeriod = formatBillingPeriodLabel(header);
 
         if (!closingDate && !billingPeriod) {
@@ -492,32 +501,28 @@ ${buildDetailRowsHtml(details)}
 
         if (showCarryOver) {
 
+            const carryCell = (label, value, modifier = '') => `
+                <td class="invoice-carry-cell${modifier}">
+                    <div class="invoice-carry-cell__label">${esc(label)}</div>
+                    <div class="invoice-carry-cell__value">${esc(Format.formatMoney(value))}</div>
+                </td>`;
+
             return `
 
 <div class="invoice-amount-overview">
     <table class="invoice-summary invoice-summary--overview invoice-summary--overview-carry-combined">
-        <thead>
-            <tr>
-                <th>前回御請求額</th>
-                <th>御入金額</th>
-                <th>繰越額</th>
-                <th>調整額</th>
-                <th>当月小計</th>
-                <th>消費税</th>
-                <th>税込金額</th>
-                <th class="invoice-amount-overview__current-head">今回御請求額</th>
-            </tr>
-        </thead>
         <tbody>
             <tr>
-                <td class="num">${esc(Format.formatMoney(amounts.carryOver))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.paymentAmount))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.carryForwardAmount))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.adjustmentAmount))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.subtotal))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.tax))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.total))}</td>
-                <td class="num invoice-amount-overview__current">${esc(Format.formatMoney(amounts.currentBillingAmount))}</td>
+                ${carryCell('前回御請求額', amounts.carryOver)}
+                ${carryCell('御入金額', amounts.paymentAmount)}
+                ${carryCell('繰越額', amounts.carryForwardAmount)}
+                ${carryCell('調整額', amounts.adjustmentAmount)}
+            </tr>
+            <tr>
+                ${carryCell('当月小計', amounts.subtotal)}
+                ${carryCell('消費税', amounts.tax)}
+                ${carryCell('税込金額', amounts.total)}
+                ${carryCell('今回御請求額', amounts.currentBillingAmount, ' invoice-carry-cell--current')}
             </tr>
         </tbody>
     </table>
@@ -673,7 +678,7 @@ ${buildDetailRowsHtml(details)}
         return `
     ${windowAddressHtml}
     ${buildHeaderHtml(header, layout, { pageNumber, totalPages }, config)}
-    ${isPage1 ? buildBillingMetaBarHtml(header, summary, layout) : ''}
+    ${isPage1 ? buildBillingMetaBarHtml(header) : ''}
     ${isPage1 ? buildAmountOverviewHtml(summary, layout) : ''}
     ${buildDetailTableHtml(pageDetails)}
     ${isPage1 ? buildPage1FooterHtml(summary) : ''}
