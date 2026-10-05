@@ -145,6 +145,23 @@
             <td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap order-detail-table__value--multiline" colspan="3">${OrderDetailShared.buildProcessingContentHtml(details)}</td>
         </tr>`;
 
+    const buildRemarksRowHtml = (remark) => {
+
+        const text = String(remark ?? '').trim();
+
+        if (text === '' || text === '-') {
+            return '';
+        }
+
+        return (
+            '<tr class="order-detail-table__row order-detail-table__row--single">'
+            + `<th class="order-detail-table__label order-detail-table__label--single">${esc('備考')}</th>`
+            + `<td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap order-detail-table__value--multiline" colspan="3">${esc(text)}</td>`
+            + '</tr>'
+        );
+
+    };
+
     OrderDetailShared.buildTableHtml = (header, details) => {
 
         const rowsHtml = OrderDetailShared.ROW_DEFINITIONS.map((row) => {
@@ -161,6 +178,8 @@
 
         }).join('\n        ');
 
+        const remarksRowHtml = buildRemarksRowHtml(header.remark);
+
         return `
 <table class="order-detail-table">
     <colgroup>
@@ -172,6 +191,7 @@
     <tbody>
         ${rowsHtml}
         ${buildProcessingRowHtml(details)}
+        ${remarksRowHtml}
     </tbody>
 </table>`;
 

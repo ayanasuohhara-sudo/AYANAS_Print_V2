@@ -52,6 +52,9 @@
         'building',
     ];
 
+    /** 受注票（App 16）備考 — いずれかが入っていれば帳票に印刷 */
+    const ORDER_REMARK_FIELD_CODES = ['remark', 'remarks'];
+
     /** 受注票（App 16）ヘッダーフィールド */
     const ORDER_HEADER_FIELDS = [
         'manage_no',
@@ -287,6 +290,20 @@
 
     };
 
+    const resolveOrderRemark = (record) => {
+
+        for (const fieldCode of ORDER_REMARK_FIELD_CODES) {
+            const text = String(getFieldValue(record, fieldCode) ?? '').trim();
+
+            if (text !== '' && text !== '-') {
+                return text;
+            }
+        }
+
+        return '';
+
+    };
+
     const buildOrderHeader = (record) => {
 
         const header = {};
@@ -294,6 +311,8 @@
         [...ORDER_HEADER_FIELDS, ...OVERSEAS_ORDER_HEADER_FIELDS].forEach((fieldCode) => {
             header[fieldCode] = getFieldValue(record, fieldCode);
         });
+
+        header.remark = resolveOrderRemark(record);
 
         return header;
 

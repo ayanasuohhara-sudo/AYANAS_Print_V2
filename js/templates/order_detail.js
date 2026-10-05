@@ -8,7 +8,7 @@
      * 受注明細表（A4横・左半分×2・中央カット用）の HTML 文字列を生成する。
      */
 
-    const ORDER_DETAIL_TEMPLATE_VERSION = '7';
+    const ORDER_DETAIL_TEMPLATE_VERSION = '8';
 
     const OrderDetailTemplate = TemplateInterface.create('OrderDetailTemplate', (data, config = {}, layout = {}) => {
 

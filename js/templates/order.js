@@ -165,6 +165,21 @@ ${buildDetailRowsHtml(definition, details, header)}
 
     };
 
+    const buildRemarksHtml = (header) => {
+
+        const text = String(header?.remark ?? '').trim();
+
+        if (text === '' || text === '-') {
+            return '';
+        }
+
+        return `
+<table class="header order-remarks">
+    <tr><th>備考</th><td colspan="5">${Common.esc(text)}</td></tr>
+</table>`;
+
+    };
+
     const buildSummaryHtml = (definition, summary) => {
 
         const summaryDef = definition.summary ?? {};
@@ -213,6 +228,7 @@ ${buildDetailRowsHtml(definition, details, header)}
     <h1>${Common.esc(reportTitle)}</h1>
     ${buildHeaderHtml(definition, header, config)}
     ${buildDetailTableHtml(definition, details, header)}
+    ${buildRemarksHtml(header)}
     ${buildSummaryHtml(definition, summary)}`,
         });
 
