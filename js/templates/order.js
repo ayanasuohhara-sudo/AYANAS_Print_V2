@@ -175,7 +175,7 @@ ${buildDetailRowsHtml(definition, details, header)}
 
         return `
 <table class="header order-remarks">
-    <tr><th>備考</th><td colspan="5">${Common.esc(text)}</td></tr>
+    <tr><th>備考</th><td class="order-remarks__content" colspan="5">${Common.esc(text)}</td></tr>
 </table>`;
 
     };

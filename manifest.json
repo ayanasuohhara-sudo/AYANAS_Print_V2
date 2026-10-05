@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 128,
+  "version": 129,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 128（受注表備考印刷）",
-    "en": "AYANAS Print Plugin V128 (order remark on print)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 129（備考8pt）",
+    "en": "AYANAS Print Plugin V129 (remark 8pt)"
   },
   "desktop": {
     "js": [

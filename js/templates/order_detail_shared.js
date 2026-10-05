@@ -156,7 +156,7 @@
         return (
             '<tr class="order-detail-table__row order-detail-table__row--single">'
             + `<th class="order-detail-table__label order-detail-table__label--single">${esc('備考')}</th>`
-            + `<td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap order-detail-table__value--multiline" colspan="3">${esc(text)}</td>`
+            + `<td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap order-detail-table__value--multiline order-detail-table__value--remark" colspan="3">${esc(text)}</td>`
             + '</tr>'
         );
 
