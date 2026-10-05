@@ -51,13 +51,13 @@ const cases = [
         name: 'ケース3 本社+丸洗いあり',
         from: '本社',
         analysis: resolved,
-        expect: { action: 'put', workStatus: '振り分け待ち' },
+        expect: { action: 'put', workStatus: '未着手' },
     },
     {
         name: 'ケース4 本社+しみのみ',
         from: '本社',
         analysis: noMaru,
-        expect: { action: 'put', workStatus: '振り分け待ち' },
+        expect: { action: 'put', workStatus: '未着手' },
     },
     {
         name: 'ケース5 すでに工場',

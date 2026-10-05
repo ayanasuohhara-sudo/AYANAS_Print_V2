@@ -25,7 +25,7 @@
             hq: '本社',
         },
         WORK: {
-            sortPending: '振り分け待ち',
+            sortPending: '未着手',
             maruWait: '丸洗い待ち',
             shimiWait: 'しみ抜き待ち',
             finishWait: '仕上げ待ち',

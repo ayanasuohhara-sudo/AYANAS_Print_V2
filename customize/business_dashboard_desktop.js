@@ -591,6 +591,7 @@
   <p class="ayanas-bd-note ayanas-bd-note--muted">${escapeHtml(overview.wipNote || '')}</p>
   <p class="ayanas-bd-note ayanas-bd-note--muted">${escapeHtml(overview.logisticsNote || '')}</p>
   <p class="ayanas-bd-note">${escapeHtml(u.orderAmountNote)}</p>
+  <p class="ayanas-bd-note ayanas-bd-note--muted">${escapeHtml(u.aggregationExclusionNote)}</p>
   <div class="ayanas-bd-overview-scroll">
     <table class="ayanas-bd-table ayanas-bd-overview-table">
       <thead>

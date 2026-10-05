@@ -41,17 +41,7 @@
             {
                 app: C.APP.order,
                 query: F.manageNo + ' = "' + escapeQueryValue(manageNo) + '" limit 1',
-                fields: [
-                    '$id',
-                    F.manageNo,
-                    F.customerName,
-                    F.clientName,
-                    F.kimonoType,
-                    F.locationStatus,
-                    F.processStatus,
-                    F.workStatus,
-                    F.deliveryStatus,
-                ],
+                fields: Engine.orderFetchFields(),
             }
         );
 
@@ -167,7 +157,8 @@
         }
 
         if (!window.confirm(list.items.length + ' 件を完了登録します。\n'
-            + 'process=完了 / work=仕上げ完了 / delivery=納品待ち\nlocation は変更しません。')) {
+            + 'process=完了 / work=仕上げ完了 / delivery=納品待ち / 完了日=当日\n'
+            + 'location は変更しません。すでに完了の商品は完了日を変えません。')) {
             return;
         }
 
@@ -175,6 +166,7 @@
         const putRecord = Engine.buildCompletePutRecord();
 
         let okCount = 0;
+        let skipCount = 0;
         let failCount = 0;
         const remain = [];
 
@@ -191,6 +183,11 @@
                     continue;
                 }
 
+                if (getField(fresh, F.processStatus) === C.PROCESS.complete) {
+                    skipCount += 1;
+                    continue;
+                }
+
                 const beforeLoc = getField(fresh, F.locationStatus);
 
                 await kintoneApi(
@@ -204,6 +201,13 @@
                 );
 
                 const after = await fetchOrder(item.manageNo);
+
+                if (!Engine.isCompletePutApplied(after, putRecord)) {
+                    item.errorMessage = '完了内容を確認できません';
+                    failCount += 1;
+                    remain.push(item);
+                    continue;
+                }
 
                 if (after && getField(after, F.locationStatus) !== beforeLoc) {
                     item.errorMessage = '警告: location が変化しました';
@@ -224,7 +228,9 @@
         isSubmitting = false;
 
         setStatus(
-            '<strong>完了登録</strong> 成功: ' + okCount + ' / 残: ' + failCount,
+            '<strong>完了登録</strong> 成功: ' + okCount
+            + ' / 完了済みスキップ: ' + skipCount
+            + ' / 残: ' + failCount,
             failCount > 0
         );
 

@@ -127,10 +127,14 @@ async function main() {
   const deliveryQuery = `delivery_date >= "${day}" and delivery_date <= "${day}" order by レコード番号 asc`;
 
   const [orders, deliveries, products] = await Promise.all([
-    getRecords(ORDER_APP, orderQuery, ['manage_no', 'order_date', 'customer_code', 'kimono_type', 'kimono_spec', 'detail_table']),
-    getRecords(DELIVERY_APP, deliveryQuery, ['delivery_date', 'customer_code', 'delivery_detail']),
+    getRecords(ORDER_APP, orderQuery, ['manage_no', 'order_date', 'customer_code', 'kimono_type', 'kimono_spec', 'detail_table', 'aggregation_status']),
+    getRecords(DELIVERY_APP, deliveryQuery, ['delivery_date', 'customer_code', 'delivery_detail', 'aggregation_status']),
     getRecords(PRODUCT_APP, 'order by item_code asc', ['item_code', 'item_name', 'subcategory']),
   ]);
+
+  const isActive = (record) => String(record?.aggregation_status?.value ?? '').trim() !== '取消';
+  const activeOrders = orders.filter(isActive);
+  const activeDeliveries = deliveries.filter(isActive);
 
   const lookup = buildProductLookup(products);
   const honsha = emptyMetrics();
@@ -140,7 +144,7 @@ async function main() {
   const deliveryKimonoHonsha = new Set();
   const deliveryKimonoAyanas = new Set();
 
-  orders.forEach((record) => {
+  activeOrders.forEach((record) => {
     const code = String(fv(record, 'customer_code')).trim();
     const seg = code === A550 ? ayanas : honsha;
     const kimonoSet = code === A550 ? orderKimonoAyanas : orderKimonoHonsha;
@@ -155,7 +159,7 @@ async function main() {
     });
   });
 
-  deliveries.forEach((record) => {
+  activeDeliveries.forEach((record) => {
     const code = String(fv(record, 'customer_code')).trim();
     const seg = code === A550 ? ayanas : honsha;
     const kimonoSet = code === A550 ? deliveryKimonoAyanas : deliveryKimonoHonsha;
@@ -175,7 +179,7 @@ async function main() {
   honsha.deliveryKimono = deliveryKimonoHonsha.size;
   ayanas.deliveryKimono = deliveryKimonoAyanas.size;
 
-  const samples = [...orders]
+  const samples = [...activeOrders]
     .sort((a, b) => (b.detail_table?.value?.length ?? 0) - (a.detail_table?.value?.length ?? 0))
     .slice(0, 3)
     .map((record) => {
@@ -206,8 +210,8 @@ async function main() {
 
   const report = {
     dateJst: day,
-    orderRecordCount: orders.length,
-    deliveryRecordCount: deliveries.length,
+    orderRecordCount: activeOrders.length,
+    deliveryRecordCount: activeDeliveries.length,
     honsha,
     ayanas,
     total: {

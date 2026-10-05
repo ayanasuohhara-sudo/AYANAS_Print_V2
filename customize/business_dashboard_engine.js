@@ -32,6 +32,23 @@
 
     };
 
+    /**
+     * 集計対象か。取消だけ除外する。
+     * 有効・空欄・フィールド未取得は対象。
+     */
+    const isAggregationActive = (record) => {
+
+        const rule = CFG().AGGREGATION;
+        const value = record?.[rule.fieldCode]?.value;
+
+        return String(value ?? '').trim() !== rule.cancelled;
+
+    };
+
+    const keepAggregationActive = (records) => (
+        (Array.isArray(records) ? records : []).filter((record) => isAggregationActive(record))
+    );
+
     const toNumber = (value) => {
 
         if (value === null || value === undefined || value === '') {
@@ -756,18 +773,25 @@
             of.itemName,
             of.qty,
             of.amount,
+            of.aggregationStatus,
         ];
 
-        const deliveryFields = [df.detailTable];
+        const deliveryFields = [df.detailTable, df.aggregationStatus];
 
-        const [allOrders, allDeliveries] = await Promise.all([
+        const [fetchedOrders, fetchedDeliveries] = await Promise.all([
             fetchAllRecords(CFG().ORDER_APP_ID, 'order by レコード番号 asc', orderFields),
             fetchAllRecords(CFG().DELIVERY_APP_ID, 'order by レコード番号 asc', deliveryFields),
         ]);
+        const allOrders = keepAggregationActive(fetchedOrders);
+        const allDeliveries = keepAggregationActive(fetchedDeliveries);
 
         const deliveredManageNos = new Set();
 
         allDeliveries.forEach((record) => {
+
+            if (!isAggregationActive(record)) {
+                return;
+            }
 
             const table = record[df.detailTable];
             const rows = Array.isArray(table?.value) ? table.value : [];
@@ -815,6 +839,10 @@
         };
 
         allOrders.forEach((record) => {
+
+            if (!isAggregationActive(record)) {
+                return;
+            }
 
             const manageNo = String(getFieldValue(record, of.manageNo)).trim();
 
@@ -1077,7 +1105,7 @@
             },
             openOrders,
             meta: {
-                definition: 'App16 distinct manage_no − App19 delivery_detail distinct manage_no',
+                definition: 'App16 distinct manage_no − App19 有効納品の distinct manage_no（aggregation_status=取消は両方とも除外）',
                 app16RecordCount: allOrders.length,
                 app16DistinctManageNo: app16ManageNos.size,
                 app19DeliveredDistinctManageNo: deliveredManageNos.size,
@@ -1204,6 +1232,10 @@
 
         orders.forEach((record) => {
 
+            if (!isAggregationActive(record)) {
+                return;
+            }
+
             const manageNo = String(getFieldValue(record, of.manageNo)).trim();
             const customerCode = String(getFieldValue(record, of.customerCode)).trim();
             const segmentKey = segmentKeyForCustomer(customerCode);
@@ -1248,6 +1280,10 @@
         });
 
         deliveries.forEach((record) => {
+
+            if (!isAggregationActive(record)) {
+                return;
+            }
 
             const customerCode = String(getFieldValue(record, df.customerCode)).trim();
             const segmentKey = segmentKeyForCustomer(customerCode);
@@ -1343,6 +1379,7 @@
                 of.itemName,
                 of.qty,
                 of.amount,
+                of.aggregationStatus,
             ];
             const deliveryFields = [
                 df.customerCode,
@@ -1351,13 +1388,16 @@
                 df.itemName,
                 df.qty,
                 df.amount,
+                df.aggregationStatus,
             ];
 
-            const [orders, deliveries, logistics] = await Promise.all([
+            const [fetchedOrders, fetchedDeliveries, logistics] = await Promise.all([
                 fetchAllRecords(CFG().ORDER_APP_ID, orderQuery, orderFields),
                 fetchAllRecords(CFG().DELIVERY_APP_ID, deliveryQuery, deliveryFields),
                 buildLogisticsMetrics(period, inboundCache),
             ]);
+            const orders = keepAggregationActive(fetchedOrders);
+            const deliveries = keepAggregationActive(fetchedDeliveries);
 
             snapshots[def.key] = {
                 period,
@@ -1395,6 +1435,7 @@
             of.kimonoType,
             of.kimonoSpec,
             of.detailTable,
+            of.aggregationStatus,
         ];
 
         const deliveryFields = [
@@ -1402,6 +1443,7 @@
             df.customerCode,
             df.customerName,
             df.detailTable,
+            df.aggregationStatus,
         ];
 
         const productFields = [
@@ -1410,11 +1452,13 @@
             F().product.subcategory,
         ];
 
-        const [orders, deliveries, products] = await Promise.all([
+        const [fetchedOrders, fetchedDeliveries, products] = await Promise.all([
             fetchAllRecords(CFG().ORDER_APP_ID, orderQuery, orderFields),
             fetchAllRecords(CFG().DELIVERY_APP_ID, deliveryQuery, deliveryFields),
             fetchAllRecords(CFG().PRODUCT_APP_ID, 'order by ' + F().product.itemCode + ' asc', productFields),
         ]);
+        const orders = keepAggregationActive(fetchedOrders);
+        const deliveries = keepAggregationActive(fetchedDeliveries);
 
         const productLookup = buildProductLookup(products);
         const orderQtyStats = { totalLines: 0, nonOneLineCount: 0 };
@@ -1548,6 +1592,10 @@
 
         orders.forEach((record) => {
 
+            if (!isAggregationActive(record)) {
+                return;
+            }
+
             const manageNo = String(getFieldValue(record, of.manageNo)).trim();
             const customerCode = String(getFieldValue(record, of.customerCode)).trim();
             const segment = segmentKeyForCustomer(customerCode);
@@ -1648,6 +1696,10 @@
         });
 
         deliveries.forEach((record) => {
+
+            if (!isAggregationActive(record)) {
+                return;
+            }
 
             const customerCode = String(getFieldValue(record, df.customerCode)).trim();
             const segment = segmentKeyForCustomer(customerCode);
@@ -1872,8 +1924,8 @@
                 productSubcategories: productLookup.subcategories,
                 orderQtyStats,
                 deliveryQtyStats,
-                cancelExclusion: false,
-                cancelNote: 'App16/App19 の取消判定は未確定のため、V1 では除外条件を設けていません。',
+                cancelExclusion: true,
+                cancelNote: CFG().UI.aggregationExclusionNote,
                 audit: {
                     orderRecordCount: orders.length,
                     deliveryRecordCount: deliveries.length,
@@ -1915,6 +1967,7 @@
         resolvePeriod,
         buildReport,
         buildTodayAudit,
+        isAggregationActive,
     };
 
 }());

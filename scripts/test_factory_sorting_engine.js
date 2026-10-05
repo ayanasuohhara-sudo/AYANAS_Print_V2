@@ -39,7 +39,7 @@ const assert = (name, cond) => {
 
 };
 
-assert('eligible 工場+振り分け待ち', S.isEligibleForSorting('工場', '振り分け待ち'));
+assert('eligible 工場+未着手', S.isEligibleForSorting('工場', '未着手'));
 assert('ineligible 工場+丸洗い待ち', !S.isEligibleForSorting('工場', '丸洗い待ち'));
 assert('ineligible 店舗+しみ抜き待ち', !S.isEligibleForSorting('店舗', 'しみ抜き待ち'));
 
@@ -54,7 +54,7 @@ assert('ケース3 仕上げ PUT', finish.locationStatus === '工場' && finish.
 
 assert(
     'ケース4 メッセージ',
-    S.buildIneligibleMessage('工場', '丸洗い待ち').indexOf('振り分け待ち') >= 0
+    S.buildIneligibleMessage('工場', '丸洗い待ち').indexOf('未着手') >= 0
 );
 
 assert(

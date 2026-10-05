@@ -5,7 +5,7 @@
      * 社内オペレーション共通 — App34 / App84 / App30
      */
 
-    const INTERNAL_OPS_VERSION = '1.0.1';
+    const INTERNAL_OPS_VERSION = '1.0.4';
 
     const CAYANAS_INTERNAL_OPS = {
         VERSION: INTERNAL_OPS_VERSION,
@@ -35,21 +35,25 @@
             storeWorking: '店舗作業中',
         },
         WORK: {
-            sortPending: '振り分け待ち',
+            sortPending: '未着手',
             maruWait: '丸洗い待ち',
             maruInProgress: '丸洗い中・乾燥',
             shimiWait: 'しみ抜き待ち',
             shimiInProgress: 'しみ抜き中',
+            repairInProgress: '修理中',
+            reworkInProgress: '再直し中',
             finishInProgress: '仕上げ中',
             finishDone: '仕上げ完了',
         },
         /** App84 作業登録で選択可能（仕上げ完了は App30） */
         WORK_SELECT_OPTIONS: [
-            '振り分け待ち',
+            '未着手',
             '丸洗い待ち',
             '丸洗い中・乾燥',
             'しみ抜き待ち',
             'しみ抜き中',
+            '修理中',
+            '再直し中',
             '仕上げ中',
         ],
         DELIVERY: {
@@ -65,6 +69,7 @@
                 processStatus: 'process_status',
                 workStatus: 'work_status',
                 deliveryStatus: 'delivery_status',
+                completionDate: 'completion_date',
             },
         },
     };

@@ -3,13 +3,13 @@
 
     /**
      * 業務ダッシュボード — 定数
-     * BUSINESS_DASHBOARD_VERSION: 1.6.3
+     * BUSINESS_DASHBOARD_VERSION: 1.6.4
      *
      * kintone で「業務ダッシュボード」アプリ作成後、
      * BUSINESS_DASHBOARD_APP_ID を実 ID に差し替えてください（0 のままでは一覧 UI は起動しません）。
      */
 
-    const BUSINESS_DASHBOARD_VERSION = '1.6.3';
+    const BUSINESS_DASHBOARD_VERSION = '1.6.4';
 
     /** 業務ダッシュボード（kintone ホストアプリ） */
     const BUSINESS_DASHBOARD_APP_ID = 82;
@@ -20,12 +20,21 @@
         DELIVERY_APP_ID: 19,
         PRODUCT_APP_ID: 13,
         A550_CUSTOMER_CODE: 'A550',
+        /**
+         * 集計対象。取消だけ除外し、有効・空欄・未取得は対象。
+         * App16 と App19 は同じフィールドコード。
+         */
+        AGGREGATION: {
+            fieldCode: 'aggregation_status',
+            cancelled: '取消',
+        },
         UI: {
             title: '業務ダッシュボード',
             reload: '再読込',
             loading: '集計中…',
             errorPrefix: '集計に失敗しました。',
             orderAmountNote: '受注金額は現在金額登録済み分（税抜）です。確定売上ではありません。',
+            aggregationExclusionNote: '取消データは集計対象外',
             registeredAmountNote: '現在登録されている金額（税抜）',
             periodToday: '今日',
             periodYesterday: '昨日',
@@ -84,7 +93,7 @@
             periodBasis: '受注＝order_date / 納品＝delivery_date',
             metaDetails: '集計の参考情報',
             sectionPipeline: '② 現場（受注残）',
-            pipelineDefinitionNote: '受注残＝App16 の distinct manage_no − App19 納品済（delivery_detail に出現した distinct manage_no）。process_status は完了判定に使いません。',
+            pipelineDefinitionNote: '受注残＝App16 の distinct manage_no − App19 の有効な納品（delivery_detail に出現した distinct manage_no）。aggregation_status が取消の受注は残に入れず、取消の納品書だけに出る管理番号は残します。process_status は完了判定に使いません。',
             pipelineOpenKimono: '受注残着物枚数',
             pipelineOpenPoints: '加工残点数',
             pipelineOverdue: '納期超過',
@@ -187,6 +196,7 @@
                 qty: 'qty',
                 unitPrice: 'unit_price',
                 amount: 'amount',
+                aggregationStatus: 'aggregation_status',
             },
             delivery: {
                 deliveryDate: 'delivery_date',
@@ -199,6 +209,7 @@
                 itemName: 'item_name',
                 qty: 'qty',
                 amount: 'amount',
+                aggregationStatus: 'aggregation_status',
             },
             product: {
                 itemCode: 'item_code',

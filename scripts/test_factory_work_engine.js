@@ -60,8 +60,8 @@ assert(
 const done = W.resolveWorkUiState('工場', '仕上げ完了');
 assert('ケース4 仕上げ完了済み', done.uiState === W.UI_STATE.finishDone && !done.enabledAction);
 
-const sort = W.resolveWorkUiState('工場', '振り分け待ち');
-assert('ケース5 振り分け待ち', sort.uiState === W.UI_STATE.sortPending && sort.message.indexOf('振り分け') >= 0);
+const sort = W.resolveWorkUiState('工場', '未着手');
+assert('ケース5 未着手', sort.uiState === W.UI_STATE.sortPending && sort.message.indexOf('振り分け') >= 0);
 
 const store = W.resolveWorkUiState('店舗', 'しみ抜き待ち');
 assert('ケース6 店舗', store.uiState === W.UI_STATE.notFactory);
