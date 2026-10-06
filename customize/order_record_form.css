@@ -1,6 +1,6 @@
 /**
  * 受注明細 App 16 — 1行5項目・左寄せ・横幅いっぱい
- * フォント19px維持、折返し・日付切れを防ぐ
+ * 文字は kintone 標準（14px）より 1px 大きい 15px
  */
 
 body.ayanas-order-record-ui .contents-gaia,
@@ -10,10 +10,6 @@ body.ayanas-order-record-ui .record-gaia {
   width: 100% !important;
   max-width: none !important;
   box-sizing: border-box;
-}
-
-body.ayanas-order-record-ui .record-gaia {
-  font-size: 17px;
 }
 
 body.ayanas-order-record-ui .layout-gaia {
@@ -54,7 +50,7 @@ body.ayanas-order-record-ui .control-gaia .input-date-cybozu {
 
 body.ayanas-order-record-ui .control-gaia .control-label-gaia,
 body.ayanas-order-record-ui .control-gaia .label-gaia {
-  font-size: 16px !important;
+  font-size: 15px !important;
   font-weight: 700;
   line-height: 1.45;
   color: #1e293b;
@@ -72,7 +68,7 @@ body.ayanas-order-record-ui .ocean-ui-plugin-user-select,
 body.ayanas-order-record-ui .control-gaia .number-cybozu,
 body.ayanas-order-record-ui .control-gaia .record-id-gaia,
 body.ayanas-order-record-ui .control-gaia .input-date-text-cybozu {
-  font-size: 19px !important;
+  font-size: 15px !important;
   line-height: 1.35;
   white-space: nowrap !important;
   overflow: visible !important;
@@ -85,7 +81,6 @@ body.ayanas-order-record-ui .textarea-cybozu,
 body.ayanas-order-record-ui .gaia-argoui-select,
 body.ayanas-order-record-ui .dropdown-selected,
 body.ayanas-order-record-ui .input-date-text-cybozu {
-  min-height: 44px;
   box-sizing: border-box;
 }
 
@@ -110,7 +105,6 @@ body.ayanas-order-record-ui .ayanas-order-field--overseas_nyuuko_date {
 }
 
 body.ayanas-order-record-ui .subtable-gaia {
-  font-size: 16px;
   width: 100%;
 }
 
@@ -122,12 +116,11 @@ body.ayanas-order-record-ui .subtable-gaia th,
 body.ayanas-order-record-ui .subtable-gaia td,
 body.ayanas-order-record-ui .subtable-gaia .input-text-cybozu,
 body.ayanas-order-record-ui .subtable-gaia .control-value-gaia {
-  font-size: 16px !important;
+  font-size: 15px !important;
   white-space: normal !important;
 }
 
 body.ayanas-order-record-ui .subtable-gaia th {
-  font-size: 15px !important;
   font-weight: 700;
 }
 
