@@ -104,6 +104,405 @@
     });
   };
 
+  const historyWriteAction = (existingDate, today) => {
+    const existing = String(existingDate ?? '').trim();
+    const target = String(today ?? '').trim();
+
+    if (existing !== '' && existing !== target) {
+      return 'keep';
+    }
+
+    if (existing === target && target !== '') {
+      return 'keep-today';
+    }
+
+    return 'write';
+  };
+
+  const openItemKey = (item) => [
+    item.route,
+    String(item.recordId ?? ''),
+    String(item.lineRowId ?? ''),
+  ].join('|');
+
+  const selectPrimaryOpenItem = (items) => {
+    const list = Array.isArray(items) ? items : [];
+
+    if (list.length === 0) {
+      return { confident: false, item: null, reason: '未入庫がありません' };
+    }
+
+    const routes = new Set(list.map(function(item) { return item.route; }));
+
+    if (routes.size === 1) {
+      return { confident: true, item: list[0], reason: '' };
+    }
+
+    const missing = list.filter(function(item) {
+      return String(item.shipDate ?? '').trim() === ''
+        || String(item.createdAt ?? '').trim() === '';
+    });
+
+    if (missing.length > 0) {
+      return {
+        confident: false,
+        item: null,
+        reason: '出庫日または作成日時が無いため、最新の出庫を特定できません',
+      };
+    }
+
+    const sorted = list.slice().sort(function(a, b) {
+      const byShip = String(b.shipDate).localeCompare(String(a.shipDate));
+
+      if (byShip !== 0) {
+        return byShip;
+      }
+
+      return String(b.createdAt).localeCompare(String(a.createdAt));
+    });
+
+    const top = sorted[0];
+    const next = sorted[1];
+    const tied = String(top.shipDate) === String(next.shipDate)
+      && String(top.createdAt) === String(next.createdAt);
+
+    if (tied) {
+      return {
+        confident: false,
+        item: null,
+        reason: '出庫日時が同じため、最新の出庫を特定できません',
+      };
+    }
+
+    return { confident: true, item: top, reason: '' };
+  };
+
+  const summarizeOpenItems = (items) => {
+    const summary = {
+      total: items.length,
+      domestic: 0,
+      overseas: 0,
+      wasai: 0,
+    };
+
+    items.forEach(function(item) {
+      if (item.route === C.ROUTE.domestic) {
+        summary.domestic += 1;
+      } else if (item.route === C.ROUTE.overseas) {
+        summary.overseas += 1;
+      } else if (item.route === C.ROUTE.wasai) {
+        summary.wasai += 1;
+      }
+    });
+
+    return summary;
+  };
+
+  const buildBulkConfirmText = (manageNo, items) => {
+    const summary = summarizeOpenItems(items);
+    const primary = selectPrimaryOpenItem(items);
+    const lines = items.map(function(item) {
+      const ship = String(item.shipDate ?? '').trim();
+      return '・' + item.route + ' 出庫日 ' + (ship === '' ? 'なし' : ship);
+    });
+    let text = '管理番号：' + manageNo
+      + '\n\nこの管理番号には未入庫の外注履歴が' + summary.total + '件あります。\n'
+      + '国内外注 ' + summary.domestic + '件\n'
+      + '海外外注 ' + summary.overseas + '件\n'
+      + '和裁士 ' + summary.wasai + '件\n\n'
+      + lines.join('\n')
+      + '\n\n' + summary.total + '件すべてを入庫済みにしますか？';
+
+    if (primary.confident && primary.item) {
+      const sameRoute = items.every(function(item) {
+        return item.route === primary.item.route;
+      });
+
+      if (sameRoute) {
+        text += '\n\n受注の工程は、通常の' + primary.item.route + '入庫後の状態に1回だけ更新します。';
+      } else {
+        const ship = String(primary.item.shipDate ?? '').trim();
+        text += '\n\n受注の工程は、最新の' + primary.item.route
+          + '（出庫日 ' + (ship === '' ? 'なし' : ship) + '）の通常入庫後の状態に1回だけ更新します。';
+      }
+    } else {
+      text += '\n\n' + (primary.reason || '最新の出庫を特定できません')
+        + '。未入庫の履歴だけを入庫済みにし、受注の工程・保管場所は変更しません。';
+    }
+
+    return text;
+  };
+
+  const planInboundItems = (items) => {
+    const list = Array.isArray(items) ? items : [];
+
+    if (list.length === 0) {
+      return { ok: false, errorMessage: '未入庫の出庫記録がありません' };
+    }
+
+    if (list.length === 1) {
+      return { ok: true, bulk: false, items: list };
+    }
+
+    return {
+      ok: true,
+      bulk: true,
+      items: list,
+      primary: selectPrimaryOpenItem(list),
+    };
+  };
+
+  const pushOpenOverseas = (found, seen, rec, manageNo) => {
+    if (!rec || !rec.$id) {
+      return;
+    }
+
+    const recordId = String(rec.$id.value);
+
+    if (seen.has(recordId)) {
+      return;
+    }
+
+    const inDate = String(C.getFieldValue(rec, C.OUT28.overseasInDate) ?? '').trim();
+
+    if (inDate !== '') {
+      return;
+    }
+
+    if (!overseasRecordMatchesManageNo(rec, manageNo)) {
+      return;
+    }
+
+    seen.add(recordId);
+    found.push({
+      route: C.ROUTE.overseas,
+      record: rec,
+      recordId: rec.$id.value,
+      lineRowId: '',
+      shipDate: String(C.getFieldValue(rec, C.OUT28.shipDate) ?? '').trim(),
+      createdAt: String(C.getFieldValue(rec, '作成日時') ?? '').trim(),
+      manageNoMatched: manageNo,
+    });
+  };
+
+  const listOpenOverseas = async (manageNo) => {
+    const found = [];
+    const seen = new Set();
+    const candidates = C.expandManageNoCandidates(manageNo);
+
+    for (let i = 0; i < candidates.length; i += 1) {
+      const m = candidates[i];
+      const escaped = C.escapeQueryValue(m);
+
+      try {
+        const byOverseasNo = await C.fetchRecords(
+          C.APP.overseasOutbound,
+          C.OUT28.overseasManageNo + ' = "' + escaped + '" order by $id desc limit 500'
+        );
+
+        byOverseasNo.forEach(function(rec) {
+          pushOpenOverseas(found, seen, rec, m);
+        });
+      } catch (err) {
+        console.warn('[inbound_engine] App28 overseas_manage_no 検索:', err);
+      }
+    }
+
+    try {
+      const openRecords = await C.fetchRecords(
+        C.APP.overseasOutbound,
+        C.OUT28.overseasInDate + ' = "" order by $id desc limit 500'
+      );
+
+      for (let c = 0; c < candidates.length; c += 1) {
+        openRecords.forEach(function(rec) {
+          pushOpenOverseas(found, seen, rec, candidates[c]);
+        });
+      }
+    } catch (err) {
+      console.warn('[inbound_engine] App28 未入庫走査:', err);
+    }
+
+    return found;
+  };
+
+  const pushOpenDomesticRows = (found, seen, rec, manageNo) => {
+    const table = rec[C.OUT27.detailTable];
+
+    if (!table || !Array.isArray(table.value)) {
+      return;
+    }
+
+    const candidates = new Set(C.expandManageNoCandidates(manageNo));
+    const shipDate = String(C.getFieldValue(rec, C.OUT27.shipDate) ?? '').trim();
+    const createdAt = String(C.getFieldValue(rec, '作成日時') ?? '').trim();
+
+    table.value.forEach(function(row) {
+      const rowManage = String(C.getFieldValue(row.value, C.OUT27.detailManageNo) ?? '').trim();
+
+      if (!candidates.has(rowManage)) {
+        return;
+      }
+
+      const lineIn = String(C.getFieldValue(row.value, C.OUT27.lineInDate) ?? '').trim();
+
+      if (lineIn !== '') {
+        return;
+      }
+
+      const key = String(rec.$id.value) + ':' + String(row.id);
+
+      if (seen.has(key)) {
+        return;
+      }
+
+      seen.add(key);
+      found.push({
+        route: C.ROUTE.domestic,
+        record: rec,
+        recordId: rec.$id.value,
+        lineRowId: row.id,
+        shipDate: shipDate,
+        createdAt: createdAt,
+        manageNoMatched: rowManage,
+      });
+    });
+  };
+
+  const listOpenDomestic = async (manageNo) => {
+    const found = [];
+    const seen = new Set();
+    const candidates = C.expandManageNoCandidates(manageNo);
+
+    for (let i = 0; i < candidates.length; i += 1) {
+      const m = candidates[i];
+      const query = C.OUT27.detailTable + '.' + C.OUT27.detailManageNo
+        + ' = "' + C.escapeQueryValue(m) + '" order by $id desc limit 500';
+
+      try {
+        const records = await C.fetchRecords(C.APP.outsourceOutbound, query);
+
+        records.forEach(function(rec) {
+          pushOpenDomesticRows(found, seen, rec, m);
+        });
+      } catch (err) {
+        console.warn('[inbound_engine] App27 サブテーブル検索:', query, err);
+      }
+    }
+
+    if (found.length === 0) {
+      try {
+        const records = await C.fetchRecords(
+          C.APP.outsourceOutbound,
+          'order by $id desc limit 500'
+        );
+
+        for (let c = 0; c < candidates.length; c += 1) {
+          records.forEach(function(rec) {
+            pushOpenDomesticRows(found, seen, rec, candidates[c]);
+          });
+        }
+      } catch (err) {
+        console.warn('[inbound_engine] App27 走査検索:', err);
+      }
+    }
+
+    return found;
+  };
+
+  const listOpenWasai = async (manageNo) => {
+    const candidates = new Set(C.expandManageNoCandidates(manageNo));
+    const found = [];
+    const seen = new Set();
+
+    const absorb = (records) => {
+      flattenWasaiLines(records).forEach(function(entry) {
+        const mn = String(C.getFieldValue(entry.lineValues, C.OUT74.lineManageNo) ?? '').trim();
+
+        if (!candidates.has(mn)) {
+          return;
+        }
+
+        const inboundDate = String(C.getFieldValue(entry.lineValues, C.OUT74.lineInboundDate) ?? '').trim();
+        const lineStatus = String(C.getFieldValue(entry.lineValues, C.OUT74.lineStatus) ?? '').trim();
+
+        if (inboundDate !== '') {
+          return;
+        }
+
+        if (lineStatus !== C.WASAI_LINE_OUTBOUND && lineStatus !== '') {
+          return;
+        }
+
+        const key = String(entry.outboundRecordId) + ':' + String(entry.lineRowId);
+
+        if (seen.has(key)) {
+          return;
+        }
+
+        seen.add(key);
+        const rec = entry.outboundRecord;
+        found.push({
+          route: C.ROUTE.wasai,
+          record: rec,
+          recordId: entry.outboundRecordId,
+          lineRowId: entry.lineRowId,
+          lineValues: entry.lineValues,
+          shipDate: String(
+            C.getFieldValue(rec, C.OUT74.shipDate)
+            || C.getFieldValue(rec, C.OUT74.shipDateAlt)
+            || ''
+          ).trim(),
+          createdAt: String(C.getFieldValue(rec, '作成日時') ?? '').trim(),
+          manageNoMatched: mn,
+        });
+      });
+    };
+
+    const query = C.OUT74.outboundLines + '.' + C.OUT74.lineManageNo
+      + ' in (' + C.expandManageNoCandidates(manageNo).map(function(m) {
+        return '"' + C.escapeQueryValue(m) + '"';
+      }).join(',') + ') order by $id desc limit 500';
+
+    try {
+      absorb(await C.fetchRecords(C.APP.wasaiOutbound, query));
+    } catch (err) {
+      console.warn('[inbound_engine] App74 サブテーブル検索:', err);
+
+      try {
+        absorb(await C.fetchRecords(
+          C.APP.wasaiOutbound,
+          'order by $id desc limit 500'
+        ));
+      } catch (scanErr) {
+        console.warn('[inbound_engine] App74 走査検索:', scanErr);
+      }
+    }
+
+    return found;
+  };
+
+  const asRouteHit = (item) => {
+    if (item.route === C.ROUTE.wasai) {
+      return {
+        route: item.route,
+        hit: {
+          data: {
+            outboundRecord: item.record,
+            outboundRecordId: item.recordId,
+            lineRowId: item.lineRowId,
+            lineValues: item.lineValues,
+          },
+        },
+      };
+    }
+
+    return {
+      route: item.route,
+      hit: { data: item },
+    };
+  };
+
   const pickOpenOverseasOutbound = (records, manageNo) => {
     for (let r = 0; r < records.length; r += 1) {
       const rec = records[r];
@@ -299,47 +698,25 @@
   };
 
   const resolveInboundRoute = async (manageNo, orderRecord, inboundDateD) => {
-    const hits = [];
+    const items = []
+      .concat(await listOpenOverseas(manageNo))
+      .concat(await listOpenDomestic(manageNo))
+      .concat(await listOpenWasai(manageNo));
+    const plan = planInboundItems(items);
 
-    const overseas = await findOverseasOutbound(manageNo);
-
-    if (overseas) {
-      hits.push({ route: C.ROUTE.overseas, data: overseas });
+    if (!plan.ok) {
+      return plan;
     }
 
-    const domestic = await findDomesticOutbound(manageNo);
+    if (!plan.bulk) {
+      const dup = orderAlreadyInboundForRoute(orderRecord, items[0].route, inboundDateD);
 
-    if (domestic) {
-      hits.push({ route: C.ROUTE.domestic, data: domestic });
+      if (dup !== '') {
+        return { ok: false, errorMessage: dup };
+      }
     }
 
-    const wasai = await findWasaiOutbound(manageNo);
-
-    if (wasai) {
-      hits.push({ route: C.ROUTE.wasai, data: wasai });
-    }
-
-    if (hits.length === 0) {
-      return { ok: false, errorMessage: '未入庫の出庫記録がありません' };
-    }
-
-    if (hits.length > 1) {
-      return {
-        ok: false,
-        errorMessage: '出庫元が複数あります（'
-          + hits.map(function(h) { return h.route; }).join('・')
-          + '）。管理者に確認してください。',
-      };
-    }
-
-    const hit = hits[0];
-    const dup = orderAlreadyInboundForRoute(orderRecord, hit.route, inboundDateD);
-
-    if (dup !== '') {
-      return { ok: false, errorMessage: dup };
-    }
-
-    return { ok: true, route: hit.route, hit: hit };
+    return plan;
   };
 
   const buildLineRowValue = (resolved, orderRecord, manageNo, scanIso) => {
@@ -422,15 +799,58 @@
       && od16 === d;
   };
 
-  const isDomesticTargetMet = (rec27, orderRec, manageNo, d) => {
+  const readDomesticLineInDate = (rec27, lineRowId) => {
+    const table = rec27[C.OUT27.detailTable];
+
+    if (!table || !Array.isArray(table.value)) {
+      return '';
+    }
+
+    for (let i = 0; i < table.value.length; i += 1) {
+      const row = table.value[i];
+
+      if (String(row.id) === String(lineRowId)) {
+        return String(C.getFieldValue(row.value, C.OUT27.lineInDate) ?? '').trim();
+      }
+    }
+
+    return '';
+  };
+
+  const readWasaiLine = (rec74, lineRowId) => {
+    const table = rec74[C.OUT74.outboundLines];
+
+    if (!table || !Array.isArray(table.value)) {
+      return { inboundDate: '', lineStatus: '' };
+    }
+
+    for (let i = 0; i < table.value.length; i += 1) {
+      const row = table.value[i];
+
+      if (String(row.id) === String(lineRowId)) {
+        return {
+          inboundDate: String(C.getFieldValue(row.value, C.OUT74.lineInboundDate) ?? '').trim(),
+          lineStatus: String(C.getFieldValue(row.value, C.OUT74.lineStatus) ?? '').trim(),
+        };
+      }
+    }
+
+    return { inboundDate: '', lineStatus: '' };
+  };
+
+  const isDomesticTargetMet = (rec27, orderRec, manageNo, d, lineRowId) => {
     const table = rec27[C.OUT27.detailTable];
     let rowOk = false;
 
     if (table && Array.isArray(table.value)) {
       table.value.forEach(function(row) {
+        if (lineRowId && String(row.id) !== String(lineRowId)) {
+          return;
+        }
+
         const mn = String(C.getFieldValue(row.value, C.OUT27.detailManageNo) ?? '').trim();
 
-        if (mn === manageNo) {
+        if (lineRowId || mn === manageNo) {
           const lineIn = String(C.getFieldValue(row.value, C.OUT27.lineInDate) ?? '').trim();
           rowOk = lineIn === d;
         }
@@ -469,19 +889,23 @@
       && location === C.ORDER_LOCATION.hq;
   };
 
-  const applyOverseasLine = async (lineValues, d) => {
+  const applyOverseasLine = async (lineValues, d, options) => {
+    const updateOrder = !options || options.updateOrder !== false;
     const recordId = String(C.getFieldValue(lineValues, C.UL.sourceOutboundRecordId) ?? '').trim();
     const orderId = String(C.getFieldValue(lineValues, C.UL.orderRecordId) ?? '').trim();
 
     let rec28 = await C.fetchRecord(C.APP.overseasOutbound, recordId);
     let orderRec = await C.fetchRecord(C.APP.order, orderId);
 
-    if (isOverseasTargetMet(rec28, orderRec, d)) {
+    if (updateOrder && isOverseasTargetMet(rec28, orderRec, d)) {
       return;
     }
 
-    if (String(C.getFieldValue(rec28, C.OUT28.overseasInDate) ?? '').trim() !== d
-      || String(C.getFieldValue(rec28, C.OUT28.overseasStatus) ?? '').trim() !== C.OVERSEAS_STATUS_RETURNED) {
+    const existingIn = String(C.getFieldValue(rec28, C.OUT28.overseasInDate) ?? '').trim();
+    const existingStatus = String(C.getFieldValue(rec28, C.OUT28.overseasStatus) ?? '').trim();
+    const action = historyWriteAction(existingIn, d);
+
+    if (action === 'write' || (action === 'keep-today' && existingStatus !== C.OVERSEAS_STATUS_RETURNED)) {
       await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
         app: C.APP.overseasOutbound,
         id: recordId,
@@ -490,11 +914,16 @@
           [C.OUT28.overseasStatus]: { value: C.OVERSEAS_STATUS_RETURNED },
         },
       });
+      rec28 = await C.fetchRecord(C.APP.overseasOutbound, recordId);
+    }
+
+    if (!updateOrder) {
+      return;
     }
 
     orderRec = await C.fetchRecord(C.APP.order, orderId);
 
-    if (!isOverseasTargetMet(await C.fetchRecord(C.APP.overseasOutbound, recordId), orderRec, d)) {
+    if (!isOverseasTargetMet(rec28, orderRec, d)) {
       const overseasOrderBase = {
         [C.ORDER.processStatus]: { value: C.ORDER_PROCESS.returnOverseas },
         [C.ORDER.locationStatus]: { value: C.ORDER_LOCATION.hq },
@@ -522,7 +951,8 @@
     }
   };
 
-  const applyDomesticLine = async (lineValues, d) => {
+  const applyDomesticLine = async (lineValues, d, options) => {
+    const updateOrder = !options || options.updateOrder !== false;
     const recordId = String(C.getFieldValue(lineValues, C.UL.sourceOutboundRecordId) ?? '').trim();
     const lineRowId = String(C.getFieldValue(lineValues, C.UL.sourceOutboundLineId) ?? '').trim();
     const orderId = String(C.getFieldValue(lineValues, C.UL.orderRecordId) ?? '').trim();
@@ -531,33 +961,37 @@
     let rec27 = await C.fetchRecord(C.APP.outsourceOutbound, recordId);
     let orderRec = await C.fetchRecord(C.APP.order, orderId);
 
-    if (isDomesticTargetMet(rec27, orderRec, manageNo, d)) {
+    if (updateOrder && isDomesticTargetMet(rec27, orderRec, manageNo, d, lineRowId)) {
       return;
     }
 
-    const table = rec27[C.OUT27.detailTable];
-    const rows = table.value.map(function(row) {
-      if (String(row.id) !== String(lineRowId)) {
-        return { id: row.id, value: {} };
-      }
+    const action = historyWriteAction(readDomesticLineInDate(rec27, lineRowId), d);
 
-      return {
-        id: row.id,
-        value: {
-          [C.OUT27.lineInDate]: { value: d },
+    if (action === 'write') {
+      const table = rec27[C.OUT27.detailTable];
+      const rows = table.value.map(function(row) {
+        if (String(row.id) !== String(lineRowId)) {
+          return { id: row.id, value: {} };
+        }
+
+        return {
+          id: row.id,
+          value: {
+            [C.OUT27.lineInDate]: { value: d },
+          },
+        };
+      });
+
+      await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
+        app: C.APP.outsourceOutbound,
+        id: recordId,
+        record: {
+          [C.OUT27.detailTable]: { value: rows },
         },
-      };
-    });
+      });
 
-    await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
-      app: C.APP.outsourceOutbound,
-      id: recordId,
-      record: {
-        [C.OUT27.detailTable]: { value: rows },
-      },
-    });
-
-    rec27 = await C.fetchRecord(C.APP.outsourceOutbound, recordId);
+      rec27 = await C.fetchRecord(C.APP.outsourceOutbound, recordId);
+    }
     const statusCode = get27HeaderStatusCode(rec27);
     let allInbound = true;
 
@@ -583,6 +1017,10 @@
       }
     }
 
+    if (!updateOrder) {
+      return;
+    }
+
     orderRec = await C.fetchRecord(C.APP.order, orderId);
 
     if (String(C.getFieldValue(orderRec, C.ORDER.outsourceInDate) ?? '').trim() !== d
@@ -599,7 +1037,8 @@
     }
   };
 
-  const applyWasaiLine = async (lineValues, d) => {
+  const applyWasaiLine = async (lineValues, d, options) => {
+    const updateOrder = !options || options.updateOrder !== false;
     const recordId = String(C.getFieldValue(lineValues, C.UL.sourceOutboundRecordId) ?? '').trim();
     const lineRowId = String(C.getFieldValue(lineValues, C.UL.sourceOutboundLineId) ?? '').trim();
     const orderId = String(C.getFieldValue(lineValues, C.UL.orderRecordId) ?? '').trim();
@@ -608,32 +1047,41 @@
     let rec74 = await C.fetchRecord(C.APP.wasaiOutbound, recordId);
     let orderRec = await C.fetchRecord(C.APP.order, orderId);
 
-    if (isWasaiTargetMet(rec74, lineRowId, orderRec, d)) {
+    if (updateOrder && isWasaiTargetMet(rec74, lineRowId, orderRec, d)) {
       return;
     }
 
-    const table = rec74[C.OUT74.outboundLines];
-    const rows = table.value.map(function(row) {
-      if (String(row.id) !== String(lineRowId)) {
-        return { id: row.id, value: {} };
-      }
+    const wasaiLine = readWasaiLine(rec74, lineRowId);
+    const action = historyWriteAction(wasaiLine.inboundDate, d);
 
-      return {
-        id: row.id,
-        value: {
-          [C.OUT74.lineInboundDate]: { value: d },
-          [C.OUT74.lineStatus]: { value: C.WASAI_LINE_INBOUND },
+    if (action === 'write' || (action === 'keep-today' && wasaiLine.lineStatus !== C.WASAI_LINE_INBOUND)) {
+      const table = rec74[C.OUT74.outboundLines];
+      const rows = table.value.map(function(row) {
+        if (String(row.id) !== String(lineRowId)) {
+          return { id: row.id, value: {} };
+        }
+
+        return {
+          id: row.id,
+          value: {
+            [C.OUT74.lineInboundDate]: { value: d },
+            [C.OUT74.lineStatus]: { value: C.WASAI_LINE_INBOUND },
+          },
+        };
+      });
+
+      await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
+        app: C.APP.wasaiOutbound,
+        id: recordId,
+        record: {
+          [C.OUT74.outboundLines]: { value: rows },
         },
-      };
-    });
+      });
+    }
 
-    await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
-      app: C.APP.wasaiOutbound,
-      id: recordId,
-      record: {
-        [C.OUT74.outboundLines]: { value: rows },
-      },
-    });
+    if (!updateOrder) {
+      return;
+    }
 
     orderRec = await W.fetchOrderByManageNo(manageNo) || await C.fetchRecord(C.APP.order, orderId);
     const upd = await W.updateOrderForWasai(orderRec, 'inbound', d);
@@ -643,21 +1091,21 @@
     }
   };
 
-  const applyLineByRoute = async (lineValues, d) => {
+  const applyLineByRoute = async (lineValues, d, options) => {
     const route = String(C.getFieldValue(lineValues, C.UL.inboundRoute) ?? '').trim();
 
     if (route === C.ROUTE.overseas) {
-      await applyOverseasLine(lineValues, d);
+      await applyOverseasLine(lineValues, d, options);
       return;
     }
 
     if (route === C.ROUTE.domestic) {
-      await applyDomesticLine(lineValues, d);
+      await applyDomesticLine(lineValues, d, options);
       return;
     }
 
     if (route === C.ROUTE.wasai) {
-      await applyWasaiLine(lineValues, d);
+      await applyWasaiLine(lineValues, d, options);
       return;
     }
 
@@ -679,7 +1127,8 @@
     if (route === C.ROUTE.domestic) {
       const id27 = String(C.getFieldValue(lineValues, C.UL.sourceOutboundRecordId) ?? '').trim();
       const rec27 = await C.fetchRecord(C.APP.outsourceOutbound, id27);
-      return isDomesticTargetMet(rec27, orderRec, manageNo, d);
+      const lineRowId = String(C.getFieldValue(lineValues, C.UL.sourceOutboundLineId) ?? '').trim();
+      return isDomesticTargetMet(rec27, orderRec, manageNo, d, lineRowId);
     }
 
     if (route === C.ROUTE.wasai) {
@@ -690,6 +1139,193 @@
     }
 
     return false;
+  };
+
+  const isHistoryOnlyMet = async (lineValues, d) => {
+    const route = String(C.getFieldValue(lineValues, C.UL.inboundRoute) ?? '').trim();
+
+    if (route === C.ROUTE.overseas) {
+      const id28 = String(C.getFieldValue(lineValues, C.UL.sourceOutboundRecordId) ?? '').trim();
+      const rec28 = await C.fetchRecord(C.APP.overseasOutbound, id28);
+      const inDate = String(C.getFieldValue(rec28, C.OUT28.overseasInDate) ?? '').trim();
+
+      if (inDate === '') {
+        return false;
+      }
+
+      if (inDate !== d) {
+        return true;
+      }
+
+      return String(C.getFieldValue(rec28, C.OUT28.overseasStatus) ?? '').trim() === C.OVERSEAS_STATUS_RETURNED;
+    }
+
+    if (route === C.ROUTE.domestic) {
+      const id27 = String(C.getFieldValue(lineValues, C.UL.sourceOutboundRecordId) ?? '').trim();
+      const lineRowId = String(C.getFieldValue(lineValues, C.UL.sourceOutboundLineId) ?? '').trim();
+      const rec27 = await C.fetchRecord(C.APP.outsourceOutbound, id27);
+      return readDomesticLineInDate(rec27, lineRowId) !== '';
+    }
+
+    if (route === C.ROUTE.wasai) {
+      const id74 = String(C.getFieldValue(lineValues, C.UL.sourceOutboundRecordId) ?? '').trim();
+      const lineRowId = String(C.getFieldValue(lineValues, C.UL.sourceOutboundLineId) ?? '').trim();
+      const rec74 = await C.fetchRecord(C.APP.wasaiOutbound, id74);
+      const line = readWasaiLine(rec74, lineRowId);
+
+      if (line.inboundDate === '') {
+        return false;
+      }
+
+      if (line.inboundDate !== d) {
+        return true;
+      }
+
+      return line.lineStatus === C.WASAI_LINE_INBOUND;
+    }
+
+    return false;
+  };
+
+  const lineApplyKey = (lineValues) => openItemKey({
+    route: String(C.getFieldValue(lineValues, C.UL.inboundRoute) ?? '').trim(),
+    recordId: String(C.getFieldValue(lineValues, C.UL.sourceOutboundRecordId) ?? '').trim(),
+    lineRowId: String(C.getFieldValue(lineValues, C.UL.sourceOutboundLineId) ?? '').trim(),
+  });
+
+  const sourceAppIdForRoute = (route) => {
+    if (route === C.ROUTE.overseas) {
+      return C.APP.overseasOutbound;
+    }
+
+    if (route === C.ROUTE.wasai) {
+      return C.APP.wasaiOutbound;
+    }
+
+    return C.APP.outsourceOutbound;
+  };
+
+  const shipDateFromOutbound = (route, rec) => {
+    if (route === C.ROUTE.overseas) {
+      return String(C.getFieldValue(rec, C.OUT28.shipDate) ?? '').trim();
+    }
+
+    if (route === C.ROUTE.wasai) {
+      return String(
+        C.getFieldValue(rec, C.OUT74.shipDate)
+        || C.getFieldValue(rec, C.OUT74.shipDateAlt)
+        || ''
+      ).trim();
+    }
+
+    return String(C.getFieldValue(rec, C.OUT27.shipDate) ?? '').trim();
+  };
+
+  const assignOrderUpdates = (items) => {
+    const list = Array.isArray(items) ? items : [];
+    const updateOrderByKey = {};
+
+    if (list.length < 2) {
+      list.forEach(function(item) {
+        updateOrderByKey[openItemKey(item)] = true;
+      });
+
+      return { updateOrderByKey: updateOrderByKey, skipOrder: false };
+    }
+
+    const primary = selectPrimaryOpenItem(list);
+    const primaryKey = primary.confident ? openItemKey(primary.item) : '';
+
+    list.forEach(function(item) {
+      const key = openItemKey(item);
+      updateOrderByKey[key] = Boolean(primary.confident && key === primaryKey);
+    });
+
+    return {
+      updateOrderByKey: updateOrderByKey,
+      skipOrder: !primary.confident,
+      primary: primary,
+    };
+  };
+
+  const planOrderUpdates = async (rows) => {
+    const groups = {};
+
+    rows.forEach(function(row) {
+      const lineValues = row.value;
+      const result = String(C.getFieldValue(lineValues, C.UL.lineResult) ?? '').trim();
+
+      if (result === C.LINE_RESULT.error) {
+        return;
+      }
+
+      const manageNo = String(C.getFieldValue(lineValues, C.UL.manageNo) ?? '').trim();
+
+      if (!groups[manageNo]) {
+        groups[manageNo] = [];
+      }
+
+      groups[manageNo].push(lineValues);
+    });
+
+    const updateOrderByKey = {};
+    const skippedOrderManageNos = [];
+    const cache = {};
+    const manageNos = Object.keys(groups);
+
+    const enrich = async (lineValues) => {
+      const route = String(C.getFieldValue(lineValues, C.UL.inboundRoute) ?? '').trim();
+      const recordId = String(C.getFieldValue(lineValues, C.UL.sourceOutboundRecordId) ?? '').trim();
+      const cacheKey = route + ':' + recordId;
+
+      if (!cache[cacheKey]) {
+        cache[cacheKey] = await C.fetchRecord(sourceAppIdForRoute(route), recordId);
+      }
+
+      const rec = cache[cacheKey];
+
+      return {
+        route: route,
+        recordId: recordId,
+        lineRowId: String(C.getFieldValue(lineValues, C.UL.sourceOutboundLineId) ?? '').trim(),
+        shipDate: shipDateFromOutbound(route, rec)
+          || String(C.getFieldValue(lineValues, C.UL.outboundDate) ?? '').trim(),
+        createdAt: String(C.getFieldValue(rec, '作成日時') ?? '').trim(),
+      };
+    };
+
+    for (let i = 0; i < manageNos.length; i += 1) {
+      const manageNo = manageNos[i];
+      const group = groups[manageNo];
+
+      if (group.length < 2) {
+        group.forEach(function(lineValues) {
+          updateOrderByKey[lineApplyKey(lineValues)] = true;
+        });
+        continue;
+      }
+
+      const items = [];
+
+      for (let g = 0; g < group.length; g += 1) {
+        items.push(await enrich(group[g]));
+      }
+
+      const decision = assignOrderUpdates(items);
+
+      if (decision.skipOrder) {
+        skippedOrderManageNos.push(manageNo);
+      }
+
+      Object.keys(decision.updateOrderByKey).forEach(function(key) {
+        updateOrderByKey[key] = decision.updateOrderByKey[key];
+      });
+    }
+
+    return {
+      updateOrderByKey: updateOrderByKey,
+      skippedOrderManageNos: skippedOrderManageNos,
+    };
   };
 
   const buildSubtablePutRows = (table, lineId, patch) => {
@@ -827,28 +1463,43 @@
     }
 
     const attemptStarted = C.nowIso();
+    const orderPlan = await planOrderUpdates(table.value);
+    const indexes = table.value.map(function(_, index) { return index; });
+
+    indexes.sort(function(a, b) {
+      const keyA = lineApplyKey(table.value[a].value);
+      const keyB = lineApplyKey(table.value[b].value);
+      const rankA = orderPlan.updateOrderByKey[keyA] ? 1 : 0;
+      const rankB = orderPlan.updateOrderByKey[keyB] ? 1 : 0;
+      return rankA - rankB;
+    });
 
     try {
-      for (let i = 0; i < table.value.length; i += 1) {
-        const row = table.value[i];
+      for (let n = 0; n < indexes.length; n += 1) {
+        const row = table.value[indexes[n]];
         const lineValues = row.value;
         const lineResult = String(C.getFieldValue(lineValues, C.UL.lineResult) ?? '').trim();
+        const updateOrder = orderPlan.updateOrderByKey[lineApplyKey(lineValues)] !== false;
 
         if (lineResult === C.LINE_RESULT.error) {
           continue;
         }
 
         if (lineResult === C.LINE_RESULT.success) {
-          const met = await isLineTargetFullyMet(lineValues, inboundDateD);
+          const met = updateOrder
+            ? await isLineTargetFullyMet(lineValues, inboundDateD)
+            : await isHistoryOnlyMet(lineValues, inboundDateD);
 
           if (met) {
             continue;
           }
         }
 
-        await applyLineByRoute(lineValues, inboundDateD);
+        await applyLineByRoute(lineValues, inboundDateD, { updateOrder: updateOrder });
 
-        const metAfter = await isLineTargetFullyMet(lineValues, inboundDateD);
+        const metAfter = updateOrder
+          ? await isLineTargetFullyMet(lineValues, inboundDateD)
+          : await isHistoryOnlyMet(lineValues, inboundDateD);
 
         if (!metAfter) {
           throw new Error('管理番号 '
@@ -898,7 +1549,14 @@
         },
       });
 
-      return { completed: true, message: '一括入庫が完了しました（' + finalCounts.success + '件）' };
+      return {
+        completed: true,
+        message: '一括入庫が完了しました（' + finalCounts.success + '件）'
+          + (orderPlan.skippedOrderManageNos.length === 0
+            ? ''
+            : '\n\n次の管理番号は出庫履歴のみ入庫済みにしました。受注の工程は変更していません。\n'
+              + orderPlan.skippedOrderManageNos.join('\n')),
+      };
     } catch (err) {
       const onFail = await C.fetchRecord(C.APP.unified, unifiedRecordId);
       const failCounts = countLineResults(onFail[C.UF.inboundLines]);
@@ -968,15 +1626,40 @@
       return resolved;
     }
 
-    const lineRow = buildLineRowValue(resolved, orders[0], normalized, C.nowDatetimeLocal());
+    const scannedAt = C.nowDatetimeLocal();
 
-    return { ok: true, lineRow: lineRow };
+    if (!resolved.bulk) {
+      const lineRow = buildLineRowValue(
+        asRouteHit(resolved.items[0]),
+        orders[0],
+        normalized,
+        scannedAt
+      );
+
+      return { ok: true, lineRow: lineRow };
+    }
+
+    return {
+      ok: true,
+      bulk: true,
+      confirmText: buildBulkConfirmText(normalized, resolved.items),
+      lineRows: resolved.items.map(function(item) {
+        return buildLineRowValue(asRouteHit(item), orders[0], normalized, scannedAt);
+      }),
+    };
   };
 
   window.CAYANAS_InboundUnifiedEngine = {
     scanManageNo: scanManageNo,
     runBatchConfirm: runBatchConfirm,
     countLineResults: countLineResults,
+    historyWriteAction: historyWriteAction,
+    selectPrimaryOpenItem: selectPrimaryOpenItem,
+    summarizeOpenItems: summarizeOpenItems,
+    buildBulkConfirmText: buildBulkConfirmText,
+    planInboundItems: planInboundItems,
+    assignOrderUpdates: assignOrderUpdates,
+    openItemKey: openItemKey,
   };
 
 })();

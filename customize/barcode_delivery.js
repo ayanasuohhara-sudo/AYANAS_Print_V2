@@ -12,6 +12,83 @@
   const DELIVERY_APP_ID = 19;
   const BARCODE_FIELD = 'barcode_input';
 
+  const BLANK_TEXT_FIELDS = [
+    'manage_no',
+    'client_name',
+    'kimono_type',
+    'kimono_spec',
+    'item_code',
+    'item_name',
+    'slip_no',
+    'in_charge',
+  ];
+  const BLANK_NUMBER_FIELDS = ['qty', 'unit_price', 'amount'];
+
+  const isBlankCell = (value) => {
+    if (value === null || value === undefined) {
+      return true;
+    }
+
+    return String(value).trim() === '';
+  };
+
+  const isInitialBlankDetailRow = (row) => {
+    const value = row && row.value ? row.value : null;
+
+    if (!value) {
+      return false;
+    }
+
+    for (let i = 0; i < BLANK_TEXT_FIELDS.length; i += 1) {
+      const field = value[BLANK_TEXT_FIELDS[i]];
+
+      if (field && !isBlankCell(field.value)) {
+        return false;
+      }
+    }
+
+    for (let i = 0; i < BLANK_NUMBER_FIELDS.length; i += 1) {
+      const field = value[BLANK_NUMBER_FIELDS[i]];
+
+      if (!field || isBlankCell(field.value)) {
+        continue;
+      }
+
+      const number = Number(field.value);
+
+      if (!Number.isNaN(number) && number !== 0) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const placeDetailRows = (existingRows, builtRows) => {
+    const rows = (existingRows || []).slice();
+    let blankIndex = rows.findIndex(isInitialBlankDetailRow);
+
+    builtRows.forEach((built) => {
+      if (blankIndex >= 0) {
+        const existing = rows[blankIndex];
+        rows[blankIndex] = existing && existing.id
+          ? { id: existing.id, value: built.value }
+          : built;
+        blankIndex = -1;
+        return;
+      }
+
+      rows.push(built);
+    });
+
+    return rows;
+  };
+
+  window.CAYANAS_BarcodeDelivery = {
+    isInitialBlankDetailRow: isInitialBlankDetailRow,
+    placeDetailRows: placeDetailRows,
+  };
+
   if (typeof kintone === 'undefined' || kintone.app.getId() !== DELIVERY_APP_ID) {
     return;
   }
@@ -149,9 +226,8 @@
         return;
       }
 
-      details.forEach((detailRow) => {
-        record.delivery_detail.value.push(buildDetailRow(order, detailRow));
-      });
+      const builtRows = details.map((detailRow) => buildDetailRow(order, detailRow));
+      record.delivery_detail.value = placeDetailRows(record.delivery_detail.value, builtRows);
 
       record.barcode_input.value = '';
       kintone.app.record.set(appRecord);

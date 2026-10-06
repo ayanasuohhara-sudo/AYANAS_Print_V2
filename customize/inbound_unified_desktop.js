@@ -714,6 +714,10 @@
 
     const result = await Engine.scanManageNo(normalized, inboundDate);
 
+    if (result.cancelled) {
+      return result;
+    }
+
     if (!result.ok) {
       upsertInboundLineRow(
         record,
@@ -722,14 +726,40 @@
       return result;
     }
 
-    const plain = {};
+    const toPlain = (lineRow) => {
+      const plain = {};
 
-    Object.keys(result.lineRow.value || {}).forEach(function(fieldCode) {
-      const cell = result.lineRow.value[fieldCode];
-      plain[fieldCode] = cell?.value;
-    });
+      Object.keys(lineRow.value || {}).forEach(function(fieldCode) {
+        const cell = lineRow.value[fieldCode];
+        plain[fieldCode] = cell?.value;
+      });
 
-    upsertInboundLineRow(record, plain);
+      return plain;
+    };
+
+    if (result.bulk) {
+      const accepted = window.confirm(result.confirmText || '未入庫をまとめて入庫しますか？');
+
+      if (!accepted) {
+        return {
+          ok: false,
+          cancelled: true,
+          errorMessage: '入庫処理をキャンセルしました',
+        };
+      }
+
+      (result.lineRows || []).forEach(function(lineRow) {
+        upsertInboundLineRow(record, toPlain(lineRow));
+      });
+
+      return {
+        ok: true,
+        bulk: true,
+        route: '未入庫' + (result.lineRows || []).length + '件',
+      };
+    }
+
+    upsertInboundLineRow(record, toPlain(result.lineRow));
     return { ok: true, route: C.getFieldValue(result.lineRow.value, C.UL.inboundRoute) };
   };
 
@@ -797,8 +827,12 @@
       clearBarcode(record);
       kintone.app.record.set(snapshot);
 
-      if (!result.ok) {
+      if (result.cancelled) {
+        showMessage(manageNo + ' — 入庫処理をキャンセルしました', false);
+      } else if (!result.ok) {
         showMessage(manageNo + ' — ' + (result.errorMessage || 'エラー'), true);
+      } else if (result.bulk) {
+        showMessage(manageNo + ' — ' + result.route + 'を明細に追加しました（待機）', false);
       } else {
         showMessage(manageNo + ' — ' + result.route + '（待機・明細自動入力）', false);
       }
@@ -996,6 +1030,7 @@
     if (isDraft(event.record)) {
       showMessage(
         '【バーコード入力】に管理番号 → Enter で明細追加（連続可）。\n'
+        + '未入庫が1件のときは確認なし。複数あるときだけまとめて入庫するか確認します。\n'
         + '明細の管理番号欄で Enter も可。入庫ルートは自動。空の明細行（＋）は使わないでください。',
         false
       );

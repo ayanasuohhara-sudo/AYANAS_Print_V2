@@ -241,8 +241,9 @@
             lines.push('納品できない工程の商品が含まれています。');
             lines.push('');
             evaluation.blocked.forEach((item) => {
+                const status = item.processStatus || '(空欄)';
                 lines.push('管理番号：' + item.manageNo);
-                lines.push('現在工程：' + (item.processStatus || '(空欄)'));
+                lines.push('現在' + status + 'のため納品書を作成できません。');
                 lines.push('');
             });
             lines.push('工程状態を確認してください。');
@@ -258,19 +259,16 @@
 
     const buildConfirmMessage = (items) => {
         const lines = [
-            '完了登録されていない商品が' + items.length + '件あります。',
+            '未完了の商品が' + items.length + '点あります。',
+            '',
+            'この商品を完了にして、',
+            'そのまま納品書を作成しますか？',
             '',
         ];
 
         items.forEach((item) => {
             lines.push(formatItemLine(item));
         });
-
-        lines.push('');
-        lines.push('検品・仕上げが完了している場合は［OK］を押してください。');
-        lines.push('完了登録後、納品書の保存を続行します。');
-        lines.push('');
-        lines.push('まだ完了していない場合は［キャンセル］を押してください。');
 
         return lines.join('\n');
     };

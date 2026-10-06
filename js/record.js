@@ -168,6 +168,7 @@
             'manage_no',
             'client_name',
             'item_name',
+            'item_code',
             'kimono_type',
             'kimono_spec',
             'slip_no',
@@ -349,21 +350,28 @@
 
     const isEmptyDeliveryDetailRow = (detail) => {
 
-        const itemName = String(detail.item_name ?? '').trim();
+        const textCodes = [
+            'manage_no',
+            'client_name',
+            'kimono_type',
+            'kimono_spec',
+            'item_code',
+            'item_name',
+            'slip_no',
+            'in_charge',
+        ];
+        const hasText = textCodes.some((code) => String(detail[code] ?? '').trim() !== '');
 
-        if (itemName !== '') {
+        if (hasText) {
             return false;
         }
 
-        if (detail.qty !== 0) {
-            return false;
-        }
+        const hasNumber = ['qty', 'unit_price', 'amount'].some((code) => {
+            const number = Number(detail[code]);
+            return !Number.isNaN(number) && number !== 0;
+        });
 
-        if (detail.amount !== 0) {
-            return false;
-        }
-
-        return true;
+        return !hasNumber;
 
     };
 

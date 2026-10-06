@@ -97,8 +97,8 @@ const run = async () => {
         && factory.message.indexOf('工場作業中') !== -1
         && factory.message.indexOf('仕上げ中') !== -1
         && factory.message.indexOf('保管場所:工場') !== -1
-        && factory.message.indexOf('［OK］') !== -1
-        && factory.message.indexOf('［キャンセル］') !== -1);
+        && factory.message.indexOf('未完了の商品が1点あります。') !== -1
+        && factory.message.indexOf('そのまま納品書を作成しますか？') !== -1);
 
     const putRecord = R.buildCompletePutRecord(new Date(2026, 9, 5, 8, 0, 0));
     const stored = {};
@@ -237,8 +237,11 @@ const run = async () => {
     assert('ケース12 ガードはA550を除外しない', guard.indexOf('A550') === -1);
     assert('ケース12 納品済同期はA550を除外したまま', sync.indexOf("const A550_CUSTOMER_CODE = 'A550'") !== -1
         && sync.indexOf('customerCode !== A550_CUSTOMER_CODE') !== -1);
-    assert('ケース13 納品済同期はlocationとdeliveryだけ', markBody.indexOf('[FIELD.locationStatus]: { value: STATUS_DELIVERED }') !== -1
-        && markBody.indexOf('[FIELD.deliveryStatus]: { value: STATUS_DELIVERED }') !== -1
+    assert('ケース13 納品済同期は状態・納品日・納品番号', sync.indexOf('buildCorporateOrderUpdate') !== -1
+        && sync.indexOf('[FIELD.locationStatus]: { value: STATUS_DELIVERED }') !== -1
+        && sync.indexOf('[FIELD.deliveryStatus]: { value: STATUS_DELIVERED }') !== -1
+        && sync.indexOf('[FIELD.deliveryDate] = { value: date }') !== -1
+        && sync.indexOf('[FIELD.deliveryNo] = { value: number }') !== -1
         && markBody.indexOf('completion_date') === -1
         && markBody.indexOf('work_status') === -1
         && markBody.indexOf('[FIELD.processStatus]') === -1);
@@ -252,9 +255,18 @@ const run = async () => {
     assert('App19は完了文字列を持たない', guard.indexOf('仕上げ完了') === -1
         && guard.indexOf('納品待ち') === -1
         && guard.indexOf("value: '完了'") === -1);
-    assert('PUTは確認より後', guard.indexOf('planDeliveryCompletion') < guard.indexOf('window.confirm')
-        && guard.indexOf('window.confirm') < guard.indexOf('buildCompletePutRecord')
-        && guard.indexOf('buildCompletePutRecord') < guard.indexOf('applyCompletableUpdates'));
+    const confirmText = fs.readFileSync(path.join(root, 'customize/complete_register_engine.js'), 'utf8');
+    assert('未完了は1回の確認文', confirmText.indexOf('未完了の商品が') !== -1
+        && confirmText.indexOf('そのまま納品書を作成しますか？') !== -1);
+    assert('外注中は作成不可の文言', confirmText.indexOf('のため納品書を作成できません。') !== -1);
+    assert('標準ダイアログでは保存を切らない', guard.indexOf('window.confirm') === -1
+        && guard.indexOf('window.alert') === -1
+        && guard.indexOf('return false') === -1);
+    assert('中止は event.error で返す', guard.indexOf('event.error = message') !== -1);
+    assert('PUTは確認より後', guard.indexOf('planDeliveryCompletion') < guard.indexOf('askToCompleteAndSave(plan.message)')
+        && guard.indexOf('askToCompleteAndSave(plan.message)') < guard.indexOf('buildCompletePutRecord')
+        && guard.indexOf('buildCompletePutRecord') < guard.indexOf('applyCompletableUpdates')
+        && guard.lastIndexOf('return event;') > guard.indexOf('applyCompletableUpdates'));
 
     if (failed) {
         process.exit(1);

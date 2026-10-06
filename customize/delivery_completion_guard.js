@@ -45,6 +45,79 @@
         );
     };
 
+    const stopSave = (event, message) => {
+        event.error = message;
+        return event;
+    };
+
+    /**
+     * ブラウザ標準の確認ダイアログは保存イベントを中断する。
+     * 画面上の確認にして、選択後も同じ submit の Promise で保存を続ける。
+     */
+    const askToCompleteAndSave = (message) => new Promise((resolve) => {
+        const existing = document.getElementById('cayan-delivery-complete-confirm');
+
+        if (existing) {
+            existing.remove();
+        }
+
+        const root = document.createElement('div');
+        root.id = 'cayan-delivery-complete-confirm';
+        root.style.cssText = [
+            'position:fixed',
+            'inset:0',
+            'z-index:2147483646',
+            'background:rgba(0,0,0,0.45)',
+            'display:flex',
+            'align-items:center',
+            'justify-content:center',
+            'padding:24px',
+        ].join(';');
+
+        const panel = document.createElement('div');
+        panel.style.cssText = [
+            'background:#fff',
+            'max-width:640px',
+            'width:100%',
+            'max-height:80vh',
+            'overflow:auto',
+            'padding:24px',
+            'border-radius:8px',
+        ].join(';');
+
+        const body = document.createElement('pre');
+        body.textContent = message;
+        body.style.cssText = 'white-space:pre-wrap;font:16px/1.6 sans-serif;margin:0 0 20px;';
+
+        const actions = document.createElement('div');
+        actions.style.cssText = 'display:flex;gap:12px;justify-content:flex-end;';
+
+        const cancel = document.createElement('button');
+        cancel.type = 'button';
+        cancel.textContent = '戻る';
+        cancel.style.cssText = 'min-height:44px;padding:8px 16px;font-size:16px;';
+
+        const ok = document.createElement('button');
+        ok.type = 'button';
+        ok.textContent = '完了して納品書を作成';
+        ok.style.cssText = 'min-height:44px;padding:8px 16px;font-size:16px;background:#206694;color:#fff;border:0;';
+
+        const finish = (accepted) => {
+            root.remove();
+            resolve(accepted);
+        };
+
+        cancel.addEventListener('click', () => finish(false));
+        ok.addEventListener('click', () => finish(true));
+        actions.appendChild(cancel);
+        actions.appendChild(ok);
+        panel.appendChild(body);
+        panel.appendChild(actions);
+        root.appendChild(panel);
+        document.body.appendChild(root);
+        ok.focus();
+    });
+
     const guardSubmit = async (event) => {
         if (kintone.app.getId() !== DELIVERY_APP_ID) {
             return event;
@@ -78,30 +151,36 @@
         const plan = Engine.planDeliveryCompletion(lookups);
 
         if (plan.action === 'stop') {
-            window.alert(plan.message);
-            return false;
+            return stopSave(event, plan.message);
         }
 
         if (plan.action === 'save') {
             return event;
         }
 
-        if (!window.confirm(plan.message)) {
-            return false;
+        const accepted = await askToCompleteAndSave(plan.message);
+
+        if (!accepted) {
+            return stopSave(event, '納品書の作成を中止しました。');
         }
 
         const putRecord = Engine.buildCompletePutRecord();
-        const result = await Engine.applyCompletableUpdates(plan.completable, putRecord, {
-            putOrder,
-            fetchOrder: async (manageNo) => {
-                const records = await fetchOrders(manageNo);
-                return records[0] || null;
-            },
-        });
+        let result;
+
+        try {
+            result = await Engine.applyCompletableUpdates(plan.completable, putRecord, {
+                putOrder,
+                fetchOrder: async (manageNo) => {
+                    const records = await fetchOrders(manageNo);
+                    return records[0] || null;
+                },
+            });
+        } catch (error) {
+            return stopSave(event, error && error.message ? error.message : String(error));
+        }
 
         if (!result.save) {
-            window.alert(result.message);
-            return false;
+            return stopSave(event, result.message);
         }
 
         return event;

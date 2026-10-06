@@ -3,10 +3,10 @@
 
   /**
    * 総合入庫 App78 — 共通定数
-   * INBOUND_UNIFIED_VERSION: 1.0.0
+   * INBOUND_UNIFIED_VERSION: 1.1.0
    */
 
-  const INBOUND_UNIFIED_VERSION = '1.0.9';
+  const INBOUND_UNIFIED_VERSION = '1.1.0';
 
   const APP = {
     unified: 78,
