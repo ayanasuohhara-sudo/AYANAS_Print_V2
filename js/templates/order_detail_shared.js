@@ -229,9 +229,21 @@
 
     };
 
+    const formatCustomerCodeCell = (value) => {
+
+        const code = String(value ?? '').trim();
+
+        if (code === '') {
+            return '様';
+        }
+
+        return code;
+
+    };
+
     OrderDetailShared.buildSleeveTagTableHtml = (header) => {
 
-        const customerName = withHonorific(header?.customer_name);
+        const customerCode = formatCustomerCodeCell(header?.customer_code);
         const clientName = withHonorific(header?.client_name);
         const productName = joinProductName(header);
         const manageNo = String(header?.manage_no ?? '').trim();
@@ -249,8 +261,8 @@
     </colgroup>
     <tbody>
         <tr class="order-sleeve-tag-table__row">
-            <th class="order-sleeve-tag-table__label">お得意様名</th>
-            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--wide" colspan="4">${esc(customerName)}</td>
+            <th class="order-sleeve-tag-table__label">お得意様コード</th>
+            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--wide" colspan="4">${esc(customerCode)}</td>
         </tr>
         <tr class="order-sleeve-tag-table__row">
             <th class="order-sleeve-tag-table__label">お客様名</th>
