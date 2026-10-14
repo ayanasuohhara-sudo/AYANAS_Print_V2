@@ -138,17 +138,17 @@ const run = async () => {
     const overseas = R.planDeliveryCompletion([
         lookup('400001', [order('400001', '海外外注中', { location: '海外' })]),
     ]);
-    assert('ケース5 海外外注中は停止', overseas.action === 'stop' && overseas.completable.length === 0);
-    assert('ケース5 停止文', overseas.message.indexOf('400001') !== -1
+    assert('ケース5 海外外注中は確認して完了できる', overseas.action === 'confirm' && overseas.completable.length === 1);
+    assert('ケース5 確認文', overseas.message.indexOf('400001') !== -1
         && overseas.message.indexOf('海外外注中') !== -1
-        && overseas.message.indexOf('受注の完了登録は行っていません。') !== -1);
+        && overseas.message.indexOf('そのまま納品書を作成しますか？') !== -1);
     assert('ケース5 確認ボタン相当の文言が無い', overseas.message.indexOf('［OK］') === -1);
 
     ['外注中', '和裁士作業中', '', '   ', '未知工程', '仕上げ待ち', '丸洗い中'].forEach((status) => {
         const plan = R.planDeliveryCompletion([
             lookup('400002', [order('400002', status)]),
         ]);
-        assert('ケース6 停止 ' + (status.trim() || '(空欄)'), plan.action === 'stop' && plan.completable.length === 0);
+        assert('ケース6 確認 ' + (status.trim() || '(空欄)'), plan.action === 'confirm' && plan.completable.length === 1);
     });
 
     const missing = R.planDeliveryCompletion([
@@ -181,11 +181,13 @@ const run = async () => {
         lookup('700002', [order('700002', '工場作業中')]),
         lookup('700003', [order('700003', '海外外注中')]),
     ]);
-    assert('ケース11 外注系が1件でも全体停止', blockedMix.action === 'stop'
-        && blockedMix.completable.length === 0
-        && blockedMix.evaluation.completable.length === 1
+    assert('ケース11 外注中が混ざっても確認して完了できる', blockedMix.action === 'confirm'
+        && blockedMix.completable.length === 2
+        && blockedMix.completable[0].manageNo === '700002'
+        && blockedMix.completable[1].manageNo === '700003'
         && blockedMix.evaluation.alreadyComplete.length === 1);
-    assert('ケース11 補完対象をPUTしない', blockedMix.message.indexOf('受注の完了登録は行っていません。') !== -1);
+    assert('ケース11 完了済みは確認対象に含めない', blockedMix.message.indexOf('700001') === -1
+        && blockedMix.message.indexOf('700003') !== -1);
 
     const partialStored = {};
     const partial = await R.applyCompletableUpdates([
@@ -258,7 +260,11 @@ const run = async () => {
     const confirmText = fs.readFileSync(path.join(root, 'customize/complete_register_engine.js'), 'utf8');
     assert('未完了は1回の確認文', confirmText.indexOf('未完了の商品が') !== -1
         && confirmText.indexOf('そのまま納品書を作成しますか？') !== -1);
-    assert('外注中は作成不可の文言', confirmText.indexOf('のため納品書を作成できません。') !== -1);
+    assert('外注中も確認して完了できる', R.classifyProcessStatus('外注中') === 'completable'
+        && R.classifyProcessStatus('海外外注中') === 'completable'
+        && R.classifyProcessStatus('和裁士作業中') === 'completable'
+        && R.classifyProcessStatus('') === 'completable'
+        && R.classifyProcessStatus('完了') === 'complete');
     assert('標準ダイアログでは保存を切らない', guard.indexOf('window.confirm') === -1
         && guard.indexOf('window.alert') === -1
         && guard.indexOf('return false') === -1);

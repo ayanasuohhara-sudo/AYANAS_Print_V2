@@ -58,7 +58,7 @@
 
     window.OutsourceOutboundSlipTemplate = OutsourceOutboundSlipTemplate;
 
-    const WASAI_OUTBOUND_SLIP_TEMPLATE_VERSION = '1';
+    const WASAI_OUTBOUND_SLIP_TEMPLATE_VERSION = '2';
 
     const WasaiOutboundSlipTemplate = TemplateInterface.create('WasaiOutboundSlipTemplate', (data, config = {}, layout = {}) => {
 

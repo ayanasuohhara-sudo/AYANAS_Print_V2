@@ -77,6 +77,11 @@
         orderFields().manageNo + ' = "' + escapeQueryValue(manageNo) + '" limit 2'
     );
 
+    /**
+     * 移行期間は、完了以外（外注中・海外外注中・和裁士作業中・空欄・未知を含む）も
+     * 確認のうえ完了して納品書を保存できる。
+     * 保管場所と出庫伝票の入庫は、この完了 PUT では変えない。
+     */
     const classifyProcessStatus = (processStatus) => {
         const value = String(processStatus ?? '').trim();
 
@@ -84,11 +89,7 @@
             return 'complete';
         }
 
-        if (completableProcessValues().indexOf(value) !== -1) {
-            return 'completable';
-        }
-
-        return 'blocked';
+        return 'completable';
     };
 
     const toOrderSnapshot = (record) => {

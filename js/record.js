@@ -1096,13 +1096,20 @@
                 );
             }
 
+            const orderRecord = await fetchOrderRecordByManageNo(manageNo);
+            const kimonoType = String(getFieldValue(orderRecord, 'kimono_type') ?? '').trim()
+                || String(getFieldValue(fields, 'kimono_type') ?? '').trim();
+            const kimonoSpec = String(getFieldValue(orderRecord, 'kimono_spec') ?? '').trim()
+                || String(getFieldValue(fields, 'kimono_spec') ?? '').trim();
+
             pages.push({
                 header: {
                     ...sharedHeader,
                     manage_no: manageNo,
                     customer_code: getFieldValue(fields, 'customer_code'),
                     client_name: getFieldValue(fields, 'client_name'),
-                    kimono_type: getFieldValue(fields, 'kimono_type'),
+                    kimono_type: kimonoType,
+                    kimono_spec: kimonoSpec,
                 },
                 details: processingDetails,
             });

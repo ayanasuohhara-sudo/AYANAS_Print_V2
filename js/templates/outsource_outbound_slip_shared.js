@@ -183,7 +183,13 @@
             ],
         },
         { type: 'single', label: 'お客様名', field: 'client_name', wrap: true, suffix: ' 様' },
-        { type: 'single', label: '着物種類', field: 'kimono_type', wrap: true },
+        {
+            type: 'pair',
+            items: [
+                { label: '着物種類名', field: 'kimono_type', wrap: true },
+                { label: '着物仕様名', field: 'kimono_spec', wrap: true },
+            ],
+        },
     ];
 
     WasaiOutboundSlipShared.buildTableHtml = (header, details) => (
