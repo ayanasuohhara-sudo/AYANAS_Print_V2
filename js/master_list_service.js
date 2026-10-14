@@ -69,9 +69,9 @@
             documentTitle: '外注加工マスタ一覧',
             codeLabel: '加工コード',
             nameLabel: '加工内容',
-            codeField: 'processing_code',
-            nameField: 'processing_details',
-            orderField: 'processing_code',
+            codeField: 'outsource_company_code',
+            nameField: '文字列__1行__0',
+            orderField: 'outsource_company_code',
             filterNoteAll: '全件（加工コード昇順）',
         },
     ];

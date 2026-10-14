@@ -42,7 +42,7 @@
 
 
 
-    const PLUGIN_VERSION = '107';
+    const PLUGIN_VERSION = '108';
 
 
 

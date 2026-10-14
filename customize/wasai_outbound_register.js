@@ -313,6 +313,17 @@
     }, 100);
   };
 
+  const openSavedRecordForPrint = (recordId) => {
+    const id = String(recordId ?? '').trim();
+
+    if (!id) {
+      return;
+    }
+
+    const path = location.pathname.replace(/\/edit\/?$/, '/show');
+    location.href = location.origin + path + '#record=' + encodeURIComponent(id);
+  };
+
   const showMessage = (text, isError) => {
     const space = kintone.app.record.getSpaceElement('message_space');
 
@@ -491,6 +502,7 @@
     }
 
     const returnDate = String(W.getFieldValue(formRecord, W.F.returnDate) ?? '').trim()
+      || readInputValueFromDom(W.F.returnDate)
       || shipDateMeta.value;
 
     if (properties[W.F.returnDate]) {
@@ -651,7 +663,7 @@
         throw new Error('App74にPOST可能なフィールドがありません。フォーム設定を確認してください。');
       }
 
-      await kintone.api(
+      const created = await kintone.api(
         kintone.api.url('/k/v1/record.json', true),
         'POST',
         { app: APP_ID, record: payload }
@@ -667,12 +679,15 @@
           + '・process_status（工程）: 和裁士作業中\n'
           + '・location_status（保管場所）: 和裁士';
 
-        showMessage('登録済：' + manageNo + '（App16は未更新）', false);
         alert('App74に出庫を登録しました。\n\n' + app16Note);
-      } else {
-        showMessage('登録済：' + manageNo + '（' + items.length + '明細）', false);
       }
 
+      if (created && created.id) {
+        openSavedRecordForPrint(created.id);
+        return;
+      }
+
+      showMessage('登録済：' + manageNo + '。伝票画面を開けませんでした。', true);
       clearBarcodeInput(record);
       kintone.app.record.set({ record: record });
       focusBarcodeInput();
@@ -727,8 +742,8 @@
     });
     getShipDateValueForOutbound(event.record, { syncToRecord: true });
     showMessage(
-      '和裁士コードを入力後、管理番号をスキャンすると1件ずつ登録されます。'
-      + '登録後は「キャンセル」で一覧へ（保存ボタンは使わないでください）。',
+      '和裁士コードと入庫予定日を入力し、管理番号をスキャンすると保存されます。'
+      + '保存後に伝票画面が開くので、「和裁士出庫伝票」を印刷してください。',
       false
     );
     setTimeout(focusBarcodeInput, 300);
@@ -752,10 +767,9 @@
       processBarcode(event.record);
     }
 
-    event.error =
-      'この画面では「保存」は使いません。\n'
-      + '管理番号のスキャンで1件ずつ App74 に登録されます。\n'
-      + '登録後は「キャンセル」で一覧を開き、登録内容を確認してください。';
+    event.error = manageNo
+      ? '管理番号のスキャンで保存しています。完了すると伝票画面が開きます。開いた画面の「和裁士出庫伝票」を印刷してください。'
+      : '管理番号を入力してください。スキャンで保存され、伝票画面が開きます。';
     return event;
   });
 
