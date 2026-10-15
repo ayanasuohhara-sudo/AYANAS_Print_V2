@@ -252,7 +252,14 @@
                 classes.push('is-focus');
             }
 
-            const manageCell = escapeHtml(row.manageNo)
+            const manageLink = row.recordId
+                ? '<a class="cayan-fp-link" href="'
+                    + escapeHtml(location.origin + Engine.orderDetailPath(row.recordId))
+                    + '" target="_blank" rel="noopener noreferrer">'
+                    + escapeHtml(row.manageNo)
+                    + '</a>'
+                : escapeHtml(row.manageNo);
+            const manageCell = manageLink
                 + (row.duplicate ? '<span class="cayan-fp-dup">' + escapeHtml(ui.duplicate) + '</span>' : '');
 
             return '<tr class="' + classes.join(' ') + '" data-manage-no="' + escapeHtml(row.manageNo) + '">'

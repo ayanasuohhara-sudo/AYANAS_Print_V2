@@ -173,6 +173,12 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
   font-size: 13px;
 }
 
+.cayan-fp-link {
+  color: #1d4ed8;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .cayan-fp-row.is-overdue {
   background: #fff1f2;
 }

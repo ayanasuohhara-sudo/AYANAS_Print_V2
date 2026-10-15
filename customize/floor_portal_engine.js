@@ -517,6 +517,10 @@
 
     };
 
+    const orderDetailPath = (recordId) => (
+        '/k/' + cfg().ORDER_APP_ID + '/show#record=' + encodeURIComponent(String(recordId ?? ''))
+    );
+
     window.CAYANAS_FloorPortalEngine = {
         todayYmdJst,
         isAggregationActive,
@@ -533,6 +537,7 @@
         orderFetchFields,
         buildLocationQuery,
         buildManageNoQuery,
+        orderDetailPath,
     };
 
 }());

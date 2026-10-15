@@ -220,6 +220,9 @@ const run = () => {
         && E.buildLocationQuery('store') === 'location_status in ("店舗") order by レコード番号 asc');
 
     const desktop = fs.readFileSync(path.join(root, 'customize/floor_portal_desktop.js'), 'utf8');
+    assert('管理番号は受注明細を開く', E.orderDetailPath('16') === '/k/16/show#record=16'
+        && desktop.indexOf('orderDetailPath') !== -1
+        && desktop.indexOf('target="_blank"') !== -1);
     assert('画面は状態を更新しない', desktop.indexOf("method, 'PUT'") === -1 && desktop.indexOf("'PUT'") === -1);
     assert('旧ポータルを呼ばない', desktop.indexOf('factory_portal_layout') === -1
         && desktop.indexOf('store_work') === -1);

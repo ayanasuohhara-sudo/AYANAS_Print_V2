@@ -3,14 +3,14 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.0.3
+     * FLOOR_PORTAL_VERSION: 1.0.4
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
      * 0 のままでは画面は出ません。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.0.3';
+    const FLOOR_PORTAL_VERSION = '1.0.4';
 
     const CAYANAS_FLOOR_PORTAL = {
         VERSION: FLOOR_PORTAL_VERSION,
