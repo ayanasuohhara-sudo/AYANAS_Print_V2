@@ -216,6 +216,8 @@ const run = () => {
     assert('更新間隔は2分', C.REFRESH_INTERVAL_MS === 120000);
     assert('App IDは設定に集約', C.APP.factoryPortal === 86 && C.APP.storePortal === 87
         && C.APP.locationInbound === 34 && C.APP.internalWork === 84 && C.APP.completeRegister === 30);
+    assert('保管場所はドロップダウンの in', E.buildLocationQuery('factory') === 'location_status in ("工場") order by レコード番号 asc'
+        && E.buildLocationQuery('store') === 'location_status in ("店舗") order by レコード番号 asc');
 
     const desktop = fs.readFileSync(path.join(root, 'customize/floor_portal_desktop.js'), 'utf8');
     assert('画面は状態を更新しない', desktop.indexOf("method, 'PUT'") === -1 && desktop.indexOf("'PUT'") === -1);

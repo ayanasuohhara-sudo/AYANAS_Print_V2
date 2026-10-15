@@ -131,6 +131,7 @@
 
             loading = false;
             loadError = error && error.message ? error.message : String(error);
+            console.error('[floor_portal]', error && error.code, error && error.message, error);
             paint();
 
         }

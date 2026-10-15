@@ -505,7 +505,7 @@
         const F = cfg().FIELDS;
         const location = locationForMode(mode);
 
-        return F.locationStatus + ' = "' + escapeQueryValue(location) + '" order by レコード番号 asc';
+        return F.locationStatus + ' in ("' + escapeQueryValue(location) + '") order by レコード番号 asc';
 
     };
 

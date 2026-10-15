@@ -49,8 +49,8 @@
 
 .report-order .barcode svg {
     display: block;
-    width: 220px;
-    max-width: 100%;
+    width: auto;
+    max-width: 48mm;
     height: auto;
     margin-left: auto;
 }
@@ -395,20 +395,20 @@
 .report-overseas-order .order-detail-barcode__svg {
     display: block;
     flex: 0 0 auto;
-    width: 88mm;
-    max-width: calc(100% - 2mm);
-    height: 22mm;
+    width: auto;
+    max-width: 56mm;
+    height: auto;
     margin: 0;
 }
 
 .report-order-detail .order-detail-barcode__value,
 .report-overseas-order .order-detail-barcode__value {
     flex: 0 0 auto;
-    margin: 2mm 0 0;
+    margin: 1mm 0 0;
     padding: 0;
-    width: 88mm;
-    max-width: calc(100% - 2mm);
-    font-size: 14pt;
+    width: auto;
+    max-width: 56mm;
+    font-size: 11pt;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: 0.04em;
@@ -1310,8 +1310,8 @@
 
 .report-delivery .delivery-barcode svg {
     display: block;
-    width: 110px;
-    max-width: 100%;
+    width: auto;
+    max-width: 48mm;
     height: auto;
 }
 

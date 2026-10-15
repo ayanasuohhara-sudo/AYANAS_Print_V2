@@ -415,13 +415,14 @@
 
         if (layout.reportType === 'order_detail'
             || layout.reportType === 'overseas_order'
-            || layout.reportType === 'outsource_outbound_slip') {
+            || layout.reportType === 'outsource_outbound_slip'
+            || layout.reportType === 'wasai_outbound_slip') {
             return {
                 barcode_type: barcodeType,
                 format: barcodeType,
-                height: 70,
-                width: 2.5,
-                margin: 12,
+                height: 32,
+                width: 1.3,
+                margin: 6,
                 displayValue: false,
                 textAlign: 'center',
                 background: '#ffffff',
