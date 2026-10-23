@@ -319,12 +319,16 @@
 
     if (meta && (type === 'DROP_DOWN' || type === 'RADIO_BUTTON')) {
       const preferred = buildDropdownPreferredValues(fieldCode, value);
+      const rawForFallback = value === null || value === undefined ? '' : String(value);
+      /* 和裁士ルートを国内外注へ勝手に落とさない（選択肢不一致時は元値を残す） */
+      const strictRoute = fieldCode === C.UL.inboundRoute
+        || fieldCode === C.UL.sourceOutboundApp;
 
       value = W.pickDropdownValue(
         meta,
         preferred,
-        value === null || value === undefined ? '' : String(value),
-        false
+        rawForFallback,
+        strictRoute
       );
 
       if (value === '' || value === null || value === undefined) {
@@ -332,7 +336,11 @@
           return null;
         }
 
-        value = W.pickDropdownValue(meta, preferred, '', false);
+        if (strictRoute && rawForFallback !== '') {
+          value = rawForFallback;
+        } else {
+          value = W.pickDropdownValue(meta, preferred, '', false);
+        }
       }
 
       if ((value === '' || value === null) && isOptionalDropdown) {
@@ -1030,8 +1038,9 @@
     if (isDraft(event.record)) {
       showMessage(
         '【バーコード入力】に管理番号 → Enter で明細追加（連続可）。\n'
+        + '国内外注・海外外注・和裁士の未入庫を自動判定します（和裁士入庫もこの画面で可）。\n'
         + '未入庫が1件のときは確認なし。複数あるときだけまとめて入庫するか確認します。\n'
-        + '明細の管理番号欄で Enter も可。入庫ルートは自動。空の明細行（＋）は使わないでください。',
+        + '明細の管理番号欄で Enter も可。空の明細行（＋）は使わないでください。',
         false
       );
       setTimeout(function() {

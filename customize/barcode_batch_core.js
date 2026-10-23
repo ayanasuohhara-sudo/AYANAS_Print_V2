@@ -31,7 +31,8 @@
             return { ok: false, reason: '既に一覧に追加済みです: ' + manageNo };
         }
 
-        list.items.push({
+        /* 連続スキャンで最新行を一覧の一番上に表示（エラーに気づきやすくする） */
+        list.items.unshift({
             ...row,
             manageNo,
             rowId: manageNo + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),

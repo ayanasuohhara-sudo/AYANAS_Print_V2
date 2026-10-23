@@ -326,11 +326,19 @@
     panel.appendChild(title);
 
     const hint = document.createElement('p');
-    hint.style.cssText = 'font-size:12px;color:#555;margin:4px 0 12px;';
+    hint.style.cssText = 'font-size:12px;color:#555;margin:4px 0 8px;';
     hint.textContent =
-      'App16連携は下のボタンから行います（サブテーブルを手入力して保存しただけでは App16 は変わりません）。'
+      '通常の和裁士入庫は【外注入庫（App78）】で行ってください。'
+      + ' ここは検品・緊急時の入庫用です。'
+      + ' App16連携は下のボタンから行います（手入力保存だけでは App16 は変わりません）。'
       + ' 検品OKのみ支払対象（billing_status は未計上のまま）。';
     panel.appendChild(hint);
+
+    const portalLink = document.createElement('a');
+    portalLink.href = location.origin + '/k/78/';
+    portalLink.textContent = '外注入庫（App78）を開く';
+    portalLink.style.cssText = 'display:inline-block;margin:0 0 12px;font-weight:700;font-size:14px;';
+    panel.appendChild(portalLink);
 
     const table = record[W.F.outboundLines];
 

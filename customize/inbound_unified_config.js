@@ -3,10 +3,11 @@
 
   /**
    * 総合入庫 App78 — 共通定数
-   * INBOUND_UNIFIED_VERSION: 1.1.0
+   * INBOUND_UNIFIED_VERSION: 1.2.0
+   * 1.2.0: 外注入庫(App78)で和裁士入庫を確実に処理できるよう検出・ルート確定を強化
    */
 
-  const INBOUND_UNIFIED_VERSION = '1.1.0';
+  const INBOUND_UNIFIED_VERSION = '1.2.0';
 
   const APP = {
     unified: 78,

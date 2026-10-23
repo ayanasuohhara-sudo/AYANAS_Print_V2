@@ -237,7 +237,12 @@
     const list = Array.isArray(items) ? items : [];
 
     if (list.length === 0) {
-      return { ok: false, errorMessage: '未入庫の出庫記録がありません' };
+      return {
+        ok: false,
+        errorMessage:
+          '未入庫の出庫記録がありません'
+          + '（国内外注・海外外注・和裁士出庫を確認してください）',
+      };
     }
 
     if (list.length === 1) {
@@ -280,7 +285,7 @@
       recordId: rec.$id.value,
       lineRowId: '',
       shipDate: String(C.getFieldValue(rec, C.OUT28.shipDate) ?? '').trim(),
-      createdAt: String(C.getFieldValue(rec, '作成日時') ?? '').trim(),
+      createdAt: recordCreatedAt(rec),
       manageNoMatched: manageNo,
     });
   };
@@ -335,7 +340,7 @@
 
     const candidates = new Set(C.expandManageNoCandidates(manageNo));
     const shipDate = String(C.getFieldValue(rec, C.OUT27.shipDate) ?? '').trim();
-    const createdAt = String(C.getFieldValue(rec, '作成日時') ?? '').trim();
+    const createdAt = recordCreatedAt(rec);
 
     table.value.forEach(function(row) {
       const rowManage = String(C.getFieldValue(row.value, C.OUT27.detailManageNo) ?? '').trim();
@@ -410,6 +415,49 @@
     return found;
   };
 
+  const recordCreatedAt = (rec) => {
+    if (!rec) {
+      return '';
+    }
+
+    if (rec.$createdAt && rec.$createdAt.value) {
+      return String(rec.$createdAt.value).trim();
+    }
+
+    return String(
+      C.getFieldValue(rec, '作成日時')
+      || C.getFieldValue(rec, 'Created_datetime')
+      || ''
+    ).trim();
+  };
+
+  /** 和裁士明細が未入庫として扱えるか（入庫済・検品後は除外） */
+  const isOpenWasaiLineStatus = (lineStatus, inboundDate) => {
+    if (String(inboundDate ?? '').trim() !== '') {
+      return false;
+    }
+
+    const st = String(lineStatus ?? '').trim();
+
+    if (st === '' || st === C.WASAI_LINE_OUTBOUND) {
+      return true;
+    }
+
+    /* 入庫済・検品OK・再加工・保留・支払系は未入庫ではない */
+    if (st === C.WASAI_LINE_INBOUND
+      || st === '検品OK'
+      || st === '再加工'
+      || st === '保留'
+      || st === '支払対象'
+      || st === '計上済'
+      || st === '支払済') {
+      return false;
+    }
+
+    /* 未知の行状態でも入庫日が空なら未入庫候補とする */
+    return true;
+  };
+
   const listOpenWasai = async (manageNo) => {
     const candidates = new Set(C.expandManageNoCandidates(manageNo));
     const found = [];
@@ -425,12 +473,16 @@
 
         const inboundDate = String(C.getFieldValue(entry.lineValues, C.OUT74.lineInboundDate) ?? '').trim();
         const lineStatus = String(C.getFieldValue(entry.lineValues, C.OUT74.lineStatus) ?? '').trim();
+        const headerStatus = String(
+          C.getFieldValue(entry.outboundRecord, C.OUT74.outboundStatus) ?? ''
+        ).trim();
 
-        if (inboundDate !== '') {
+        /* 取消伝票は除外。空・出庫確定・その他は候補（下書きに未入庫が残るケースも拾う） */
+        if (headerStatus === '取消') {
           return;
         }
 
-        if (lineStatus !== C.WASAI_LINE_OUTBOUND && lineStatus !== '') {
+        if (!isOpenWasaiLineStatus(lineStatus, inboundDate)) {
           return;
         }
 
@@ -453,22 +505,44 @@
             || C.getFieldValue(rec, C.OUT74.shipDateAlt)
             || ''
           ).trim(),
-          createdAt: String(C.getFieldValue(rec, '作成日時') ?? '').trim(),
+          createdAt: recordCreatedAt(rec),
           manageNoMatched: mn,
         });
       });
     };
 
-    const query = C.OUT74.outboundLines + '.' + C.OUT74.lineManageNo
-      + ' in (' + C.expandManageNoCandidates(manageNo).map(function(m) {
-        return '"' + C.escapeQueryValue(m) + '"';
-      }).join(',') + ') order by $id desc limit 500';
+    const manageIn = C.expandManageNoCandidates(manageNo).map(function(m) {
+      return '"' + C.escapeQueryValue(m) + '"';
+    }).join(',');
+    const lineQuery = C.OUT74.outboundLines + '.' + C.OUT74.lineManageNo
+      + ' in (' + manageIn + ')';
 
+    /* 1) 出庫確定のみ */
     try {
-      absorb(await C.fetchRecords(C.APP.wasaiOutbound, query));
+      absorb(await C.fetchRecords(
+        C.APP.wasaiOutbound,
+        C.OUT74.outboundStatus + ' = "' + C.escapeQueryValue(C.WASAI_OUTBOUND_HEADER) + '"'
+          + ' and ' + lineQuery
+          + ' order by $id desc limit 500'
+      ));
     } catch (err) {
-      console.warn('[inbound_engine] App74 サブテーブル検索:', err);
+      console.warn('[inbound_engine] App74 出庫確定+明細検索:', err);
+    }
 
+    /* 2) 伝票状態を問わず明細検索（1で0件、またはクエリ非対応時） */
+    if (found.length === 0) {
+      try {
+        absorb(await C.fetchRecords(
+          C.APP.wasaiOutbound,
+          lineQuery + ' order by $id desc limit 500'
+        ));
+      } catch (err) {
+        console.warn('[inbound_engine] App74 サブテーブル検索:', err);
+      }
+    }
+
+    /* 3) 直近伝票の走査フォールバック */
+    if (found.length === 0) {
       try {
         absorb(await C.fetchRecords(
           C.APP.wasaiOutbound,
@@ -1290,7 +1364,7 @@
         lineRowId: String(C.getFieldValue(lineValues, C.UL.sourceOutboundLineId) ?? '').trim(),
         shipDate: shipDateFromOutbound(route, rec)
           || String(C.getFieldValue(lineValues, C.UL.outboundDate) ?? '').trim(),
-        createdAt: String(C.getFieldValue(rec, '作成日時') ?? '').trim(),
+        createdAt: recordCreatedAt(rec),
       };
     };
 
