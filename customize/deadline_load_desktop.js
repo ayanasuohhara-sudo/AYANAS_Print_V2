@@ -131,62 +131,74 @@
 
     };
 
+    const detailRowHtml = (row) => {
+
+        const manageCell = row.recordId
+            ? '<a class="cayan-dl-link" href="'
+                + escapeHtml(location.origin + Engine.orderDetailPath(row.recordId))
+                + '" target="_blank" rel="noopener noreferrer">'
+                + escapeHtml(row.manageNo)
+                + '</a>'
+            : escapeHtml(row.manageNo);
+        const duplicate = row.duplicate
+            ? '<span class="cayan-dl-dup">' + escapeHtml(cfg().DUPLICATE_LABEL) + '</span>'
+            : '';
+        const cell = (value, key) => (
+            '<td class="' + (key ? 'cayan-dl-key' : '') + '">' + escapeHtml(value) + '</td>'
+        );
+
+        return '<tr>'
+            + '<td class="cayan-dl-key">' + manageCell + duplicate + '</td>'
+            + cell(row.customerName, true)
+            + cell(row.clientName, true)
+            + cell(row.kimonoType, false)
+            + cell(row.processing, true)
+            + cell(row.deadline, false)
+            + cell(row.processStatus, true)
+            + cell(row.workStatus, true)
+            + '</tr>';
+
+    };
+
+    const detailGroupHtml = (group) => {
+
+        const body = group.rows.map(detailRowHtml).join('');
+
+        return '<section class="cayan-dl-group">'
+            + '<h3 class="cayan-dl-group-title">【'
+            + escapeHtml(group.label)
+            + '　'
+            + escapeHtml(group.count)
+            + '件】</h3>'
+            + '<div class="cayan-dl-table-wrap"><table class="cayan-dl-table"><thead><tr>'
+            + '<th>管理番号</th><th>顧客名</th><th>お客様名</th>'
+            + '<th>着物種類</th><th>加工内容</th><th>納期</th>'
+            + '<th>現在工程</th><th>作業状態</th>'
+            + '</tr></thead><tbody>' + body + '</tbody></table></div>'
+            + '</section>';
+
+    };
+
     const detailHtml = () => {
 
         if (!selectedYmd) {
             return '';
         }
 
-        const rows = Engine.dayRows(model, selectedYmd);
+        const groups = Engine.detailGroups(model, selectedYmd);
+        const totalRows = Engine.dayRows(model, selectedYmd).length;
         const heading = '<h2 class="cayan-dl-detail-title">'
             + escapeHtml(Engine.formatLongDate(selectedYmd))
             + '</h2>'
             + '<p class="cayan-dl-detail-count">'
-            + escapeHtml(Engine.detailCountText(rows.length))
+            + escapeHtml(Engine.detailCountText(totalRows))
             + '</p>';
 
-        if (!rows.length) {
+        if (!groups.length) {
             return heading + '<p class="cayan-dl-empty">' + escapeHtml(cfg().MESSAGES.emptyDay) + '</p>';
         }
 
-        const body = rows.map((row) => {
-
-            const manageCell = row.recordId
-                ? '<a class="cayan-dl-link" href="'
-                    + escapeHtml(location.origin + Engine.orderDetailPath(row.recordId))
-                    + '" target="_blank" rel="noopener noreferrer">'
-                    + escapeHtml(row.manageNo)
-                    + '</a>'
-                : escapeHtml(row.manageNo);
-            const duplicate = row.duplicate
-                ? '<span class="cayan-dl-dup">' + escapeHtml(cfg().DUPLICATE_LABEL) + '</span>'
-                : '';
-            const cell = (value, key) => (
-                '<td class="' + (key ? 'cayan-dl-key' : '') + '">' + escapeHtml(value) + '</td>'
-            );
-
-            return '<tr>'
-                + '<td class="cayan-dl-key">' + manageCell + duplicate + '</td>'
-                + cell(row.customerCode, false)
-                + cell(row.customerName, true)
-                + cell(row.clientName, true)
-                + cell(row.kimonoType, false)
-                + cell(row.kimonoSpec, false)
-                + cell(row.processing, true)
-                + cell(row.categoriesLabel, true)
-                + cell(row.processStatus, true)
-                + cell(row.workStatus, true)
-                + cell(row.locationStatus, true)
-                + '</tr>';
-
-        }).join('');
-
-        return heading
-            + '<div class="cayan-dl-table-wrap"><table class="cayan-dl-table"><thead><tr>'
-            + '<th>管理番号</th><th>顧客コード</th><th>顧客名</th><th>お客様名</th>'
-            + '<th>着物種類</th><th>仕様</th><th>加工内容</th><th>分類</th>'
-            + '<th>工程</th><th>作業状態</th><th>保管場所</th>'
-            + '</tr></thead><tbody>' + body + '</tbody></table></div>';
+        return heading + groups.map(detailGroupHtml).join('');
 
     };
 
@@ -274,7 +286,7 @@
     const shellHtml = () => (
         '<header class="cayan-dl-header">'
         + '<h1 class="cayan-dl-title">納期負荷カレンダー</h1>'
-        + '<p class="cayan-dl-lead">受注の納期ごとに、仕立・丸洗い・しみぬき・修理の点数を確認します。</p>'
+        + '<p class="cayan-dl-lead">受注の納期ごとに、丸洗い・しみ／海外仕立／国内仕立／修理／帯仕立の点数を確認します。</p>'
         + '</header>'
         + '<div class="cayan-dl-nav">'
         + '<button type="button" class="cayan-dl-btn" id="cayan-dl-prev">＜ 前月</button>'

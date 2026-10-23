@@ -40,11 +40,15 @@
 
     };
 
-    const emptyCounts = () => ({
-        tailoring: 0,
-        wash: 0,
-        repair: 0,
-    });
+    const emptyCounts = () => {
+        const counts = {};
+
+        cfg().CATEGORIES.forEach((category) => {
+            counts[category.key] = 0;
+        });
+
+        return counts;
+    };
 
     const categoryByKey = (key) => (
         cfg().CATEGORIES.find((category) => category.key === key) || null
@@ -214,13 +218,40 @@
 
     };
 
+    /**
+     * 複数分類キーから優先順位で1つだけ選ぶ。該当なしは空文字。
+     */
+    const pickPriorityCategoryKey = (keys) => {
+
+        const matched = new Set(Array.isArray(keys) ? keys : []);
+        const priority = Array.isArray(cfg().CATEGORY_PRIORITY)
+            ? cfg().CATEGORY_PRIORITY
+            : [];
+
+        for (let index = 0; index < priority.length; index += 1) {
+            const key = priority[index];
+
+            if (matched.has(key)) {
+                return key;
+            }
+        }
+
+        return '';
+
+    };
+
+    /**
+     * 1 manage_no = 1分類。複数 subcategory 該当時は CATEGORY_PRIORITY で1つ。
+     */
     const matchingCategoryKeys = (record, subcategoryByCode) => {
 
         const subs = new Set(subcategoriesForRecord(record, subcategoryByCode));
-
-        return cfg().CATEGORIES
+        const matched = cfg().CATEGORIES
             .filter((category) => category.subcategories.some((name) => subs.has(name)))
             .map((category) => category.key);
+        const chosen = pickPriorityCategoryKey(matched);
+
+        return chosen ? [chosen] : [];
 
     };
 
@@ -396,15 +427,20 @@
                 row.categoryKeys.forEach((key) => union.add(key));
             });
 
-            union.forEach((key) => {
-                days[deadline].counts[key] += 1;
-            });
+            const chosenKey = pickPriorityCategoryKey([...union]);
+            const chosenKeys = chosenKey ? [chosenKey] : [];
+
+            if (chosenKey) {
+                days[deadline].counts[chosenKey] += 1;
+            }
 
             const duplicate = groupRows.length > 1 && Boolean(groupRows[0].manageNo);
 
             groupRows.forEach((row) => {
                 days[deadline].rows.push({
                     ...row,
+                    categoryKeys: chosenKeys,
+                    categoriesLabel: categoryLabel(chosenKeys),
                     duplicate: duplicate,
                 });
             });
@@ -446,6 +482,27 @@
                 count: counts[category.key],
             }))
     );
+
+    /**
+     * 納期明細用。CATEGORIES の固定表示順でグループ化。0件分類は出さない。
+     * 1 manage_no = 1分類のため、各行は1セクションにのみ出る。
+     */
+    const detailGroups = (model, date) => {
+        const rows = dayRows(model, date);
+        const counts = dayCounts(model, date);
+
+        return cfg().CATEGORIES
+            .filter((category) => Number(counts?.[category.key] || 0) > 0)
+            .map((category) => ({
+                key: category.key,
+                label: category.label,
+                count: counts[category.key],
+                rows: rows.filter((row) => (
+                    Array.isArray(row.categoryKeys)
+                    && row.categoryKeys.indexOf(category.key) !== -1
+                )),
+            }));
+    };
 
     const formatLongDate = (date) => {
 
@@ -570,6 +627,7 @@
         isCancelled,
         joinProcessing,
         subcategoriesForRecord,
+        pickPriorityCategoryKey,
         matchingCategoryKeys,
         categoryLabel,
         collectItemCodes,
@@ -580,6 +638,7 @@
         dayCounts,
         dayRows,
         visibleCountLines,
+        detailGroups,
         formatLongDate,
         detailCountText,
         loadLevel,

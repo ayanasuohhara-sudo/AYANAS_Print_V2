@@ -3,13 +3,14 @@
 
   /**
    * 外注追加加工 — 共通エンジン
-   * VERSION: 1.1.0
+   * VERSION: 1.2.0
    *
    * 照合: App27.processing_code → App95.outsource_company_code → App13.item_code → App16.detail_table.item_code
+   * 価格未定の正本: detail_table.price_unconfirmed（選択肢「価格未定」）
    * 名称一致・subcategory 絞り込みはしない。ステータスは変更しない。
    */
 
-  const VERSION = '1.1.0';
+  const VERSION = '1.2.0';
 
   const APP = {
     product: 13,
@@ -56,7 +57,11 @@
     unitPrice: 'unit_price',
     qty: 'qty',
     amount: 'amount',
+    priceUnconfirmed: 'price_unconfirmed',
   };
+
+  /** チェックボックス選択肢（正本） */
+  const PRICE_UNCONFIRMED_OPTION = '価格未定';
 
   const F19 = {
     deliveryDetail: 'delivery_detail',
@@ -333,6 +338,18 @@
     return { ok: true, record: records[0] };
   };
 
+  const isPriceUnconfirmedValue = (raw) => {
+    if (!Array.isArray(raw)) {
+      return false;
+    }
+
+    return raw.indexOf(PRICE_UNCONFIRMED_OPTION) >= 0;
+  };
+
+  const isPriceUnconfirmedRow = (rowValue) => (
+    isPriceUnconfirmedValue(getFieldValue(rowValue, F16.priceUnconfirmed))
+  );
+
   const buildNewLineValue = (line) => {
     const value = {
       [F16.itemCode]: { value: line.itemCode },
@@ -343,10 +360,12 @@
     if (line.priceFound && line.unitPrice !== null && line.unitPrice !== undefined) {
       value[F16.unitPrice] = { value: line.unitPrice };
       value[F16.amount] = { value: toNumber(line.unitPrice) * 1 };
+      value[F16.priceUnconfirmed] = { value: [] };
     } else {
-      /* 価格未定: 空欄（無料の 0 円と区別するため 0 を入れない） */
+      /* 価格未定: 空欄 + フラグON（0円は使わない） */
       value[F16.unitPrice] = { value: null };
       value[F16.amount] = { value: null };
+      value[F16.priceUnconfirmed] = { value: [PRICE_UNCONFIRMED_OPTION] };
     }
 
     return value;
@@ -492,15 +511,18 @@
           };
         }
 
+        let skipsThisManage = [];
+
         const putResult = await putOrderDetailLines(
           orderHit.record.$id.value,
           function (latest) {
             const existingCodes = listItemCodesOnOrder(latest);
             const newLines = [];
+            skipsThisManage = [];
 
             resolved.forEach(function (product) {
               if (existingCodes.has(product.itemCode)) {
-                result.skippedExisting.push({
+                skipsThisManage.push({
                   manageNo: manageNo,
                   itemCode: product.itemCode,
                   itemName: product.itemName,
@@ -515,6 +537,10 @@
             return newLines;
           }
         );
+
+        skipsThisManage.forEach(function (row) {
+          result.skippedExisting.push(row);
+        });
 
         (putResult.added || []).forEach(function (line) {
           result.added.push({
@@ -642,6 +668,58 @@
     return missingByManageNo;
   };
 
+  /**
+   * App19: price_unconfirmed に「価格未定」がある行のみ（unit_price の 0/空では判定しない）
+   */
+  const findPriceUnconfirmedOnDelivery = async (deliveryRecord) => {
+    const table = deliveryRecord?.[F19.deliveryDetail];
+    const rows = Array.isArray(table?.value) ? table.value : [];
+    const manageNos = [];
+    const seen = new Set();
+
+    rows.forEach(function (row) {
+      const manageNo = norm(getFieldValue(row.value, F19.manageNo));
+
+      if (manageNo === '' || seen.has(manageNo)) {
+        return;
+      }
+
+      seen.add(manageNo);
+      manageNos.push(manageNo);
+    });
+
+    const pendingByManageNo = new Map();
+
+    for (let i = 0; i < manageNos.length; i += 1) {
+      const manageNo = manageNos[i];
+      const orderHit = await fetchOrderByManageNo(manageNo);
+
+      if (!orderHit.ok) {
+        continue;
+      }
+
+      const detail = orderHit.record[F16.detailTable];
+      const detailRows = Array.isArray(detail?.value) ? detail.value : [];
+
+      detailRows.forEach(function (row) {
+        if (!isPriceUnconfirmedRow(row.value)) {
+          return;
+        }
+
+        if (!pendingByManageNo.has(manageNo)) {
+          pendingByManageNo.set(manageNo, []);
+        }
+
+        pendingByManageNo.get(manageNo).push({
+          itemCode: norm(getFieldValue(row.value, F16.itemCode)),
+          itemName: norm(getFieldValue(row.value, F16.itemName)),
+        });
+      });
+    }
+
+    return pendingByManageNo;
+  };
+
   const formatSyncAlert = (syncResult) => {
     const blocks = [];
 
@@ -722,17 +800,56 @@
     return text;
   };
 
+  const formatPriceUnconfirmedAlert = (pendingByManageNo) => {
+    let text = '【価格未確定の加工があります】\n\n';
+
+    pendingByManageNo.forEach(function (items, manageNo) {
+      text += '管理番号：' + manageNo + '\n\n';
+      items.forEach(function (item) {
+        text += '・' + (item.itemCode || '') + '　' + (item.itemName || '') + '\n';
+      });
+      text += '\n';
+    });
+
+    text += '受注明細で単価を確認してください。\n'
+      + '価格を確定して「価格未定」を解除してから、もう一度納品処理を行ってください。';
+    return text;
+  };
+
+  const buildDeliveryGuardError = (missingByManageNo, pendingByManageNo) => {
+    const parts = [];
+
+    if (missingByManageNo && missingByManageNo.size > 0) {
+      parts.push(formatMissingAlert(missingByManageNo));
+    }
+
+    if (pendingByManageNo && pendingByManageNo.size > 0) {
+      parts.push(formatPriceUnconfirmedAlert(pendingByManageNo));
+    }
+
+    return parts.join('\n\n');
+  };
+
   window.CAYANAS_AdditionalItemEngine = {
     VERSION: VERSION,
     APP: APP,
+    F16: F16,
+    PRICE_UNCONFIRMED_OPTION: PRICE_UNCONFIRMED_OPTION,
     buildPriceKey: buildPriceKey,
     formatKintoneError: formatKintoneError,
+    getFieldValue: getFieldValue,
+    isPriceUnconfirmedValue: isPriceUnconfirmedValue,
+    isPriceUnconfirmedRow: isPriceUnconfirmedRow,
     syncOrderDetailsFromApp27Record: syncOrderDetailsFromApp27Record,
     findMissingProcessOnDelivery: findMissingProcessOnDelivery,
+    findPriceUnconfirmedOnDelivery: findPriceUnconfirmedOnDelivery,
     formatSyncAlert: formatSyncAlert,
     formatMissingAlert: formatMissingAlert,
+    formatPriceUnconfirmedAlert: formatPriceUnconfirmedAlert,
+    buildDeliveryGuardError: buildDeliveryGuardError,
     resolveProductByProcessingCode: resolveProductByProcessingCode,
     fetchUnitPrice: fetchUnitPrice,
   };
 
 })();
+

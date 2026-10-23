@@ -6,7 +6,7 @@
      * 集計は保存しない。正本は App16。
      */
 
-    const DEADLINE_LOAD_VERSION = '1.0.0';
+    const DEADLINE_LOAD_VERSION = '1.2.0';
 
     const CAYANAS_DEADLINE_LOAD = {
         VERSION: DEADLINE_LOAD_VERSION,
@@ -24,12 +24,14 @@
         WEEKDAY_LABELS: ['月', '火', '水', '木', '金', '土', '日'],
         /**
          * 将来の上限。null のあいだは余裕・注意・満杯を出さない。
-         * 仕立 / 丸洗い・しみぬき / 修理の順。
+         * 表示順: 丸洗い・しみ → 海外仕立 → 国内仕立 → 修理 → 帯仕立
          */
         LIMITS: {
-            tailoring: null,
             wash: null,
+            overseas: null,
+            domestic: null,
             repair: null,
+            obi: null,
         },
         LOAD_LEVELS: {
             slack: '余裕',
@@ -44,24 +46,51 @@
             detailPrefix: '納期明細 ',
             detailSuffix: '件',
         },
+        /**
+         * 1 manage_no = 1分類。複数該当時はこの優先順位で1つだけ採用。
+         * 画面表示順（CATEGORIES）とは別。
+         */
+        CATEGORY_PRIORITY: [
+            'overseas',
+            'domestic',
+            'obi',
+            'repair',
+            'wash',
+        ],
+        /**
+         * 固定表示順。五十音・件数では並べ替えない。
+         * App13.subcategory との対応のみ。item_name では分類しない。
+         */
         CATEGORIES: [
             {
-                key: 'tailoring',
-                label: '仕立',
-                shortLabel: '仕立',
-                subcategories: ['海外仕立', '国内仕立'],
+                key: 'wash',
+                label: '丸洗い・しみ',
+                shortLabel: '丸洗い・しみ',
+                subcategories: ['丸洗い', 'しみぬき'],
             },
             {
-                key: 'wash',
-                label: '丸洗い・しみぬき',
-                shortLabel: '丸洗・しみ',
-                subcategories: ['丸洗い', 'しみぬき'],
+                key: 'overseas',
+                label: '海外仕立',
+                shortLabel: '海外仕立',
+                subcategories: ['海外仕立'],
+            },
+            {
+                key: 'domestic',
+                label: '国内仕立',
+                shortLabel: '国内仕立',
+                subcategories: ['国内仕立'],
             },
             {
                 key: 'repair',
                 label: '修理',
                 shortLabel: '修理',
                 subcategories: ['修理・直し'],
+            },
+            {
+                key: 'obi',
+                label: '帯仕立',
+                shortLabel: '帯仕立',
+                subcategories: ['帯仕立'],
             },
         ],
         FIELDS: {

@@ -186,6 +186,16 @@ body.ayanas-deadline-load-active .gaia-argoui-app-index-pager {
   font-weight: 700;
 }
 
+.cayan-dl-group {
+  margin: 0 0 20px;
+}
+
+.cayan-dl-group-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
 .cayan-dl-empty {
   margin: 0;
   color: #475569;

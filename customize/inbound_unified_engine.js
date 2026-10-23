@@ -64,16 +64,13 @@
       return '';
     }
 
-    const od = String(C.getFieldValue(orderRecord, C.ORDER.outsourceInDate) ?? '').trim();
-
-    if (process === C.ORDER_PROCESS.returnOutsource && location === C.ORDER_LOCATION.hq) {
-      if (od !== '' && od !== inboundDateD) {
-        return '既に入庫済み（外注入庫日 ' + od + '）';
-      }
-    }
-
-    if (od !== '' && od !== inboundDateD && route === C.ROUTE.domestic) {
-      return '既に入庫済み（外注入庫日 ' + od + '）';
+    /*
+     * 国内外注: App16.outsource_in_date では入庫可否を判定しない。
+     * 正本は App27 未入庫明細（listOpenDomestic / line_in_date 空）。
+     * outsource_in_date は入庫成功時に「最新入庫日」として上書きするだけ。
+     */
+    if (route === C.ROUTE.domestic) {
+      return '';
     }
 
     return '';
@@ -240,8 +237,8 @@
       return {
         ok: false,
         errorMessage:
-          '未入庫の出庫記録がありません'
-          + '（国内外注・海外外注・和裁士出庫を確認してください）',
+          '現在、未入庫の外注履歴がありません。'
+          + '（国内外注・海外外注・和裁士出庫の未入庫明細を確認してください）',
       };
     }
 
