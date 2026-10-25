@@ -301,14 +301,42 @@
                         continue;
                     }
 
-                    const putRecord = plan.putRecord;
+                    /* PUT直前に再取得し、並行更新（納品済化など）を再判定 */
+                    const prePut = await fetchOrder(item.manageNo);
+
+                    if (!prePut) {
+                        item.errorMessage = 'PUT直前の再取得失敗';
+                        failCount += 1;
+                        remain.push(item);
+                        continue;
+                    }
+
+                    const prePlan = Engine.planBulkItemAction({
+                        mode,
+                        location,
+                        snapshot: Engine.toOrderSnapshot(prePut),
+                    });
+
+                    if (prePlan.action === 'skip') {
+                        skipCount += 1;
+                        continue;
+                    }
+
+                    if (prePlan.action === 'fail') {
+                        item.errorMessage = prePlan.reason || '更新不可';
+                        failCount += 1;
+                        remain.push(item);
+                        continue;
+                    }
+
+                    const putRecord = prePlan.putRecord;
 
                     await kintoneApi(
                         kintone.api.url('/k/v1/record.json', true),
                         'PUT',
                         {
                             app: C.APP.order,
-                            id: fresh.$id.value,
+                            id: prePut.$id.value,
                             record: putRecord,
                         }
                     );
