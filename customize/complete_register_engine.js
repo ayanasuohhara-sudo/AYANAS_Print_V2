@@ -39,6 +39,17 @@
         return String(field.value).trim();
     };
 
+    const BULK_MODE = {
+        complete: 'complete',
+        completeWithLocation: 'complete_with_location',
+        locationOnly: 'location_only',
+    };
+
+    const allowedLocations = () => {
+        const C = config();
+        return [C.LOCATION.factory, C.LOCATION.hq, C.LOCATION.store];
+    };
+
     const buildCompletePutRecord = (date) => {
         const C = config();
         const F = C.FIELDS.order;
@@ -49,6 +60,159 @@
             [F.workStatus]: { value: C.WORK.finishDone },
             [F.deliveryStatus]: { value: C.DELIVERY.waiting },
             [F.completionDate]: { value: formatKintoneDate(when) },
+        };
+    };
+
+    const buildLocationOnlyPutRecord = (location) => {
+        const C = config();
+        const F = C.FIELDS.order;
+        const loc = String(location ?? '').trim();
+
+        if (!allowedLocations().includes(loc)) {
+            throw new Error('保管場所を選択してください。');
+        }
+
+        return {
+            [F.locationStatus]: { value: loc },
+        };
+    };
+
+    /**
+     * App30 一括用。mode に応じて PUT 内容を組み立てる。
+     * App19 は引き続き buildCompletePutRecord() のみを使う。
+     *
+     * @param {{ mode: string, location?: string, date?: Date }} options
+     */
+    const buildBulkPutRecord = (options) => {
+        const opts = options || {};
+        const mode = String(opts.mode || BULK_MODE.complete).trim();
+        const location = String(opts.location ?? '').trim();
+
+        if (mode === BULK_MODE.locationOnly) {
+            return buildLocationOnlyPutRecord(location);
+        }
+
+        if (mode === BULK_MODE.completeWithLocation) {
+            const record = buildCompletePutRecord(opts.date);
+            const locPut = buildLocationOnlyPutRecord(location);
+            return Object.assign({}, record, locPut);
+        }
+
+        if (mode === BULK_MODE.complete) {
+            return buildCompletePutRecord(opts.date);
+        }
+
+        throw new Error('処理内容が不正です: ' + mode);
+    };
+
+    const validateBulkSelection = (mode, location) => {
+        const value = String(mode || '').trim();
+        const loc = String(location ?? '').trim();
+
+        if (value === BULK_MODE.complete) {
+            return { ok: true };
+        }
+
+        if (value === BULK_MODE.completeWithLocation || value === BULK_MODE.locationOnly) {
+            if (!allowedLocations().includes(loc)) {
+                return { ok: false, reason: '保管場所を工場・本社・店舗から選択してください。' };
+            }
+            return { ok: true };
+        }
+
+        return { ok: false, reason: '処理内容を選択してください。' };
+    };
+
+    /**
+     * putRecord に含まれるフィールドだけを照合する。
+     */
+    const isPutApplied = (record, putRecord) => {
+        const expected = putRecord || {};
+        const keys = Object.keys(expected);
+
+        if (keys.length === 0) {
+            return false;
+        }
+
+        return keys.every((code) => {
+            const want = expected[code] && expected[code].value !== undefined
+                ? String(expected[code].value).trim()
+                : '';
+            return readField(record, code) === want;
+        });
+    };
+
+    const isDeliveredStatus = (deliveryStatus) => {
+        const C = config();
+        const delivered = C.DELIVERY.delivered || '納品済';
+        return String(deliveryStatus ?? '').trim() === delivered;
+    };
+
+    /**
+     * 1件分の一括処理方針。
+     * @returns {{ action: 'skip'|'fail'|'put', reason?: string, putRecord?: Object }}
+     */
+    const planBulkItemAction = (options) => {
+        const opts = options || {};
+        const mode = String(opts.mode || BULK_MODE.complete).trim();
+        const location = String(opts.location ?? '').trim();
+        const snapshot = opts.snapshot || {};
+        const C = config();
+        const F = C.FIELDS.order;
+
+        if (isDeliveredStatus(snapshot.deliveryStatus)) {
+            return {
+                action: 'fail',
+                reason: '納品済のため更新できません',
+            };
+        }
+
+        const currentLoc = String(snapshot.locationStatus ?? '').trim();
+        const isComplete = String(snapshot.processStatus ?? '').trim() === C.PROCESS.complete;
+
+        if (mode === BULK_MODE.complete) {
+            if (isComplete) {
+                return { action: 'skip', reason: '完了済み' };
+            }
+            return {
+                action: 'put',
+                putRecord: buildCompletePutRecord(opts.date),
+            };
+        }
+
+        if (mode === BULK_MODE.completeWithLocation) {
+            if (isComplete) {
+                if (currentLoc === location) {
+                    return { action: 'skip', reason: '完了済み（保管場所も同一）' };
+                }
+                return {
+                    action: 'put',
+                    putRecord: buildLocationOnlyPutRecord(location),
+                };
+            }
+            return {
+                action: 'put',
+                putRecord: buildBulkPutRecord({
+                    mode: BULK_MODE.completeWithLocation,
+                    location,
+                    date: opts.date,
+                }),
+            };
+        }
+
+        if (mode === BULK_MODE.locationOnly) {
+            if (currentLoc === location) {
+                return { action: 'skip', reason: '保管場所同一' };
+            }
+            return {
+                action: 'put',
+                putRecord: buildLocationOnlyPutRecord(location),
+            };
+        }
+
+        return {
+            action: 'fail',
+            reason: '処理内容が不正です',
         };
     };
 
@@ -358,8 +522,16 @@
     };
 
     window.CAYANAS_CompleteRegisterEngine = {
+        BULK_MODE,
         completableProcessValues,
         buildCompletePutRecord,
+        buildLocationOnlyPutRecord,
+        buildBulkPutRecord,
+        validateBulkSelection,
+        isPutApplied,
+        isDeliveredStatus,
+        planBulkItemAction,
+        allowedLocations,
         orderFetchFields,
         buildManageNoQuery,
         classifyProcessStatus,

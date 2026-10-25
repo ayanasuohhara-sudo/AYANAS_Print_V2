@@ -58,6 +58,7 @@
         ],
         DELIVERY: {
             waiting: '納品待ち',
+            delivered: '納品済',
         },
         FIELDS: {
             order: {
