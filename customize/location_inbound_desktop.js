@@ -23,6 +23,9 @@
 
     let list = Batch.createEmptyList();
     let isSubmitting = false;
+    let isScanning = false;
+    let scanDebounceTimer = null;
+    const SCAN_IDLE_MS = 400;
 
     const F = C.FIELDS.order;
 
@@ -33,6 +36,55 @@
     const escapeQueryValue = (value) => String(value ?? '')
         .replace(/\\/g, '\\\\')
         .replace(/"/g, '\\"');
+
+    const formatError = (error) => {
+
+        if (!error) {
+            return '不明なエラー';
+        }
+
+        if (typeof error === 'string') {
+            return error;
+        }
+
+        const message = error.message || error.errorCode || error.code;
+
+        if (message) {
+            return String(message);
+        }
+
+        try {
+            return JSON.stringify(error);
+        } catch (err) {
+            return String(error);
+        }
+
+    };
+
+    const isEnterKey = (event) => (
+        event.key === 'Enter'
+        || event.key === 'NumpadEnter'
+        || event.keyCode === 13
+        || event.which === 13
+    );
+
+    const clearAndFocusInput = () => {
+
+        const input = document.getElementById(INPUT_ID);
+
+        if (!input) {
+            return;
+        }
+
+        input.value = '';
+        window.setTimeout(() => {
+            input.focus();
+            if (typeof input.select === 'function') {
+                input.select();
+            }
+        }, 0);
+
+    };
 
     const fetchOrder = async (manageNo) => {
 
@@ -124,48 +176,78 @@
             return;
         }
 
+        if (isScanning || isSubmitting) {
+            return;
+        }
+
         const dest = document.getElementById(DEST_ID)?.value;
 
         if (!dest) {
-            setStatus('入庫先を選択してください。', true);
+            setStatus('先に「入庫先」を選択してから、もう一度スキャン（または Enter）してください。', true);
+            /* 番号は残し、入庫先選択後に再確定できるようにする */
+            document.getElementById(INPUT_ID)?.focus();
             return;
         }
 
-        const order = await fetchOrder(manageNo);
+        isScanning = true;
 
-        if (!order) {
-            setStatus('App16 に見つかりません: ' + Ui.escapeHtml(manageNo), true);
-            return;
+        try {
+            const order = await fetchOrder(manageNo);
+
+            if (!order) {
+                setStatus('App16 に見つかりません: ' + Ui.escapeHtml(manageNo), true);
+                return;
+            }
+
+            const row = {
+                recordId: order.$id.value,
+                manageNo: getField(order, F.manageNo),
+                customerName: getField(order, F.customerName),
+                clientName: getField(order, F.clientName),
+                kimonoType: getField(order, F.kimonoType),
+                locationStatus: getField(order, F.locationStatus),
+                processStatus: getField(order, F.processStatus),
+                workStatus: getField(order, F.workStatus),
+                deliveryStatus: getField(order, F.deliveryStatus),
+            };
+
+            const addResult = Batch.addOrRejectDuplicate(list, row);
+
+            if (!addResult.ok) {
+                setStatus(Ui.escapeHtml(addResult.reason), true);
+            } else {
+                setStatus('読取: ' + Ui.escapeHtml(row.manageNo || manageNo)
+                    + '（' + list.items.length + '件）→ 続けてスキャン可。確定は「一括入庫」', false);
+            }
+
+            renderTable();
+        } catch (error) {
+            console.error('[location_inbound] onScan', error);
+            setStatus('読取エラー: ' + Ui.escapeHtml(formatError(error)), true);
+        } finally {
+            isScanning = false;
+            clearAndFocusInput();
         }
 
-        const row = {
-            recordId: order.$id.value,
-            manageNo: getField(order, F.manageNo),
-            customerName: getField(order, F.customerName),
-            clientName: getField(order, F.clientName),
-            kimonoType: getField(order, F.kimonoType),
-            locationStatus: getField(order, F.locationStatus),
-            processStatus: getField(order, F.processStatus),
-            workStatus: getField(order, F.workStatus),
-            deliveryStatus: getField(order, F.deliveryStatus),
-        };
+    };
 
-        const addResult = Batch.addOrRejectDuplicate(list, row);
+    const queueScanFromInput = () => {
 
-        if (!addResult.ok) {
-            setStatus(Ui.escapeHtml(addResult.reason), true);
-        } else {
-            setStatus('読取: ' + Ui.escapeHtml(manageNo) + '（' + list.items.length + '件）', false);
+        if (scanDebounceTimer) {
+            window.clearTimeout(scanDebounceTimer);
         }
 
-        renderTable();
+        scanDebounceTimer = window.setTimeout(() => {
+            scanDebounceTimer = null;
+            const input = document.getElementById(INPUT_ID);
+            const value = Batch.norm(input?.value);
 
-        const input = document.getElementById(INPUT_ID);
+            if (value.length < C.MANAGE_NO_MIN_LENGTH) {
+                return;
+            }
 
-        if (input) {
-            input.value = '';
-            input.focus();
-        }
+            onScan(value);
+        }, SCAN_IDLE_MS);
 
     };
 
@@ -241,7 +323,7 @@
                 okCount += 1;
 
             } catch (error) {
-                item.errorMessage = error.message || String(error);
+                item.errorMessage = formatError(error);
                 failCount += 1;
                 remain.push(item);
             }
@@ -273,8 +355,9 @@
         space.innerHTML = (
             '<div id="' + PANEL_ID + '" class="cayan-batch-panel">'
             + '<h2 class="cayan-batch-title">社内移動・到着入庫</h2>'
-            + '<p class="cayan-batch-hint">出発側では操作しません。到着拠点で入庫先を選び、バーコードを連続読取して一括入庫します。</p>'
-            + '<label class="cayan-batch-label" for="' + DEST_ID + '">入庫先</label>'
+            + '<p class="cayan-batch-hint">①入庫先を選択 → ②管理番号を連続スキャン → ③「一括入庫」で App16 を更新。'
+            + '（kintone の「保存」では受注は更新されません）</p>'
+            + '<label class="cayan-batch-label" for="' + DEST_ID + '">入庫先（必須）</label>'
             + '<select id="' + DEST_ID + '" class="cayan-batch-select">'
             + '<option value="">— 選択 —</option>'
             + '<option value="' + C.LOCATION.hq + '">' + C.LOCATION.hq + '</option>'
@@ -282,7 +365,7 @@
             + '<option value="' + C.LOCATION.store + '">' + C.LOCATION.store + '</option>'
             + '</select>'
             + '<label class="cayan-batch-label" for="' + INPUT_ID + '">管理番号（連続読取）</label>'
-            + '<input type="text" id="' + INPUT_ID + '" class="cayan-batch-input" autocomplete="off">'
+            + '<input type="text" id="' + INPUT_ID + '" class="cayan-batch-input" autocomplete="off" inputmode="none">'
             + '<p class="cayan-batch-meta">読取件数: <span id="' + PANEL_ID + '-count">0</span> 件</p>'
             + '<table class="cayan-batch-table"><thead><tr>'
             + '<th>管理番号</th><th>顧客名</th><th>お客様名</th><th>着物種類</th>'
@@ -293,11 +376,39 @@
             + '</div>'
         );
 
-        document.getElementById(INPUT_ID).addEventListener('keydown', (event) => {
+        const barcodeInput = document.getElementById(INPUT_ID);
 
-            if (event.key === 'Enter' || event.key === 'NumpadEnter') {
-                event.preventDefault();
-                onScan(event.target.value);
+        barcodeInput.addEventListener('keydown', (event) => {
+
+            if (!isEnterKey(event)) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (scanDebounceTimer) {
+                window.clearTimeout(scanDebounceTimer);
+                scanDebounceTimer = null;
+            }
+
+            onScan(event.target.value);
+
+        });
+
+        /* Enter を送らないスキャナ向け: 入力が止まったら確定 */
+        barcodeInput.addEventListener('input', () => {
+            queueScanFromInput();
+        });
+
+        document.getElementById(DEST_ID).addEventListener('change', () => {
+
+            const pending = Batch.norm(document.getElementById(INPUT_ID)?.value);
+
+            if (pending.length >= C.MANAGE_NO_MIN_LENGTH) {
+                onScan(pending);
+            } else {
+                document.getElementById(INPUT_ID)?.focus();
             }
 
         });
@@ -307,8 +418,30 @@
         });
 
         renderTable();
+        clearAndFocusInput();
 
-        window.setTimeout(() => document.getElementById(INPUT_ID)?.focus(), 200);
+    };
+
+    /**
+     * フォームに旧 barcode_input が残っている場合のフォールバック。
+     * スキャナがネイティブ項目に入っても一覧へ流す。
+     */
+    const onNativeBarcodeChange = (event) => {
+
+        const field = event.record && event.record.barcode_input;
+
+        if (!field) {
+            return event;
+        }
+
+        const raw = Batch.norm(field.value);
+
+        if (raw.length >= C.MANAGE_NO_MIN_LENGTH) {
+            field.value = '';
+            onScan(raw);
+        }
+
+        return event;
 
     };
 
@@ -319,5 +452,10 @@
         return event;
 
     });
+
+    kintone.events.on([
+        'app.record.create.change.barcode_input',
+        'app.record.edit.change.barcode_input',
+    ], onNativeBarcodeChange);
 
 }());
