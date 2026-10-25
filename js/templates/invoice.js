@@ -8,12 +8,16 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '56';
+    const INVOICE_TEMPLATE_VERSION = '59';
     const DETAILS_PER_PAGE_FIRST = 17;
     /** 繰越ありは締日表と金額2段があるため、1ページ目の明細を2行減らす */
     const DETAILS_PER_PAGE_FIRST_CARRY = 15;
     const DETAILS_PER_PAGE_NEXT = 26;
     const DETAILS_PER_PAGE_FIRST_MIN = 12;
+    /** 一般客は行高を広げるため、1ページあたりの明細を抑える */
+    const DETAILS_PER_PAGE_FIRST_GENERAL = 10;
+    const DETAILS_PER_PAGE_NEXT_GENERAL = 14;
+    const DETAILS_PER_PAGE_FIRST_MIN_GENERAL = 8;
     const FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION = {};
 
     const DEFAULT_COMPANY = {
@@ -131,19 +135,23 @@
             return '16pt';
         }
 
-        if (length <= 18) {
+        if (length <= 16) {
             return '14pt';
         }
 
-        if (length <= 24) {
+        if (length <= 20) {
             return '12pt';
         }
 
-        if (length <= 32) {
+        if (length <= 26) {
             return '11pt';
         }
 
-        return '10pt';
+        if (length <= 34) {
+            return '10pt';
+        }
+
+        return '9pt';
 
     };
 
@@ -334,35 +342,85 @@
 
     };
 
-    const buildEmptyDetailPairHtml = () => (
-        `<tr class="detail-row detail-row--primary detail-row--empty">`
-        + `<td class="detail-cell--stack"></td>`
-        + `<td class="detail-cell--stack"></td>`
-        + `<td class="detail-cell--stack"></td>`
-        + `<td class="detail-cell--stack"></td>`
-        + `<td class="num detail-cell--merged" rowspan="2"></td>`
-        + `<td class="num detail-cell--merged" rowspan="2"></td>`
-        + `<td class="num detail-cell--merged" rowspan="2"></td>`
-        + `</tr>`
-        + `<tr class="detail-row detail-row--secondary detail-row--empty">`
-        + `<td class="detail-cell--stack detail-cell--delivery-no"></td>`
-        + `<td class="detail-cell--stack detail-cell--manage-no"></td>`
-        + `<td class="detail-cell--stack detail-cell--item-sub"></td>`
-        + `<td class="detail-cell--stack"></td>`
-        + `</tr>`
-    );
+    const buildEmptyDetailPairHtml = (options = {}) => {
 
-    const buildDetailPairHtml = (detail) => {
+        const isGeneral = options.general === true;
+
+        if (isGeneral) {
+            const spacer = '<span class="detail-row-spacer" aria-hidden="true"></span>';
+            const spacerPair = '<span class="detail-row-spacer detail-row-spacer--pair" aria-hidden="true"></span>';
+
+            return `<tr class="detail-row detail-row--primary detail-row--empty">`
+                + `<td class="detail-cell--stack">${spacer}</td>`
+                + `<td class="detail-cell--merged detail-cell--client-name" rowspan="2">${spacerPair}</td>`
+                + `<td class="detail-cell--stack">${spacer}</td>`
+                + `<td class="detail-cell--stack detail-cell--slip-no">${spacer}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
+                + `</tr>`
+                + `<tr class="detail-row detail-row--secondary detail-row--empty">`
+                + `<td class="detail-cell--stack detail-cell--delivery-no">${spacer}</td>`
+                + `<td class="detail-cell--stack detail-cell--item-sub">${spacer}</td>`
+                + `<td class="detail-cell--stack detail-cell--slip-no">${spacer}</td>`
+                + `</tr>`;
+        }
+
+        return `<tr class="detail-row detail-row--primary detail-row--empty">`
+            + `<td class="detail-cell--stack"></td>`
+            + `<td class="detail-cell--stack detail-cell--client-name"></td>`
+            + `<td class="detail-cell--stack"></td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no"></td>`
+            + `<td class="num detail-cell--merged" rowspan="2"></td>`
+            + `<td class="num detail-cell--merged" rowspan="2"></td>`
+            + `<td class="num detail-cell--merged" rowspan="2"></td>`
+            + `</tr>`
+            + `<tr class="detail-row detail-row--secondary detail-row--empty">`
+            + `<td class="detail-cell--stack detail-cell--delivery-no"></td>`
+            + `<td class="detail-cell--stack detail-cell--manage-no"></td>`
+            + `<td class="detail-cell--stack detail-cell--item-sub"></td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no"></td>`
+            + `</tr>`;
+
+    };
+
+    const buildDetailPairHtml = (detail, options = {}) => {
+
+        const isGeneral = options.general === true;
 
         if (!detail) {
-            return buildEmptyDetailPairHtml();
+            return buildEmptyDetailPairHtml(options);
+        }
+
+        if (isGeneral) {
+            const manageText = detail._showManageNo
+                ? String(detail.manage_no ?? '').trim()
+                : '';
+            const deliverySecondary = manageText
+                ? `${esc(detail.delivery_no)}<span class="detail-manage-inline">${esc(manageText)}</span>`
+                : esc(detail.delivery_no);
+
+            return `<tr class="detail-row detail-row--primary">`
+                + `<td class="detail-cell--stack">${esc(Format.formatDate(detail.delivery_date))}</td>`
+                + `<td class="detail-cell--merged detail-cell--client-name" rowspan="2">${esc(detail.client_name)}</td>`
+                + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
+                + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.slip_no)}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
+                + `</tr>`
+                + `<tr class="detail-row detail-row--secondary">`
+                + `<td class="detail-cell--stack detail-cell--delivery-no">${deliverySecondary}</td>`
+                + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
+                + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.in_charge)}</td>`
+                + `</tr>`;
         }
 
         return `<tr class="detail-row detail-row--primary">`
             + `<td class="detail-cell--stack">${esc(Format.formatDate(detail.delivery_date))}</td>`
-            + `<td class="detail-cell--stack">${esc(detail.client_name)}</td>`
+            + `<td class="detail-cell--stack detail-cell--client-name">${esc(detail.client_name)}</td>`
             + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
-            + `<td class="detail-cell--stack">${esc(detail.slip_no)}</td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.slip_no)}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
@@ -371,14 +429,16 @@
             + `<td class="detail-cell--stack detail-cell--delivery-no">${esc(detail.delivery_no)}</td>`
             + `<td class="detail-cell--stack detail-cell--manage-no">${esc(detail._showManageNo ? detail.manage_no : '')}</td>`
             + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
-            + `<td class="detail-cell--stack">${esc(detail.in_charge)}</td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.in_charge)}</td>`
             + `</tr>`;
 
     };
 
-    const buildDetailRowsHtml = (details) => details.map((detail) => buildDetailPairHtml(detail)).join('');
+    const buildDetailRowsHtml = (details, options = {}) => (
+        details.map((detail) => buildDetailPairHtml(detail, options)).join('')
+    );
 
-    const buildDetailTableHtml = (details) => `
+    const buildDetailTableHtml = (details, options = {}) => `
 
 <table class="invoice-detail-table">
     <thead>
@@ -393,7 +453,7 @@
         </tr>
     </thead>
     <tbody>
-${buildDetailRowsHtml(details)}
+${buildDetailRowsHtml(details, options)}
     </tbody>
 </table>`;
 
@@ -620,24 +680,37 @@ ${buildDetailRowsHtml(details)}
 
     const resolveFirstPageDetailCapacity = (layout, header) => {
 
-        let capacity = usesCarryOverLayout(layout)
-            ? DETAILS_PER_PAGE_FIRST_CARRY
-            : DETAILS_PER_PAGE_FIRST;
+        const isGeneral = layout.recipientMode === 'general';
+        let capacity = isGeneral
+            ? DETAILS_PER_PAGE_FIRST_GENERAL
+            : (usesCarryOverLayout(layout)
+                ? DETAILS_PER_PAGE_FIRST_CARRY
+                : DETAILS_PER_PAGE_FIRST);
 
-        capacity -= estimateHeaderDetailReduction(header);
+        if (!isGeneral) {
+            capacity -= estimateHeaderDetailReduction(header);
 
-        const customerCode = String(header?.customer_code ?? '').trim().toUpperCase();
-        const customerReduction = FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION[customerCode] ?? 0;
+            const customerCode = String(header?.customer_code ?? '').trim().toUpperCase();
+            const customerReduction = FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION[customerCode] ?? 0;
 
-        capacity -= customerReduction;
+            capacity -= customerReduction;
+        }
 
-        return Math.max(DETAILS_PER_PAGE_FIRST_MIN, capacity);
+        const minCapacity = isGeneral
+            ? DETAILS_PER_PAGE_FIRST_MIN_GENERAL
+            : DETAILS_PER_PAGE_FIRST_MIN;
+
+        return Math.max(minCapacity, capacity);
 
     };
 
     const buildInvoiceDetailPages = (details, layout = {}, header = {}) => {
 
+        const isGeneral = layout.recipientMode === 'general';
         const firstPageSize = resolveFirstPageDetailCapacity(layout, header);
+        const nextPageSize = isGeneral
+            ? DETAILS_PER_PAGE_NEXT_GENERAL
+            : DETAILS_PER_PAGE_NEXT;
         const pages = [];
 
         if (!Array.isArray(details) || details.length === 0) {
@@ -654,10 +727,10 @@ ${buildDetailRowsHtml(details)}
 
         while (index < details.length) {
 
-            const chunk = details.slice(index, index + DETAILS_PER_PAGE_NEXT);
+            const chunk = details.slice(index, index + nextPageSize);
 
-            pages.push(Core.Report.padPageDetails(chunk, DETAILS_PER_PAGE_NEXT));
-            index += DETAILS_PER_PAGE_NEXT;
+            pages.push(Core.Report.padPageDetails(chunk, nextPageSize));
+            index += nextPageSize;
 
         }
 
@@ -674,13 +747,16 @@ ${buildDetailRowsHtml(details)}
 
         const windowAddressHtml = '';
         const isPage1 = pageNumber === 1;
+        const detailOptions = {
+            general: layout.recipientMode === 'general',
+        };
 
         return `
     ${windowAddressHtml}
     ${buildHeaderHtml(header, layout, { pageNumber, totalPages }, config)}
     ${isPage1 ? buildBillingMetaBarHtml(header) : ''}
     ${isPage1 ? buildAmountOverviewHtml(summary, layout) : ''}
-    ${buildDetailTableHtml(pageDetails)}
+    ${buildDetailTableHtml(pageDetails, detailOptions)}
     ${isPage1 ? buildPage1FooterHtml(summary) : ''}
     ${buildPageNoHtml(pageNumber, totalPages)}`;
 

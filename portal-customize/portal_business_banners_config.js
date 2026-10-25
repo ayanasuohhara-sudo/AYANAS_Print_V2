@@ -7,7 +7,7 @@
      * App91 / App90 / 共通ナビのファイルは変更しない。
      */
 
-    const PORTAL_BUSINESS_BANNERS_VERSION = '1.0.0';
+    const PORTAL_BUSINESS_BANNERS_VERSION = '1.0.1';
 
     const CAYANAS_PORTAL_BUSINESS_BANNERS = {
         VERSION: PORTAL_BUSINESS_BANNERS_VERSION,
@@ -62,9 +62,9 @@
             {
                 id: 'customer_schedule',
                 no: '06',
-                label: '得意先別納期スケジュール',
-                mode: 'soon',
-                soonLabel: '準備中',
+                label: '納期・納品スケジュール管理',
+                mode: 'direct',
+                appId: 94,
             },
             {
                 id: 'analytics',

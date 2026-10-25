@@ -10,7 +10,7 @@
      * - レコードは保存しない。業務アプリへの遷移のみ
      */
 
-    const BUSINESS_MENU_VERSION = '1.0.0';
+    const BUSINESS_MENU_VERSION = '1.0.1';
 
     const CAYANAS_BUSINESS_MENU = {
         VERSION: BUSINESS_MENU_VERSION,
@@ -100,11 +100,11 @@
             },
             {
                 id: 'customer_schedule',
-                label: '得意先別納期スケジュール',
-                shortLabel: '得意先納期',
+                label: '納期・納品スケジュール管理',
+                shortLabel: '納期納品',
                 icon: 'schedule',
-                mode: 'soon',
-                soonLabel: '準備中',
+                mode: 'direct',
+                directAppId: 94,
             },
             {
                 id: 'analytics',

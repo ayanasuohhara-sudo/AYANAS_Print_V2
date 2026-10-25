@@ -110,6 +110,20 @@ const run = () => {
         && S.isCorporateCustomer('') === false
         && S.isCorporateCustomer('M070') === true);
 
+    const syncSrc = fs.readFileSync(path.join(root, 'customize/delivery_complete_sync.js'), 'utf8');
+    const assignPos = syncSrc.indexOf('await assignDeliveryNoIfNeeded');
+    const corporateGatePos = syncSrc.indexOf('if (!isCorporateCustomer(customerCode))');
+    const afterSavePos = syncSrc.indexOf('async function afterDeliverySave');
+
+    assert('納品番号採番関数を公開', typeof S.assignDeliveryNoIfNeeded === 'function');
+    assert('採番は法人判定より前', afterSavePos !== -1
+        && assignPos !== -1
+        && corporateGatePos !== -1
+        && assignPos < corporateGatePos);
+    assert('一般客でも採番ルートがある', syncSrc.indexOf('afterDeliverySave') !== -1
+        && syncSrc.indexOf('syncCorporateOrders') !== -1
+        && syncSrc.indexOf('全顧客') !== -1);
+
     if (failed > 0) {
         console.error(failed + ' failed');
         process.exit(1);

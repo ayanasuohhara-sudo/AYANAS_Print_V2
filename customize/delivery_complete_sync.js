@@ -2,8 +2,9 @@
   'use strict';
 
   /**
-   * App19 納品書保存 → App16 納品済連携（法人のみ）
-   * A550 / customer_code 空欄は App16 を更新しない。
+   * App19 納品書保存時:
+   * - delivery_no 採番: 全顧客（一般客・A550・法人）
+   * - App16 納品済連携: 法人のみ（A550 / customer_code 空欄は更新しない）
    */
 
   const DELIVERY_APP_ID = 19;
@@ -201,33 +202,7 @@
     return { updated: true, skipped: false };
   }
 
-  async function syncCorporateDelivery(recordId, isCreate) {
-    let record = await fetchDeliveryRecord(recordId);
-    const customerCode = trimCustomerCode(record);
-
-    if (!isCorporateCustomer(customerCode)) {
-      if (customerCode === A550_CUSTOMER_CODE) {
-        console.info(
-          '[delivery_complete_sync] A550 のため App16 更新なし (recordId=' + recordId + ')'
-        );
-      } else if (customerCode === '') {
-        console.info(
-          '[delivery_complete_sync] customer_code 空のため App16 更新なし (recordId=' +
-          recordId +
-          ')'
-        );
-      }
-      return;
-    }
-
-    const deliveryDate = String(fieldValue(record, FIELD.deliveryDate) ?? '').trim();
-
-    if (deliveryDate) {
-      await assignDeliveryNoIfNeeded(record, recordId, isCreate);
-      record = await fetchDeliveryRecord(recordId);
-    }
-
-    const deliveryNo = String(fieldValue(record, FIELD.deliveryNo) ?? '').trim();
+  async function syncCorporateOrders(record, deliveryDate, deliveryNo) {
     const manageNos = collectManageNos(record);
     const failures = [];
 
@@ -283,20 +258,56 @@
     }
   }
 
+  async function afterDeliverySave(recordId, isCreate) {
+    let record = await fetchDeliveryRecord(recordId);
+    const deliveryDate = String(fieldValue(record, FIELD.deliveryDate) ?? '').trim();
+
+    if (deliveryDate) {
+      await assignDeliveryNoIfNeeded(record, recordId, isCreate);
+      record = await fetchDeliveryRecord(recordId);
+    } else if (isCreate) {
+      console.warn(
+        '[delivery_complete_sync] delivery_no 未採番: delivery_date が空です (recordId=' +
+        recordId +
+        ')'
+      );
+    }
+
+    const customerCode = trimCustomerCode(record);
+
+    if (!isCorporateCustomer(customerCode)) {
+      if (customerCode === A550_CUSTOMER_CODE) {
+        console.info(
+          '[delivery_complete_sync] A550 のため App16 更新なし (recordId=' + recordId + ')'
+        );
+      } else if (customerCode === '') {
+        console.info(
+          '[delivery_complete_sync] customer_code 空のため App16 更新なし (recordId=' +
+          recordId +
+          ')'
+        );
+      }
+      return;
+    }
+
+    const deliveryNo = String(fieldValue(record, FIELD.deliveryNo) ?? '').trim();
+    await syncCorporateOrders(record, deliveryDate, deliveryNo);
+  }
+
   kintone.events.on(
     [
       'app.record.create.submit.success',
       'app.record.edit.submit.success',
     ],
     async function(event) {
-      if (kintone.app.getId() !== DELIVERY_APP_ID) {
+      if (Number(kintone.app.getId()) !== Number(DELIVERY_APP_ID)) {
         return event;
       }
 
       const isCreate = event.type === 'app.record.create.submit.success';
 
       try {
-        await syncCorporateDelivery(event.recordId, isCreate);
+        await afterDeliverySave(event.recordId, isCreate);
       } catch (err) {
         console.error('[delivery_complete_sync] 処理エラー', err);
       }
@@ -308,5 +319,6 @@
   window.CAYANAS_DeliveryCompleteSync = {
     buildCorporateOrderUpdate: buildCorporateOrderUpdate,
     isCorporateCustomer: isCorporateCustomer,
+    assignDeliveryNoIfNeeded: assignDeliveryNoIfNeeded,
   };
 })();
