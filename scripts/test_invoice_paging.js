@@ -151,17 +151,17 @@ const wrapPreviewHtml = (bodyHtml) => {
 };
 
 const expectedCorporatePagesForNormal = (count) => {
-    // normal details = 1 slot; first=17, next=26
-    if (count <= 17) {
-        return { pages: 1, firstSlots: 17, filledFirst: count };
+    // normal details = 1 slot; first=13, next=20 (taller rows)
+    if (count <= 13) {
+        return { pages: 1, firstSlots: 13, filledFirst: count };
     }
-    const remain = count - 17;
-    const nextPages = Math.ceil(remain / 26);
+    const remain = count - 13;
+    const nextPages = Math.ceil(remain / 20);
     return {
         pages: 1 + nextPages,
-        firstSlots: 17,
-        filledFirst: 17,
-        nextSlots: 26,
+        firstSlots: 13,
+        filledFirst: 13,
+        nextSlots: 20,
     };
 };
 
@@ -183,12 +183,12 @@ const assertCorporateNormal = (label, analysis, count) => {
         if (page.hasBillingMeta || page.hasOverview) errors.push(`page${page.index} has meta`);
     });
 
-    if (first.primaryFilled !== Math.min(count, 17)) {
-        errors.push(`page1 filled ${first.primaryFilled} != ${Math.min(count, 17)}`);
+    if (first.primaryFilled !== Math.min(count, 13)) {
+        errors.push(`page1 filled ${first.primaryFilled} != ${Math.min(count, 13)}`);
     }
 
     // blank rows present when short
-    if (count < 17 && first.primaryEmpty < 1) {
+    if (count < 13 && first.primaryEmpty < 1) {
         errors.push('page1 expected blank ruled rows');
     }
 
@@ -301,8 +301,8 @@ const main = () => {
             generalLayout,
             (label, analysis) => {
                 const errors = [];
-                const firstCap = 10;
-                const nextCap = 14;
+                const firstCap = 9;
+                const nextCap = 12;
                 let expectedPages = 1;
                 if (count > firstCap) {
                     expectedPages = 1 + Math.ceil((count - firstCap) / nextCap);
