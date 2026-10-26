@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 136,
+  "version": 137,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 136（請求書v66・納品書と同密度）",
-    "en": "AYANAS Print Plugin V136 (invoice v66 delivery-like density)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 137（請求書v66・納品書と同密度）",
+    "en": "AYANAS Print Plugin V137 (invoice v66 delivery-like density)"
   },
   "desktop": {
     "js": [
