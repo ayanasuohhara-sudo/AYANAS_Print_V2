@@ -8,16 +8,16 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '64';
+    const INVOICE_TEMPLATE_VERSION = '65';
     /**
      * 法人向け基準スロット数。
-     * 行高を約10.4mm/件に拡大したため、A4収まりに合わせて件数を抑える。
+     * 行高を確保しつつ余白が余らないよう、A4に収まる上限付近まで増やす。
      */
-    const DETAILS_PER_PAGE_FIRST = 13;
+    const DETAILS_PER_PAGE_FIRST = 15;
     /** 繰越ありは締日表と金額2段があるため、1ページ目の明細を2スロット減らす */
-    const DETAILS_PER_PAGE_FIRST_CARRY = 11;
-    const DETAILS_PER_PAGE_NEXT = 20;
-    const DETAILS_PER_PAGE_FIRST_MIN = 9;
+    const DETAILS_PER_PAGE_FIRST_CARRY = 13;
+    const DETAILS_PER_PAGE_NEXT = 24;
+    const DETAILS_PER_PAGE_FIRST_MIN = 11;
     /** 一般客は行高を広げるため、1ページあたりの明細を抑える */
     const DETAILS_PER_PAGE_FIRST_GENERAL = 9;
     const DETAILS_PER_PAGE_NEXT_GENERAL = 12;

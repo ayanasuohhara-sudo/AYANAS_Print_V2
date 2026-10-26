@@ -151,17 +151,17 @@ const wrapPreviewHtml = (bodyHtml) => {
 };
 
 const expectedCorporatePagesForNormal = (count) => {
-    // normal details = 1 slot; first=13, next=20 (taller rows)
-    if (count <= 13) {
-        return { pages: 1, firstSlots: 13, filledFirst: count };
+    // normal details = 1 slot; first=15, next=24
+    if (count <= 15) {
+        return { pages: 1, firstSlots: 15, filledFirst: count };
     }
-    const remain = count - 13;
-    const nextPages = Math.ceil(remain / 20);
+    const remain = count - 15;
+    const nextPages = Math.ceil(remain / 24);
     return {
         pages: 1 + nextPages,
-        firstSlots: 13,
-        filledFirst: 13,
-        nextSlots: 20,
+        firstSlots: 15,
+        filledFirst: 15,
+        nextSlots: 24,
     };
 };
 
@@ -183,12 +183,12 @@ const assertCorporateNormal = (label, analysis, count) => {
         if (page.hasBillingMeta || page.hasOverview) errors.push(`page${page.index} has meta`);
     });
 
-    if (first.primaryFilled !== Math.min(count, 13)) {
-        errors.push(`page1 filled ${first.primaryFilled} != ${Math.min(count, 13)}`);
+    if (first.primaryFilled !== Math.min(count, 15)) {
+        errors.push(`page1 filled ${first.primaryFilled} != ${Math.min(count, 15)}`);
     }
 
     // blank rows present when short
-    if (count < 13 && first.primaryEmpty < 1) {
+    if (count < 15 && first.primaryEmpty < 1) {
         errors.push('page1 expected blank ruled rows');
     }
 
