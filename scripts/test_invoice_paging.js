@@ -15,7 +15,7 @@ const ROOT = path.resolve(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'customize/backups/invoice_print_20261026/test_out');
 const PRINT_CSS = fs.readFileSync(path.join(ROOT, 'css/print.css'), 'utf8');
 
-const COUNTS = [5, 20, 21, 50, 51, 80, 110];
+const COUNTS = [5, 17, 18, 44, 45, 71, 98];
 
 const loadBrowserScripts = () => {
     const sandbox = {
@@ -95,8 +95,8 @@ const makeData = (count, opts = {}) => {
 };
 
 const expectedCorporatePages = (count) => {
-    const first = 20;
-    const next = 30;
+    const first = 17;
+    const next = 27;
 
     if (count <= first) {
         return { pages: 1, slots: [first], filled: [count] };
