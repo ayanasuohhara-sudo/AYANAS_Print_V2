@@ -2185,26 +2185,40 @@
     print-color-adjust: exact;
     font-weight: 700;
     text-align: center;
-    font-size: 8.5pt;
-    padding: 0.5px 2px;
-    line-height: 1.1;
-    height: 4.5mm;
+    font-size: 9pt;
+    padding: 1px 2px;
+    line-height: 1.15;
+    height: 5mm;
 }
 
+/* 納品書と同じ明細行高（1段 5.1mm / ペア約 10.2mm） */
 .report-invoice .invoice-detail-table tbody tr {
-    height: auto;
-    min-height: 4.8mm;
+    height: 5.1mm;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--empty {
+    height: 5.1mm;
+    max-height: 5.1mm;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--empty td {
+    height: 5.1mm;
+    max-height: 5.1mm;
+    padding: 0 2px;
+    line-height: 0;
+    font-size: 0;
+    overflow: hidden;
 }
 
 .report-invoice .invoice-detail-table tbody .detail-row--primary td {
-    padding-top: 0.25mm;
-    padding-bottom: 0.25mm;
+    padding-top: 0;
+    padding-bottom: 0;
     background: #ffffff;
 }
 
 .report-invoice .invoice-detail-table tbody .detail-row--secondary td {
-    padding-top: 0.2mm;
-    padding-bottom: 0.2mm;
+    padding: 0 2px;
+    background: #ffffff;
 }
 
 .report-invoice .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack {
@@ -2212,8 +2226,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.2;
-    max-height: 4.8mm;
+    line-height: 1.15;
+    max-height: 5.1mm;
 }
 
 /* お客様名・加工内容・伝票番号/係は省略せず折り返し、行高を伸ばす */
@@ -2233,6 +2247,11 @@
 }
 
 /* 長い明細: 折り返し行数に応じた行高・必要時のみフォント縮小 */
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-2,
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-3 {
+    height: auto;
+}
+
 .report-invoice .invoice-detail-table tbody .detail-row--wrap-2 td {
     font-size: 8.5pt;
     line-height: 1.2;
@@ -2283,26 +2302,26 @@
 
 /*
  * 空白明細行の行高確保（文字は出さない）。
- * 法人明細ペア ≈ 9.6mm。行数を増やしてページ余白を詰める。
+ * 納品書と同密度: 1段 5.1mm / ペア 10.2mm。
  */
 .report-invoice .invoice-detail-table tbody .detail-row-spacer {
     display: block;
     width: 0;
-    height: 4.8mm;
+    height: 5.1mm;
     overflow: hidden;
     visibility: hidden;
 }
 
 .report-invoice .invoice-detail-table tbody .detail-row--primary .detail-row-spacer {
-    height: 4.8mm;
+    height: 5.1mm;
 }
 
 .report-invoice .invoice-detail-table tbody .detail-row--secondary .detail-row-spacer {
-    height: 4.8mm;
+    height: 5.1mm;
 }
 
 .report-invoice .invoice-detail-table tbody .detail-row-spacer--pair {
-    height: 9.6mm;
+    height: 10.2mm;
 }
 
 .report-invoice--general-recipient .invoice-detail-table tbody .detail-row-spacer {

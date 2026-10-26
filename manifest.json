@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 135,
+  "version": 136,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 135（請求書v65・行数増で余白詰め）",
-    "en": "AYANAS Print Plugin V135 (invoice v65 more rows less whitespace)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 136（請求書v66・納品書と同密度）",
+    "en": "AYANAS Print Plugin V136 (invoice v66 delivery-like density)"
   },
   "desktop": {
     "js": [

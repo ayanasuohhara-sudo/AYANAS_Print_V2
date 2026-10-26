@@ -8,16 +8,17 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '65';
+    const INVOICE_TEMPLATE_VERSION = '66';
     /**
      * 法人向け基準スロット数。
-     * 行高を確保しつつ余白が余らないよう、A4に収まる上限付近まで増やす。
+     * 納品書（DETAILS_PER_PAGE=20 / 行高5.1mm）に近い密度へ揃える。
+     * 1ページ目はヘッダ＋金額表＋振込先があるため、納品書よりやや少なめ。
      */
-    const DETAILS_PER_PAGE_FIRST = 15;
+    const DETAILS_PER_PAGE_FIRST = 16;
     /** 繰越ありは締日表と金額2段があるため、1ページ目の明細を2スロット減らす */
-    const DETAILS_PER_PAGE_FIRST_CARRY = 13;
-    const DETAILS_PER_PAGE_NEXT = 24;
-    const DETAILS_PER_PAGE_FIRST_MIN = 11;
+    const DETAILS_PER_PAGE_FIRST_CARRY = 14;
+    const DETAILS_PER_PAGE_NEXT = 20;
+    const DETAILS_PER_PAGE_FIRST_MIN = 12;
     /** 一般客は行高を広げるため、1ページあたりの明細を抑える */
     const DETAILS_PER_PAGE_FIRST_GENERAL = 9;
     const DETAILS_PER_PAGE_NEXT_GENERAL = 12;
@@ -378,24 +379,21 @@
                 + `</tr>`;
         }
 
-        // 空セルだと行高が潰れて罫線が消えるため、スペーサで高さを確保する
-        const spacer = '<span class="detail-row-spacer" aria-hidden="true"></span>';
-        const spacerPair = '<span class="detail-row-spacer detail-row-spacer--pair" aria-hidden="true"></span>';
-
+        // 納品書と同じく空セル＋CSS固定行高(5.1mm)で罫線を保つ
         return `<tr class="detail-row detail-row--primary detail-row--empty">`
-            + `<td class="detail-cell--stack">${spacer}</td>`
-            + `<td class="detail-cell--stack detail-cell--client-name">${spacer}</td>`
-            + `<td class="detail-cell--stack">${spacer}</td>`
-            + `<td class="detail-cell--stack detail-cell--slip-no">${spacer}</td>`
-            + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
-            + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
-            + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
+            + `<td class="detail-cell--stack"></td>`
+            + `<td class="detail-cell--stack detail-cell--client-name"></td>`
+            + `<td class="detail-cell--stack"></td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no"></td>`
+            + `<td class="num detail-cell--merged" rowspan="2"></td>`
+            + `<td class="num detail-cell--merged" rowspan="2"></td>`
+            + `<td class="num detail-cell--merged" rowspan="2"></td>`
             + `</tr>`
             + `<tr class="detail-row detail-row--secondary detail-row--empty">`
-            + `<td class="detail-cell--stack detail-cell--delivery-no">${spacer}</td>`
-            + `<td class="detail-cell--stack detail-cell--manage-no">${spacer}</td>`
-            + `<td class="detail-cell--stack detail-cell--item-sub">${spacer}</td>`
-            + `<td class="detail-cell--stack detail-cell--slip-no">${spacer}</td>`
+            + `<td class="detail-cell--stack detail-cell--delivery-no"></td>`
+            + `<td class="detail-cell--stack detail-cell--manage-no"></td>`
+            + `<td class="detail-cell--stack detail-cell--item-sub"></td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no"></td>`
             + `</tr>`;
 
     };
