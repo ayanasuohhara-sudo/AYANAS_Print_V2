@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 132,
+  "version": 133,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 132（請求書明細17/27・1ページ目振込先）",
-    "en": "AYANAS Print Plugin V132 (invoice fixed rows 17/27, bank on page 1)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 133（請求書v63・高さ考慮空白罫線）",
+    "en": "AYANAS Print Plugin V133 (invoice v63 height-aware blank rows)"
   },
   "desktop": {
     "js": [
