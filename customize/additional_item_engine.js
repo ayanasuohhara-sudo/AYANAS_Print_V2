@@ -3,14 +3,18 @@
 
   /**
    * 外注追加加工 — 共通エンジン
-   * VERSION: 1.2.0
+   * VERSION: 1.2.1
    *
-   * 照合: App27.processing_code → App95.outsource_company_code → App13.item_code → App16.detail_table.item_code
+   * 照合: App27.processing_code → App23.outsource_company_code（加工コード）
+   *       → App13.item_code → App16.detail_table.item_code
    * 価格未定の正本: detail_table.price_unconfirmed（選択肢「価格未定」）
    * 名称一致・subcategory 絞り込みはしない。ステータスは変更しない。
+   *
+   * App23 = 外注加工マスタ（business_menu / master_list_service と同一）。
+   * ※旧コードの App95 は存在しないアプリIDのため、納品保存が失敗していた。
    */
 
-  const VERSION = '1.2.0';
+  const VERSION = '1.2.1';
 
   const APP = {
     product: 13,
@@ -18,7 +22,8 @@
     order: 16,
     delivery: 19,
     outsourceOutbound: 27,
-    outsourceProcessing: 95,
+    /** 外注加工マスタ（旧誤設定 95 → 正: 23） */
+    outsourceProcessing: 23,
   };
 
   const F27 = {
@@ -31,9 +36,10 @@
     statusAlt: 'outsourcing_status',
   };
 
-  const F95 = {
+  /** App23 外注加工マスタ — master_list_service.js と同一フィールド */
+  const F23 = {
     processingCode: 'outsource_company_code',
-    processingName: 'processing_details',
+    processingName: '文字列__1行__0',
   };
 
   const F13 = {
@@ -209,10 +215,23 @@
       return { ok: false, kind: 'empty', message: '加工コードが空です' };
     }
 
-    const masters = await fetchRecords(
-      APP.outsourceProcessing,
-      F95.processingCode + ' = "' + escapeQueryValue(code) + '" limit 5'
-    );
+    let masters = [];
+
+    try {
+      masters = await fetchRecords(
+        APP.outsourceProcessing,
+        F23.processingCode + ' = "' + escapeQueryValue(code) + '" limit 5'
+      );
+    } catch (err) {
+      return {
+        ok: false,
+        kind: 'master_error',
+        processingCode: code,
+        message:
+          '外注加工マスタ（App' + APP.outsourceProcessing + '）の参照に失敗しました: '
+          + formatKintoneError(err),
+      };
+    }
 
     if (masters.length === 0) {
       return {
@@ -221,14 +240,27 @@
         processingCode: code,
         message:
           '加工コード ' + code
-          + ' が外注加工マスタ（App95）にありません。受注明細へ自動追加できません。',
+          + ' が外注加工マスタ（App' + APP.outsourceProcessing
+          + '）にありません。受注明細へ自動追加できません。',
       };
     }
 
-    const products = await fetchRecords(
-      APP.product,
-      F13.itemCode + ' = "' + escapeQueryValue(code) + '" limit 5'
-    );
+    let products = [];
+
+    try {
+      products = await fetchRecords(
+        APP.product,
+        F13.itemCode + ' = "' + escapeQueryValue(code) + '" limit 5'
+      );
+    } catch (err) {
+      return {
+        ok: false,
+        kind: 'product_error',
+        processingCode: code,
+        message:
+          '商品マスタの参照に失敗しました: ' + formatKintoneError(err),
+      };
+    }
 
     if (products.length === 0) {
       return {
@@ -253,14 +285,14 @@
     }
 
     const itemName = norm(getFieldValue(products[0], F13.itemName))
-      || norm(getFieldValue(masters[0], F95.processingName))
+      || norm(getFieldValue(masters[0], F23.processingName))
       || code;
 
     return {
       ok: true,
       itemCode: code,
       itemName: itemName,
-      masterName: norm(getFieldValue(masters[0], F95.processingName)),
+      masterName: norm(getFieldValue(masters[0], F23.processingName)),
     };
   };
 
