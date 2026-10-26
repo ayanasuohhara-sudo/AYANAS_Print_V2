@@ -2073,6 +2073,11 @@
     table-layout: fixed;
 }
 
+/* 最終ページ: 振込先・合計欄をページ下部に寄せる（文字サイズは変更しない） */
+.report-invoice .page--invoice-last .invoice-page1-footer-table {
+    margin-top: auto;
+}
+
 .report-invoice .invoice-page1-footer__col-bank-label {
     width: 8%;
 }
@@ -2251,12 +2256,28 @@
     vertical-align: middle;
 }
 
-.report-invoice--general-recipient .invoice-detail-table tbody .detail-row-spacer {
+/*
+ * 空白明細行の行高確保（文字は出さない）。
+ * 法人の実データ行ペア実測 ≈ 7.6mm に合わせ、空行だけ高くなって最終ページが溢れるのを防ぐ。
+ */
+.report-invoice .invoice-detail-table tbody .detail-row-spacer {
     display: block;
     width: 0;
-    height: 7mm;
+    height: 3.8mm;
     overflow: hidden;
     visibility: hidden;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--primary .detail-row-spacer {
+    height: 3.8mm;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row-spacer--pair {
+    height: 7.6mm;
+}
+
+.report-invoice--general-recipient .invoice-detail-table tbody .detail-row-spacer {
+    height: 7mm;
 }
 
 .report-invoice--general-recipient .invoice-detail-table tbody .detail-row--primary .detail-row-spacer {

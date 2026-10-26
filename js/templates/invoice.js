@@ -8,17 +8,15 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '59';
-    const DETAILS_PER_PAGE_FIRST = 17;
-    /** 繰越ありは締日表と金額2段があるため、1ページ目の明細を2行減らす */
-    const DETAILS_PER_PAGE_FIRST_CARRY = 15;
-    const DETAILS_PER_PAGE_NEXT = 26;
-    const DETAILS_PER_PAGE_FIRST_MIN = 12;
-    /** 一般客は行高を広げるため、1ページあたりの明細を抑える */
+    const INVOICE_TEMPLATE_VERSION = '60';
+    /** 法人向け: 1ページ目の明細行数（固定） */
+    const DETAILS_PER_PAGE_FIRST = 15;
+    /** 法人向け: 2ページ目以降の明細行数（固定） */
+    const DETAILS_PER_PAGE_NEXT = 25;
+    /** 一般客は行高を広げるため、1ページあたりの明細を抑える（現行維持） */
     const DETAILS_PER_PAGE_FIRST_GENERAL = 10;
     const DETAILS_PER_PAGE_NEXT_GENERAL = 14;
     const DETAILS_PER_PAGE_FIRST_MIN_GENERAL = 8;
-    const FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION = {};
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -366,20 +364,24 @@
                 + `</tr>`;
         }
 
+        // 空セルだと行高が潰れて罫線が消えるため、スペーサで高さを確保する
+        const spacer = '<span class="detail-row-spacer" aria-hidden="true"></span>';
+        const spacerPair = '<span class="detail-row-spacer detail-row-spacer--pair" aria-hidden="true"></span>';
+
         return `<tr class="detail-row detail-row--primary detail-row--empty">`
-            + `<td class="detail-cell--stack"></td>`
-            + `<td class="detail-cell--stack detail-cell--client-name"></td>`
-            + `<td class="detail-cell--stack"></td>`
-            + `<td class="detail-cell--stack detail-cell--slip-no"></td>`
-            + `<td class="num detail-cell--merged" rowspan="2"></td>`
-            + `<td class="num detail-cell--merged" rowspan="2"></td>`
-            + `<td class="num detail-cell--merged" rowspan="2"></td>`
+            + `<td class="detail-cell--stack">${spacer}</td>`
+            + `<td class="detail-cell--stack detail-cell--client-name">${spacer}</td>`
+            + `<td class="detail-cell--stack">${spacer}</td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no">${spacer}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
             + `</tr>`
             + `<tr class="detail-row detail-row--secondary detail-row--empty">`
-            + `<td class="detail-cell--stack detail-cell--delivery-no"></td>`
-            + `<td class="detail-cell--stack detail-cell--manage-no"></td>`
-            + `<td class="detail-cell--stack detail-cell--item-sub"></td>`
-            + `<td class="detail-cell--stack detail-cell--slip-no"></td>`
+            + `<td class="detail-cell--stack detail-cell--delivery-no">${spacer}</td>`
+            + `<td class="detail-cell--stack detail-cell--manage-no">${spacer}</td>`
+            + `<td class="detail-cell--stack detail-cell--item-sub">${spacer}</td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no">${spacer}</td>`
             + `</tr>`;
 
     };
@@ -656,58 +658,27 @@ ${buildDetailRowsHtml(details, options)}
         && layout.recipientMode !== 'general'
     );
 
-    const estimateHeaderDetailReduction = (header = {}) => {
+    /**
+     * 法人向けは 15 行固定。
+     * 一般客は現行どおり FIRST_GENERAL / MIN_GENERAL を維持する。
+     */
+    const resolveFirstPageDetailCapacity = (layout) => {
 
-        const address = String(header.customer_address ?? '').trim();
-        const name = String(header.customer_name ?? '').trim();
-        let reduction = 0;
-
-        if (address.length > 42) {
-            reduction += 1;
+        if (layout.recipientMode !== 'general') {
+            return DETAILS_PER_PAGE_FIRST;
         }
 
-        if (address.length > 84) {
-            reduction += 1;
-        }
-
-        if (name.length > 28) {
-            reduction += 1;
-        }
-
-        return reduction;
-
-    };
-
-    const resolveFirstPageDetailCapacity = (layout, header) => {
-
-        const isGeneral = layout.recipientMode === 'general';
-        let capacity = isGeneral
-            ? DETAILS_PER_PAGE_FIRST_GENERAL
-            : (usesCarryOverLayout(layout)
-                ? DETAILS_PER_PAGE_FIRST_CARRY
-                : DETAILS_PER_PAGE_FIRST);
-
-        if (!isGeneral) {
-            capacity -= estimateHeaderDetailReduction(header);
-
-            const customerCode = String(header?.customer_code ?? '').trim().toUpperCase();
-            const customerReduction = FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION[customerCode] ?? 0;
-
-            capacity -= customerReduction;
-        }
-
-        const minCapacity = isGeneral
-            ? DETAILS_PER_PAGE_FIRST_MIN_GENERAL
-            : DETAILS_PER_PAGE_FIRST_MIN;
-
-        return Math.max(minCapacity, capacity);
+        return Math.max(
+            DETAILS_PER_PAGE_FIRST_MIN_GENERAL,
+            DETAILS_PER_PAGE_FIRST_GENERAL
+        );
 
     };
 
     const buildInvoiceDetailPages = (details, layout = {}, header = {}) => {
 
         const isGeneral = layout.recipientMode === 'general';
-        const firstPageSize = resolveFirstPageDetailCapacity(layout, header);
+        const firstPageSize = resolveFirstPageDetailCapacity(layout);
         const nextPageSize = isGeneral
             ? DETAILS_PER_PAGE_NEXT_GENERAL
             : DETAILS_PER_PAGE_NEXT;
@@ -747,6 +718,7 @@ ${buildDetailRowsHtml(details, options)}
 
         const windowAddressHtml = '';
         const isPage1 = pageNumber === 1;
+        const isLastPage = pageNumber === totalPages;
         const detailOptions = {
             general: layout.recipientMode === 'general',
         };
@@ -757,7 +729,7 @@ ${buildDetailRowsHtml(details, options)}
     ${isPage1 ? buildBillingMetaBarHtml(header) : ''}
     ${isPage1 ? buildAmountOverviewHtml(summary, layout) : ''}
     ${buildDetailTableHtml(pageDetails, detailOptions)}
-    ${isPage1 ? buildPage1FooterHtml(summary) : ''}
+    ${isLastPage ? buildPage1FooterHtml(summary) : ''}
     ${buildPageNoHtml(pageNumber, totalPages)}`;
 
     };
@@ -779,6 +751,7 @@ ${buildDetailRowsHtml(details, options)}
         const carryFirstPage = usesCarryOverLayout(layout);
         const pagesHtml = detailPages.map((pageDetails, index) => {
             const pageClasses = ['page'];
+            const isLast = index === totalPages - 1;
 
             if (index === 0) {
                 pageClasses.push('page--invoice-first');
@@ -786,6 +759,10 @@ ${buildDetailRowsHtml(details, options)}
                 if (carryFirstPage) {
                     pageClasses.push('page--invoice-carry-first');
                 }
+            }
+
+            if (isLast) {
+                pageClasses.push('page--invoice-last');
             }
 
             return `<div class="${pageClasses.join(' ')}">${buildPageHtml(
