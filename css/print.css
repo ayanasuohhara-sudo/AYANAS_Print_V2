@@ -2074,11 +2074,11 @@
 }
 
 /*
- * 1ページ目: 振込先・合計は納品書の合計欄と同様、明細表の直下に置く。
- * margin-top:auto だと行数が足りないとき中間に大きな余白が空くため使わない。
+ * 1ページ目: 振込先・合計は納品書フッタと同様、ページ下部へ寄せる。
+ * （明細行高・続きページ行数は納品書に合わせ済み）
  */
 .report-invoice .page--invoice-first .invoice-page1-footer-table {
-    margin-top: 1.5mm;
+    margin-top: auto;
 }
 
 .report-invoice .invoice-page1-footer__col-bank-label {
