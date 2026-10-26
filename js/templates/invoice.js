@@ -8,11 +8,11 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '60';
+    const INVOICE_TEMPLATE_VERSION = '61';
     /** 法人向け: 1ページ目の明細行数（固定） */
-    const DETAILS_PER_PAGE_FIRST = 15;
+    const DETAILS_PER_PAGE_FIRST = 20;
     /** 法人向け: 2ページ目以降の明細行数（固定） */
-    const DETAILS_PER_PAGE_NEXT = 25;
+    const DETAILS_PER_PAGE_NEXT = 30;
     /** 一般客は行高を広げるため、1ページあたりの明細を抑える（現行維持） */
     const DETAILS_PER_PAGE_FIRST_GENERAL = 10;
     const DETAILS_PER_PAGE_NEXT_GENERAL = 14;
@@ -659,7 +659,7 @@ ${buildDetailRowsHtml(details, options)}
     );
 
     /**
-     * 法人向けは 15 行固定。
+     * 法人向けは 20 行固定。
      * 一般客は現行どおり FIRST_GENERAL / MIN_GENERAL を維持する。
      */
     const resolveFirstPageDetailCapacity = (layout) => {
@@ -718,7 +718,6 @@ ${buildDetailRowsHtml(details, options)}
 
         const windowAddressHtml = '';
         const isPage1 = pageNumber === 1;
-        const isLastPage = pageNumber === totalPages;
         const detailOptions = {
             general: layout.recipientMode === 'general',
         };
@@ -729,7 +728,7 @@ ${buildDetailRowsHtml(details, options)}
     ${isPage1 ? buildBillingMetaBarHtml(header) : ''}
     ${isPage1 ? buildAmountOverviewHtml(summary, layout) : ''}
     ${buildDetailTableHtml(pageDetails, detailOptions)}
-    ${isLastPage ? buildPage1FooterHtml(summary) : ''}
+    ${isPage1 ? buildPage1FooterHtml(summary) : ''}
     ${buildPageNoHtml(pageNumber, totalPages)}`;
 
     };

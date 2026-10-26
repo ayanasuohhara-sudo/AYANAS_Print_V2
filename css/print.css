@@ -2073,8 +2073,8 @@
     table-layout: fixed;
 }
 
-/* 最終ページ: 振込先・合計欄をページ下部に寄せる（文字サイズは変更しない） */
-.report-invoice .page--invoice-last .invoice-page1-footer-table {
+/* 1ページ目: 振込先・合計欄を明細表の直後〜下部に配置（文字サイズは変更しない） */
+.report-invoice .page--invoice-first .invoice-page1-footer-table {
     margin-top: auto;
 }
 

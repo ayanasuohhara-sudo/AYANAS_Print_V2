@@ -15,7 +15,7 @@ const ROOT = path.resolve(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'customize/backups/invoice_print_20261026/test_out');
 const PRINT_CSS = fs.readFileSync(path.join(ROOT, 'css/print.css'), 'utf8');
 
-const COUNTS = [5, 15, 16, 30, 40, 41, 65];
+const COUNTS = [5, 20, 21, 50, 51, 80, 110];
 
 const loadBrowserScripts = () => {
     const sandbox = {
@@ -95,19 +95,22 @@ const makeData = (count, opts = {}) => {
 };
 
 const expectedCorporatePages = (count) => {
-    if (count <= 15) {
-        return { pages: 1, slots: [15], filled: [count] };
+    const first = 20;
+    const next = 30;
+
+    if (count <= first) {
+        return { pages: 1, slots: [first], filled: [count] };
     }
 
-    const remain = count - 15;
-    const nextPages = Math.ceil(remain / 25);
-    const slots = [15];
-    const filled = [15];
+    const remain = count - first;
+    const nextPages = Math.ceil(remain / next);
+    const slots = [first];
+    const filled = [first];
     let left = remain;
 
     for (let i = 0; i < nextPages; i += 1) {
-        const take = Math.min(25, left);
-        slots.push(25);
+        const take = Math.min(next, left);
+        slots.push(next);
         filled.push(take);
         left -= take;
     }
@@ -305,18 +308,17 @@ const assertCase = (label, analysis, expected, data) => {
         errors.push(`footerCount ${analysis.footerCount} != 1`);
     }
 
-    const last = analysis.pageStats[analysis.pageStats.length - 1];
-    if (!last?.hasFooter) {
-        errors.push('last page missing footer');
+    const first = analysis.pageStats[0];
+    if (!first?.hasFooter) {
+        errors.push('page1 missing footer (振込先)');
     }
 
-    analysis.pageStats.slice(0, -1).forEach((page) => {
+    analysis.pageStats.slice(1).forEach((page) => {
         if (page.hasFooter) {
-            errors.push(`page${page.index} has footer (mid-page)`);
+            errors.push(`page${page.index} has footer (should be page1 only)`);
         }
     });
 
-    const first = analysis.pageStats[0];
     if (!first?.hasBillingMeta || !first?.hasOverview) {
         errors.push('page1 missing billing meta/overview');
     }
@@ -327,18 +329,18 @@ const assertCase = (label, analysis, expected, data) => {
         }
     });
 
-    if (last?.hasFooter) {
+    if (first?.hasFooter) {
         const expectedTotal = formatMoney(data.summary.total);
         const expectedSub = formatMoney(data.summary.subtotal);
         const expectedTax = formatMoney(data.summary.tax);
-        if (last.amountTexts.total !== expectedTotal) {
-            errors.push(`total ${last.amountTexts.total} != ${expectedTotal}`);
+        if (first.amountTexts.total !== expectedTotal) {
+            errors.push(`total ${first.amountTexts.total} != ${expectedTotal}`);
         }
-        if (last.amountTexts.subtotal !== expectedSub) {
-            errors.push(`subtotal ${last.amountTexts.subtotal} != ${expectedSub}`);
+        if (first.amountTexts.subtotal !== expectedSub) {
+            errors.push(`subtotal ${first.amountTexts.subtotal} != ${expectedSub}`);
         }
-        if (last.amountTexts.tax !== expectedTax) {
-            errors.push(`tax ${last.amountTexts.tax} != ${expectedTax}`);
+        if (first.amountTexts.tax !== expectedTax) {
+            errors.push(`tax ${first.amountTexts.tax} != ${expectedTax}`);
         }
     }
 

@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 130,
+  "version": 131,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 130（請求書明細15/25・最終ページ振込先）",
-    "en": "AYANAS Print Plugin V130 (invoice fixed rows 15/25, footer on last page)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 131（請求書明細20/30・1ページ目振込先）",
+    "en": "AYANAS Print Plugin V131 (invoice fixed rows 20/30, bank on page 1)"
   },
   "desktop": {
     "js": [
