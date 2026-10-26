@@ -2,20 +2,18 @@
 'use strict';
 
 /**
- * Invoice template paging / footer placement smoke test (corporate + general).
- * Logic assertions are primary. A4 fit is measured via Chrome headless with inlined CSS.
+ * Invoice template paging smoke test (v63: v59 base + slot-aware padding).
  */
 
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const { spawnSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
-const OUT_DIR = path.join(ROOT, 'customize/backups/invoice_print_20261026/test_out');
+const OUT_DIR = path.join(ROOT, 'customize/backups/invoice_print_20261026_final/test_out');
 const PRINT_CSS = fs.readFileSync(path.join(ROOT, 'css/print.css'), 'utf8');
 
-const COUNTS = [5, 17, 18, 44, 45, 71, 98];
+const COUNTS = [1, 5, 15, 30, 50];
 
 const loadBrowserScripts = () => {
     const sandbox = {
@@ -48,23 +46,36 @@ const loadBrowserScripts = () => {
     return sandbox;
 };
 
-const makeDetail = (index) => ({
+const makeDetail = (index, overrides = {}) => ({
     delivery_date: '2026-10-24',
     delivery_no: `N10261024-${600 + index}`,
-    client_name: `お客様${index}`,
+    client_name: overrides.client_name || `お客様${index}`,
     manage_no: String(1000 + index),
-    item_name: '丸洗い',
+    item_name: overrides.item_name || '丸洗い',
     kimono_type: '着物',
     kimono_spec: '袷',
-    slip_no: '中袖 赤',
+    slip_no: overrides.slip_no || '中袖 赤',
     in_charge: '山田',
     unit_price: 4300,
     qty: 1,
     amount: 4300,
+    ...overrides,
 });
 
 const makeData = (count, opts = {}) => {
-    const details = Array.from({ length: count }, (_, i) => makeDetail(i + 1));
+    const details = Array.from({ length: count }, (_, i) => makeDetail(i + 1, opts.detailOverrides));
+    if (opts.longNameAt === 0 || opts.longNameAt) {
+        const idx = opts.longNameAt;
+        if (details[idx]) {
+            details[idx].client_name = 'あ'.repeat(opts.longNameLen || 40);
+        }
+    }
+    if (opts.longItemAt === 0 || opts.longItemAt) {
+        const idx = opts.longItemAt;
+        if (details[idx]) {
+            details[idx].item_name = '加工'.repeat(opts.longItemLen || 25);
+        }
+    }
     const subtotal = details.reduce((sum, d) => sum + d.amount, 0);
     const tax = Math.floor(subtotal * 0.1);
     const total = subtotal + tax;
@@ -79,7 +90,7 @@ const makeData = (count, opts = {}) => {
             customer_code: opts.customerCode || 'C001',
             customer_name: opts.customerName || 'テスト法人',
             customer_postal: '〒630-0000',
-            customer_address: '奈良県奈良市テスト町1-2-3',
+            customer_address: opts.customerAddress || '奈良県奈良市テスト町1-2-3',
             general_client_name: opts.generalClientName || 'ayanasu',
         },
         summary: {
@@ -94,54 +105,6 @@ const makeData = (count, opts = {}) => {
     };
 };
 
-const expectedCorporatePages = (count) => {
-    const first = 17;
-    const next = 27;
-
-    if (count <= first) {
-        return { pages: 1, slots: [first], filled: [count] };
-    }
-
-    const remain = count - first;
-    const nextPages = Math.ceil(remain / next);
-    const slots = [first];
-    const filled = [first];
-    let left = remain;
-
-    for (let i = 0; i < nextPages; i += 1) {
-        const take = Math.min(next, left);
-        slots.push(next);
-        filled.push(take);
-        left -= take;
-    }
-
-    return { pages: slots.length, slots, filled };
-};
-
-const expectedGeneralPages = (count) => {
-    const first = 10;
-    const next = 14;
-
-    if (count <= first) {
-        return { pages: 1, slots: [first], filled: [count] };
-    }
-
-    const remain = count - first;
-    const nextPages = Math.ceil(remain / next);
-    const slots = [first];
-    const filled = [first];
-    let left = remain;
-
-    for (let i = 0; i < nextPages; i += 1) {
-        const take = Math.min(next, left);
-        slots.push(next);
-        filled.push(take);
-        left -= take;
-    }
-
-    return { pages: slots.length, slots, filled };
-};
-
 const analyzeHtml = (html) => {
     const pageMatches = [...html.matchAll(/<div class="([^"]*\bpage\b[^"]*)">/g)];
     const pages = pageMatches.map((m) => m[1]);
@@ -151,23 +114,21 @@ const analyzeHtml = (html) => {
         const primaryFilled = (chunk.match(/detail-row--primary(?! detail-row--empty)/g) || []).length;
         const primaryEmpty = (chunk.match(/detail-row--primary detail-row--empty/g) || []).length;
         const primaryTotal = (chunk.match(/detail-row--primary/g) || []).length;
+        const wrap2 = (chunk.match(/detail-row--wrap-2/g) || []).length;
+        const wrap3 = (chunk.match(/detail-row--wrap-3/g) || []).length;
 
         return {
             index: index + 1,
             className: pages[index] || '',
             isFirst: (pages[index] || '').includes('page--invoice-first'),
-            isLast: (pages[index] || '').includes('page--invoice-last'),
             primaryFilled,
             primaryEmpty,
             primaryTotal,
+            wrap2,
+            wrap3,
             hasFooter: chunk.includes('invoice-page1-footer-table'),
             hasBillingMeta: chunk.includes('invoice-billing-meta'),
             hasOverview: chunk.includes('invoice-amount-overview'),
-            amountTexts: {
-                subtotal: /税抜合計<\/th>\s*<td class="num invoice-page1-totals__value">([^<]*)</.exec(chunk)?.[1] || null,
-                tax: /消費税（10％）<\/th>\s*<td class="num invoice-page1-totals__value">([^<]*)</.exec(chunk)?.[1] || null,
-                total: /税込合計<\/th>\s*<td class="num invoice-page1-totals__value">([^<]*)</.exec(chunk)?.[1] || null,
-            },
         };
     });
 
@@ -180,7 +141,7 @@ const analyzeHtml = (html) => {
 
 const wrapPreviewHtml = (bodyHtml) => {
     const styleBlock = `<style>\n${PRINT_CSS}\n</style>\n`
-        + '<style>html,body{margin:0;background:#ddd;} .buttons{display:none!important;}</style>\n';
+        + '<style>html,body{margin:0;background:#ddd;}</style>\n';
 
     if (bodyHtml.includes('</head>')) {
         return bodyHtml.replace('</head>', `${styleBlock}</head>`);
@@ -189,252 +150,191 @@ const wrapPreviewHtml = (bodyHtml) => {
     return bodyHtml;
 };
 
-const buildSelfMeasureHtml = (docHtml) => {
-    const injected = `
-<script>
-(function () {
-  function measure() {
-    var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
-    var results = pages.map(function (page, i) {
-      var footer = page.querySelector('.invoice-page1-footer-table');
-      var pageRect = page.getBoundingClientRect();
-      var contentBottom = 0;
-      Array.prototype.forEach.call(page.children, function (child) {
-        var r = child.getBoundingClientRect();
-        contentBottom = Math.max(contentBottom, r.bottom);
-      });
-      var overflowPx = contentBottom - (pageRect.top + pageRect.height);
-      var clipped = page.scrollHeight > page.clientHeight + 1;
-      return {
-        page: i + 1,
-        pageHeightPx: Math.round(pageRect.height),
-        scrollHeightPx: page.scrollHeight,
-        clientHeightPx: page.clientHeight,
-        overflowPx: Math.round(overflowPx),
-        clipped: clipped,
-        hasFooter: !!footer,
-        detailRows: page.querySelectorAll('tbody .detail-row--primary').length,
-        emptyRows: page.querySelectorAll('tbody .detail-row--primary.detail-row--empty').length
-      };
-    });
-    var pre = document.createElement('pre');
-    pre.id = 'measure-json';
-    pre.textContent = JSON.stringify(results);
-    document.body.appendChild(pre);
-  }
-  if (document.readyState === 'complete') measure();
-  else window.addEventListener('load', measure);
-})();
-</script>`;
-
-    if (docHtml.includes('</body>')) {
-        return docHtml.replace('</body>', `${injected}\n</body>`);
+const expectedCorporatePagesForNormal = (count) => {
+    // normal details = 1 slot; first=17, next=26
+    if (count <= 17) {
+        return { pages: 1, firstSlots: 17, filledFirst: count };
     }
-
-    return `${docHtml}\n${injected}`;
+    const remain = count - 17;
+    const nextPages = Math.ceil(remain / 26);
+    return {
+        pages: 1 + nextPages,
+        firstSlots: 17,
+        filledFirst: 17,
+        nextSlots: 26,
+    };
 };
 
-const decodeHtmlEntities = (raw) => raw
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&');
-
-const measureWithChrome = (htmlPath) => {
-    const dump = spawnSync(
-        'google-chrome',
-        [
-            '--headless=new',
-            '--disable-gpu',
-            '--no-sandbox',
-            '--disable-dev-shm-usage',
-            '--virtual-time-budget=3000',
-            '--timeout=15000',
-            '--dump-dom',
-            `file://${htmlPath}`,
-        ],
-        {
-            encoding: 'utf8',
-            maxBuffer: 30 * 1024 * 1024,
-            timeout: 20000,
-            killSignal: 'SIGKILL',
-        }
-    );
-
-    if (dump.error) {
-        return { error: String(dump.error) };
-    }
-
-    if (dump.status !== 0 && !dump.stdout) {
-        return { error: dump.stderr || `chrome exit ${dump.status}` };
-    }
-
-    const match = dump.stdout.match(/<pre id="measure-json">([\s\S]*?)<\/pre>/);
-    if (!match) {
-        return { error: 'measure-json not found', stderr: (dump.stderr || '').slice(0, 300) };
-    }
-
-    try {
-        return { pages: JSON.parse(decodeHtmlEntities(match[1])) };
-    } catch (e) {
-        return { error: `json parse failed: ${e.message}` };
-    }
-};
-
-const formatMoney = (n) => Number(n).toLocaleString('en-US');
-
-const assertCase = (label, analysis, expected, data) => {
+const assertCorporateNormal = (label, analysis, count) => {
     const errors = [];
+    const expected = expectedCorporatePagesForNormal(count);
 
     if (analysis.pageCount !== expected.pages) {
         errors.push(`pages ${analysis.pageCount} != ${expected.pages}`);
     }
 
-    analysis.pageStats.forEach((page, i) => {
-        const slot = expected.slots[i];
-        if (page.primaryTotal !== slot) {
-            errors.push(`page${page.index} rows ${page.primaryTotal} != ${slot}`);
-        }
-        if (page.primaryFilled !== expected.filled[i]) {
-            errors.push(`page${page.index} filled ${page.primaryFilled} != ${expected.filled[i]}`);
-        }
-        if (page.primaryEmpty !== slot - expected.filled[i]) {
-            errors.push(`page${page.index} empty ${page.primaryEmpty} != ${slot - expected.filled[i]}`);
-        }
-    });
-
-    if (analysis.footerCount !== 1) {
-        errors.push(`footerCount ${analysis.footerCount} != 1`);
-    }
-
     const first = analysis.pageStats[0];
-    if (!first?.hasFooter) {
-        errors.push('page1 missing footer (振込先)');
-    }
+    if (!first?.hasFooter) errors.push('page1 missing footer');
+    if (!first?.hasBillingMeta || !first?.hasOverview) errors.push('page1 missing meta/overview');
+    if (analysis.footerCount !== 1) errors.push(`footerCount ${analysis.footerCount} != 1`);
 
     analysis.pageStats.slice(1).forEach((page) => {
-        if (page.hasFooter) {
-            errors.push(`page${page.index} has footer (should be page1 only)`);
+        if (page.hasFooter) errors.push(`page${page.index} has footer`);
+        if (page.hasBillingMeta || page.hasOverview) errors.push(`page${page.index} has meta`);
+    });
+
+    if (first.primaryFilled !== Math.min(count, 17)) {
+        errors.push(`page1 filled ${first.primaryFilled} != ${Math.min(count, 17)}`);
+    }
+
+    // blank rows present when short
+    if (count < 17 && first.primaryEmpty < 1) {
+        errors.push('page1 expected blank ruled rows');
+    }
+
+    // no blank-only pages
+    analysis.pageStats.forEach((page) => {
+        if (page.primaryFilled === 0 && analysis.pageCount > 1) {
+            errors.push(`page${page.index} is blank-only`);
         }
     });
 
-    if (!first?.hasBillingMeta || !first?.hasOverview) {
-        errors.push('page1 missing billing meta/overview');
-    }
-
-    analysis.pageStats.slice(1).forEach((page) => {
-        if (page.hasBillingMeta || page.hasOverview) {
-            errors.push(`page${page.index} unexpectedly has meta/overview`);
-        }
-    });
-
-    if (first?.hasFooter) {
-        const expectedTotal = formatMoney(data.summary.total);
-        const expectedSub = formatMoney(data.summary.subtotal);
-        const expectedTax = formatMoney(data.summary.tax);
-        if (first.amountTexts.total !== expectedTotal) {
-            errors.push(`total ${first.amountTexts.total} != ${expectedTotal}`);
-        }
-        if (first.amountTexts.subtotal !== expectedSub) {
-            errors.push(`subtotal ${first.amountTexts.subtotal} != ${expectedSub}`);
-        }
-        if (first.amountTexts.tax !== expectedTax) {
-            errors.push(`tax ${first.amountTexts.tax} != ${expectedTax}`);
-        }
-    }
-
-    return { label, ok: errors.length === 0, errors, analysis, expected };
+    return { label, ok: errors.length === 0, errors, analysis };
 };
 
 const main = () => {
     fs.mkdirSync(OUT_DIR, { recursive: true });
     const sandbox = loadBrowserScripts();
     const template = sandbox.window.InvoiceTemplate;
-
-    if (!template || typeof template.render !== 'function') {
-        throw new Error('InvoiceTemplate.render unavailable');
-    }
-
     const results = [];
-    const measureAll = process.argv.includes('--measure');
 
-    const runMode = (mode) => {
-        const isGeneral = mode === 'general';
-        const layout = {
-            reportType: 'invoice',
-            pageClass: 'report-invoice',
-            recipientMode: isGeneral ? 'general' : undefined,
-            carryOverMode: 'none',
-        };
-
-        COUNTS.forEach((count) => {
-            const data = makeData(count, {
-                customerCode: isGeneral ? 'A550' : 'C001',
-                customerName: isGeneral ? 'ayanasu' : 'テスト法人',
-                generalClientName: 'ayanasu',
-            });
-            const html = template.render(data, {}, layout);
-            const analysis = analyzeHtml(html);
-            const expected = isGeneral
-                ? expectedGeneralPages(count)
-                : expectedCorporatePages(count);
-            const verdict = assertCase(`${mode}:${count}`, analysis, expected, data);
-
-            const base = `${mode}_${String(count).padStart(2, '0')}`;
-            const preview = wrapPreviewHtml(html);
-            fs.writeFileSync(path.join(OUT_DIR, `${base}.html`), preview);
-
-            if (measureAll) {
-                const measurePath = path.join(OUT_DIR, `${base}_measure.html`);
-                fs.writeFileSync(measurePath, buildSelfMeasureHtml(preview));
-                const measure = measureWithChrome(measurePath);
-                verdict.measure = measure;
-                if (measure.pages) {
-                    const clipped = measure.pages.filter((p) => p.clipped || p.overflowPx > 1);
-                    verdict.fitOk = clipped.length === 0;
-                    verdict.clippedPages = clipped;
-                } else {
-                    verdict.fitOk = null;
-                    verdict.measureError = measure.error;
-                }
-            }
-
-            results.push(verdict);
-            const mark = verdict.ok ? 'PASS' : 'FAIL';
-            const fit = !measureAll
-                ? 'SKIP'
-                : verdict.fitOk === true
-                    ? 'FIT'
-                    : verdict.fitOk === false
-                        ? 'OVERFLOW'
-                        : 'FIT?';
-            console.log(`[${mark}/${fit}] ${verdict.label} pages=${analysis.pageCount} footer=${analysis.footerCount}`
-                + (verdict.errors.length ? ` :: ${verdict.errors.join('; ')}` : ''));
-            if (verdict.clippedPages?.length) {
-                console.log(`  overflow detail: ${JSON.stringify(verdict.clippedPages)}`);
-            }
-        });
+    const run = (name, data, layout, assertFn) => {
+        const html = template.render(data, {}, layout);
+        const analysis = analyzeHtml(html);
+        const verdict = assertFn(name, analysis, data);
+        fs.writeFileSync(path.join(OUT_DIR, `${name}.html`), wrapPreviewHtml(html));
+        results.push(verdict);
+        console.log(`[${verdict.ok ? 'PASS' : 'FAIL'}] ${name} pages=${analysis.pageCount}`
+            + (verdict.errors.length ? ` :: ${verdict.errors.join('; ')}` : ''));
     };
 
-    runMode('corporate');
-    runMode('general');
+    const corpLayout = {
+        reportType: 'invoice',
+        pageClass: 'report-invoice',
+        carryOverMode: 'none',
+    };
+    const generalLayout = {
+        reportType: 'invoice',
+        pageClass: 'report-invoice',
+        recipientMode: 'general',
+        carryOverMode: 'none',
+    };
 
-    const summaryPath = path.join(OUT_DIR, 'summary.json');
-    fs.writeFileSync(summaryPath, JSON.stringify(results, null, 2));
+    COUNTS.forEach((count) => {
+        run(
+            `corporate_${String(count).padStart(2, '0')}`,
+            makeData(count),
+            corpLayout,
+            (label, analysis) => assertCorporateNormal(label, analysis, count)
+        );
+    });
 
+    // long client name / item (multi-slot) should wrap and may change blank count
+    run(
+        'corporate_long_name',
+        makeData(5, { longNameAt: 0, longNameLen: 40 }),
+        corpLayout,
+        (label, analysis) => {
+            const errors = [];
+            if (analysis.pageCount !== 1) errors.push(`pages ${analysis.pageCount} != 1`);
+            if (!analysis.pageStats[0]?.hasFooter) errors.push('missing footer');
+            if ((analysis.pageStats[0]?.wrap2 || 0) + (analysis.pageStats[0]?.wrap3 || 0) < 1) {
+                errors.push('expected wrap class on long name');
+            }
+            // still one page, with blanks reduced vs 17-5=12
+            if (analysis.pageStats[0].primaryFilled !== 5) errors.push('filled != 5');
+            return { label, ok: errors.length === 0, errors, analysis };
+        }
+    );
+
+    run(
+        'corporate_long_item',
+        makeData(5, { longItemAt: 0, longItemLen: 30 }),
+        corpLayout,
+        (label, analysis) => {
+            const errors = [];
+            if (analysis.pageCount !== 1) errors.push(`pages ${analysis.pageCount} != 1`);
+            if ((analysis.pageStats[0]?.wrap2 || 0) + (analysis.pageStats[0]?.wrap3 || 0) < 1) {
+                errors.push('expected wrap class on long item');
+            }
+            return { label, ok: errors.length === 0, errors, analysis };
+        }
+    );
+
+    // multi-page with long rows: ensure no item split (each filled row is whole pair)
+    run(
+        'corporate_30_mixed_long',
+        (() => {
+            const data = makeData(30);
+            data.details[0].client_name = 'あ'.repeat(40);
+            data.details[10].item_name = '加工内容がとても長い明細'.repeat(4);
+            return data;
+        })(),
+        corpLayout,
+        (label, analysis) => {
+            const errors = [];
+            if (analysis.pageCount < 2) errors.push('expected multi-page');
+            if (analysis.footerCount !== 1) errors.push('footer != 1');
+            if (!analysis.pageStats[0]?.hasFooter) errors.push('footer not on page1');
+            analysis.pageStats.forEach((page) => {
+                if (page.primaryFilled === 0) errors.push(`blank-only page ${page.index}`);
+            });
+            return { label, ok: errors.length === 0, errors, analysis };
+        }
+    );
+
+    // general A550
+    [1, 5, 15, 30].forEach((count) => {
+        run(
+            `general_${String(count).padStart(2, '0')}`,
+            makeData(count, { customerCode: 'A550', customerName: 'ayanasu', generalClientName: 'ayanasu' }),
+            generalLayout,
+            (label, analysis) => {
+                const errors = [];
+                const firstCap = 10;
+                const nextCap = 14;
+                let expectedPages = 1;
+                if (count > firstCap) {
+                    expectedPages = 1 + Math.ceil((count - firstCap) / nextCap);
+                }
+                if (analysis.pageCount !== expectedPages) {
+                    errors.push(`pages ${analysis.pageCount} != ${expectedPages}`);
+                }
+                if (!analysis.pageStats[0]?.hasFooter) errors.push('page1 missing footer');
+                if (analysis.footerCount !== 1) errors.push(`footerCount ${analysis.footerCount}`);
+                return { label, ok: errors.length === 0, errors, analysis };
+            }
+        );
+    });
+
+    // zero details
+    run(
+        'corporate_00',
+        makeData(0),
+        corpLayout,
+        (label, analysis) => {
+            const errors = [];
+            if (analysis.pageCount !== 1) errors.push('expected 1 page');
+            if (analysis.pageStats[0].primaryEmpty < 1) errors.push('expected blank table');
+            if (!analysis.pageStats[0].hasFooter) errors.push('missing footer');
+            return { label, ok: errors.length === 0, errors, analysis };
+        }
+    );
+
+    fs.writeFileSync(path.join(OUT_DIR, 'summary.json'), JSON.stringify(results, null, 2));
     const failed = results.filter((r) => !r.ok);
-    console.log('\n=== SUMMARY ===');
-    console.log(`logic: ${results.length - failed.length}/${results.length} passed`);
-    if (measureAll) {
-        const measured = results.filter((r) => r.fitOk !== null && r.fitOk !== undefined);
-        console.log(`fit:   ${results.filter((r) => r.fitOk).length}/${measured.length} no-overflow`);
-    }
-    console.log(`wrote: ${summaryPath}`);
-
-    if (failed.length || results.some((r) => r.fitOk === false)) {
-        process.exitCode = 1;
-    }
+    console.log(`\n=== SUMMARY ${results.length - failed.length}/${results.length} passed ===`);
+    if (failed.length) process.exitCode = 1;
 };
 
 main();

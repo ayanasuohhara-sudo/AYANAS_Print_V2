@@ -6,7 +6,11 @@ const path = require('path');
 const http = require('http');
 const WebSocket = require('ws');
 
-const OUT_DIR = path.resolve(__dirname, '../customize/backups/invoice_print_20261026/test_out');
+const OUT_DIR = path.resolve(
+    __dirname,
+    process.argv[2]
+        || '../customize/backups/invoice_print_20261026_final/test_out'
+);
 const CDP_HOST = '127.0.0.1';
 const CDP_PORT = 9222;
 

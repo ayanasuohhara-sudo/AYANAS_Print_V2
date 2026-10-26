@@ -8,15 +8,27 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '62';
-    /** 法人向け: 1ページ目の明細行数（固定） */
+    const INVOICE_TEMPLATE_VERSION = '63';
+    /** 法人向け: 1ページ目の基準スロット数（v59ベース） */
     const DETAILS_PER_PAGE_FIRST = 17;
-    /** 法人向け: 2ページ目以降の明細行数（固定） */
-    const DETAILS_PER_PAGE_NEXT = 27;
-    /** 一般客は行高を広げるため、1ページあたりの明細を抑える（現行維持） */
+    /** 繰越ありは締日表と金額2段があるため、1ページ目の明細を2スロット減らす */
+    const DETAILS_PER_PAGE_FIRST_CARRY = 15;
+    /** 法人向け: 2ページ目以降の基準スロット数（v59ベース） */
+    const DETAILS_PER_PAGE_NEXT = 26;
+    const DETAILS_PER_PAGE_FIRST_MIN = 12;
+    /** 一般客は行高を広げるため、1ページあたりの明細を抑える */
     const DETAILS_PER_PAGE_FIRST_GENERAL = 10;
     const DETAILS_PER_PAGE_NEXT_GENERAL = 14;
     const DETAILS_PER_PAGE_FIRST_MIN_GENERAL = 8;
+    const FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION = {};
+    /** 折り返し見積: 列ごとのおおよその1行あたり文字数（和文） */
+    const WRAP_CHARS = {
+        clientName: 16,
+        itemName: 18,
+        slipNo: 10,
+        generalClientName: 14,
+        generalItemName: 16,
+    };
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -394,6 +406,9 @@
             return buildEmptyDetailPairHtml(options);
         }
 
+        const wrapUnits = Math.max(1, Math.min(3, Number(detail._slotUnits) || 1));
+        const wrapClass = wrapUnits > 1 ? ` detail-row--wrap-${wrapUnits}` : '';
+
         if (isGeneral) {
             const manageText = detail._showManageNo
                 ? String(detail.manage_no ?? '').trim()
@@ -402,32 +417,32 @@
                 ? `${esc(detail.delivery_no)}<span class="detail-manage-inline">${esc(manageText)}</span>`
                 : esc(detail.delivery_no);
 
-            return `<tr class="detail-row detail-row--primary">`
+            return `<tr class="detail-row detail-row--primary${wrapClass}">`
                 + `<td class="detail-cell--stack">${esc(Format.formatDate(detail.delivery_date))}</td>`
                 + `<td class="detail-cell--merged detail-cell--client-name" rowspan="2">${esc(detail.client_name)}</td>`
-                + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
+                + `<td class="detail-cell--stack detail-cell--item-name">${esc(detail.item_name)}</td>`
                 + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.slip_no)}</td>`
                 + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
                 + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
                 + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
                 + `</tr>`
-                + `<tr class="detail-row detail-row--secondary">`
+                + `<tr class="detail-row detail-row--secondary${wrapClass}">`
                 + `<td class="detail-cell--stack detail-cell--delivery-no">${deliverySecondary}</td>`
                 + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
                 + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.in_charge)}</td>`
                 + `</tr>`;
         }
 
-        return `<tr class="detail-row detail-row--primary">`
+        return `<tr class="detail-row detail-row--primary${wrapClass}">`
             + `<td class="detail-cell--stack">${esc(Format.formatDate(detail.delivery_date))}</td>`
             + `<td class="detail-cell--stack detail-cell--client-name">${esc(detail.client_name)}</td>`
-            + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
+            + `<td class="detail-cell--stack detail-cell--item-name">${esc(detail.item_name)}</td>`
             + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.slip_no)}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
             + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
             + `</tr>`
-            + `<tr class="detail-row detail-row--secondary">`
+            + `<tr class="detail-row detail-row--secondary${wrapClass}">`
             + `<td class="detail-cell--stack detail-cell--delivery-no">${esc(detail.delivery_no)}</td>`
             + `<td class="detail-cell--stack detail-cell--manage-no">${esc(detail._showManageNo ? detail.manage_no : '')}</td>`
             + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
@@ -658,51 +673,182 @@ ${buildDetailRowsHtml(details, options)}
         && layout.recipientMode !== 'general'
     );
 
-    /**
-     * 法人向けは 17 行固定。
-     * 一般客は現行どおり FIRST_GENERAL / MIN_GENERAL を維持する。
-     */
-    const resolveFirstPageDetailCapacity = (layout) => {
+    const estimateHeaderDetailReduction = (header = {}) => {
 
-        if (layout.recipientMode !== 'general') {
-            return DETAILS_PER_PAGE_FIRST;
+        const address = String(header.customer_address ?? '').trim();
+        const name = String(header.customer_name ?? '').trim();
+        let reduction = 0;
+
+        if (address.length > 42) {
+            reduction += 1;
         }
 
-        return Math.max(
-            DETAILS_PER_PAGE_FIRST_MIN_GENERAL,
-            DETAILS_PER_PAGE_FIRST_GENERAL
-        );
+        if (address.length > 84) {
+            reduction += 1;
+        }
+
+        if (name.length > 28) {
+            reduction += 1;
+        }
+
+        return reduction;
 
     };
 
+    const resolveFirstPageDetailCapacity = (layout, header) => {
+
+        const isGeneral = layout.recipientMode === 'general';
+        let capacity = isGeneral
+            ? DETAILS_PER_PAGE_FIRST_GENERAL
+            : (usesCarryOverLayout(layout)
+                ? DETAILS_PER_PAGE_FIRST_CARRY
+                : DETAILS_PER_PAGE_FIRST);
+
+        if (!isGeneral) {
+            capacity -= estimateHeaderDetailReduction(header);
+
+            const customerCode = String(header?.customer_code ?? '').trim().toUpperCase();
+            const customerReduction = FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION[customerCode] ?? 0;
+
+            capacity -= customerReduction;
+        }
+
+        const minCapacity = isGeneral
+            ? DETAILS_PER_PAGE_FIRST_MIN_GENERAL
+            : DETAILS_PER_PAGE_FIRST_MIN;
+
+        return Math.max(minCapacity, capacity);
+
+    };
+
+    const estimateTextLines = (value, charsPerLine) => {
+
+        const text = String(value ?? '').trim();
+
+        if (!text) {
+            return 1;
+        }
+
+        const perLine = Math.max(1, charsPerLine);
+
+        return Math.max(1, Math.ceil(text.length / perLine));
+
+    };
+
+    /**
+     * 明細1件が占めるスロット数を見積もる。
+     * 長い文字は折り返しで行高が増えるため、空白行スロットを減らしてページに収める。
+     */
+    const estimateDetailSlotUnits = (detail, isGeneral = false) => {
+
+        if (!detail) {
+            return 1;
+        }
+
+        if (isGeneral) {
+            const lines = Math.max(
+                estimateTextLines(detail.client_name ?? detail.general_client_name, WRAP_CHARS.generalClientName),
+                estimateTextLines(detail.item_name, WRAP_CHARS.generalItemName),
+                estimateTextLines(detail.slip_no, WRAP_CHARS.slipNo),
+                1
+            );
+
+            return Math.min(3, lines);
+        }
+
+        const lines = Math.max(
+            estimateTextLines(detail.client_name, WRAP_CHARS.clientName),
+            estimateTextLines(detail.item_name, WRAP_CHARS.itemName),
+            estimateTextLines(detail.slip_no, WRAP_CHARS.slipNo),
+            1
+        );
+
+        return Math.min(3, lines);
+
+    };
+
+    const annotateDetailSlotUnits = (details, isGeneral) => (
+        (Array.isArray(details) ? details : []).map((detail) => {
+
+            if (!detail) {
+                return detail;
+            }
+
+            const units = estimateDetailSlotUnits(detail, isGeneral);
+
+            return {
+                ...detail,
+                _slotUnits: units,
+            };
+
+        })
+    );
+
+    const padPageWithSlotBudget = (pageDetails, capacity) => {
+
+        const used = pageDetails.reduce((sum, detail) => {
+
+            if (!detail) {
+                return sum + 1;
+            }
+
+            return sum + Math.max(1, Number(detail._slotUnits) || 1);
+
+        }, 0);
+        const remaining = Math.max(0, capacity - used);
+        const padded = pageDetails.slice();
+
+        for (let index = 0; index < remaining; index += 1) {
+            padded.push(Core.Report.EMPTY_DETAIL);
+        }
+
+        return padded;
+
+    };
+
+    /**
+     * スロット予算ベースで改ページする。
+     * - 明細1件は分割しない
+     * - 長い明細は複数スロット消費 → その分空白行を減らす
+     * - 空白行は同一ページ内の余りスロットを埋めるだけ（空白ページは作らない）
+     */
     const buildInvoiceDetailPages = (details, layout = {}, header = {}) => {
 
         const isGeneral = layout.recipientMode === 'general';
-        const firstPageSize = resolveFirstPageDetailCapacity(layout);
+        const firstPageSize = resolveFirstPageDetailCapacity(layout, header);
         const nextPageSize = isGeneral
             ? DETAILS_PER_PAGE_NEXT_GENERAL
             : DETAILS_PER_PAGE_NEXT;
+        const annotated = annotateDetailSlotUnits(details, isGeneral);
         const pages = [];
 
-        if (!Array.isArray(details) || details.length === 0) {
-            pages.push(Core.Report.padPageDetails([], firstPageSize));
+        if (annotated.length === 0) {
+            pages.push(padPageWithSlotBudget([], firstPageSize));
             return pages;
         }
 
-        pages.push(Core.Report.padPageDetails(
-            details.slice(0, firstPageSize),
-            firstPageSize
-        ));
+        let page = [];
+        let used = 0;
+        let capacity = firstPageSize;
 
-        let index = firstPageSize;
+        annotated.forEach((detail) => {
 
-        while (index < details.length) {
+            const units = Math.max(1, Number(detail._slotUnits) || 1);
 
-            const chunk = details.slice(index, index + nextPageSize);
+            if (page.length > 0 && used + units > capacity) {
+                pages.push(padPageWithSlotBudget(page, capacity));
+                page = [];
+                used = 0;
+                capacity = nextPageSize;
+            }
 
-            pages.push(Core.Report.padPageDetails(chunk, nextPageSize));
-            index += nextPageSize;
+            page.push(detail);
+            used += units;
 
+        });
+
+        if (page.length > 0 || pages.length === 0) {
+            pages.push(padPageWithSlotBudget(page, capacity));
         }
 
         return pages;

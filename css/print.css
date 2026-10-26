@@ -2211,8 +2211,9 @@
     max-height: 4.6mm;
 }
 
-/* お客様名・伝票番号/係は省略せず折り返す（stack の nowrap/ellipsis より詳細度を上げる） */
+/* お客様名・加工内容・伝票番号/係は省略せず折り返し、行高を伸ばす */
 .report-invoice .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack.detail-cell--client-name,
+.report-invoice .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack.detail-cell--item-name,
 .report-invoice .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack.detail-cell--slip-no,
 .report-invoice .invoice-detail-table tbody .detail-row--secondary td.detail-cell--stack.detail-cell--slip-no,
 .report-invoice .invoice-detail-table tbody td.detail-cell--merged.detail-cell--client-name {
@@ -2224,6 +2225,25 @@
     overflow-wrap: anywhere;
     line-height: 1.2;
     vertical-align: middle;
+}
+
+/* 長い明細: 折り返し行数に応じた行高・必要時のみフォント縮小 */
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-2 td {
+    font-size: 8.5pt;
+    line-height: 1.2;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-3 td {
+    font-size: 8pt;
+    line-height: 1.15;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-2.detail-row--primary td.detail-cell--stack,
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-3.detail-row--primary td.detail-cell--stack {
+    max-height: none;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
 }
 
 /* 一般客請求書: 行高をデータ行・空白行で揃える */
