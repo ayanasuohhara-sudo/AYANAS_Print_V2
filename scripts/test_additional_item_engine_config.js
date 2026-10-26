@@ -36,9 +36,10 @@ const assert = (name, cond) => {
 };
 
 assert('engine loaded', !!E);
-assert('VERSION 1.2.1+', typeof E.VERSION === 'string' && E.VERSION >= '1.2.1');
+assert('VERSION 1.2.2+', typeof E.VERSION === 'string' && E.VERSION >= '1.2.2');
 assert('外注加工マスタは App23', E.APP.outsourceProcessing === 23);
 assert('App95 ではない', E.APP.outsourceProcessing !== 95);
+assert('App27 は 27', E.APP.outsourceOutbound === 27);
 assert('delivery App19', E.APP.delivery === 19);
 assert('outsourceOutbound App27', E.APP.outsourceOutbound === 27);
 assert('product App13', E.APP.product === 13);

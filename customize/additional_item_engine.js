@@ -3,7 +3,7 @@
 
   /**
    * 外注追加加工 — 共通エンジン
-   * VERSION: 1.2.1
+   * VERSION: 1.2.2
    *
    * 照合: App27.processing_code → App23.outsource_company_code（加工コード）
    *       → App13.item_code → App16.detail_table.item_code
@@ -12,9 +12,10 @@
    *
    * App23 = 外注加工マスタ（business_menu / master_list_service と同一）。
    * ※旧コードの App95 は存在しないアプリIDのため、納品保存が失敗していた。
+   * ※App27 の outsource_detail.manage_no は = だと 400 になる環境があるため in / like / 走査で取得。
    */
 
-  const VERSION = '1.2.1';
+  const VERSION = '1.2.2';
 
   const APP = {
     product: 13,
@@ -598,22 +599,52 @@
     return result;
   };
 
-  const collectProcessingCodesForManageNo = async (manageNo) => {
+  /**
+   * App27 サブテーブル manage_no 検索。
+   * `=` は環境によって GAIA_IQ* / 400 になるため、in → like → 走査の順で試す。
+   */
+  const fetchApp27RecordsByManageNo = async (manageNo) => {
     const code = norm(manageNo);
-    const codes = new Map();
-    const query = F27.detailTable + '.' + F27.detailManageNo
-      + ' = "' + escapeQueryValue(code) + '" order by $id desc limit 100';
+    const escaped = escapeQueryValue(code);
+    const fieldPath = F27.detailTable + '.' + F27.detailManageNo;
+    const queries = [
+      fieldPath + ' in ("' + escaped + '") order by $id desc limit 100',
+      fieldPath + ' like "' + escaped + '" order by $id desc limit 100',
+    ];
 
+    for (let i = 0; i < queries.length; i += 1) {
+      try {
+        const records = await fetchRecords(APP.outsourceOutbound, queries[i]);
+        return records;
+      } catch (err) {
+        console.warn('[additional_item] App27 検索失敗:', queries[i], err);
+      }
+    }
+
+    try {
+      const all = await fetchRecords(
+        APP.outsourceOutbound,
+        'order by $id desc limit 500'
+      );
+
+      return all.filter(function (rec) {
+        return listManageNosFromApp27(rec).indexOf(code) >= 0;
+      });
+    } catch (err) {
+      console.warn('[additional_item] App27 走査失敗', err);
+      return [];
+    }
+  };
+
+  const collectProcessingCodesForManageNo = async (manageNo) => {
+    const codes = new Map();
     let records = [];
 
     try {
-      records = await fetchRecords(APP.outsourceOutbound, query);
+      records = await fetchApp27RecordsByManageNo(manageNo);
     } catch (err) {
-      console.warn('[additional_item] App27 検索失敗、走査に切替', err);
-      const all = await fetchRecords(APP.outsourceOutbound, 'order by $id desc limit 500');
-      records = all.filter(function (rec) {
-        return listManageNosFromApp27(rec).indexOf(code) >= 0;
-      });
+      console.warn('[additional_item] App27 取得失敗', err);
+      return codes;
     }
 
     records.forEach(function (rec) {
