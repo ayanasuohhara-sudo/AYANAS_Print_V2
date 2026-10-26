@@ -14,11 +14,11 @@
      * 納品書（DETAILS_PER_PAGE=20 / 行高5.1mm）に近い密度へ揃える。
      * 1ページ目はヘッダ＋金額表＋振込先があるため、納品書よりやや少なめ。
      */
-    const DETAILS_PER_PAGE_FIRST = 17;
+    const DETAILS_PER_PAGE_FIRST = 16;
     /** 繰越ありは締日表と金額2段があるため、1ページ目の明細を2スロット減らす */
-    const DETAILS_PER_PAGE_FIRST_CARRY = 15;
+    const DETAILS_PER_PAGE_FIRST_CARRY = 14;
     const DETAILS_PER_PAGE_NEXT = 20;
-    const DETAILS_PER_PAGE_FIRST_MIN = 13;
+    const DETAILS_PER_PAGE_FIRST_MIN = 12;
     /** 一般客は行高を広げるため、1ページあたりの明細を抑える */
     const DETAILS_PER_PAGE_FIRST_GENERAL = 9;
     const DETAILS_PER_PAGE_NEXT_GENERAL = 12;
