@@ -42,7 +42,7 @@
 
 
 
-    const PLUGIN_VERSION = +m.version+;
+    const PLUGIN_VERSION = '144';
 
 
 
