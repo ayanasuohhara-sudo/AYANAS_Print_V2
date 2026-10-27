@@ -8,17 +8,18 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '66';
+    const INVOICE_TEMPLATE_VERSION = '67';
     /**
      * 法人向け基準スロット数。
      * 納品書（DETAILS_PER_PAGE=20 / 行高5.1mm）に近い密度へ揃える。
      * 1ページ目はヘッダ＋金額表＋振込先があるため、納品書よりやや少なめ。
+     * 折り返し2行時に振込先下枠が切れないよう、基準を1スロット余裕を持たせる。
      */
-    const DETAILS_PER_PAGE_FIRST = 16;
+    const DETAILS_PER_PAGE_FIRST = 15;
     /** 繰越ありは締日表と金額2段があるため、1ページ目の明細を2スロット減らす */
-    const DETAILS_PER_PAGE_FIRST_CARRY = 14;
+    const DETAILS_PER_PAGE_FIRST_CARRY = 13;
     const DETAILS_PER_PAGE_NEXT = 20;
-    const DETAILS_PER_PAGE_FIRST_MIN = 12;
+    const DETAILS_PER_PAGE_FIRST_MIN = 11;
     /** 一般客は行高を広げるため、1ページあたりの明細を抑える */
     const DETAILS_PER_PAGE_FIRST_GENERAL = 9;
     const DETAILS_PER_PAGE_NEXT_GENERAL = 12;
