@@ -245,6 +245,8 @@
 }
 
 .report-order-detail .order-detail-sheet--left {
+    display: flex;
+    flex-direction: column;
     padding: 5mm 2mm 4mm 5mm;
 }
 
@@ -463,6 +465,66 @@
     width: auto;
 }
 
+/* 左側下部: 追加バーコード＋識別情報（11pt） */
+.report-order-detail .order-detail-left-bottom,
+.report-overseas-order .order-detail-left-bottom {
+    margin-top: auto;
+    padding-top: 2mm;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.report-order-detail .order-detail-barcode--bottom,
+.report-overseas-order .order-detail-barcode--bottom {
+    margin-top: 0;
+}
+
+.report-order-detail .order-detail-barcode--bottom .order-detail-barcode__svg,
+.report-overseas-order .order-detail-barcode--bottom .order-detail-barcode__svg {
+    max-width: 52mm;
+}
+
+.report-order-detail .order-detail-bottom-info,
+.report-overseas-order .order-detail-bottom-info {
+    margin: 2mm auto 0;
+    width: 100%;
+    max-width: 136mm;
+    box-sizing: border-box;
+    font-size: 11pt;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.report-order-detail .order-detail-bottom-info__line,
+.report-overseas-order .order-detail-bottom-info__line {
+    margin: 0;
+    padding: 0;
+    font-size: 11pt;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.report-order-detail .order-detail-bottom-info__label,
+.report-overseas-order .order-detail-bottom-info__label {
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+.report-order-detail .order-detail-bottom-info__sep,
+.report-overseas-order .order-detail-bottom-info__sep {
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+.report-order-detail .order-detail-bottom-info__value,
+.report-overseas-order .order-detail-bottom-info__value {
+    font-size: 11pt;
+    font-weight: 700;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
 /* ========================================
    帳票種別: 海外用受注表 (overseas_order)
    ======================================== */
@@ -530,6 +592,8 @@
 }
 
 .report-overseas-order .order-detail-sheet--left {
+    display: flex;
+    flex-direction: column;
     padding: 5mm 2mm 4mm 5mm;
 }
 
