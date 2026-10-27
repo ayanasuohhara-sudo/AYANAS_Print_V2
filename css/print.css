@@ -486,14 +486,14 @@
 
 .report-order-detail .order-detail-bottom-info,
 .report-overseas-order .order-detail-bottom-info {
-    margin: 2mm auto 0;
+    margin: 1.5mm auto 0;
     width: 100%;
     max-width: 136mm;
     box-sizing: border-box;
     font-size: 11pt;
     font-weight: 700;
     line-height: 1.35;
-    text-align: left;
+    text-align: center;
 }
 
 .report-order-detail .order-detail-bottom-info__line,
@@ -503,26 +503,24 @@
     font-size: 11pt;
     font-weight: 700;
     line-height: 1.35;
+    white-space: nowrap;
 }
 
-.report-order-detail .order-detail-bottom-info__label,
-.report-overseas-order .order-detail-bottom-info__label {
-    font-size: 11pt;
-    font-weight: 700;
-}
-
-.report-order-detail .order-detail-bottom-info__sep,
-.report-overseas-order .order-detail-bottom-info__sep {
-    font-size: 11pt;
-    font-weight: 700;
+.report-order-detail .order-detail-bottom-info__line + .order-detail-bottom-info__line,
+.report-overseas-order .order-detail-bottom-info__line + .order-detail-bottom-info__line {
+    margin-top: 0.4mm;
 }
 
 .report-order-detail .order-detail-bottom-info__value,
 .report-overseas-order .order-detail-bottom-info__value {
     font-size: 11pt;
     font-weight: 700;
-    word-break: break-word;
-    overflow-wrap: anywhere;
+}
+
+.report-order-detail .order-detail-bottom-info__gap,
+.report-overseas-order .order-detail-bottom-info__gap {
+    font-size: 11pt;
+    font-weight: 700;
 }
 
 /* ========================================

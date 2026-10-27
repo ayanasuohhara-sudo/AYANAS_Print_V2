@@ -216,30 +216,42 @@
     };
 
     /**
-     * 左側下部: バーコード直下の識別情報（11pt）
+     * 左側下部: バーコード直下の識別情報（11pt・項目名なし・約2行）
+     * 1行目: 顧客コード / 顧客名 / お客様名
+     * 2行目: 着物仕様 / 着物種類 / 伝票番号
      */
     OrderDetailShared.buildBottomInfoHtml = (header) => {
 
-        const lines = [
-            { label: '顧客コード', value: String(header?.customer_code ?? '').trim() },
-            { label: '顧客名', value: withHonorific(header?.customer_name) },
-            { label: 'お客様名', value: withHonorific(header?.client_name) },
-            { label: '着物仕様', value: String(header?.kimono_spec ?? '').trim() },
-            { label: '着物種類', value: String(header?.kimono_type ?? '').trim() },
-            { label: '伝票番号', value: String(header?.slip_no ?? '').trim() },
-        ];
+        const row1 = [
+            String(header?.customer_code ?? '').trim(),
+            withHonorific(header?.customer_name),
+            withHonorific(header?.client_name),
+        ].filter((value) => value !== '');
 
-        const linesHtml = lines.map((line) => (
-            `<p class="order-detail-bottom-info__line">`
-            + `<span class="order-detail-bottom-info__label">${esc(line.label)}</span>`
-            + `<span class="order-detail-bottom-info__sep">：</span>`
-            + `<span class="order-detail-bottom-info__value">${esc(line.value)}</span>`
-            + `</p>`
-        )).join('');
+        const row2 = [
+            String(header?.kimono_spec ?? '').trim(),
+            String(header?.kimono_type ?? '').trim(),
+            String(header?.slip_no ?? '').trim(),
+        ].filter((value) => value !== '');
+
+        const buildRowHtml = (values) => {
+
+            if (values.length === 0) {
+                return '';
+            }
+
+            const cells = values.map((value) => (
+                `<span class="order-detail-bottom-info__value">${esc(value)}</span>`
+            )).join('<span class="order-detail-bottom-info__gap">　</span>');
+
+            return `<p class="order-detail-bottom-info__line">${cells}</p>`;
+
+        };
 
         return `
 <div class="order-detail-bottom-info">
-    ${linesHtml}
+    ${buildRowHtml(row1)}
+    ${buildRowHtml(row2)}
 </div>`;
 
     };
