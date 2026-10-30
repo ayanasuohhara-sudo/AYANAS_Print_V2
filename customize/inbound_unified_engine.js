@@ -371,42 +371,28 @@
     });
   };
 
+  /**
+   * App27: サブテーブル条件クエリは環境により 400 になるため使わない。
+   * 直近出庫伝票を取得し、明細 manage_no / line_in_date はクライアント側で判定する。
+   */
   const listOpenDomestic = async (manageNo) => {
     const found = [];
     const seen = new Set();
     const candidates = C.expandManageNoCandidates(manageNo);
 
-    for (let i = 0; i < candidates.length; i += 1) {
-      const m = candidates[i];
-      const query = C.OUT27.detailTable + '.' + C.OUT27.detailManageNo
-        + ' = "' + C.escapeQueryValue(m) + '" order by $id desc limit 500';
+    try {
+      const records = await C.fetchRecords(
+        C.APP.outsourceOutbound,
+        'order by $id desc limit 500'
+      );
 
-      try {
-        const records = await C.fetchRecords(C.APP.outsourceOutbound, query);
-
+      for (let c = 0; c < candidates.length; c += 1) {
         records.forEach(function(rec) {
-          pushOpenDomesticRows(found, seen, rec, m);
+          pushOpenDomesticRows(found, seen, rec, candidates[c]);
         });
-      } catch (err) {
-        console.warn('[inbound_engine] App27 サブテーブル検索:', query, err);
       }
-    }
-
-    if (found.length === 0) {
-      try {
-        const records = await C.fetchRecords(
-          C.APP.outsourceOutbound,
-          'order by $id desc limit 500'
-        );
-
-        for (let c = 0; c < candidates.length; c += 1) {
-          records.forEach(function(rec) {
-            pushOpenDomesticRows(found, seen, rec, candidates[c]);
-          });
-        }
-      } catch (err) {
-        console.warn('[inbound_engine] App27 走査検索:', err);
-      }
+    } catch (err) {
+      console.warn('[inbound_engine] App27 走査検索:', err);
     }
 
     return found;
@@ -455,6 +441,10 @@
     return true;
   };
 
+  /**
+   * App74: サブテーブル条件（wasai_outbound_lines.manage_no in/ =）は 400 になる環境がある。
+   * ヘッダ条件のみで取得し、管理番号はクライアント側で絞る（wasai_inbound.js と同じ方針）。
+   */
   const listOpenWasai = async (manageNo) => {
     const candidates = new Set(C.expandManageNoCandidates(manageNo));
     const found = [];
@@ -508,37 +498,18 @@
       });
     };
 
-    const manageIn = C.expandManageNoCandidates(manageNo).map(function(m) {
-      return '"' + C.escapeQueryValue(m) + '"';
-    }).join(',');
-    const lineQuery = C.OUT74.outboundLines + '.' + C.OUT74.lineManageNo
-      + ' in (' + manageIn + ')';
-
-    /* 1) 出庫確定のみ */
+    /* 1) 出庫確定ヘッダのみ（明細条件なし） */
     try {
       absorb(await C.fetchRecords(
         C.APP.wasaiOutbound,
         C.OUT74.outboundStatus + ' = "' + C.escapeQueryValue(C.WASAI_OUTBOUND_HEADER) + '"'
-          + ' and ' + lineQuery
           + ' order by $id desc limit 500'
       ));
     } catch (err) {
-      console.warn('[inbound_engine] App74 出庫確定+明細検索:', err);
+      console.warn('[inbound_engine] App74 出庫確定検索:', err);
     }
 
-    /* 2) 伝票状態を問わず明細検索（1で0件、またはクエリ非対応時） */
-    if (found.length === 0) {
-      try {
-        absorb(await C.fetchRecords(
-          C.APP.wasaiOutbound,
-          lineQuery + ' order by $id desc limit 500'
-        ));
-      } catch (err) {
-        console.warn('[inbound_engine] App74 サブテーブル検索:', err);
-      }
-    }
-
-    /* 3) 直近伝票の走査フォールバック */
+    /* 2) 直近伝票の走査（下書き等に未入庫が残るケース） */
     if (found.length === 0) {
       try {
         absorb(await C.fetchRecords(
@@ -676,26 +647,6 @@
 
   const findDomesticOutbound = async (manageNo) => {
     const candidates = C.expandManageNoCandidates(manageNo);
-
-    for (let i = 0; i < candidates.length; i += 1) {
-      const m = candidates[i];
-      const query = C.OUT27.detailTable + '.' + C.OUT27.detailManageNo
-        + ' = "' + C.escapeQueryValue(m) + '" order by $id desc limit 20';
-
-      try {
-        const records = await C.fetchRecords(C.APP.outsourceOutbound, query);
-
-        for (let r = 0; r < records.length; r += 1) {
-          const hit = pickOpenDomesticOutboundRow(records[r], m);
-
-          if (hit) {
-            return hit;
-          }
-        }
-      } catch (err) {
-        console.warn('[inbound_engine] App27 サブテーブル検索:', query, err);
-      }
-    }
 
     try {
       const records = await C.fetchRecords(

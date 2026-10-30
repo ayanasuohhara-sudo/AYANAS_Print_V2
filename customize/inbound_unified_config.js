@@ -8,7 +8,7 @@
    * 1.2.1: 国内外注の再入庫 — App16.outsource_in_date では止めず、App27未入庫明細を正とする
    */
 
-  const INBOUND_UNIFIED_VERSION = '1.2.1';
+  const INBOUND_UNIFIED_VERSION = '1.2.2';
 
   const APP = {
     unified: 78,
