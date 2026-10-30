@@ -3,15 +3,16 @@
 
   /**
    * 総合入庫 App78 — 共通定数
-   * INBOUND_UNIFIED_VERSION: 1.2.4
+   * INBOUND_UNIFIED_VERSION: 1.2.5
    * 1.2.0: 外注入庫(App78)で和裁士入庫を確実に処理できるよう検出・ルート確定を強化
    * 1.2.1: 国内外注の再入庫 — App16.outsource_in_date では止めず、App27未入庫明細を正とする
    * 1.2.2: サブテーブル条件クエリ廃止（GAIA_IR02 400 回避）
    * 1.2.3: App74 outbound_status は DROP_DOWN のため in 演算子に修正
    * 1.2.4: 和裁士「出庫中」は入庫日があっても未入庫。エラー行ルートを受注から推定
+   * 1.2.5: 保存時 set 競合による必須エラー修正。バーコード欄を明細 manage_no と分離
    */
 
-  const INBOUND_UNIFIED_VERSION = '1.2.4';
+  const INBOUND_UNIFIED_VERSION = '1.2.5';
 
   const APP = {
     unified: 78,

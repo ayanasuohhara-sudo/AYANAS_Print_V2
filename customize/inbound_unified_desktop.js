@@ -22,8 +22,11 @@
   const MESSAGE_SPACE_ID = 'message_space';
   const ACTION_SPACE_ID = 'action_space';
   const BATCH_BUTTON_ID = 'inbound-unified-batch-btn';
-  const BARCODE_FIELDS = [C.UF.barcodeInput, 'manage_no', 'barcode'];
+  /* manage_no はサブテーブル列。バーコード欄に混ぜると明細が全選択になり保存検証が壊れる */
+  const BARCODE_FIELDS = [C.UF.barcodeInput, 'barcode'];
   const MANAGE_NO_MIN_LENGTH = 6;
+  const FALLBACK_MESSAGE_ID = 'cayan-inbound-fallback-message';
+  const FALLBACK_ACTION_ID = 'cayan-inbound-fallback-action';
 
   let isProcessing = false;
   let debounceTimer = null;
@@ -157,47 +160,12 @@
     }, true);
   };
 
-  const installSaveButtonEmptyRowCleanup = () => {
-    if (window.__CAYANAS_INBOUND_SAVE_CLEANUP) {
-      return;
-    }
-
-    window.__CAYANAS_INBOUND_SAVE_CLEANUP = true;
-
-    document.addEventListener('click', function(ev) {
-      if (kintone.app.getId() !== C.APP.unified) {
-        return;
-      }
-
-      const target = ev.target;
-
-      if (!target || !target.closest) {
-        return;
-      }
-
-      const saveBtn = target.closest(
-        '.gaia-argoui-app-toolbar-statusmenu-save, .gaia-ui-actionmenu-save'
-      );
-
-      if (!saveBtn) {
-        return;
-      }
-
-      setTimeout(function() {
-        try {
-          const snapshot = kintone.app.record.get();
-          removeEmptySubtableRows(snapshot.record);
-          syncHeaderCounts(snapshot.record);
-          kintone.app.record.set(snapshot);
-        } catch (error) {
-          // ハンドラ処理中は get/set 不可 — submit 側で再実行
-        }
-      }, 0);
-    }, true);
-  };
-
+  /*
+   * 保存ボタン click での record.set は submit 検証と競合し、
+   * 画面上は値が残るのに「必須です」になる原因になるため行わない。
+   * 空行除去は app.record.*.submit のみで行う。
+   */
   installGlobalBarcodeEnterHandler();
-  installSaveButtonEmptyRowCleanup();
 
   const loadInboundLineFieldMeta = () => {
     if (inboundLineFieldMeta) {
@@ -251,7 +219,11 @@
       return C.SOURCE_APP.wasai;
     }
 
-    return C.SOURCE_APP.domestic;
+    if (r === C.ROUTE.domestic) {
+      return C.SOURCE_APP.domestic;
+    }
+
+    return '';
   };
 
   const enrichPlainRowBeforeWrap = (plainRow) => {
@@ -527,15 +499,85 @@
 
         if (input) {
           input.focus();
-          input.select();
+          /* 空欄は全選択しない（スキャナ連続読取・誤操作防止） */
+          if (String(input.value || '') !== '') {
+            input.select();
+          }
           return;
         }
       }
     }, 120);
   };
 
+  const ensureFallbackHost = (hostId, insertAfterBarcode) => {
+    let host = document.getElementById(hostId);
+
+    if (host) {
+      return host;
+    }
+
+    host = document.createElement('div');
+    host.id = hostId;
+    host.style.margin = '8px 0 12px';
+
+    let mounted = false;
+
+    if (insertAfterBarcode) {
+      try {
+        const barcodeEl = kintone.app.record.getFieldElement(C.UF.barcodeInput);
+
+        if (barcodeEl && barcodeEl.parentElement) {
+          barcodeEl.parentElement.insertAdjacentElement('afterend', host);
+          mounted = true;
+        }
+      } catch (error) {
+        // fall through
+      }
+    }
+
+    if (!mounted) {
+      const form = document.querySelector('.record-gaia, .gaia-argoui-app-edit-form, form');
+
+      if (form) {
+        form.insertAdjacentElement('afterbegin', host);
+      } else {
+        document.body.appendChild(host);
+      }
+    }
+
+    return host;
+  };
+
+  const resolveMessageHost = () => {
+    try {
+      const space = kintone.app.record.getSpaceElement(MESSAGE_SPACE_ID);
+
+      if (space) {
+        return space;
+      }
+    } catch (error) {
+      // ignore
+    }
+
+    return ensureFallbackHost(FALLBACK_MESSAGE_ID, true);
+  };
+
+  const resolveActionHost = () => {
+    try {
+      const space = kintone.app.record.getSpaceElement(ACTION_SPACE_ID);
+
+      if (space) {
+        return space;
+      }
+    } catch (error) {
+      // ignore
+    }
+
+    return ensureFallbackHost(FALLBACK_ACTION_ID, true);
+  };
+
   const showMessage = (text, isError) => {
-    const space = kintone.app.record.getSpaceElement(MESSAGE_SPACE_ID);
+    const space = resolveMessageHost();
 
     if (!space) {
       return;
@@ -775,22 +817,6 @@
     return { ok: true, route: C.getFieldValue(result.lineRow.value, C.UL.inboundRoute) };
   };
 
-  const sourceAppForRoute = (route) => {
-    if (route === C.ROUTE.wasai) {
-      return C.SOURCE_APP.wasai;
-    }
-
-    if (route === C.ROUTE.overseas) {
-      return C.SOURCE_APP.overseas;
-    }
-
-    if (route === C.ROUTE.domestic) {
-      return C.SOURCE_APP.domestic;
-    }
-
-    return '';
-  };
-
   const buildErrorRowPlain = (manageNo, message, suggestedRoute) => {
     const route = String(suggestedRoute || '').trim();
 
@@ -856,18 +882,48 @@
       await loadInboundLineFieldMeta();
 
       const result = await addScannedLineToRecord(record, manageNo, inboundDate);
+      removeEmptySubtableRows(record);
+      normalizeInboundLinesTable(record);
       syncHeaderCounts(record);
       clearBarcode(record);
       kintone.app.record.set(snapshot);
 
-      if (result.cancelled) {
-        showMessage(manageNo + ' — 入庫処理をキャンセルしました', false);
-      } else if (!result.ok) {
-        showMessage(manageNo + ' — ' + (result.errorMessage || 'エラー'), true);
-      } else if (result.bulk) {
-        showMessage(manageNo + ' — ' + result.route + 'を明細に追加しました（待機）', false);
-      } else {
-        showMessage(manageNo + ' — ' + result.route + '（待機・明細自動入力）', false);
+      /* set 後に必須列が落ちていないか確認（落ちていれば再セット） */
+      try {
+        const verify = kintone.app.record.get();
+        const rows = verify.record?.[C.UF.inboundLines]?.value || [];
+        const hit = rows.find(function(row) {
+          return getLineManageNo(row) === manageNo;
+        });
+
+        if (result.ok && !result.cancelled && (!hit || getLineInboundRoute(hit) === '')) {
+          showMessage(
+            manageNo + ' — 明細への反映に失敗しました。もう一度スキャンするか、'
+              + '「バーコードを明細へ反映」を押してください。',
+            true
+          );
+        } else if (result.cancelled) {
+          showMessage(manageNo + ' — 入庫処理をキャンセルしました', false);
+        } else if (!result.ok) {
+          showMessage(manageNo + ' — ' + (result.errorMessage || 'エラー'), true);
+        } else if (result.bulk) {
+          showMessage(manageNo + ' — ' + result.route + 'を明細に追加しました（待機）', false);
+        } else {
+          showMessage(
+            manageNo + ' — ' + result.route + '（待機） / 出庫元 '
+              + String(hit?.value?.[C.UL.sourceOutboundApp]?.value || '')
+              + ' #' + String(hit?.value?.[C.UL.sourceOutboundRecordId]?.value || ''),
+            false
+          );
+        }
+      } catch (verifyErr) {
+        if (result.cancelled) {
+          showMessage(manageNo + ' — 入庫処理をキャンセルしました', false);
+        } else if (!result.ok) {
+          showMessage(manageNo + ' — ' + (result.errorMessage || 'エラー'), true);
+        } else {
+          showMessage(manageNo + ' — ' + (result.route || '明細追加'), false);
+        }
       }
 
       focusBarcode();
@@ -962,7 +1018,7 @@
   };
 
   const renderBatchButton = (recordId, record) => {
-    const space = kintone.app.record.getSpaceElement(ACTION_SPACE_ID);
+    const space = resolveActionHost();
 
     if (!space) {
       return;
@@ -1071,10 +1127,12 @@
       setTimeout(function() {
         focusBarcode();
         scheduleBarcodeInputBind();
-        const space = kintone.app.record.getSpaceElement(ACTION_SPACE_ID);
+        const space = resolveActionHost();
 
         if (space && !space.querySelector('#inbound-unified-scan-btn')) {
-          space.innerHTML = '';
+          if (!space.querySelector('#' + BATCH_BUTTON_ID)) {
+            space.innerHTML = '';
+          }
           appendScanActionButton(space);
         }
       }, 300);
