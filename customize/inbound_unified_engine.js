@@ -442,8 +442,10 @@
   };
 
   /**
-   * App74: サブテーブル条件（wasai_outbound_lines.manage_no in/ =）は 400 になる環境がある。
-   * ヘッダ条件のみで取得し、管理番号はクライアント側で絞る（wasai_inbound.js と同じ方針）。
+   * App74:
+   * - サブテーブル条件クエリは GAIA_IR02（Related Records 以外不可）で 400
+   * - outbound_status は DROP_DOWN のため `=` 不可。`in ("…")` を使う
+   * 管理番号はクライアント側で絞る。
    */
   const listOpenWasai = async (manageNo) => {
     const candidates = new Set(C.expandManageNoCandidates(manageNo));
@@ -498,11 +500,11 @@
       });
     };
 
-    /* 1) 出庫確定ヘッダのみ（明細条件なし） */
+    /* 1) 出庫確定ヘッダのみ（DROP_DOWN は in 演算子） */
     try {
       absorb(await C.fetchRecords(
         C.APP.wasaiOutbound,
-        C.OUT74.outboundStatus + ' = "' + C.escapeQueryValue(C.WASAI_OUTBOUND_HEADER) + '"'
+        C.OUT74.outboundStatus + ' in ("' + C.escapeQueryValue(C.WASAI_OUTBOUND_HEADER) + '")'
           + ' order by $id desc limit 500'
       ));
     } catch (err) {

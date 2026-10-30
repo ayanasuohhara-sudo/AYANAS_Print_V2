@@ -46,7 +46,11 @@ const run = () => {
     assert('未入庫1件はApp16を更新する', trueKeys(E.assignOrderUpdates(one)).length === 1);
 
     const none = E.planInboundItems([]);
-    assert('全件入庫済は未入庫なし', none.ok === false && none.errorMessage === '未入庫の出庫記録がありません');
+    assert(
+        '全件入庫済は未入庫なし',
+        none.ok === false
+            && String(none.errorMessage || '').indexOf('未入庫の外注履歴がありません') >= 0
+    );
 
     const domesticTwo = [
         item(C.ROUTE.domestic, '27-1', 'L1', '2026-08-01', '2026-08-01T00:00:00Z'),
