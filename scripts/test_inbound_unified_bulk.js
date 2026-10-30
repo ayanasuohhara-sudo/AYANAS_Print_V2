@@ -52,6 +52,26 @@ const run = () => {
             && String(none.errorMessage || '').indexOf('未入庫の外注履歴がありません') >= 0
     );
 
+    assert(
+        '和裁士出庫中は入庫日があっても未入庫',
+        E.isOpenWasaiLineStatus('出庫中', '2026-10-14') === true
+    );
+    assert(
+        '和裁士入庫済は未入庫ではない',
+        E.isOpenWasaiLineStatus('入庫済', '2026-10-14') === false
+    );
+    assert(
+        '和裁士空状態は入庫日空なら未入庫',
+        E.isOpenWasaiLineStatus('', '') === true
+    );
+    assert(
+        '受注が和裁士作業中ならルートは和裁士',
+        E.inferRouteFromOrder({
+            process_status: { value: C.ORDER_PROCESS.wasaiActive },
+            location_status: { value: C.ORDER_LOCATION.wasai },
+        }) === C.ROUTE.wasai
+    );
+
     const domesticTwo = [
         item(C.ROUTE.domestic, '27-1', 'L1', '2026-08-01', '2026-08-01T00:00:00Z'),
         item(C.ROUTE.domestic, '27-2', 'L2', '2026-09-10', '2026-09-10T00:00:00Z'),

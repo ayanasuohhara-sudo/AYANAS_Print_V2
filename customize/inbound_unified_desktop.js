@@ -729,7 +729,11 @@
     if (!result.ok) {
       upsertInboundLineRow(
         record,
-        buildErrorRowPlain(normalized, result.errorMessage || 'スキャンエラー')
+        buildErrorRowPlain(
+          normalized,
+          result.errorMessage || 'スキャンエラー',
+          result.suggestedRoute || ''
+        )
       );
       return result;
     }
@@ -771,14 +775,35 @@
     return { ok: true, route: C.getFieldValue(result.lineRow.value, C.UL.inboundRoute) };
   };
 
-  const buildErrorRowPlain = (manageNo, message) => ({
-    [C.UL.manageNo]: manageNo,
-    [C.UL.inboundRoute]: C.ROUTE.domestic,
-    [C.UL.lineResult]: C.LINE_RESULT.error,
-    [C.UL.errorMessage]: message,
-    [C.UL.sourceOutboundApp]: C.SOURCE_APP.domestic,
-    [C.UL.scannedAt]: C.nowDatetimeLocal(),
-  });
+  const sourceAppForRoute = (route) => {
+    if (route === C.ROUTE.wasai) {
+      return C.SOURCE_APP.wasai;
+    }
+
+    if (route === C.ROUTE.overseas) {
+      return C.SOURCE_APP.overseas;
+    }
+
+    if (route === C.ROUTE.domestic) {
+      return C.SOURCE_APP.domestic;
+    }
+
+    return '';
+  };
+
+  const buildErrorRowPlain = (manageNo, message, suggestedRoute) => {
+    const route = String(suggestedRoute || '').trim();
+
+    return {
+      [C.UL.manageNo]: manageNo,
+      /* ルート不明時は空（従来の国内外注既定は誤表示の原因） */
+      [C.UL.inboundRoute]: route,
+      [C.UL.lineResult]: C.LINE_RESULT.error,
+      [C.UL.errorMessage]: message,
+      [C.UL.sourceOutboundApp]: sourceAppForRoute(route),
+      [C.UL.scannedAt]: C.nowDatetimeLocal(),
+    };
+  };
 
   const runProcessScan = async (manageNoOverride) => {
     if (isProcessing) {

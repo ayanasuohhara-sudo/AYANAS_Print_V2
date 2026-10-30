@@ -414,12 +414,12 @@
     ).trim();
   };
 
-  /** 和裁士明細が未入庫として扱えるか（入庫済・検品後は除外） */
+  /**
+   * 和裁士明細が未入庫として扱えるか。
+   * App74 検品画面と同じく、行状態が「出庫中」（空含む）なら入庫日が入っていても未入庫。
+   * （出庫時に入庫日が誤入力・手入力されるケースがある）
+   */
   const isOpenWasaiLineStatus = (lineStatus, inboundDate) => {
-    if (String(inboundDate ?? '').trim() !== '') {
-      return false;
-    }
-
     const st = String(lineStatus ?? '').trim();
 
     if (st === '' || st === C.WASAI_LINE_OUTBOUND) {
@@ -437,8 +437,34 @@
       return false;
     }
 
-    /* 未知の行状態でも入庫日が空なら未入庫候補とする */
-    return true;
+    /* 未知の行状態は入庫日が空のときだけ候補 */
+    return String(inboundDate ?? '').trim() === '';
+  };
+
+  /** App16 工程からエラー行用の入庫ルートを推定 */
+  const inferRouteFromOrder = (orderRecord) => {
+    const process = String(C.getFieldValue(orderRecord, C.ORDER.processStatus) ?? '').trim();
+    const location = String(C.getFieldValue(orderRecord, C.ORDER.locationStatus) ?? '').trim();
+
+    if (process === C.ORDER_PROCESS.wasaiActive
+      || process === C.ORDER_PROCESS.returnWasai
+      || location === C.ORDER_LOCATION.wasai) {
+      return C.ROUTE.wasai;
+    }
+
+    if (process === C.ORDER_PROCESS.overseasActive
+      || process === C.ORDER_PROCESS.returnOverseas
+      || location === C.ORDER_LOCATION.overseas) {
+      return C.ROUTE.overseas;
+    }
+
+    if (process === C.ORDER_PROCESS.outsourceActive
+      || process === C.ORDER_PROCESS.returnOutsource
+      || location === C.ORDER_LOCATION.outsource) {
+      return C.ROUTE.domestic;
+    }
+
+    return '';
   };
 
   /**
@@ -713,11 +739,7 @@
       const inboundDate = String(C.getFieldValue(entry.lineValues, C.OUT74.lineInboundDate) ?? '').trim();
       const lineStatus = String(C.getFieldValue(entry.lineValues, C.OUT74.lineStatus) ?? '').trim();
 
-      if (inboundDate !== '') {
-        return false;
-      }
-
-      return lineStatus === C.WASAI_LINE_OUTBOUND || lineStatus === '';
+      return isOpenWasaiLineStatus(lineStatus, inboundDate);
     }) ?? null;
   };
 
@@ -1077,8 +1099,14 @@
 
     const wasaiLine = readWasaiLine(rec74, lineRowId);
     const action = historyWriteAction(wasaiLine.inboundDate, d);
+    /* 出庫中のまま入庫日だけ入っている行は、確定日で上書きして入庫済にする */
+    const stillOutbound = wasaiLine.lineStatus === ''
+      || wasaiLine.lineStatus === C.WASAI_LINE_OUTBOUND;
+    const shouldWriteLine = stillOutbound
+      || action === 'write'
+      || (action === 'keep-today' && wasaiLine.lineStatus !== C.WASAI_LINE_INBOUND);
 
-    if (action === 'write' || (action === 'keep-today' && wasaiLine.lineStatus !== C.WASAI_LINE_INBOUND)) {
+    if (shouldWriteLine) {
       const table = rec74[C.OUT74.outboundLines];
       const rows = table.value.map(function(row) {
         if (String(row.id) !== String(lineRowId)) {
@@ -1647,7 +1675,14 @@
     const resolved = await resolveInboundRoute(normalized, orders[0], inboundDateD);
 
     if (!resolved.ok) {
-      return resolved;
+      const suggestedRoute = inferRouteFromOrder(orders[0]);
+
+      return {
+        ok: false,
+        errorMessage: resolved.errorMessage,
+        suggestedRoute: suggestedRoute,
+        orderRecordId: String(orders[0].$id.value),
+      };
     }
 
     const scannedAt = C.nowDatetimeLocal();
@@ -1684,6 +1719,8 @@
     planInboundItems: planInboundItems,
     assignOrderUpdates: assignOrderUpdates,
     openItemKey: openItemKey,
+    isOpenWasaiLineStatus: isOpenWasaiLineStatus,
+    inferRouteFromOrder: inferRouteFromOrder,
   };
 
 })();
