@@ -129,6 +129,55 @@
   color: #7d4e00;
 }
 
+.pcm-order-history {
+  margin: 16px;
+  padding: 12px 14px;
+  border: 1px solid #c5d4e8;
+  border-radius: 6px;
+  background: #f7fafc;
+}
+
+.pcm-order-history__title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f3a5f;
+}
+
+.pcm-order-history__note {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #556;
+}
+
+.pcm-order-history__status {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #444;
+}
+
+.pcm-order-history__status--error {
+  color: #b00020;
+}
+
+.pcm-order-history__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+}
+
+.pcm-order-history__table th,
+.pcm-order-history__table td {
+  padding: 6px 8px;
+  border: 1px solid #d5dde8;
+  text-align: left;
+}
+
+.pcm-order-history__table th {
+  background: #e8eef7;
+}
+
 @media (max-width: 900px) {
   .pcm-search-panel {
     margin: 8px;

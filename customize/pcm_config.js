@@ -6,13 +6,16 @@
    * App ID は本番作成後に必ず実値へ更新すること（0 のままでは動作しない）。
    */
 
-  const PCM_CONFIG_VERSION = '1.0.0-phase1';
+  const PCM_CONFIG_VERSION = '1.1.0-app16-link';
 
   /** @type {number} 個人顧客マスタ App ID */
   const PCM_APP_ID = 96;
 
   /** @type {number} 個人顧客ID採番 App ID */
   const COUNTER_APP_ID = 95;
+
+  /** @type {number} 受注明細 App ID（履歴参照） */
+  const ORDER_APP_ID = 16;
 
   const COUNTER_KEY = 'PCM_PERSONAL_ID';
   const ID_PREFIX = 'P';
@@ -106,10 +109,24 @@
 
   const TEST_NAME_PREFIX = '[TEST]';
 
+  const ORDER_HISTORY_FIELDS = {
+    personalCustomerId: 'personal_customer_id',
+    orderDate: 'order_date',
+    manageNo: 'manage_no',
+    kimonoType: 'kimono_type',
+    detailTable: 'detail_table',
+    detailItemName: 'item_name',
+    deadline: 'deadline',
+    processStatus: 'process_status',
+    locationStatus: 'location_status',
+    deliveryStatus: 'delivery_status',
+  };
+
   window.CAYANAS_PCM = {
     VERSION: PCM_CONFIG_VERSION,
     PCM_APP_ID: PCM_APP_ID,
     COUNTER_APP_ID: COUNTER_APP_ID,
+    ORDER_APP_ID: ORDER_APP_ID,
     COUNTER_KEY: COUNTER_KEY,
     ID_PREFIX: ID_PREFIX,
     ID_PAD: ID_PAD,
@@ -118,6 +135,7 @@
     STORE_CUSTOMER_CODE: STORE_CUSTOMER_CODE,
     FIELDS: FIELDS,
     COUNTER_FIELDS: COUNTER_FIELDS,
+    ORDER_HISTORY_FIELDS: ORDER_HISTORY_FIELDS,
     WEB_VERIFIED: WEB_VERIFIED,
     REGISTRATION_SOURCE: REGISTRATION_SOURCE,
     MEMBER_STATUS: MEMBER_STATUS,
@@ -127,3 +145,4 @@
     TEST_NAME_PREFIX: TEST_NAME_PREFIX,
   };
 }());
+
