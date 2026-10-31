@@ -1,19 +1,20 @@
 # PCM × App16 連携 — 実装記録（本番未反映）
 
 - **実装日**: 2026-11-01（Asia/Tokyo）
-- **状態**: リポジトリ実装・単体テスト完了。**本番 kintone へのフィールド追加・JS 登録は未実施（再承認待ち）**
-- 承認: ユーザー指示（`personal_customer_name` 非追加 / 新規必須・編集警告 / 別タブ新規）
+- **本番反映**: 2026-11-01（Asia/Tokyo）— 承認後に App16/96 反映・E2E 完了
+- **状態**: **本番反映済み**（店舗入金 S1 は未着手）
+- 承認: ユーザー指示（`personal_customer_name` 非追加 / 新規必須・編集警告 / 別タブ新規 / 本番再承認）
 
 ---
 
-## 1. 追加フィールド（本番では未追加）
+## 1. 追加フィールド（本番）
 
-| App | コード | ラベル | 種類 | 備考 |
+| App | コード | ラベル | 種類 | 結果 |
 |-----|--------|--------|------|------|
-| 16 | `personal_customer_id` | 個人顧客ID | 文字列1行 | unique にしない。一般は JS で disabled |
+| 16 | `personal_customer_id` | 個人顧客ID | 文字列1行 | **追加済** unique=false required=false。既存レコードは空のまま |
 | 16 | `personal_customer_name` | — | — | **追加しない**（`client_name` を使用） |
 
-任意スペース: `pcm_customer_search_space`（無ければ既存 `customer_search_space` / 顧客コード付近に DOM 挿入）
+バックアップ: `customize/backups/pcm_app16_deploy_20261101/`（fields / customize / JS・CSS 実体 / RESTORE.md）
 
 ---
 
@@ -67,29 +68,38 @@
 
 ---
 
-## 5. テスト結果（リポジトリ）
+## 5. テスト結果
 
+### リポジトリ単体
 ```text
 node scripts/test_order_pcm.js  → all passed
 node scripts/test_pcm_phase1.js → all passed
 ```
 
-検証したロジック:
+### 本番 E2E（2026-11-01 Asia/Tokyo）— 17/17 OK
 
-- A550 / 非 A550 分岐  
-- 新規必須・編集空警告  
-- ID 形式・氏名不一致 warn  
-- 検索クエリ（氏名のみ自動確定なし、ID 完全一致は `=`）  
-- saiban1 相当で `manage_no` のみ空にしても `personal_customer_id` が残る  
-- `order_customer_search.js` に OrderPcm 依存が無いこと  
+| ケース | 結果 | メモ |
+|--------|------|------|
+| A550+PCM選択→保存 | OK | レコード **3383** `P000002` / `manage_no=103126383` |
+| 保存後 ID 残存 | OK | saiban 後も `personal_customer_id` 維持 |
+| 管理番号自動採番 | OK | 既存 saiban どおり 9桁 |
+| 複製で ID 引き継ぎ | OK | レコード **3384** も `P000002` |
+| 複製後 manage_no 新規 | OK | `103126384` ≠ `103126383` |
+| App96 受注履歴 | OK | 103126383/384 表示 |
+| 既存 A550 空 ID 編集 | OK | warnEmptyOnEdit（レコード未変更） |
+| 法人 A545 | OK | レコード **3385** personal 空・採番 OK |
+| 氏名不一致警告 | OK | warnMismatch |
 
-本番 UI テスト（選択→保存→ID 残存、複製、履歴表示）は **フィールド追加＋JS デプロイ後** に実施。
+テストデータ: `client_name` / `kimono_type` に `[TEST]`。作成 ID: 3383, 3384, 3385（必要なら後で整理）。
+
+本番 JS 順（App16）: 既存10本（saiban〜schedule_customer）の後に `order_pcm_config/engine/desktop` + `order_pcm.css`。  
+App96: `pcm_config` → `numbering` → `engine` → `desktop` → **`pcm_order_history`** + `pcm.css`。
 
 ---
 
 ## 6. 未解決・次アクション
 
-- [ ] 本番 App16 に `personal_customer_id` 追加（再承認後）  
-- [ ] 本番 JS/CSS デプロイ（再承認後）  
-- [ ] 本番 E2E: A550 選択保存・複製・法人回帰・PCM 履歴  
+- [x] 本番フィールド追加・JS デプロイ・E2E  
 - [ ] 既存 A550 移行は引き続き対象外  
+- [ ] テストレコード 3383/3384/3385 の運用整理（任意）  
+- [ ] **店舗入金管理 S1 — 未着手（指示どおり進めていない）**  
