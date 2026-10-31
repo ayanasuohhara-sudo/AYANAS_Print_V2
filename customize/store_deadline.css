@@ -1,0 +1,329 @@
+body.ayanas-store-deadline-active .recordlist-gaia,
+body.ayanas-store-deadline-active .recordlist-header-gaia,
+body.ayanas-store-deadline-active .gaia-argoui-app-index-pager {
+  display: none !important;
+}
+
+.cayan-sd-root {
+  box-sizing: border-box;
+  padding: 12px 16px 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.cayan-sd-root * {
+  box-sizing: border-box;
+}
+
+.cayan-sd-header {
+  margin-bottom: 12px;
+}
+
+.cayan-sd-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.cayan-sd-version {
+  margin-left: 8px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cayan-sd-lead {
+  margin: 4px 0 0;
+  color: #475569;
+}
+
+.cayan-sd-kpi {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.cayan-sd-kpi-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 72px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cayan-sd-kpi-card.is-active {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  box-shadow: inset 0 0 0 2px #1d4ed8;
+}
+
+.cayan-sd-kpi-card.is-overdue .cayan-sd-kpi-count {
+  color: #9f1239;
+}
+
+.cayan-sd-kpi-card.is-ready .cayan-sd-kpi-count {
+  color: #166534;
+}
+
+.cayan-sd-kpi-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.cayan-sd-kpi-count {
+  font-size: 28px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.cayan-sd-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cayan-sd-month {
+  margin: 0;
+  min-width: 8em;
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.cayan-sd-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.cayan-sd-btn.is-primary {
+  background: #1e293b;
+  border-color: #1e293b;
+  color: #fff;
+}
+
+.cayan-sd-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.cayan-sd-btn:focus,
+.cayan-sd-cell:focus,
+.cayan-sd-kpi-card:focus {
+  outline: 2px solid #334155;
+  outline-offset: 1px;
+}
+
+.cayan-sd-message {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.cayan-sd-message.is-info {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+}
+
+.cayan-sd-message.is-warn {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+}
+
+.cayan-sd-message.is-error {
+  background: #fff1f2;
+  border: 1px solid #fda4af;
+}
+
+.cayan-sd-cal-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.cayan-sd-grid,
+.cayan-sd-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(140px, 1fr));
+  min-width: 1020px;
+}
+
+.cayan-sd-dow {
+  padding: 10px 8px;
+  background: #e2e8f0;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cayan-sd-dow.is-sat,
+.cayan-sd-cell.is-sat .cayan-sd-day {
+  color: #1d4ed8;
+}
+
+.cayan-sd-dow.is-sun,
+.cayan-sd-cell.is-sun .cayan-sd-day {
+  color: #be123c;
+}
+
+.cayan-sd-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  min-height: 120px;
+  padding: 10px;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cayan-sd-cell.is-blank {
+  background: #f8fafc;
+  cursor: default;
+}
+
+.cayan-sd-cell.is-today {
+  background: #e2e8f0;
+  box-shadow: inset 0 0 0 2px #334155;
+}
+
+.cayan-sd-cell.is-selected {
+  background: #dbeafe;
+}
+
+.cayan-sd-cell.is-overdue {
+  background: #fff1f2;
+}
+
+.cayan-sd-cell.is-overdue.is-selected {
+  background: #fecdd3;
+}
+
+.cayan-sd-day {
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cayan-sd-count {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cayan-sd-detail-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.cayan-sd-detail-count {
+  margin: 4px 0 8px;
+  font-weight: 700;
+}
+
+.cayan-sd-group {
+  margin: 0 0 20px;
+}
+
+.cayan-sd-group-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cayan-sd-empty {
+  margin: 0;
+  color: #475569;
+}
+
+.cayan-sd-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.cayan-sd-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.cayan-sd-table th,
+.cayan-sd-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.cayan-sd-table th {
+  background: #e2e8f0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cayan-sd-key {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.cayan-sd-link {
+  color: #1d4ed8;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.cayan-sd-dup {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #ffedd5;
+  color: #9a3412;
+  font-size: 12px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+@media (max-width: 900px) {
+  .cayan-sd-kpi {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+  }
+}

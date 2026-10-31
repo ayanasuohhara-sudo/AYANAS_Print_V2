@@ -1,0 +1,298 @@
+{
+  "layout": [
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "manage_no",
+          "size": {
+            "width": "173"
+          }
+        },
+        {
+          "type": "RECORD_NUMBER",
+          "code": "レコード番号",
+          "size": {
+            "width": "120"
+          }
+        },
+        {
+          "type": "DROP_DOWN",
+          "code": "closing_date",
+          "size": {
+            "width": "127"
+          }
+        },
+        {
+          "type": "DATE",
+          "code": "order_date",
+          "size": {
+            "width": "200"
+          }
+        },
+        {
+          "type": "DATE",
+          "code": "deadline",
+          "size": {
+            "width": "315"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DATE",
+          "code": "delivery_date",
+          "size": {
+            "width": "124"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "delivery_no",
+          "size": {
+            "width": "150"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "invoice_no",
+          "size": {
+            "width": "156"
+          }
+        },
+        {
+          "type": "DROP_DOWN",
+          "code": "aggregation_status",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DATE",
+          "code": "outsource_in_date",
+          "size": {
+            "width": "169"
+          }
+        },
+        {
+          "type": "DATE",
+          "code": "overseas_in_date",
+          "size": {
+            "width": "131"
+          }
+        },
+        {
+          "type": "DATE",
+          "code": "wasai_in_date",
+          "size": {
+            "width": "120"
+          }
+        },
+        {
+          "type": "DATE",
+          "code": "completion_date",
+          "size": {
+            "width": "120"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "delivery_status",
+          "size": {
+            "width": "146"
+          }
+        },
+        {
+          "type": "DROP_DOWN",
+          "code": "process_status",
+          "size": {
+            "width": "196"
+          }
+        },
+        {
+          "type": "DROP_DOWN",
+          "code": "work_status",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "location_status",
+          "size": {
+            "width": "196"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "category",
+          "size": {
+            "width": "151"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "subcategory",
+          "size": {
+            "width": "122"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SPACER",
+          "elementId": "customer_search_space",
+          "size": {
+            "width": "117",
+            "height": "66"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "customer_code",
+          "size": {
+            "width": "246"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "customer_name",
+          "size": {
+            "width": "243"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "slip_no",
+          "size": {
+            "width": "134"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "in_charge",
+          "size": {
+            "width": "136"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "client_name",
+          "size": {
+            "width": "234"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "kimono_type_code",
+          "size": {
+            "width": "246"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "kimono_type",
+          "size": {
+            "width": "263"
+          }
+        },
+        {
+          "type": "DROP_DOWN",
+          "code": "kimono_spec",
+          "size": {
+            "width": "255"
+          }
+        }
+      ]
+    },
+    {
+      "type": "SUBTABLE",
+      "code": "detail_table",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "item_code",
+          "size": {
+            "width": "224"
+          }
+        },
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "item_name",
+          "size": {
+            "width": "237"
+          }
+        },
+        {
+          "type": "NUMBER",
+          "code": "unit_price",
+          "size": {
+            "width": "133"
+          }
+        },
+        {
+          "type": "NUMBER",
+          "code": "qty",
+          "size": {
+            "width": "193"
+          }
+        },
+        {
+          "type": "CALC",
+          "code": "amount",
+          "size": {
+            "width": "193"
+          }
+        },
+        {
+          "type": "CHECK_BOX",
+          "code": "price_unconfirmed",
+          "size": {
+            "width": "254"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "MULTI_LINE_TEXT",
+          "code": "remark",
+          "size": {
+            "width": "613",
+            "innerHeight": "125"
+          }
+        }
+      ]
+    }
+  ],
+  "revision": "490"
+}

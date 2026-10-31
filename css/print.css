@@ -49,8 +49,8 @@
 
 .report-order .barcode svg {
     display: block;
-    width: 220px;
-    max-width: 100%;
+    width: auto;
+    max-width: 48mm;
     height: auto;
     margin-left: auto;
 }
@@ -192,6 +192,7 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
+    justify-content: center;
     width: 297mm;
     min-height: 210mm;
     max-height: 210mm;
@@ -212,21 +213,45 @@
     background: #ffffff;
 }
 
+.report-order-detail .order-detail-page {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.report-order-detail .order-detail-page::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    border-left: 1px dashed #999999;
+    pointer-events: none;
+    z-index: 1;
+}
+
 .report-order-detail .order-detail-sheet {
-    flex: 0 0 148mm;
-    width: 148mm;
-    max-width: 148mm;
+    flex: 0 0 50%;
+    width: 50%;
+    max-width: 50%;
     min-height: 210mm;
     box-sizing: border-box;
-    padding: 5mm 3mm 4mm;
     overflow: hidden;
 }
 
-.report-order-detail .order-detail-blank {
-    flex: 1 1 auto;
-    width: 149mm;
-    min-height: 210mm;
-    background: #ffffff;
+.report-order-detail .order-detail-sheet--left {
+    display: flex;
+    flex-direction: column;
+    padding: 5mm 2mm 4mm 5mm;
+}
+
+.report-order-detail .order-detail-sheet--right {
+    padding: 5mm 5mm 4mm 2mm;
 }
 
 .report-order-detail .order-detail-title {
@@ -241,9 +266,13 @@
 
 .report-order-detail .order-detail-table {
     width: 100%;
+    max-width: 136mm;
     border-collapse: collapse;
     table-layout: fixed;
-    margin: 0 0 4mm;
+    margin: 0 auto 4mm;
+    box-sizing: border-box;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
 }
 
 .report-order-detail .order-detail-table th,
@@ -298,6 +327,46 @@
     vertical-align: top;
 }
 
+.report-order-detail .order-detail-table__value--remark,
+.report-overseas-order .order-detail-table__value--remark {
+    font-size: 8pt !important;
+    font-weight: 400 !important;
+    line-height: 1.35;
+}
+
+.report-order .order-remarks__content {
+    font-size: 8pt;
+    font-weight: 400;
+    line-height: 1.35;
+    white-space: pre-wrap;
+}
+
+.report-order-detail .order-detail-processing-line,
+.report-overseas-order .order-detail-processing-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2mm;
+}
+
+.report-order-detail .order-detail-processing-line + .order-detail-processing-line,
+.report-overseas-order .order-detail-processing-line + .order-detail-processing-line {
+    margin-top: 1.2mm;
+}
+
+.report-order-detail .order-detail-processing-line__name,
+.report-overseas-order .order-detail-processing-line__name {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.report-order-detail .order-detail-processing-line__price,
+.report-overseas-order .order-detail-processing-line__price {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    text-align: right;
+}
+
 .report-order-detail .order-detail-table__col-label-single {
     width: 38mm;
 }
@@ -314,25 +383,366 @@
     width: auto;
 }
 
-.report-order-detail .order-detail-barcode {
+.report-order-detail .order-detail-barcode,
+.report-overseas-order .order-detail-barcode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 2mm;
-    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.report-order-detail .order-detail-barcode__svg {
+.report-order-detail .order-detail-barcode__svg,
+.report-overseas-order .order-detail-barcode__svg {
     display: block;
-    width: 92mm;
-    height: 22mm;
-    max-width: 100%;
-    margin: 0 auto;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 56mm;
+    height: auto;
+    margin: 0;
 }
 
-.report-order-detail .order-detail-barcode__value {
-    margin: 2mm 0 0;
-    font-size: 14pt;
+.report-order-detail .order-detail-barcode__value,
+.report-overseas-order .order-detail-barcode__value {
+    flex: 0 0 auto;
+    margin: 1mm 0 0;
+    padding: 0;
+    width: auto;
+    max-width: 56mm;
+    font-size: 11pt;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: 0.04em;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.report-order-detail .order-sleeve-tag-table,
+.report-overseas-order .order-sleeve-tag-table {
+    width: 100%;
+    margin-top: 3mm;
+    border-collapse: collapse;
+    table-layout: fixed;
+    box-sizing: border-box;
+}
+
+.report-order-detail .order-sleeve-tag-table th,
+.report-order-detail .order-sleeve-tag-table td,
+.report-overseas-order .order-sleeve-tag-table th,
+.report-overseas-order .order-sleeve-tag-table td {
+    border: 1px solid #000000;
+    padding: 1.2mm 1.5mm;
+    vertical-align: middle;
+    line-height: 1.35;
+    font-size: 11pt;
+    font-weight: 700;
+    text-align: left;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.report-order-detail .order-sleeve-tag-table th,
+.report-overseas-order .order-sleeve-tag-table th {
+    font-size: 10pt;
+    font-weight: 400;
+    white-space: nowrap;
+    background: #ffffff;
+}
+
+.report-order-detail .order-sleeve-tag-table__col-label,
+.report-overseas-order .order-sleeve-tag-table__col-label {
+    width: 32mm;
+}
+
+.report-order-detail .order-sleeve-tag-table__col-label-sub,
+.report-overseas-order .order-sleeve-tag-table__col-label-sub {
+    width: 18mm;
+}
+
+.report-order-detail .order-sleeve-tag-table__col-value-sub,
+.report-overseas-order .order-sleeve-tag-table__col-value-sub {
+    width: auto;
+}
+
+/* 左側下部: 追加バーコード＋識別情報（11pt） */
+.report-order-detail .order-detail-left-bottom,
+.report-overseas-order .order-detail-left-bottom {
+    margin-top: auto;
+    padding-top: 2mm;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.report-order-detail .order-detail-barcode--bottom,
+.report-overseas-order .order-detail-barcode--bottom {
+    margin-top: 0;
+}
+
+.report-order-detail .order-detail-barcode--bottom .order-detail-barcode__svg,
+.report-overseas-order .order-detail-barcode--bottom .order-detail-barcode__svg {
+    max-width: 52mm;
+}
+
+.report-order-detail .order-detail-bottom-info,
+.report-overseas-order .order-detail-bottom-info {
+    margin: 1.5mm auto 0;
+    width: 100%;
+    max-width: 136mm;
+    box-sizing: border-box;
+    font-size: 11pt;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: center;
+}
+
+.report-order-detail .order-detail-bottom-info__line,
+.report-overseas-order .order-detail-bottom-info__line {
+    margin: 0;
+    padding: 0;
+    font-size: 11pt;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: nowrap;
+}
+
+.report-order-detail .order-detail-bottom-info__line + .order-detail-bottom-info__line,
+.report-overseas-order .order-detail-bottom-info__line + .order-detail-bottom-info__line {
+    margin-top: 0.4mm;
+}
+
+.report-order-detail .order-detail-bottom-info__value,
+.report-overseas-order .order-detail-bottom-info__value {
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+.report-order-detail .order-detail-bottom-info__gap,
+.report-overseas-order .order-detail-bottom-info__gap {
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+/* ========================================
+   帳票種別: 海外用受注表 (overseas_order)
+   ======================================== */
+.report-overseas-order .page {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    width: 297mm;
+    min-height: 210mm;
+    max-height: 210mm;
+    height: 210mm;
+    margin: 0 auto 10px;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", "MS Gothic", sans-serif;
+    font-size: 14pt;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #000000;
+    background: #ffffff;
+}
+
+.report-overseas-order .order-detail-page,
+.report-overseas-order .overseas-order-page {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.report-overseas-order .order-detail-page::after,
+.report-overseas-order .overseas-order-page::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    border-left: 1px dashed #999999;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.report-overseas-order .order-detail-sheet {
+    flex: 0 0 50%;
+    width: 50%;
+    max-width: 50%;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.report-overseas-order .overseas-order-sheet {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+.report-overseas-order .order-detail-sheet--left {
+    display: flex;
+    flex-direction: column;
+    padding: 5mm 2mm 4mm 5mm;
+}
+
+.report-overseas-order .order-detail-sheet--right,
+.report-overseas-order .overseas-order-sheet {
+    padding: 5mm 5mm 4mm 2mm;
+}
+
+.report-overseas-order .order-detail-table {
+    width: 100%;
+    max-width: 136mm;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0 auto 4mm;
+    box-sizing: border-box;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
+
+.report-overseas-order .order-detail-table th,
+.report-overseas-order .order-detail-table td {
+    border: 1px solid #000000;
+    padding: 1.5mm 2mm;
+    vertical-align: middle;
+    line-height: 1.35;
+    color: #000000;
+}
+
+.report-overseas-order .order-detail-table th.order-detail-table__label,
+.report-overseas-order .order-detail-table th.order-detail-table__label--single,
+.report-overseas-order .order-detail-table th.order-detail-table__label--pair {
+    font-size: 10pt;
+    font-weight: 400;
+}
+
+.report-overseas-order .order-detail-table td.order-detail-table__value,
+.report-overseas-order .order-detail-table td.order-detail-table__value--single,
+.report-overseas-order .order-detail-table td.order-detail-table__value--pair {
+    font-size: 14pt;
+    font-weight: 700;
+}
+
+.report-overseas-order .order-detail-title {
+    margin: 0 0 4mm;
+    padding: 0;
+    font-size: 16pt;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+}
+
+.report-overseas-order .overseas-order-table {
+    width: 100%;
+    max-width: 136mm;
+    margin: 0 auto;
+    border-collapse: collapse;
+    table-layout: fixed;
+    box-sizing: border-box;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    flex: 0 0 auto;
+}
+
+.report-overseas-order .overseas-order-table th,
+.report-overseas-order .overseas-order-table td {
+    border: 1px solid #000000;
+    padding: 0.9mm 1.5mm;
+    vertical-align: middle;
+    font-size: 10.5pt;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.report-overseas-order .overseas-order-table__label {
+    width: 22%;
+    font-size: 10pt;
+    font-weight: 400;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.report-overseas-order .overseas-order-table__value {
+    font-size: 12pt;
+    font-weight: 700;
+    text-align: left;
+    word-break: break-word;
+}
+
+.report-overseas-order .overseas-order-table__value--wide {
+    width: 78%;
+}
+
+.report-overseas-order .overseas-order-table__row--spacer td {
+    height: 1mm;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    padding: 0;
+    line-height: 0;
+}
+
+.report-overseas-order .overseas-order-table__row--header th {
+    font-size: 10pt;
+    font-weight: 400;
+    text-align: center;
+    height: 10mm;
+    box-sizing: border-box;
+}
+
+.report-overseas-order .overseas-order-table tbody tr:not(.overseas-order-table__row--spacer) th,
+.report-overseas-order .overseas-order-table tbody tr:not(.overseas-order-table__row--spacer) td {
+    height: 10mm;
+    box-sizing: border-box;
+}
+
+.report-overseas-order .overseas-order-table__cell {
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 0.6mm;
+    padding-bottom: 0.6mm;
+}
+
+.report-overseas-order .overseas-order-table__cell--empty {
+    background: #ffffff;
+}
+
+.report-overseas-order .overseas-order-table__item-label {
+    display: block;
+    font-size: 8pt;
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+.report-overseas-order .overseas-order-table__mark {
+    display: block;
+    font-size: 11pt;
+    font-weight: 700;
+    line-height: 1.1;
+    min-height: 0;
+}
+
+.report-overseas-order .overseas-order-table__choice {
+    text-align: center;
+    font-size: 12pt;
+}
+
+.report-overseas-order .overseas-order-table__choice-label {
+    display: block;
+    font-size: 9pt;
+    font-weight: 400;
 }
 
 /* ========================================
@@ -772,7 +1182,8 @@
     gap: 8px;
 }
 
-.ayanas-matsuba-summary-dialog__period input[type="date"] {
+.ayanas-matsuba-summary-dialog__period input[type="date"],
+.ayanas-matsuba-summary-dialog__field input[type="date"] {
     padding: 6px 8px;
     font-size: 14px;
 }
@@ -932,16 +1343,22 @@
 }
 
 .report-delivery .delivery-page-no {
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
+    position: static;
+    flex: 0 0 auto;
+    align-self: center;
     margin: 0;
+    margin-top: auto;
+    padding-top: 1.5mm;
     font-size: 8pt;
     font-weight: bold;
     line-height: 1.3;
     text-align: center;
     width: auto;
+}
+
+.report-delivery .delivery-footer + .delivery-page-no {
+    margin-top: 0;
+    padding-top: 1mm;
 }
 
 .report-delivery .delivery-doc-item {
@@ -955,8 +1372,8 @@
 
 .report-delivery .delivery-barcode svg {
     display: block;
-    width: 110px;
-    max-width: 100%;
+    width: auto;
+    max-width: 48mm;
     height: auto;
 }
 
@@ -1098,6 +1515,51 @@
     width: 14%;
 }
 
+.report-delivery--matsuba .delivery-subtitle {
+    margin: 0 0 2mm;
+    font-size: 10pt;
+    font-weight: 700;
+    text-align: left;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(1),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(1) {
+    width: 16%;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(2),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(2) {
+    width: 18%;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(3),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(3) {
+    width: 32%;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(4),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(4) {
+    width: 18%;
+}
+
+.report-delivery--matsuba .delivery-detail-table--matsuba th:nth-child(5),
+.report-delivery--matsuba .delivery-detail-table--matsuba td:nth-child(5) {
+    width: 16%;
+}
+
+.report-delivery--matsuba .delivery-footer--matsuba {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 2mm;
+}
+
+.report-delivery--matsuba .delivery-matsuba-count {
+    margin: 0;
+    font-size: 10pt;
+    font-weight: 700;
+}
+
 .report-delivery .delivery-footer {
     margin-top: auto;
     padding-top: 1mm;
@@ -1112,12 +1574,16 @@
 }
 
 .report-delivery .delivery-summary {
-    width: 58mm;
-    margin-left: auto;
     border-collapse: collapse;
     table-layout: fixed;
     font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", "MS Gothic", sans-serif;
     font-weight: 700;
+}
+
+.report-delivery .delivery-summary--horizontal {
+    width: 100%;
+    max-width: 170mm;
+    margin-left: auto;
 }
 
 .report-delivery .delivery-summary th,
@@ -1131,29 +1597,33 @@
     font-weight: 700;
 }
 
-.report-delivery .delivery-summary th {
-    width: 42%;
+.report-delivery .delivery-summary--horizontal th {
+    width: 25%;
     background: #f0f0f0;
-    text-align: left;
+    text-align: center;
     font-weight: 700;
     white-space: nowrap;
+    padding: 1.5mm 2.5mm;
+    font-size: 9.5pt;
+    line-height: 1.3;
 }
 
-.report-delivery .delivery-summary td {
+.report-delivery .delivery-summary--horizontal td {
     text-align: right;
     font-weight: 700;
+    padding: 2mm 2.5mm;
+    font-size: 10.5pt;
+    line-height: 1.3;
 }
 
-.report-delivery .delivery-summary__total th,
-.report-delivery .delivery-summary__total td {
-    background: #ececec;
-    font-size: 9pt;
-    padding-top: 3px;
-    padding-bottom: 3px;
+.report-delivery .delivery-summary__count {
+    text-align: center;
+    font-size: 11pt;
 }
 
-.report-delivery .delivery-summary__total td {
-    font-size: 10pt;
+.report-delivery .delivery-summary__total-value {
+    background: #ffffff;
+    font-size: 11.5pt;
 }
 
 /* ========================================
@@ -1164,7 +1634,7 @@
     min-height: 277mm;
     max-height: 277mm;
     margin: 0 auto 8mm;
-    padding: 4mm 10mm;
+    padding: 3mm 10mm 5mm;
     box-sizing: border-box;
     background: #fff;
     overflow: hidden;
@@ -1239,10 +1709,10 @@
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 22mm;
+    width: 25mm;
     max-width: 45%;
     height: auto;
-    max-height: 22mm;
+    max-height: 25mm;
     object-fit: contain;
     pointer-events: none;
     z-index: 0;
@@ -1296,6 +1766,10 @@
 
 .report-invoice .invoice-customer-panel__address {
     margin-bottom: 2mm;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
 }
 
 .report-invoice .invoice-customer-panel__name {
@@ -1307,6 +1781,10 @@
     white-space: normal;
     word-break: break-word;
     overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }
 
 .report-invoice .invoice-customer-panel__code,
@@ -1317,6 +1795,53 @@
 
 .report-invoice .invoice-customer-panel__code {
     margin-bottom: 0.5mm;
+}
+
+/* 一般客請求書: 宛名のみ（左上バランス調整） */
+.report-invoice--general-recipient .invoice-header__left {
+    display: flex;
+    align-items: center;
+    padding-top: 4mm;
+}
+
+.report-invoice--general-recipient .invoice-customer-panel--general {
+    padding: 0;
+    max-width: 100%;
+}
+
+.report-invoice--general-recipient .invoice-customer-panel__name--general {
+    margin: 0;
+    max-width: 100%;
+    font-weight: 700;
+    line-height: 1.45;
+    letter-spacing: 0.02em;
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.report-invoice--general-recipient .invoice-customer-panel__code--general {
+    margin: 2mm 0 0;
+    max-width: 100%;
+    font-size: 9pt;
+    font-weight: 400;
+    line-height: 1.35;
+}
+
+.report-invoice--general-recipient .invoice-customer-panel--brief.invoice-customer-panel--general {
+    padding: 0;
+}
+
+.report-invoice--general-recipient .invoice-header--continued .invoice-header__left {
+    align-items: flex-start;
+    padding-top: 0;
+}
+
+.report-invoice--general-recipient .invoice-header--continued .invoice-customer-panel__name--general {
+    font-size: 12pt !important;
 }
 
 .report-invoice .invoice-title {
@@ -1484,6 +2009,34 @@
     text-align: left;
 }
 
+.report-invoice .invoice-billing-meta__table--carry th,
+.report-invoice .invoice-billing-meta__table--carry td {
+    width: 33.33%;
+    text-align: center;
+}
+
+.report-invoice .invoice-billing-meta__table--carry td.num {
+    text-align: right;
+}
+
+.report-invoice .invoice-summary--overview-carry th,
+.report-invoice .invoice-summary--overview-carry td {
+    width: 25%;
+}
+
+.report-invoice .invoice-summary--overview-carry-combined {
+    table-layout: fixed;
+}
+
+.report-invoice .invoice-summary--overview-carry-combined th,
+.report-invoice .invoice-summary--overview-carry-combined td {
+    width: 25%;
+}
+
+.report-invoice .page--invoice-carry-first .invoice-amount-overview {
+    margin-bottom: 1mm;
+}
+
 .report-invoice .invoice-amount-overview {
     margin: 0 0 1.5mm;
     flex: 0 0 auto;
@@ -1530,13 +2083,64 @@
     font-size: 9pt;
 }
 
+.report-invoice .invoice-summary--overview-carry-combined tbody tr {
+    height: auto;
+}
+
+.report-invoice .invoice-summary--overview-carry-combined td.invoice-carry-cell {
+    height: auto;
+    padding: 0;
+    text-align: center;
+    vertical-align: top;
+    white-space: normal;
+    background: #ffffff;
+}
+
+.report-invoice .invoice-summary--overview-carry-combined .invoice-carry-cell__label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-height: 6.2mm;
+    padding: 0.8mm 1.5mm;
+    background: #c4c4c4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    border-bottom: 0.2mm solid #333;
+    font-size: 9.5pt;
+    line-height: 1.2;
+    font-weight: 700;
+    text-align: center;
+}
+
+.report-invoice .invoice-summary--overview-carry-combined .invoice-carry-cell__value {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    min-height: 7mm;
+    padding: 1mm 2mm;
+    font-size: 10pt;
+    line-height: 1.2;
+    font-weight: 700;
+    text-align: right;
+}
+
 .report-invoice .invoice-page1-footer-table {
-    margin-top: auto;
-    padding-top: 1.5mm;
+    margin-top: 1.5mm;
+    padding-top: 0;
     flex: 0 0 auto;
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
+}
+
+/*
+ * 1ページ目: 振込先・合計は納品書フッタと同様、ページ下部へ寄せる。
+ * （明細行高・続きページ行数は納品書に合わせ済み）
+ */
+.report-invoice .page--invoice-first .invoice-page1-footer-table {
+    margin-top: auto;
 }
 
 .report-invoice .invoice-page1-footer__col-bank-label {
@@ -1569,7 +2173,9 @@
     padding: 1mm 0.3mm;
     line-height: 1.2;
     font-size: 7pt;
-    background: #f0f0f0;
+    background: #c4c4c4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
     vertical-align: middle;
 }
 
@@ -1584,7 +2190,9 @@
 }
 
 .report-invoice .invoice-page1-footer-table .invoice-page1-totals__label {
-    background: #f0f0f0;
+    background: #c4c4c4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
     text-align: center;
     font-weight: 700;
     font-size: 7pt;
@@ -1637,17 +2245,34 @@
 }
 
 .report-invoice .invoice-detail-table thead th {
-    background: #f0f0f0;
+    background: #c4c4c4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
     font-weight: 700;
     text-align: center;
-    font-size: 8.5pt;
-    padding: 0.5px 2px;
-    line-height: 1.1;
-    height: 4.5mm;
+    font-size: 9pt;
+    padding: 1px 2px;
+    line-height: 1.15;
+    height: 5mm;
 }
 
+/* 納品書と同じ明細行高（1段 5.1mm / ペア約 10.2mm） */
 .report-invoice .invoice-detail-table tbody tr {
-    height: 4.6mm;
+    height: 5.1mm;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--empty {
+    height: 5.1mm;
+    max-height: 5.1mm;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--empty td {
+    height: 5.1mm;
+    max-height: 5.1mm;
+    padding: 0 2px;
+    line-height: 0;
+    font-size: 0;
+    overflow: hidden;
 }
 
 .report-invoice .invoice-detail-table tbody .detail-row--primary td {
@@ -1656,8 +2281,147 @@
     background: #ffffff;
 }
 
+.report-invoice .invoice-detail-table tbody .detail-row--secondary td {
+    padding: 0 2px;
+    background: #ffffff;
+}
+
 .report-invoice .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack {
     border-bottom: none !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.15;
+    max-height: 5.1mm;
+}
+
+/* お客様名・加工内容・伝票番号/係は省略せず折り返し、行高を伸ばす */
+.report-invoice .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack.detail-cell--client-name,
+.report-invoice .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack.detail-cell--item-name,
+.report-invoice .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack.detail-cell--slip-no,
+.report-invoice .invoice-detail-table tbody .detail-row--secondary td.detail-cell--stack.detail-cell--slip-no,
+.report-invoice .invoice-detail-table tbody td.detail-cell--merged.detail-cell--client-name {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    max-height: none !important;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+    vertical-align: middle;
+}
+
+/* 長い明細: 折り返し行数に応じた行高・必要時のみフォント縮小 */
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-2,
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-3 {
+    height: auto;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-2 td {
+    font-size: 8.5pt;
+    line-height: 1.2;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-3 td {
+    font-size: 8pt;
+    line-height: 1.15;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-2.detail-row--primary td.detail-cell--stack,
+.report-invoice .invoice-detail-table tbody .detail-row--wrap-3.detail-row--primary td.detail-cell--stack {
+    max-height: none;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+}
+
+/* 一般客請求書: 行高をデータ行・空白行で揃える */
+.report-invoice--general-recipient .invoice-detail-table tbody .detail-row--primary td {
+    height: 8mm;
+    min-height: 8mm;
+    box-sizing: border-box;
+}
+
+.report-invoice--general-recipient .invoice-detail-table tbody .detail-row--secondary td {
+    height: 7mm;
+    min-height: 7mm;
+    box-sizing: border-box;
+}
+
+.report-invoice--general-recipient .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack {
+    max-height: none;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    line-height: 1.2;
+}
+
+.report-invoice--general-recipient .invoice-detail-table tbody td.detail-cell--client-name {
+    height: 15mm;
+    min-height: 15mm;
+    font-size: 9.5pt;
+    font-weight: 700;
+    padding: 1mm 2px;
+    vertical-align: middle;
+}
+
+/*
+ * 空白明細行の行高確保（文字は出さない）。
+ * 納品書と同密度: 1段 5.1mm / ペア 10.2mm。
+ */
+.report-invoice .invoice-detail-table tbody .detail-row-spacer {
+    display: block;
+    width: 0;
+    height: 5.1mm;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--primary .detail-row-spacer {
+    height: 5.1mm;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row--secondary .detail-row-spacer {
+    height: 5.1mm;
+}
+
+.report-invoice .invoice-detail-table tbody .detail-row-spacer--pair {
+    height: 10.2mm;
+}
+
+.report-invoice--general-recipient .invoice-detail-table tbody .detail-row-spacer {
+    height: 7mm;
+}
+
+.report-invoice--general-recipient .invoice-detail-table tbody .detail-row--primary .detail-row-spacer {
+    height: 8mm;
+}
+
+.report-invoice--general-recipient .invoice-detail-table tbody .detail-row-spacer--pair {
+    height: 15mm;
+}
+
+.report-invoice--general-recipient .invoice-detail-table th:nth-child(2),
+.report-invoice--general-recipient .invoice-detail-table td:nth-child(2) {
+    width: 24%;
+}
+
+.report-invoice--general-recipient .invoice-detail-table th:nth-child(3),
+.report-invoice--general-recipient .invoice-detail-table td:nth-child(3) {
+    width: 20%;
+}
+
+.report-invoice--general-recipient .invoice-detail-table th:nth-child(4),
+.report-invoice--general-recipient .invoice-detail-table td:nth-child(4) {
+    width: 12%;
+}
+
+.report-invoice--general-recipient .detail-manage-inline {
+    display: block;
+    margin-top: 0.4mm;
+    font-size: 7.5pt;
+    font-weight: 400;
+    color: #444444;
 }
 
 .report-invoice .invoice-detail-table tbody .detail-row--primary td.detail-cell--stack:nth-child(1),
@@ -1727,17 +2491,17 @@
 
 .report-invoice .invoice-detail-table th:nth-child(2),
 .report-invoice .invoice-detail-table td:nth-child(2) {
-    width: 16%;
+    width: 18%;
 }
 
 .report-invoice .invoice-detail-table th:nth-child(3),
 .report-invoice .invoice-detail-table td:nth-child(3) {
-    width: 26%;
+    width: 22%;
 }
 
 .report-invoice .invoice-detail-table th:nth-child(4),
 .report-invoice .invoice-detail-table td:nth-child(4) {
-    width: 9%;
+    width: 11%;
 }
 
 .report-invoice .invoice-detail-table th:nth-child(5),
@@ -1812,7 +2576,9 @@
 }
 
 .report-invoice .invoice-summary th {
-    background: #f0f0f0;
+    background: #c4c4c4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
     text-align: center;
     font-weight: 700;
     white-space: nowrap;
@@ -2049,7 +2815,7 @@ body {
 }
 
 .report-matsuba-summary .matsuba-summary__header-right {
-    flex: 0 0 70mm;
+    flex: 0 0 82mm;
     text-align: right;
 }
 
@@ -2062,8 +2828,23 @@ body {
     text-underline-offset: 1.5mm;
 }
 
+.report-matsuba-summary .matsuba-summary__addressee-block {
+    margin: 0 0 6mm;
+}
+
+.report-matsuba-summary .matsuba-summary__postal,
+.report-matsuba-summary .matsuba-summary__address {
+    margin: 0;
+    font-size: 11pt;
+    line-height: 1.5;
+}
+
+.report-matsuba-summary .matsuba-summary__address {
+    margin-bottom: 3mm;
+}
+
 .report-matsuba-summary .matsuba-summary__addressee {
-    margin: 0 0 8mm;
+    margin: 0;
     font-size: 14pt;
     font-weight: 700;
 }
@@ -2073,33 +2854,41 @@ body {
     font-size: 11pt;
 }
 
+.report-matsuba-summary .matsuba-summary__invoice-date {
+    margin: 0 0 4mm;
+    font-size: 11pt;
+    text-align: right;
+}
+
 .report-matsuba-summary .matsuba-summary__company {
     position: relative;
     display: inline-block;
+    width: 78mm;
     text-align: left;
+    font-size: 10.5pt;
 }
 
 .report-matsuba-summary .matsuba-summary__company-seal {
     position: absolute;
     top: -2mm;
     right: -4mm;
-    width: 22mm;
-    height: 22mm;
+    width: 25mm;
+    height: 25mm;
     object-fit: contain;
     pointer-events: none;
 }
 
 .report-matsuba-summary .matsuba-summary__company-name {
-    margin: 0 0 1mm;
-    font-size: 11pt;
+    margin: 0 0 1.2mm;
+    font-size: 13pt;
     font-weight: 700;
 }
 
 .report-matsuba-summary .matsuba-summary__company-reg,
 .report-matsuba-summary .matsuba-summary__company-line {
     margin: 0;
-    font-size: 8pt;
-    line-height: 1.5;
+    font-size: 10.5pt;
+    line-height: 1.45;
 }
 
 .report-matsuba-summary .matsuba-summary__table {
@@ -2134,9 +2923,44 @@ body {
     text-align: right;
 }
 
+.report-matsuba-summary .matsuba-summary__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 8mm;
+    margin-top: 4mm;
+}
+
+.report-matsuba-summary .matsuba-summary__bank {
+    width: 108mm;
+    border-collapse: collapse;
+    font-size: 9pt;
+}
+
+.report-matsuba-summary .matsuba-summary__bank th,
+.report-matsuba-summary .matsuba-summary__bank td {
+    border: 1px solid #000;
+    padding: 1.2mm 2mm;
+}
+
+.report-matsuba-summary .matsuba-summary__bank-label {
+    width: 8mm;
+    background: #f3f3f3;
+    font-weight: 700;
+    text-align: center;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    letter-spacing: 0.15em;
+}
+
+.report-matsuba-summary .matsuba-summary__bank-account {
+    text-align: left;
+    white-space: nowrap;
+}
+
 .report-matsuba-summary .matsuba-summary__totals {
     width: 80mm;
-    margin: 2mm 0 0 auto;
+    margin: 0 0 0 auto;
     border-collapse: collapse;
     font-size: 11pt;
 }
@@ -2162,6 +2986,162 @@ body {
     font-size: 12pt;
     font-weight: 700;
     border-bottom: 2px solid #000;
+}
+
+.ayanas-customer-list-toolbar,
+.ayanas-master-list-toolbar {
+    display: inline-flex;
+    gap: 8px;
+    margin: 0 8px 8px 0;
+}
+
+.ayanas-customer-list-button,
+.ayanas-master-list-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #fff;
+    background: #3498db;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.ayanas-customer-list-button:hover,
+.ayanas-master-list-button:hover {
+    background: #2980b9;
+}
+
+.ayanas-customer-list-button:disabled,
+.ayanas-master-list-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.report-customer-list .page,
+.report-master-list .page {
+    padding: 3mm 5mm;
+}
+
+.report-customer-list .customer-list__header,
+.report-master-list .customer-list__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5mm;
+}
+
+.report-customer-list .customer-list__header--compact,
+.report-master-list .customer-list__header--compact {
+    margin-bottom: 1.5mm;
+}
+
+.report-customer-list .customer-list__title,
+.report-master-list .customer-list__title {
+    margin: 0;
+    font-size: 16pt;
+    font-weight: 700;
+}
+
+.report-customer-list .customer-list__title--compact,
+.report-master-list .customer-list__title--compact {
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+.report-customer-list .customer-list__page-label,
+.report-master-list .customer-list__page-label {
+    font-size: 9pt;
+    font-weight: 400;
+}
+
+.report-customer-list .customer-list__meta,
+.report-master-list .customer-list__meta {
+    text-align: right;
+    font-size: 8pt;
+    line-height: 1.5;
+}
+
+.report-customer-list .customer-list__meta p,
+.report-master-list .customer-list__meta p {
+    margin: 0;
+}
+
+.report-customer-list .customer-list__table,
+.report-master-list .customer-list__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.5pt;
+    table-layout: fixed;
+    line-height: 1.2;
+}
+
+.report-customer-list .customer-list__table th,
+.report-customer-list .customer-list__table td,
+.report-master-list .customer-list__table th,
+.report-master-list .customer-list__table td {
+    border: 1px solid #000;
+    padding: 1mm 1.5mm;
+    vertical-align: middle;
+    word-break: break-all;
+}
+
+.report-customer-list .customer-list__table th,
+.report-master-list .customer-list__table th {
+    background: #f3f3f3;
+    font-weight: 700;
+    text-align: center;
+}
+
+.report-customer-list .customer-list__col-code,
+.report-master-list .customer-list__col-code {
+    width: 16mm;
+    text-align: center;
+}
+
+.report-customer-list .customer-list__col-name,
+.report-master-list .customer-list__col-name {
+    width: auto;
+    text-align: left;
+}
+
+.report-customer-list .customer-list__col-name--pair-end,
+.report-master-list .customer-list__col-name--pair-end {
+    border-right: 2px solid #000;
+}
+
+.report-customer-list .customer-list__empty,
+.report-master-list .customer-list__empty {
+    text-align: center;
+    padding: 6mm;
+}
+
+.report-customer-list .customer-list__group,
+.report-master-list .customer-list__group {
+    margin-bottom: 2mm;
+}
+
+.report-customer-list .customer-list__group:last-child,
+.report-master-list .customer-list__group:last-child {
+    margin-bottom: 0;
+}
+
+.report-customer-list .customer-list__group-title,
+.report-master-list .customer-list__group-title {
+    margin: 0 0 1.5mm;
+    font-size: 10pt;
+    font-weight: 700;
+}
+
+.report-customer-list .customer-list__group-count,
+.report-master-list .customer-list__group-count {
+    font-size: 8.5pt;
+    font-weight: 400;
+    margin-left: 1mm;
+}
+
+.report-customer-list .customer-list__table--group,
+.report-master-list .customer-list__table--group {
+    margin-bottom: 1mm;
 }
 
 @media print {
@@ -2266,7 +3246,9 @@ body {
     }
 
     .report-matsuba-summary .matsuba-summary__table,
-    .report-matsuba-summary .matsuba-summary__totals {
+    .report-matsuba-summary .matsuba-summary__totals,
+    .report-matsuba-summary .matsuba-summary__bank,
+    .report-matsuba-summary .matsuba-summary__footer {
         page-break-inside: avoid;
     }
 
@@ -2287,9 +3269,75 @@ body {
         page-break-inside: avoid;
     }
 
-    .report-order-detail .order-detail-sheet {
+    .report-order-detail .order-detail-page::after {
+        border-left-color: #cccccc;
+    }
+
+    .report-order-detail .order-detail-sheet--left {
+        padding: 5mm 2mm 4mm 6mm;
+        overflow: visible;
         print-color-adjust: exact;
         -webkit-print-color-adjust: exact;
+    }
+
+    .report-order-detail .order-detail-sheet--right {
+        padding: 5mm 6mm 4mm 2mm;
+        overflow: visible;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .report-order-detail .order-detail-table {
+        max-width: 132mm;
+        border-left-width: 1px;
+        border-left-style: solid;
+        border-left-color: #000000;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-right-color: #000000;
+    }
+
+    .report-overseas-order .page {
+        width: 297mm;
+        min-height: 210mm;
+        max-height: 210mm;
+        height: 210mm;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        overflow: hidden;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+
+    .report-overseas-order .order-detail-sheet--left {
+        padding: 5mm 2mm 4mm 6mm;
+        overflow: visible;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .report-overseas-order .order-detail-sheet--right,
+    .report-overseas-order .overseas-order-sheet {
+        padding: 5mm 6mm 5mm 2mm;
+        overflow: hidden;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .report-overseas-order .overseas-order-table th,
+    .report-overseas-order .overseas-order-table td {
+        padding: 0.8mm 1.5mm;
+    }
+
+    .report-overseas-order .overseas-order-table tbody tr:not(.overseas-order-table__row--spacer) th,
+    .report-overseas-order .overseas-order-table tbody tr:not(.overseas-order-table__row--spacer) td {
+        height: 10mm;
+    }
+
+    .report-overseas-order .order-detail-table,
+    .report-overseas-order .overseas-order-table {
+        max-width: 132mm;
     }
 
     .report-overseas-outbound-detail .page {
@@ -2367,4 +3415,163 @@ body {
         left: var(--invoice-window-left, 15mm);
     }
 
+}
+
+/* ========================================
+   kintone 詳細画面: 印刷ボタン（desktop.js）
+   AYANAS Invoice の詳細ボタンと同系統
+   ======================================== */
+.ayanas-print-button {
+    box-sizing: border-box;
+    margin: 0 8px 0 0;
+    padding: 8px 16px;
+    border: 1px solid #2ecc71;
+    border-radius: 4px;
+    background: #2ecc71;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.ayanas-print-button:hover {
+    background: #27ae60;
+    border-color: #27ae60;
+}
+
+.ayanas-print-button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+/* ========================================
+   kintone / プレビュー: 印刷ボタン共通（見やすいサイズ）
+   ======================================== */
+.ayanas-print-button,
+.ayanas-customer-list-button,
+.ayanas-master-list-button,
+.ayanas-overseas-outbound-button,
+.ayanas-overseas-outbound-row__print,
+.ayanas-overseas-outbound-dialog__close,
+.ayanas-matsuba-summary-button,
+.ayanas-matsuba-summary-dialog__cancel,
+.ayanas-matsuba-summary-dialog__preview,
+.buttons button {
+    min-height: 44px;
+    padding: 11px 24px;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+/* ========================================
+   和裁士支払明細書（App 75・A4縦）
+   ======================================== */
+.report-wasai-payment-statement .page,
+.report-wasai-payment-statement .page.page--a4 {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 12mm 10mm;
+    box-sizing: border-box;
+}
+
+.report-wasai-payment-statement .wps-title {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.report-wasai-payment-statement .wps-header-grid {
+    display: grid;
+    grid-template-columns: 7em 1fr;
+    gap: 4px 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.report-wasai-payment-statement .wps-label {
+    font-weight: 700;
+}
+
+.report-wasai-payment-statement .wps-issuer {
+    margin: 4px 0 8px;
+    font-size: 12px;
+}
+
+.report-wasai-payment-statement .wps-page-no {
+    margin: 0 0 10px;
+    text-align: right;
+    font-size: 11px;
+    color: #444;
+}
+
+.report-wasai-payment-statement .wps-header--continued {
+    margin-bottom: 4px;
+}
+
+.report-wasai-payment-statement .wps-title--continued {
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.report-wasai-payment-statement .wps-header-grid--continued {
+    margin-bottom: 2px;
+}
+
+.report-wasai-payment-statement .wps-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    table-layout: fixed;
+}
+
+.report-wasai-payment-statement .wps-table th,
+.report-wasai-payment-statement .wps-table td {
+    border: 1px solid #333;
+    padding: 4px 5px;
+    vertical-align: top;
+    word-break: break-all;
+}
+
+.report-wasai-payment-statement .wps-table th {
+    background: #eef2f7;
+    font-weight: 700;
+    text-align: center;
+}
+
+.report-wasai-payment-statement .wps-col-no { width: 2.2em; text-align: center; }
+.report-wasai-payment-statement .wps-col-manage { width: 11%; }
+.report-wasai-payment-statement .wps-col-date { width: 8%; }
+.report-wasai-payment-statement .wps-col-type { width: 10%; }
+.report-wasai-payment-statement .wps-col-spec { width: 7%; }
+.report-wasai-payment-statement .wps-col-process { width: 22%; }
+.report-wasai-payment-statement .wps-col-money { width: 10%; }
+.report-wasai-payment-statement .wps-col-rate { width: 7%; }
+.report-wasai-payment-statement .wps-num { text-align: right; white-space: nowrap; }
+
+.report-wasai-payment-statement .wps-summary {
+    margin-top: 12px;
+}
+
+.report-wasai-payment-statement .wps-summary-table {
+    margin-left: auto;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 16em;
+}
+
+.report-wasai-payment-statement .wps-summary-table th,
+.report-wasai-payment-statement .wps-summary-table td {
+    border: 1px solid #333;
+    padding: 6px 10px;
+}
+
+.report-wasai-payment-statement .wps-summary-table th {
+    background: #eef2f7;
+    text-align: left;
+    width: 9em;
 }

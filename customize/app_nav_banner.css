@@ -1,0 +1,155 @@
+/* 受注登録バナーと同じボタン寸法（全リンク共通） */
+.ayanas-app-nav {
+  --ayanas-nav-link-font: 15px;
+  --ayanas-nav-link-min-h: 40px;
+  --ayanas-nav-link-min-w: 9.2em;
+  --ayanas-nav-link-pad-x: 14px;
+
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 10px 14px;
+  background: #fffbeb;
+  color: #422006;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+  font-size: var(--ayanas-nav-link-font);
+  line-height: 1.35;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(120, 53, 15, 0.08);
+}
+
+#ayanas-app-nav-banner {
+  position: relative;
+  z-index: 20;
+  clear: both;
+}
+
+#ayanas-app-nav-banner.is-record-surface {
+  z-index: 30;
+  margin: 0 0 10px;
+  padding: 0 16px;
+}
+
+.ayanas-app-nav *,
+.ayanas-app-nav *::before,
+.ayanas-app-nav *::after {
+  box-sizing: border-box;
+}
+
+.ayanas-app-nav__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-bottom: 8px;
+}
+
+.ayanas-app-nav__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #78350f;
+}
+
+.ayanas-app-nav__portal {
+  color: #1d4ed8;
+  text-decoration: none;
+  font-size: var(--ayanas-nav-link-font);
+  font-weight: 700;
+}
+
+.ayanas-app-nav__portal:hover {
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+.ayanas-app-nav__groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.ayanas-app-nav__group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ayanas-app-nav__group-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #92400e;
+  white-space: nowrap;
+}
+
+.ayanas-app-nav__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ayanas-app-nav__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--ayanas-nav-link-min-h);
+  min-width: var(--ayanas-nav-link-min-w);
+  padding: 6px var(--ayanas-nav-link-pad-x);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  text-decoration: none;
+  font-size: var(--ayanas-nav-link-font);
+  font-weight: 600;
+  white-space: nowrap;
+  color: #ffffff;
+  background: #475569;
+}
+
+.ayanas-app-nav__link:hover {
+  filter: brightness(1.12);
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.ayanas-app-nav__link.is-current {
+  box-shadow: 0 0 0 3px #facc15;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.ayanas-app-nav__link--blue { background: #1d4ed8; border-color: #1e3a8a; }
+.ayanas-app-nav__link--teal { background: #0f766e; border-color: #115e59; }
+.ayanas-app-nav__link--amber { background: #b45309; border-color: #92400e; }
+.ayanas-app-nav__link--green { background: #15803d; border-color: #166534; }
+.ayanas-app-nav__link--orange { background: #c2410c; border-color: #9a3412; }
+.ayanas-app-nav__link--rose { background: #be123c; border-color: #9f1239; }
+.ayanas-app-nav__link--cyan { background: #0e7490; border-color: #155e75; }
+.ayanas-app-nav__link--sky { background: #0369a1; border-color: #0c4a6e; }
+.ayanas-app-nav__link--purple { background: #7e22ce; border-color: #6b21a8; }
+.ayanas-app-nav__link--lime { background: #4d7c0f; border-color: #3f6212; }
+.ayanas-app-nav__link--violet { background: #6d28d9; border-color: #5b21b6; }
+.ayanas-app-nav__link--indigo { background: #4338ca; border-color: #3730a3; }
+.ayanas-app-nav__link--slate { background: #475569; border-color: #334155; }
+.ayanas-app-nav__link--fuchsia { background: #a21caf; border-color: #86198f; }
+
+@media (max-width: 640px) {
+  .ayanas-app-nav {
+    --ayanas-nav-link-font: 14px;
+    --ayanas-nav-link-min-h: 38px;
+    --ayanas-nav-link-min-w: 8.5em;
+    --ayanas-nav-link-pad-x: 12px;
+    padding: 8px 10px;
+  }
+
+  #ayanas-app-nav-banner.is-record-surface {
+    padding: 0 8px;
+  }
+
+  .ayanas-app-nav__title {
+    font-size: 15px;
+  }
+}

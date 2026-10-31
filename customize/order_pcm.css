@@ -1,0 +1,157 @@
+/* App16 × PCM — 店舗個人顧客検索パネル */
+
+.order-pcm-panel {
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+  border: 1px solid #c5d4e8;
+  border-radius: 6px;
+  background: #f3f7fc;
+  box-sizing: border-box;
+}
+
+.order-pcm-panel__title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f3a5f;
+}
+
+.order-pcm-panel__note {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #556;
+}
+
+.order-pcm-selected {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.order-pcm-selected--empty {
+  background: #fff4e5;
+  color: #8a5a00;
+  border: 1px solid #f0d9a8;
+}
+
+.order-pcm-selected--ok {
+  background: #e7f6ec;
+  color: #1b5e30;
+  border: 1px solid #b7dfc4;
+}
+
+.order-pcm-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.order-pcm-panel__grid label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+  color: #444;
+}
+
+.order-pcm-panel__grid input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #bcc6d3;
+  border-radius: 4px;
+  font-size: 13px;
+  background: #fff;
+}
+
+.order-pcm-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.order-pcm-btn {
+  padding: 6px 12px;
+  border: 1px solid #9aa8bc;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.order-pcm-btn:hover {
+  background: #eef3f9;
+}
+
+.order-pcm-btn--primary {
+  border-color: #2f6fed;
+  background: #2f6fed;
+  color: #fff;
+}
+
+.order-pcm-btn--primary:hover {
+  background: #2558c2;
+}
+
+.order-pcm-status {
+  margin: 4px 0 8px;
+  font-size: 12px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.order-pcm-status--error {
+  color: #b00020;
+}
+
+.order-pcm-results {
+  overflow-x: auto;
+}
+
+.order-pcm-results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+}
+
+.order-pcm-results-table th,
+.order-pcm-results-table td {
+  padding: 6px 8px;
+  border: 1px solid #d5dde8;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.order-pcm-results-table th {
+  background: #e8eef7;
+  font-weight: 600;
+}
+
+.order-pcm-select-btn {
+  padding: 4px 10px;
+  border: 1px solid #2f6fed;
+  border-radius: 4px;
+  background: #fff;
+  color: #2f6fed;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.order-pcm-select-btn:hover {
+  background: #e8f0ff;
+}
+
+.order-pcm-detail-banner {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: #eef4fb;
+  border: 1px solid #c5d4e8;
+  font-size: 13px;
+  color: #1f3a5f;
+}

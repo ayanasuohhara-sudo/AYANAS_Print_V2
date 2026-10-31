@@ -282,6 +282,10 @@
             classes.push('report-invoice--window-envelope');
         }
 
+        if (layout.recipientMode === 'general') {
+            classes.push(`${classes[0]}--general-recipient`);
+        }
+
         return classes.join(' ');
 
     };
@@ -547,7 +551,7 @@ ${bodyInner}
             taxRate: 0.1,
             totalRowClass: 'delivery-summary__total',
             items: [
-                { label: '点数', field: 'totalCount', source: 'summary' },
+                { label: '納品点数', field: 'totalCount', source: 'summary' },
                 { label: '数量合計', field: 'totalQty', source: 'summary' },
                 { label: '税抜', field: 'totalAmount', source: 'summary', format: 'money', role: 'subtotal' },
                 { label: '消費税', field: 'tax', role: 'tax', format: 'money' },
@@ -626,6 +630,29 @@ ${bodyInner}
             }
 
             return pages;
+
+        },
+
+        /** 同一 manage_no は帳票全体で先頭行のみ表示 */
+        annotateManageNoVisibility(details) {
+
+            let previousManageNo = null;
+
+            return (Array.isArray(details) ? details : []).map((detail) => {
+
+                const manageNo = String(detail?.manage_no ?? '').trim();
+                const showManageNo = manageNo !== '' && manageNo !== previousManageNo;
+
+                if (manageNo !== '') {
+                    previousManageNo = manageNo;
+                }
+
+                return {
+                    ...detail,
+                    _showManageNo: showManageNo,
+                };
+
+            });
 
         },
 

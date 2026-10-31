@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 75,
+  "version": 144,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 67（印刷専用）",
-    "en": "AYANAS Print Plugin V3 version 67 (print only)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 144（desktop初期化修正）",
+    "en": "AYANAS Print Plugin V144 (fix desktop init)"
   },
   "desktop": {
     "js": [
@@ -17,18 +17,26 @@
       "js/core.js",
       "js/invoice_layout.js",
       "js/record.js",
+      "js/master_list_service.js",
       "js/layout.js",
       "js/barcode.js",
       "js/preview.js",
       "js/company-seal-data.js",
       "js/templates/order.js",
+      "js/templates/order_detail_shared.js",
       "js/templates/order_detail.js",
+      "js/templates/outsource_outbound_slip_shared.js",
+      "js/templates/outsource_outbound_slip.js",
+      "js/templates/overseas_order.js",
       "js/templates/overseas_outbound_detail.js",
       "js/templates/overseas_outbound_sheet.js",
       "js/templates/delivery.js",
+      "js/templates/delivery_matsuba.js",
       "js/templates/invoice.js",
       "js/templates/invoice_window.js",
       "js/templates/estimate.js",
+      "js/templates/master_list.js",
+      "js/master_list_index.js",
       "js/overseas_outbound_service.js",
       "js/overseas_outbound_index.js",
       "js/matsuba_summary_invoice.js",

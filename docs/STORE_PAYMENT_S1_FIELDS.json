@@ -1,0 +1,54 @@
+{
+  "appName": "店舗入金管理",
+  "appId": 97,
+  "url": "https://o5nppg7kb4ly.cybozu.com/k/97/",
+  "note": "App 作成済。本番 JS カスタマイズは未反映（別途承認後）。",
+  "taxLocked": {
+    "rate": 0.1,
+    "base": "sum(App16.detail_table.amount) exclusive",
+    "rounding": "round (Math.round) — matches customize print core.js / delivery template",
+    "formula": "tax = round(ex * 0.1); inclusive = ex + tax",
+    "smaregiNote": "Smaregi taxRounding is store-configurable (0 round / 1 floor / 2 ceil). Confirm AYANAS store setting before go-live POS reconciliation."
+  },
+  "headerFields": [
+    { "code": "store_payment_no", "label": "入金番号", "type": "SINGLE_LINE_TEXT", "unique": true, "required": false },
+    { "code": "personal_customer_id", "label": "個人顧客ID", "type": "SINGLE_LINE_TEXT", "required": true },
+    { "code": "client_name_snapshot", "label": "お客様名（当時）", "type": "SINGLE_LINE_TEXT" },
+    { "code": "payment_date", "label": "入金日", "type": "DATE", "required": true },
+    { "code": "payment_amount", "label": "入金額", "type": "NUMBER", "required": true },
+    { "code": "payment_method", "label": "入金方法", "type": "DROP_DOWN", "options": ["現金", "クレジットカード", "その他"], "required": true },
+    { "code": "pos_transaction_id", "label": "スマレジ取引番号", "type": "SINGLE_LINE_TEXT" },
+    { "code": "payment_staff", "label": "担当者", "type": "USER_SELECT", "required": true },
+    { "code": "transaction_id", "label": "処理ID", "type": "SINGLE_LINE_TEXT", "unique": true, "required": true },
+    { "code": "payment_status", "label": "入金処理状態", "type": "DROP_DOWN", "options": ["有効", "取消", "返金済"], "required": true, "default": "有効" },
+    { "code": "payment_channel", "label": "入金チャネル", "type": "DROP_DOWN", "options": ["店舗", "WEB", "移行"], "default": "店舗" },
+    { "code": "payment_timing", "label": "入金タイミング", "type": "DROP_DOWN", "options": ["受付時", "引き取り時", "その他"] },
+    { "code": "record_kind", "label": "レコード種別", "type": "DROP_DOWN", "options": ["入金", "返金"], "required": true, "default": "入金" },
+    { "code": "related_refund_of", "label": "返金元入金番号", "type": "SINGLE_LINE_TEXT" },
+    { "code": "cancel_reason", "label": "取消・返金理由", "type": "MULTI_LINE_TEXT" },
+    { "code": "cancel_datetime", "label": "取消日時", "type": "DATETIME" },
+    { "code": "unpaid_handover_approved", "label": "未収入金引き渡し承認", "type": "CHECK_BOX", "options": ["承認済"] },
+    { "code": "notes", "label": "メモ", "type": "MULTI_LINE_TEXT" },
+    { "code": "store_payment_lines", "label": "入金充当明細", "type": "SUBTABLE" }
+  ],
+  "lineFields": [
+    { "code": "order_record_id", "label": "App16レコードID", "type": "NUMBER", "required": true },
+    { "code": "manage_no", "label": "管理番号", "type": "SINGLE_LINE_TEXT", "required": true },
+    { "code": "personal_customer_id_line", "label": "個人顧客ID（行）", "type": "SINGLE_LINE_TEXT", "required": true },
+    { "code": "kimono_type_snapshot", "label": "着物種類（当時）", "type": "SINGLE_LINE_TEXT" },
+    { "code": "billed_ex_tax", "label": "請求税抜（スナップショット）", "type": "NUMBER" },
+    { "code": "billed_amount", "label": "請求税込（スナップショット）", "type": "NUMBER", "required": true },
+    { "code": "allocated_amount", "label": "今回充当額", "type": "NUMBER", "required": true },
+    { "code": "previously_paid_amount", "label": "充当前累計入金", "type": "NUMBER", "required": true },
+    { "code": "balance_after_line", "label": "充当後残額", "type": "NUMBER" },
+    { "code": "line_note", "label": "行メモ", "type": "SINGLE_LINE_TEXT" }
+  ],
+  "jsOrder": [
+    "store_payment_config.js",
+    "store_payment_engine.js",
+    "store_payment_numbering.js",
+    "store_payment_desktop.js",
+    "store_payment.css"
+  ],
+  "prodJsDeployed": false
+}

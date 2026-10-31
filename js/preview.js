@@ -70,18 +70,26 @@
         'js/core.js',
         'js/invoice_layout.js',
         'js/record.js',
+        'js/master_list_service.js',
         'js/layout.js',
         'js/barcode.js',
         'js/preview.js',
         'js/company-seal-data.js',
         'js/templates/order.js',
+        'js/templates/order_detail_shared.js',
         'js/templates/order_detail.js',
+        'js/templates/outsource_outbound_slip_shared.js',
+        'js/templates/outsource_outbound_slip.js',
+        'js/templates/overseas_order.js',
         'js/templates/overseas_outbound_detail.js',
         'js/templates/overseas_outbound_sheet.js',
         'js/templates/delivery.js',
+        'js/templates/delivery_matsuba.js',
         'js/templates/invoice.js',
         'js/templates/invoice_window.js',
         'js/templates/estimate.js',
+        'js/templates/master_list.js',
+        'js/master_list_index.js',
         'js/overseas_outbound_service.js',
         'js/overseas_outbound_index.js',
         'js/desktop.js',
@@ -405,13 +413,16 @@
 
     const getBarcodeDrawOptions = (layout, barcodeType) => {
 
-        if (layout.reportType === 'order_detail') {
+        if (layout.reportType === 'order_detail'
+            || layout.reportType === 'overseas_order'
+            || layout.reportType === 'outsource_outbound_slip'
+            || layout.reportType === 'wasai_outbound_slip') {
             return {
                 barcode_type: barcodeType,
                 format: barcodeType,
-                height: 70,
-                width: 2.5,
-                margin: 12,
+                height: 32,
+                width: 1.3,
+                margin: 6,
                 displayValue: false,
                 textAlign: 'center',
                 background: '#ffffff',
@@ -473,15 +484,22 @@ ${buildButtonScriptBody()}
             return;
         }
 
-        var svg = document.getElementById('barcode');
+        var svgNodes = document.querySelectorAll('.order-detail-barcode__svg, #barcode');
 
-        if (!svg) {
+        if (!svgNodes.length) {
             initButtons();
             return;
         }
 
         try {
-            window.Barcode.draw(svg, barcodeValue, barcodeDrawOptions);
+            svgNodes.forEach(function (svg) {
+                var nodeValue = svg.getAttribute('data-barcode-value');
+                var value = nodeValue && String(nodeValue).trim() !== '' ? nodeValue : barcodeValue;
+                if (!value) {
+                    return;
+                }
+                window.Barcode.draw(svg, value, barcodeDrawOptions);
+            });
         } catch (error) {
             console.error(error);
             alert('バーコード描画エラー\\n\\n' + String(error));
@@ -532,13 +550,16 @@ ${buildButtonScriptBody()}
         const previewConfig = buildPreviewConfig(config, layout);
 
         if (layout.reportType === 'delivery'
+            || layout.reportType === 'delivery_matsuba'
             || layout.reportType === 'invoice'
             || layout.reportType === 'matsuba_summary_invoice') {
             previewConfig.print_orientation = 'portrait';
             previewConfig.paper_size = 'A4';
         }
 
-        if (layout.reportType === 'order_detail') {
+        if (layout.reportType === 'order_detail'
+            || layout.reportType === 'overseas_order'
+            || layout.reportType === 'outsource_outbound_slip') {
             previewConfig.print_orientation = 'landscape';
             previewConfig.paper_size = 'A4';
             previewConfig.page_margin = '0';
@@ -572,12 +593,15 @@ ${buildButtonScriptBody()}
         html = html.split('<div class="page">').join(`<div class="${Dom.getPageClassName(previewConfig)}">`);
 
         if (layout.reportType === 'delivery'
+            || layout.reportType === 'delivery_matsuba'
             || layout.reportType === 'invoice'
             || layout.reportType === 'matsuba_summary_invoice') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
         }
 
         if (layout.reportType === 'order_detail'
+            || layout.reportType === 'overseas_order'
+            || layout.reportType === 'outsource_outbound_slip'
             || layout.reportType === 'overseas_outbound_detail'
             || layout.reportType === 'overseas_outbound_sheet') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');

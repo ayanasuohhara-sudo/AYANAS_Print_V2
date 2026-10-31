@@ -1,0 +1,61 @@
+{
+  "js": [
+    {
+      "name": "saiban.js",
+      "fileKey": "20261025023813BF72CBAB08E745E2B9FDF643C5D49C14024",
+      "type": "FILE"
+    },
+    {
+      "name": "saiban1.js",
+      "fileKey": "20261025023813FE01B67BC9824955AA201F5861819205107",
+      "type": "FILE"
+    },
+    {
+      "name": "price_master_search11.js",
+      "fileKey": "20261025023813E55DA1EF410F4ABC9C882CD309FB3736051",
+      "type": "FILE"
+    },
+    {
+      "name": "category.js",
+      "fileKey": "202610250238138899FC8A2EA142D58A418A2158DDA4DB338",
+      "type": "FILE"
+    },
+    {
+      "name": "order_customer_search.js",
+      "fileKey": "202610250238132E7C32B3CCC84550AE566149D67B6504013",
+      "type": "FILE"
+    },
+    {
+      "name": "price_master_register.js",
+      "fileKey": "202610250238138889C56483FF47C8A6C51805D1E92839290",
+      "type": "FILE"
+    },
+    {
+      "name": "order_record_form.js",
+      "fileKey": "202610250238139403A3879E7941D1AF62F4B8E41DBB3D338",
+      "type": "FILE"
+    },
+    {
+      "name": "additional_item_engine.js",
+      "fileKey": "20261025023813415B3619E3CD4FE28F199D3AC0D0A003204",
+      "type": "FILE"
+    },
+    {
+      "name": "order_price_unconfirmed_clear.js",
+      "fileKey": "20261025023813114310B640024F948F3A3531CB8A3686109",
+      "type": "FILE"
+    },
+    {
+      "name": "schedule_customer.js",
+      "fileKey": "20261025023814993C7922431F4BE89A9F54A1F1631B81338",
+      "type": "FILE"
+    }
+  ],
+  "css": [
+    {
+      "name": "order_record_form.css",
+      "fileKey": "20261025023813969652CB431F483289AC2556BF7DEEE1018",
+      "type": "FILE"
+    }
+  ]
+}

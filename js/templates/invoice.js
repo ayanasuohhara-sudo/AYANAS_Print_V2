@@ -8,9 +8,31 @@
      * 請求書の HTML 文字列を生成する（請求書作成 App 35 向け）。
      */
 
-    const INVOICE_TEMPLATE_VERSION = '49';
-    const DETAILS_PER_PAGE_FIRST = 17;
-    const DETAILS_PER_PAGE_NEXT = 26;
+    const INVOICE_TEMPLATE_VERSION = '67';
+    /**
+     * 法人向け基準スロット数。
+     * 納品書（DETAILS_PER_PAGE=20 / 行高5.1mm）に近い密度へ揃える。
+     * 1ページ目はヘッダ＋金額表＋振込先があるため、納品書よりやや少なめ。
+     * 折り返し2行時に振込先下枠が切れないよう、基準を1スロット余裕を持たせる。
+     */
+    const DETAILS_PER_PAGE_FIRST = 15;
+    /** 繰越ありは締日表と金額2段があるため、1ページ目の明細を2スロット減らす */
+    const DETAILS_PER_PAGE_FIRST_CARRY = 13;
+    const DETAILS_PER_PAGE_NEXT = 20;
+    const DETAILS_PER_PAGE_FIRST_MIN = 11;
+    /** 一般客は行高を広げるため、1ページあたりの明細を抑える */
+    const DETAILS_PER_PAGE_FIRST_GENERAL = 9;
+    const DETAILS_PER_PAGE_NEXT_GENERAL = 12;
+    const DETAILS_PER_PAGE_FIRST_MIN_GENERAL = 7;
+    const FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION = {};
+    /** 折り返し見積: 列ごとのおおよその1行あたり文字数（和文） */
+    const WRAP_CHARS = {
+        clientName: 16,
+        itemName: 18,
+        slipNo: 10,
+        generalClientName: 14,
+        generalItemName: 16,
+    };
 
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
@@ -89,6 +111,8 @@
 
     const formatCustomerName = (name) => `${String(name ?? '').trim()}様`;
 
+    const formatGeneralCustomerName = (name) => `${String(name ?? '').trim()} 様`;
+
     const resolveCustomerNameFontSize = (name) => {
 
         const length = formatCustomerName(name).length;
@@ -117,9 +141,47 @@
 
     };
 
-    const buildCustomerNameHtml = (name) => {
+    const resolveGeneralCustomerNameFontSize = (name) => {
 
-        const customerName = formatCustomerName(name);
+        const length = formatGeneralCustomerName(name).length;
+
+        if (length <= 12) {
+            return '16pt';
+        }
+
+        if (length <= 16) {
+            return '14pt';
+        }
+
+        if (length <= 20) {
+            return '12pt';
+        }
+
+        if (length <= 26) {
+            return '11pt';
+        }
+
+        if (length <= 34) {
+            return '10pt';
+        }
+
+        return '9pt';
+
+    };
+
+    const buildCustomerNameHtml = (name, options = {}) => {
+
+        const isGeneral = options.general === true;
+        const customerName = isGeneral
+            ? formatGeneralCustomerName(name)
+            : formatCustomerName(name);
+
+        if (isGeneral) {
+            const fontSize = resolveGeneralCustomerNameFontSize(name);
+
+            return `<p class="invoice-customer-panel__name invoice-customer-panel__name--general" style="font-size:${fontSize}">${esc(customerName)}</p>`;
+        }
+
         const fontSize = resolveCustomerNameFontSize(name);
 
         return `<p class="invoice-customer-panel__name" style="font-size:${fontSize}">${esc(customerName)}</p>`;
@@ -160,7 +222,27 @@
 
     };
 
-    const buildCustomerPanelHtml = (header) => {
+    const buildGeneralCustomerCodeHtml = (header) => {
+
+        const customerCode = String(header.customer_code ?? '').trim();
+
+        if (!customerCode) {
+            return '';
+        }
+
+        return `<p class="invoice-customer-panel__code invoice-customer-panel__code--general">顧客コード：${esc(customerCode)}</p>`;
+
+    };
+
+    const buildCustomerPanelHtml = (header, layout = {}) => {
+
+        if (layout.recipientMode === 'general') {
+            return `
+            <div class="invoice-customer-panel invoice-customer-panel--general">
+                ${buildCustomerNameHtml(header.general_client_name, { general: true })}
+                ${buildGeneralCustomerCodeHtml(header)}
+            </div>`;
+        }
 
         const postal = formatPostal(header.customer_postal_code);
         const address = String(header.customer_address ?? '').trim();
@@ -176,7 +258,15 @@
 
     };
 
-    const buildCustomerPanelBriefHtml = (header) => {
+    const buildCustomerPanelBriefHtml = (header, layout = {}) => {
+
+        if (layout.recipientMode === 'general') {
+            return `
+            <div class="invoice-customer-panel invoice-customer-panel--brief invoice-customer-panel--general">
+                ${buildCustomerNameHtml(header.general_client_name, { general: true })}
+                ${buildGeneralCustomerCodeHtml(header)}
+            </div>`;
+        }
 
         const customerCode = String(header.customer_code ?? '').trim();
 
@@ -249,8 +339,8 @@
         return `
 <header class="invoice-header${showFullAddressee ? '' : ' invoice-header--continued'}">
     <div class="invoice-header__left">
-        ${showFullAddressee ? buildCustomerPanelHtml(header) : ''}
-        ${showBriefAddressee ? buildCustomerPanelBriefHtml(header) : ''}
+        ${showFullAddressee ? buildCustomerPanelHtml(header, layout) : ''}
+        ${showBriefAddressee ? buildCustomerPanelBriefHtml(header, layout) : ''}
     </div>
     <div class="invoice-header__right">
         <div class="invoice-header__info">
@@ -266,51 +356,107 @@
 
     };
 
-    const buildEmptyDetailPairHtml = () => (
-        `<tr class="detail-row detail-row--primary detail-row--empty">`
-        + `<td class="detail-cell--stack"></td>`
-        + `<td class="detail-cell--stack"></td>`
-        + `<td class="detail-cell--stack"></td>`
-        + `<td class="detail-cell--stack"></td>`
-        + `<td class="num detail-cell--merged" rowspan="2"></td>`
-        + `<td class="num detail-cell--merged" rowspan="2"></td>`
-        + `<td class="num detail-cell--merged" rowspan="2"></td>`
-        + `</tr>`
-        + `<tr class="detail-row detail-row--secondary detail-row--empty">`
-        + `<td class="detail-cell--stack detail-cell--delivery-no"></td>`
-        + `<td class="detail-cell--stack detail-cell--manage-no"></td>`
-        + `<td class="detail-cell--stack detail-cell--item-sub"></td>`
-        + `<td class="detail-cell--stack"></td>`
-        + `</tr>`
-    );
+    const buildEmptyDetailPairHtml = (options = {}) => {
 
-    const buildDetailPairHtml = (detail) => {
+        const isGeneral = options.general === true;
 
-        if (!detail) {
-            return buildEmptyDetailPairHtml();
+        if (isGeneral) {
+            const spacer = '<span class="detail-row-spacer" aria-hidden="true"></span>';
+            const spacerPair = '<span class="detail-row-spacer detail-row-spacer--pair" aria-hidden="true"></span>';
+
+            return `<tr class="detail-row detail-row--primary detail-row--empty">`
+                + `<td class="detail-cell--stack">${spacer}</td>`
+                + `<td class="detail-cell--merged detail-cell--client-name" rowspan="2">${spacerPair}</td>`
+                + `<td class="detail-cell--stack">${spacer}</td>`
+                + `<td class="detail-cell--stack detail-cell--slip-no">${spacer}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${spacerPair}</td>`
+                + `</tr>`
+                + `<tr class="detail-row detail-row--secondary detail-row--empty">`
+                + `<td class="detail-cell--stack detail-cell--delivery-no">${spacer}</td>`
+                + `<td class="detail-cell--stack detail-cell--item-sub">${spacer}</td>`
+                + `<td class="detail-cell--stack detail-cell--slip-no">${spacer}</td>`
+                + `</tr>`;
         }
 
-        return `<tr class="detail-row detail-row--primary">`
-            + `<td class="detail-cell--stack">${esc(Format.formatDate(detail.delivery_date))}</td>`
-            + `<td class="detail-cell--stack">${esc(detail.client_name)}</td>`
-            + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
-            + `<td class="detail-cell--stack">${esc(detail.slip_no)}</td>`
-            + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
-            + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
-            + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
+        // 納品書と同じく空セル＋CSS固定行高(5.1mm)で罫線を保つ
+        return `<tr class="detail-row detail-row--primary detail-row--empty">`
+            + `<td class="detail-cell--stack"></td>`
+            + `<td class="detail-cell--stack detail-cell--client-name"></td>`
+            + `<td class="detail-cell--stack"></td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no"></td>`
+            + `<td class="num detail-cell--merged" rowspan="2"></td>`
+            + `<td class="num detail-cell--merged" rowspan="2"></td>`
+            + `<td class="num detail-cell--merged" rowspan="2"></td>`
             + `</tr>`
-            + `<tr class="detail-row detail-row--secondary">`
-            + `<td class="detail-cell--stack detail-cell--delivery-no">${esc(detail.delivery_no)}</td>`
-            + `<td class="detail-cell--stack detail-cell--manage-no">${esc(detail.manage_no)}</td>`
-            + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
-            + `<td class="detail-cell--stack">${esc(detail.in_charge)}</td>`
+            + `<tr class="detail-row detail-row--secondary detail-row--empty">`
+            + `<td class="detail-cell--stack detail-cell--delivery-no"></td>`
+            + `<td class="detail-cell--stack detail-cell--manage-no"></td>`
+            + `<td class="detail-cell--stack detail-cell--item-sub"></td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no"></td>`
             + `</tr>`;
 
     };
 
-    const buildDetailRowsHtml = (details) => details.map((detail) => buildDetailPairHtml(detail)).join('');
+    const buildDetailPairHtml = (detail, options = {}) => {
 
-    const buildDetailTableHtml = (details) => `
+        const isGeneral = options.general === true;
+
+        if (!detail) {
+            return buildEmptyDetailPairHtml(options);
+        }
+
+        const wrapUnits = Math.max(1, Math.min(3, Number(detail._slotUnits) || 1));
+        const wrapClass = wrapUnits > 1 ? ` detail-row--wrap-${wrapUnits}` : '';
+
+        if (isGeneral) {
+            const manageText = detail._showManageNo
+                ? String(detail.manage_no ?? '').trim()
+                : '';
+            const deliverySecondary = manageText
+                ? `${esc(detail.delivery_no)}<span class="detail-manage-inline">${esc(manageText)}</span>`
+                : esc(detail.delivery_no);
+
+            return `<tr class="detail-row detail-row--primary${wrapClass}">`
+                + `<td class="detail-cell--stack">${esc(Format.formatDate(detail.delivery_date))}</td>`
+                + `<td class="detail-cell--merged detail-cell--client-name" rowspan="2">${esc(detail.client_name)}</td>`
+                + `<td class="detail-cell--stack detail-cell--item-name">${esc(detail.item_name)}</td>`
+                + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.slip_no)}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
+                + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
+                + `</tr>`
+                + `<tr class="detail-row detail-row--secondary${wrapClass}">`
+                + `<td class="detail-cell--stack detail-cell--delivery-no">${deliverySecondary}</td>`
+                + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
+                + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.in_charge)}</td>`
+                + `</tr>`;
+        }
+
+        return `<tr class="detail-row detail-row--primary${wrapClass}">`
+            + `<td class="detail-cell--stack">${esc(Format.formatDate(detail.delivery_date))}</td>`
+            + `<td class="detail-cell--stack detail-cell--client-name">${esc(detail.client_name)}</td>`
+            + `<td class="detail-cell--stack detail-cell--item-name">${esc(detail.item_name)}</td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.slip_no)}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.unit_price))}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(Format.formatMoney(detail.amount))}</td>`
+            + `</tr>`
+            + `<tr class="detail-row detail-row--secondary${wrapClass}">`
+            + `<td class="detail-cell--stack detail-cell--delivery-no">${esc(detail.delivery_no)}</td>`
+            + `<td class="detail-cell--stack detail-cell--manage-no">${esc(detail._showManageNo ? detail.manage_no : '')}</td>`
+            + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
+            + `<td class="detail-cell--stack detail-cell--slip-no">${esc(detail.in_charge)}</td>`
+            + `</tr>`;
+
+    };
+
+    const buildDetailRowsHtml = (details, options = {}) => (
+        details.map((detail) => buildDetailPairHtml(detail, options)).join('')
+    );
+
+    const buildDetailTableHtml = (details, options = {}) => `
 
 <table class="invoice-detail-table">
     <thead>
@@ -325,25 +471,37 @@
         </tr>
     </thead>
     <tbody>
-${buildDetailRowsHtml(details)}
+${buildDetailRowsHtml(details, options)}
     </tbody>
 </table>`;
 
-    const resolveSummaryAmounts = (summary) => {
+    const resolveSummaryAmounts = (summary, options = {}) => {
+
+        const { includeCarryForwardInCurrentBilling = false } = options;
 
         const subtotal = summary.subtotal ?? summary.totalAmount ?? 0;
         const tax = summary.tax ?? 0;
         const total = summary.total || (subtotal + tax);
         const carryOver = summary.carryOver ?? 0;
         const paymentAmount = summary.paymentAmount ?? 0;
-        const currentBillingAmount = summary.currentBillingAmount
+
+        const carryForwardAmount = carryOver - paymentAmount;
+        const adjustmentAmount = toNumber(summary.adjustmentAmount ?? summary.discountAmount);
+
+        let currentBillingAmount = summary.currentBillingAmount
             ?? summary.invoiceAmount
             ?? summary.monthlyBillingAmount
             ?? total;
 
+        if (includeCarryForwardInCurrentBilling) {
+            currentBillingAmount = carryForwardAmount + total - adjustmentAmount;
+        }
+
         return {
             carryOver,
             paymentAmount,
+            carryForwardAmount,
+            adjustmentAmount,
             subtotal,
             tax,
             total,
@@ -352,9 +510,37 @@ ${buildDetailRowsHtml(details)}
 
     };
 
+    const toNumber = (value) => {
+
+        if (value === null || value === undefined || value === '') {
+            return 0;
+        }
+
+        const number = Number(value);
+
+        return Number.isFinite(number) ? number : 0;
+
+    };
+
+    const formatClosingDateLabel = (value) => {
+
+        const text = String(value ?? '').trim();
+
+        if (!text) {
+            return '';
+        }
+
+        if (/^\d{4}-\d{2}-\d{2}/.test(text) || /^\d{4}\/\d{2}\/\d{2}/.test(text)) {
+            return Format.formatDate(text.slice(0, 10));
+        }
+
+        return text;
+
+    };
+
     const buildBillingMetaBarHtml = (header) => {
 
-        const closingDate = String(header.closing_date ?? '').trim();
+        const closingDate = formatClosingDateLabel(header.closing_date);
         const billingPeriod = formatBillingPeriodLabel(header);
 
         if (!closingDate && !billingPeriod) {
@@ -384,33 +570,37 @@ ${buildDetailRowsHtml(details)}
 
     const buildAmountOverviewHtml = (summary, layout = {}) => {
 
-        const amounts = resolveSummaryAmounts(summary);
-        const showCarryOver = layout.carryOverMode !== 'none';
+        const showCarryOver = layout.carryOverMode !== 'none'
+            && layout.recipientMode !== 'general';
+
+        const amounts = resolveSummaryAmounts(summary, {
+            includeCarryForwardInCurrentBilling: showCarryOver,
+        });
 
         if (showCarryOver) {
+
+            const carryCell = (label, value, modifier = '') => `
+                <td class="invoice-carry-cell${modifier}">
+                    <div class="invoice-carry-cell__label">${esc(label)}</div>
+                    <div class="invoice-carry-cell__value">${esc(Format.formatMoney(value))}</div>
+                </td>`;
 
             return `
 
 <div class="invoice-amount-overview">
-    <table class="invoice-summary invoice-summary--overview">
-        <thead>
-            <tr>
-                <th>前回請求額</th>
-                <th>今回入金額</th>
-                <th>小計</th>
-                <th>消費税</th>
-                <th>税込合計</th>
-                <th class="invoice-amount-overview__current-head">今回ご請求金額</th>
-            </tr>
-        </thead>
+    <table class="invoice-summary invoice-summary--overview invoice-summary--overview-carry-combined">
         <tbody>
             <tr>
-                <td class="num">${esc(Format.formatMoney(amounts.carryOver))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.paymentAmount))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.subtotal))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.tax))}</td>
-                <td class="num">${esc(Format.formatMoney(amounts.total))}</td>
-                <td class="num invoice-amount-overview__current">${esc(Format.formatMoney(amounts.currentBillingAmount))}</td>
+                ${carryCell('前回御請求額', amounts.carryOver)}
+                ${carryCell('御入金額', amounts.paymentAmount)}
+                ${carryCell('繰越額', amounts.carryForwardAmount)}
+                ${carryCell('調整額', amounts.adjustmentAmount)}
+            </tr>
+            <tr>
+                ${carryCell('当月小計', amounts.subtotal)}
+                ${carryCell('消費税', amounts.tax)}
+                ${carryCell('税込金額', amounts.total)}
+                ${carryCell('今回御請求額', amounts.currentBillingAmount, ' invoice-carry-cell--current')}
             </tr>
         </tbody>
     </table>
@@ -479,29 +669,187 @@ ${buildDetailRowsHtml(details)}
 
     };
 
-    const buildInvoiceDetailPages = (details) => {
+    const usesCarryOverLayout = (layout = {}) => (
+        layout.carryOverMode !== 'none'
+        && layout.recipientMode !== 'general'
+    );
 
+    const estimateHeaderDetailReduction = (header = {}) => {
+
+        const address = String(header.customer_address ?? '').trim();
+        const name = String(header.customer_name ?? '').trim();
+        let reduction = 0;
+
+        if (address.length > 42) {
+            reduction += 1;
+        }
+
+        if (address.length > 84) {
+            reduction += 1;
+        }
+
+        if (name.length > 28) {
+            reduction += 1;
+        }
+
+        return reduction;
+
+    };
+
+    const resolveFirstPageDetailCapacity = (layout, header) => {
+
+        const isGeneral = layout.recipientMode === 'general';
+        let capacity = isGeneral
+            ? DETAILS_PER_PAGE_FIRST_GENERAL
+            : (usesCarryOverLayout(layout)
+                ? DETAILS_PER_PAGE_FIRST_CARRY
+                : DETAILS_PER_PAGE_FIRST);
+
+        if (!isGeneral) {
+            capacity -= estimateHeaderDetailReduction(header);
+
+            const customerCode = String(header?.customer_code ?? '').trim().toUpperCase();
+            const customerReduction = FIRST_PAGE_DETAIL_CUSTOMER_REDUCTION[customerCode] ?? 0;
+
+            capacity -= customerReduction;
+        }
+
+        const minCapacity = isGeneral
+            ? DETAILS_PER_PAGE_FIRST_MIN_GENERAL
+            : DETAILS_PER_PAGE_FIRST_MIN;
+
+        return Math.max(minCapacity, capacity);
+
+    };
+
+    const estimateTextLines = (value, charsPerLine) => {
+
+        const text = String(value ?? '').trim();
+
+        if (!text) {
+            return 1;
+        }
+
+        const perLine = Math.max(1, charsPerLine);
+
+        return Math.max(1, Math.ceil(text.length / perLine));
+
+    };
+
+    /**
+     * 明細1件が占めるスロット数を見積もる。
+     * 長い文字は折り返しで行高が増えるため、空白行スロットを減らしてページに収める。
+     */
+    const estimateDetailSlotUnits = (detail, isGeneral = false) => {
+
+        if (!detail) {
+            return 1;
+        }
+
+        if (isGeneral) {
+            const lines = Math.max(
+                estimateTextLines(detail.client_name ?? detail.general_client_name, WRAP_CHARS.generalClientName),
+                estimateTextLines(detail.item_name, WRAP_CHARS.generalItemName),
+                estimateTextLines(detail.slip_no, WRAP_CHARS.slipNo),
+                1
+            );
+
+            return Math.min(3, lines);
+        }
+
+        const lines = Math.max(
+            estimateTextLines(detail.client_name, WRAP_CHARS.clientName),
+            estimateTextLines(detail.item_name, WRAP_CHARS.itemName),
+            estimateTextLines(detail.slip_no, WRAP_CHARS.slipNo),
+            1
+        );
+
+        return Math.min(3, lines);
+
+    };
+
+    const annotateDetailSlotUnits = (details, isGeneral) => (
+        (Array.isArray(details) ? details : []).map((detail) => {
+
+            if (!detail) {
+                return detail;
+            }
+
+            const units = estimateDetailSlotUnits(detail, isGeneral);
+
+            return {
+                ...detail,
+                _slotUnits: units,
+            };
+
+        })
+    );
+
+    const padPageWithSlotBudget = (pageDetails, capacity) => {
+
+        const used = pageDetails.reduce((sum, detail) => {
+
+            if (!detail) {
+                return sum + 1;
+            }
+
+            return sum + Math.max(1, Number(detail._slotUnits) || 1);
+
+        }, 0);
+        const remaining = Math.max(0, capacity - used);
+        const padded = pageDetails.slice();
+
+        for (let index = 0; index < remaining; index += 1) {
+            padded.push(Core.Report.EMPTY_DETAIL);
+        }
+
+        return padded;
+
+    };
+
+    /**
+     * スロット予算ベースで改ページする。
+     * - 明細1件は分割しない
+     * - 長い明細は複数スロット消費 → その分空白行を減らす
+     * - 空白行は同一ページ内の余りスロットを埋めるだけ（空白ページは作らない）
+     */
+    const buildInvoiceDetailPages = (details, layout = {}, header = {}) => {
+
+        const isGeneral = layout.recipientMode === 'general';
+        const firstPageSize = resolveFirstPageDetailCapacity(layout, header);
+        const nextPageSize = isGeneral
+            ? DETAILS_PER_PAGE_NEXT_GENERAL
+            : DETAILS_PER_PAGE_NEXT;
+        const annotated = annotateDetailSlotUnits(details, isGeneral);
         const pages = [];
 
-        if (!Array.isArray(details) || details.length === 0) {
-            pages.push(Core.Report.padPageDetails([], DETAILS_PER_PAGE_FIRST));
+        if (annotated.length === 0) {
+            pages.push(padPageWithSlotBudget([], firstPageSize));
             return pages;
         }
 
-        pages.push(Core.Report.padPageDetails(
-            details.slice(0, DETAILS_PER_PAGE_FIRST),
-            DETAILS_PER_PAGE_FIRST
-        ));
+        let page = [];
+        let used = 0;
+        let capacity = firstPageSize;
 
-        let index = DETAILS_PER_PAGE_FIRST;
+        annotated.forEach((detail) => {
 
-        while (index < details.length) {
+            const units = Math.max(1, Number(detail._slotUnits) || 1);
 
-            const chunk = details.slice(index, index + DETAILS_PER_PAGE_NEXT);
+            if (page.length > 0 && used + units > capacity) {
+                pages.push(padPageWithSlotBudget(page, capacity));
+                page = [];
+                used = 0;
+                capacity = nextPageSize;
+            }
 
-            pages.push(Core.Report.padPageDetails(chunk, DETAILS_PER_PAGE_NEXT));
-            index += DETAILS_PER_PAGE_NEXT;
+            page.push(detail);
+            used += units;
 
+        });
+
+        if (page.length > 0 || pages.length === 0) {
+            pages.push(padPageWithSlotBudget(page, capacity));
         }
 
         return pages;
@@ -517,13 +865,16 @@ ${buildDetailRowsHtml(details)}
 
         const windowAddressHtml = '';
         const isPage1 = pageNumber === 1;
+        const detailOptions = {
+            general: layout.recipientMode === 'general',
+        };
 
         return `
     ${windowAddressHtml}
     ${buildHeaderHtml(header, layout, { pageNumber, totalPages }, config)}
     ${isPage1 ? buildBillingMetaBarHtml(header) : ''}
     ${isPage1 ? buildAmountOverviewHtml(summary, layout) : ''}
-    ${buildDetailTableHtml(pageDetails)}
+    ${buildDetailTableHtml(pageDetails, detailOptions)}
     ${isPage1 ? buildPage1FooterHtml(summary) : ''}
     ${buildPageNoHtml(pageNumber, totalPages)}`;
 
@@ -539,11 +890,28 @@ ${buildDetailRowsHtml(details)}
 
         Validation.assertDetailReportData(data);
 
-        const { header, details, summary } = data;
-        const detailPages = buildInvoiceDetailPages(details);
+        const { header, summary } = data;
+        const details = Core.Report.annotateManageNoVisibility(data.details);
+        const detailPages = buildInvoiceDetailPages(details, layout, header);
         const totalPages = detailPages.length;
-        const pagesHtml = detailPages.map((pageDetails, index) => (
-            `<div class="page">${buildPageHtml(
+        const carryFirstPage = usesCarryOverLayout(layout);
+        const pagesHtml = detailPages.map((pageDetails, index) => {
+            const pageClasses = ['page'];
+            const isLast = index === totalPages - 1;
+
+            if (index === 0) {
+                pageClasses.push('page--invoice-first');
+
+                if (carryFirstPage) {
+                    pageClasses.push('page--invoice-carry-first');
+                }
+            }
+
+            if (isLast) {
+                pageClasses.push('page--invoice-last');
+            }
+
+            return `<div class="${pageClasses.join(' ')}">${buildPageHtml(
                 header,
                 pageDetails,
                 summary,
@@ -554,8 +922,8 @@ ${buildDetailRowsHtml(details)}
                 },
                 config
             )}
-</div>`
-        )).join('\n');
+</div>`;
+        }).join('\n');
 
         return Common.buildDocumentHtml({
             title: '請求書',

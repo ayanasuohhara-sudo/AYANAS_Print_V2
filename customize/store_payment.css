@@ -1,0 +1,21 @@
+/* 店舗入金管理 S1 — 管理画面バナー */
+
+.stp-s1-banner {
+  margin: 8px 16px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.stp-s1-banner--info {
+  background: #eef6ff;
+  border: 1px solid #b3d4f5;
+  color: #1f4e79;
+}
+
+.stp-s1-banner--warn {
+  background: #fff8e6;
+  border: 1px solid #f0d78c;
+  color: #7a5b00;
+}

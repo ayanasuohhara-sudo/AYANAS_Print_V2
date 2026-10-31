@@ -1,0 +1,154 @@
+(function() {
+  'use strict';
+
+  /**
+   * 和裁士入庫処理（統合入庫アプリから呼び出し可能）
+   * 依存: wasai_config.js
+   */
+
+  if (!window.CAYANAS_Wasai) {
+    console.error('[wasai_inbound] wasai_config.js を先に読み込んでください。');
+    return;
+  }
+
+  const W = window.CAYANAS_Wasai;
+
+  const flattenOutboundLines = (records) => {
+    const lines = [];
+
+    records.forEach(function(rec) {
+      const table = rec[W.F.outboundLines];
+
+      if (!table || !Array.isArray(table.value)) {
+        return;
+      }
+
+      table.value.forEach(function(row) {
+        lines.push({
+          outboundRecord: rec,
+          outboundRecordId: rec.$id.value,
+          lineRow: row,
+          lineId: row.id,
+          manageNo: String(W.getFieldValue(row.value, W.LINE.manageNo) ?? '').trim(),
+          lineStatus: String(W.getFieldValue(row.value, W.LINE.lineStatus) ?? '').trim(),
+          inboundDate: String(W.getFieldValue(row.value, W.LINE.inboundDate) ?? '').trim(),
+        });
+      });
+    });
+
+    return lines;
+  };
+
+  const findOutboundLineForInbound = async (manageNo) => {
+    const candidates = new Set(W.expandManageNoCandidates(manageNo));
+    const records = await W.fetchRecords(
+      W.APP.wasaiOutbound,
+      W.queryInSingle(W.F.outboundStatus, W.OUTBOUND_HEADER_STATUS) + ' order by $id desc limit 400'
+    );
+
+    const lines = flattenOutboundLines(records);
+
+    return lines.find(function(entry) {
+      if (!candidates.has(entry.manageNo)) {
+        return false;
+      }
+
+      if (entry.inboundDate !== '') {
+        return false;
+      }
+
+      return entry.lineStatus === W.LINE_STATUS.outbound
+        || entry.lineStatus === '';
+    }) ?? null;
+  };
+
+  const buildLinePutRows = (record, lineId, patch) => {
+    const table = record[W.F.outboundLines];
+    const rows = [];
+
+    table.value.forEach(function(row) {
+      if (String(row.id) !== String(lineId)) {
+        rows.push({
+          id: row.id,
+          value: {},
+        });
+        return;
+      }
+
+      const value = {};
+
+      Object.keys(patch).forEach(function(key) {
+        value[key] = { value: patch[key] };
+      });
+
+      rows.push({ id: row.id, value: value });
+    });
+
+    return rows;
+  };
+
+  /**
+   * @param {string} manageNo
+   * @param {string} inboundDate YYYY-MM-DD
+   * @returns {Promise<{ok: boolean, message?: string}>}
+   */
+  const applyWasaiInbound = async (manageNo, inboundDate) => {
+    const normalizedManageNo = String(manageNo ?? '').trim();
+    const normalizedDate = String(inboundDate ?? '').trim();
+
+    if (!normalizedManageNo || !normalizedDate) {
+      return { ok: false, message: '管理番号または入庫日が空です。' };
+    }
+
+    const match = await findOutboundLineForInbound(normalizedManageNo);
+
+    if (!match) {
+      return { ok: false, message: '和裁士出庫中（未入庫）の明細が見つかりません。' };
+    }
+
+    const orderRecord = await W.fetchOrderByManageNo(normalizedManageNo);
+
+    if (!orderRecord) {
+      return { ok: false, message: '受注明細(App16)が見つかりません。' };
+    }
+
+    const linePatch = {};
+    linePatch[W.LINE.inboundDate] = normalizedDate;
+    linePatch[W.LINE.lineStatus] = W.LINE_STATUS.inbound;
+
+    await kintone.api(
+      kintone.api.url('/k/v1/record.json', true),
+      'PUT',
+      {
+        app: W.APP.wasaiOutbound,
+        id: match.outboundRecordId,
+        record: {
+          [W.F.outboundLines]: {
+            value: buildLinePutRows(match.outboundRecord, match.lineId, linePatch),
+          },
+        },
+      }
+    );
+
+    const orderUpdate = await W.updateOrderForWasai(orderRecord, 'inbound', normalizedDate);
+
+    if (orderUpdate.skipped) {
+      return {
+        ok: false,
+        message: orderUpdate.message,
+      };
+    }
+
+    return {
+      ok: true,
+      outboundRecordId: match.outboundRecordId,
+      outboundLineId: match.lineId,
+    };
+  };
+
+  window.CAYANAS_WasaiInbound = {
+    applyWasaiInbound: applyWasaiInbound,
+    findOutboundLineForInbound: findOutboundLineForInbound,
+  };
+
+})();

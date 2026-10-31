@@ -14,7 +14,9 @@
     const INVOICE_APP_ID = 35;
     const ORDER_APP_ID = 16;
     const OVERSEAS_OUTBOUND_APP_ID = 28;
-
+    const OUTSOURCE_OUTBOUND_APP_ID = 27;
+    const WASAI_OUTBOUND_APP_ID = 74;
+    const WASAI_PAYMENT_APP_ID = 75;
     const DEFAULT_COMPANY = {
         name: '株式会社ayanasu',
         postalCode: '〒631-0078',
@@ -143,6 +145,63 @@
     });
 
     registerReport({
+        reportType: 'outsource_outbound_slip',
+        title: '外注出庫伝票',
+        templatePath: 'js/templates/outsource_outbound_slip.js',
+        templateGlobal: 'OutsourceOutboundSlipTemplate',
+        pageClass: 'report-order-detail',
+        barcodeField: 'header.manage_no',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '外注出庫伝票',
+        appIds: [OUTSOURCE_OUTBOUND_APP_ID],
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '1',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
+        reportType: 'wasai_outbound_slip',
+        title: '和裁士出庫伝票',
+        templatePath: 'js/templates/outsource_outbound_slip.js',
+        templateGlobal: 'WasaiOutboundSlipTemplate',
+        pageClass: 'report-order-detail',
+        barcodeField: 'header.manage_no',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '和裁士出庫伝票',
+        appIds: [WASAI_OUTBOUND_APP_ID],
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '1',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
+        reportType: 'wasai_payment_statement',
+        title: '和裁士支払明細書',
+        templatePath: 'js/templates/estimate.js',
+        templateGlobal: 'WasaiPaymentStatementTemplate',
+        pageClass: 'report-wasai-payment-statement',
+        barcodeField: '',
+        paperSize: 'A4',
+        orientation: 'portrait',
+        buttonLabel: '支払明細書 印刷',
+        appIds: [WASAI_PAYMENT_APP_ID],
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '0',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
         reportType: 'order_detail',
         title: '受注明細表',
         templatePath: 'js/templates/order_detail.js',
@@ -153,6 +212,24 @@
         orientation: 'landscape',
         buttonLabel: '受注明細表',
         appIds: [ORDER_APP_ID],
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '1',
+            page_margin: '0',
+        },
+        definition: {},
+    });
+
+    registerReport({
+        reportType: 'overseas_order',
+        title: '海外用受注表',
+        templatePath: 'js/templates/overseas_order.js',
+        templateGlobal: 'OverseasOrderTemplate',
+        pageClass: 'report-overseas-order',
+        barcodeField: 'manage_no',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '海外用受注表',
         configDefaults: {
             barcode_type: 'CODE39',
             barcode_visible: '1',
@@ -181,6 +258,24 @@
     });
 
     registerReport({
+        reportType: 'delivery_matsuba',
+        title: '納品書（松葉店用）',
+        templatePath: 'js/templates/delivery_matsuba.js',
+        templateGlobal: 'DeliveryMatsubaTemplate',
+        pageClass: 'report-delivery report-delivery--matsuba',
+        barcodeField: 'barcode_manage_no',
+        paperSize: 'A4',
+        orientation: 'landscape',
+        buttonLabel: '松葉店用 納品書',
+        company: { ...DEFAULT_COMPANY },
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '0',
+        },
+        definition: DeliveryDefinition,
+    });
+
+    registerReport({
         reportType: 'invoice',
         title: '請求書',
         templatePath: 'js/templates/invoice.js',
@@ -198,6 +293,33 @@
         },
         definition: InvoiceDefinition,
     });
+
+    if (typeof MasterListRegistry !== 'undefined' && typeof MasterListRegistry.getAll === 'function') {
+
+        MasterListRegistry.getAll().forEach((masterListDef) => {
+
+            registerReport({
+                reportType: masterListDef.reportType,
+                title: masterListDef.documentTitle,
+                templatePath: 'js/templates/master_list.js',
+                templateGlobal: 'MasterListTemplate',
+                pageClass: 'report-master-list',
+                barcodeField: '',
+                paperSize: 'A4',
+                orientation: 'landscape',
+                buttonLabel: masterListDef.buttonLabel,
+                appIds: [masterListDef.appId],
+                configDefaults: {
+                    barcode_type: 'CODE39',
+                    barcode_visible: '0',
+                    page_margin: '0',
+                },
+                definition: {},
+            });
+
+        });
+
+    }
 
     registerReport({
         reportType: 'matsuba_summary_invoice',
@@ -370,6 +492,10 @@
                 })
                 : 'normal';
             layout.carryOverMode = printOptions.carryOverMode === 'none' ? 'none' : 'with_carry';
+        }
+
+        if (printOptions.recipientMode === 'general') {
+            layout.recipientMode = 'general';
         }
 
         return layout;
