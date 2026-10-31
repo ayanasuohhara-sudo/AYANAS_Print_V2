@@ -1,12 +1,14 @@
 {
   "appName": "店舗入金管理",
-  "note": "本番アプリ未作成。税丸め確認後に作成する。",
-  "taxProposal": {
+  "appId": 97,
+  "url": "https://o5nppg7kb4ly.cybozu.com/k/97/",
+  "note": "App 作成済。本番 JS カスタマイズは未反映（別途承認後）。",
+  "taxLocked": {
     "rate": 0.1,
     "base": "sum(App16.detail_table.amount) exclusive",
     "rounding": "round (Math.round) — matches customize print core.js / delivery template",
     "formula": "tax = round(ex * 0.1); inclusive = ex + tax",
-    "smaregiNote": "Smaregi taxRounding is store-configurable (0 round / 1 floor / 2 ceil). Confirm AYANAS store setting before go-live."
+    "smaregiNote": "Smaregi taxRounding is store-configurable (0 round / 1 floor / 2 ceil). Confirm AYANAS store setting before go-live POS reconciliation."
   },
   "headerFields": [
     { "code": "store_payment_no", "label": "入金番号", "type": "SINGLE_LINE_TEXT", "unique": true, "required": false },
@@ -47,5 +49,6 @@
     "store_payment_numbering.js",
     "store_payment_desktop.js",
     "store_payment.css"
-  ]
+  ],
+  "prodJsDeployed": false
 }

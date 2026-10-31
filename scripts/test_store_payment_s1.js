@@ -31,7 +31,7 @@ const assert = (name, cond) => {
 };
 
 assert('version', !!C.VERSION);
-assert('app id placeholder 0', C.STORE_PAYMENT_APP_ID === 0);
+assert('app id 97', C.STORE_PAYMENT_APP_ID === 97);
 assert('tax rate 10%', C.TAX_RATE === 0.1);
 assert('tax rounding round', C.TAX_ROUNDING === 'round');
 

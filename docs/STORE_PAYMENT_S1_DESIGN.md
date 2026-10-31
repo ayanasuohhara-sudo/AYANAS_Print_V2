@@ -1,7 +1,7 @@
 # 店舗入金管理 S1 — 設計書（承認用）
 
 - **作成**: 2026-11-01（Asia/Tokyo）
-- **状態**: **コード実装済み・S1 アプリ未作成**（税丸めのユーザー確認待ち → [`STORE_PAYMENT_S1_TAX_CONFIRMATION.md`](./STORE_PAYMENT_S1_TAX_CONFIRMATION.md)）
+- **状態**: **S1 App97 作成済・コード実装済・本番 JS 未反映**（税仕様ロック → [`STORE_PAYMENT_S1_TAX_CONFIRMATION.md`](./STORE_PAYMENT_S1_TAX_CONFIRMATION.md)）
 - **前提**: PCM App96 / App16 `personal_customer_id` 本番連携・E2E 完了済み
 - **方針**: App21（法人入金）と分離。App8 / App19 / App21 / App35 は**変更しない**
 - **確定仕様**: 税込正 / 一部入金引き取り原則禁止（管理者承認例外）/ 返金はマイナス別レコード / S1 先行・店舗 UI は次段
@@ -26,8 +26,8 @@
 
 ## 1. S1 フィールド一覧
 
-**アプリ名（案）**: 店舗入金管理  
-**仮称 ID**: S1（作成後に実 App ID を `store_payment_config.js` へ設定）
+**アプリ名**: 店舗入金管理  
+**App ID**: **97**（`STORE_PAYMENT_APP_ID` 設定済。本番 JS は未デプロイ）
 
 ### 1.1 ヘッダ
 
@@ -113,11 +113,11 @@ order_billed_in_tax(order) = round_tax(order_billed_ex_tax)  // 税込表示・�
 | ~~A. 税抜正~~ | — | 不採用（ユーザー確定: 税込正） |
 | **B. 税込正（採用）** | 充当・残額は税込 | 店舗会計・スマレジ突合 |
 
-**端数処理（暫定・確認待ち）**
+**端数処理（確定）**
 
 - 受注単位: `tax = Math.round(ex_tax * 0.1)`, `in_tax = ex_tax + tax`  
 - 根拠: 印刷プラグイン `js/core.js` / 納品テンプレと同型  
-- スマレジ店舗の税丸めが切り捨て/切り上げの場合は `TAX_ROUNDING` を変更（アプリ作成前に確認）
+- スマレジ店舗の税丸めが切り捨て/切り上げの場合は運用前に `TAX_ROUNDING` を変更し POS 突合
 
 ### 3.4 残額
 

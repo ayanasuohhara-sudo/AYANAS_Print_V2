@@ -1,11 +1,31 @@
-# 店舗入金 S1 — 税計算確認依頼（アプリ作成前）
+# 店舗入金 S1 — 税計算仕様（確定）
 
-- **作成**: 2026-11-01（Asia/Tokyo）
-- **理由**: 実装指示により、税計算が未確定の場合は **S1 アプリ作成前に確認** する
+- **確定**: 2026-11-01（Asia/Tokyo）
+- **S1 App ID**: **97**（店舗入金管理）
 
 ---
 
-## 調査結果
+## 確定仕様
+
+```text
+税抜合計 ex = Σ App16.detail_table.amount（受注単位）
+消費税   tax = Math.round(ex * 0.10)   // 四捨五入・円
+税込合計 in  = ex + tax
+```
+
+| 項目 | 値 |
+|------|-----|
+| 税率 | 10%（`TAX_RATE = 0.1`） |
+| 端数 | `Math.round`（`TAX_ROUNDING = 'round'`） |
+| 計算単位 | **受注合計に対して 1 回**（明細ごと税計算はしない） |
+| 入金・残額の正 | **税込 `in`** |
+| 設定箇所 | `customize/store_payment_config.js` |
+
+根拠: 印刷プラグイン `js/core.js` `calcTaxFromSubtotal` および納品テンプレ `js/templates/delivery.js` と同型。社内帳票との 1 円差を避ける。
+
+---
+
+## 調査結果（参照）
 
 | ソース | 内容 |
 |--------|------|
@@ -15,50 +35,21 @@
 | 納品テンプレ `js/templates/delivery.js` | 同様に **`Math.round(subtotal * 0.10)`** |
 | スマレジ | 税率は店舗設定。**税丸めは店舗ごとに** 四捨五入 / 切り捨て / 切り上げ（API: `taxRounding` 0/1/2） |
 
-→ 社内 kintone 印刷は **受注（小計）単位・税率10%・四捨五入** で統一。  
-→ スマレジ実機の丸め設定は本リポジトリからは確認できない。
+---
+
+## スマレジ突合（未解決・運用前確認）
+
+本リポジトリからはスマレジ実機の `taxRounding` を読めない。
+
+- S1 内部・印刷帳票は **四捨五入で固定**
+- 店舗 POS が切り捨て/切り上げの場合は 1 円差が発生し得る
+- 差分は `pos_transaction_id` とメモで突合。必要なら `TAX_ROUNDING` を `floor` / `ceil` に変更
+- 本番運用開始前にスマレジ管理画面「設定 → 税率 → 税丸め」を目視確認すること
 
 ---
 
-## 採用したい暫定仕様（ご確認ください）
+## 関連ポリシー（確定済み）
 
-```text
-税抜合計 ex = Σ App16.detail_table.amount（受注単位）
-消費税   tax = Math.round(ex * 0.10)   // 四捨五入・円
-税込合計 in  = ex + tax
-```
-
-- 入金・残額・充当の正は **税込 `in`**
 - 一部入金での引き取りは原則禁止（管理者の「未収入金引き渡し承認」のみ例外）
 - 返金は **マイナス金額の別レコード** + `related_refund_of`
-- スマレジと 1 円差が出た場合は `pos_transaction_id` とメモで突合し、必要なら後続で `pos_gross_amount` を追加
-
-`TAX_ROUNDING` は `store_payment_config.js` で `round` / `floor` / `ceil` 切替可能にしてあります。
-
----
-
-## お願い（返信で指定）
-
-1. 上記 **四捨五入（印刷プラグイン同型）** で S1 アプリ作成に進めてよいか  
-2. 違う場合: **切り捨て / 切り上げ** のどちらにするか（スマレジ管理画面「設定 → 税率 → 税丸め」）  
-3. 税計算の単位: **受注合計に対して 1 回**でよいか（明細ごと税計算はしない）
-
-ご承認後に:
-
-1. kintone に「店舗入金管理」アプリを作成  
-2. `STORE_PAYMENT_APP_ID` を設定  
-3. （本番 JS 反映は **別途承認後**）
-
----
-
-## 既にリポジトリへ入れたもの（アプリ未作成）
-
-| ファイル | 内容 |
-|----------|------|
-| `customize/store_payment_config.js` | 定数・税設定 |
-| `customize/store_payment_engine.js` | 税込・残額・バリデーション |
-| `customize/store_payment_numbering.js` | 入金番号採番 |
-| `customize/store_payment_desktop.js` | S1 画面ガード |
-| `customize/store_payment.css` | 样式 |
-| `scripts/test_store_payment_s1.js` | 単体テスト |
-| `docs/STORE_PAYMENT_S1_FIELDS.json` | フィールド定義案 |
+- 取消は履歴残置（物理削除しない）

@@ -3,26 +3,26 @@
 
   /**
    * 店舗入金管理 S1 — 定数
-   * STORE_PAYMENT_APP_ID は本番アプリ作成後に設定（0 のままでは保存系を動かさない）。
+   * App97「店舗入金管理」。本番 JS カスタマイズ反映は別途承認後。
    *
-   * 税込計算（暫定ロック案・アプリ作成前にユーザー確認）:
-   *   ex = Σ App16.detail_table.amount（税抜）
-   *   tax = round(ex * 0.10)   // 印刷プラグイン core.js と同型
+   * 税込計算（ロック）:
+   *   ex = Σ App16.detail_table.amount（税抜・受注単位）
+   *   tax = Math.round(ex * 0.10)   // 印刷プラグイン core.js / delivery と同型
    *   in  = ex + tax
-   * スマレジ店舗の「税丸め」が切り捨て/切り上げの場合は要再設定。
+   * スマレジ店舗の税丸めが floor/ceil の場合は TAX_ROUNDING を変更し、POS と突合する。
    */
 
-  const STORE_PAYMENT_VERSION = '1.0.0-s1';
+  const STORE_PAYMENT_VERSION = '1.0.1-s1';
 
-  /** @type {number} 店舗入金管理 App ID（作成後に設定） */
-  const STORE_PAYMENT_APP_ID = 0;
+  /** @type {number} 店舗入金管理 App ID */
+  const STORE_PAYMENT_APP_ID = 97;
 
   const ORDER_APP_ID = 16;
   const PCM_APP_ID = 96;
   const STORE_CUSTOMER_CODE = 'A550';
 
   const TAX_RATE = 0.1;
-  /** 'round' | 'floor' | 'ceil' — スマレジ店舗設定と一致させる */
+  /** 'round' | 'floor' | 'ceil' — 既定は印刷同型の round。スマレジ実機と差があれば切替 */
   const TAX_ROUNDING = 'round';
 
   const ID_PATTERN = /^P\d{6}$/;
