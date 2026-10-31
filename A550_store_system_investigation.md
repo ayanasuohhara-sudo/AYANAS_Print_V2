@@ -282,7 +282,7 @@ delivery_status  : 納品（未納品 / 納品待ち / 納品済）
 
 | 案 | 内容 |
 |----|------|
-| **S1. 店舗専用 App（推奨）** | `manage_no` 明細・個人ID・金額・取消。App21/35 に触れない |
+| **S1. 店舗専用 App（推奨）** | `manage_no` 明細・個人ID・金額・取消。App21/35 に触れない。詳細設計: [`docs/STORE_PAYMENT_S1_DESIGN.md`](./docs/STORE_PAYMENT_S1_DESIGN.md) |
 | S2. App21 拡張 | `manage_no` 列追加＋`payment_channel=店舗`。法人充当ロジックを厳密にスキップする改修が必要 |
 
 ### App8
