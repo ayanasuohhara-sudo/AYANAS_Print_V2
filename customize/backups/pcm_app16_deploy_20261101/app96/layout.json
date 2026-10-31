@@ -1,0 +1,378 @@
+{
+  "layout": [
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "personal_customer_id",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "customer_name",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "customer_kana",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "postal_code",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "prefecture",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "city",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "address_line",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "building_name",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "phone",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "mobile_phone",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "email",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DATE",
+          "code": "birthday",
+          "size": {
+            "width": "117"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "gender",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "member_type",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "member_no",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DATE",
+          "code": "member_start_date",
+          "size": {
+            "width": "117"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DATE",
+          "code": "member_expiry_date",
+          "size": {
+            "width": "117"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "member_status",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DATE",
+          "code": "first_order_date",
+          "size": {
+            "width": "117"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DATE",
+          "code": "last_order_date",
+          "size": {
+            "width": "117"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "NUMBER",
+          "code": "order_count",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "NUMBER",
+          "code": "lifetime_amount",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "dormant_status",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "dm_permission",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "email_permission",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "line_permission",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "MULTI_LINE_TEXT",
+          "code": "customer_note",
+          "size": {
+            "width": "315",
+            "innerHeight": "125"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "web_account_id",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "line_account_id",
+          "size": {
+            "width": "193"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "registration_source",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ROW",
+      "fields": [
+        {
+          "type": "DROP_DOWN",
+          "code": "web_verified",
+          "size": {
+            "width": "196"
+          }
+        }
+      ]
+    }
+  ],
+  "revision": "9"
+}

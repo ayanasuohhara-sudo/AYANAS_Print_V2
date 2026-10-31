@@ -1,0 +1,67 @@
+(function() {
+  'use strict';
+
+  const PRODUCT_APP_ID = 13;
+
+  kintone.events.on([
+    'app.record.create.submit',
+    'app.record.edit.submit'
+  ], async function(event) {
+
+    const record = event.record;
+
+    if (
+      !record.detail_table ||
+      record.detail_table.value.length === 0
+    ) {
+      return event;
+    }
+
+    const firstRow =
+      record.detail_table.value[0];
+
+    const itemName =
+      firstRow.value.item_name.value;
+
+    if (!itemName) {
+      return event;
+    }
+
+    try {
+
+      const resp = await kintone.api(
+        kintone.api.url('/k/v1/records.json', true),
+        'GET',
+        {
+          app: PRODUCT_APP_ID,
+          query: 'item_name = "' + itemName + '" limit 1'
+        }
+      );
+
+      if (resp.records.length > 0) {
+
+        const product = resp.records[0];
+
+        record.category.value =
+          product.category
+            ? product.category.value
+            : '';
+
+        record.subcategory.value =
+          product.subcategory
+            ? product.subcategory.value
+            : '';
+
+      }
+
+    } catch (e) {
+
+      console.error(e);
+
+    }
+
+    return event;
+
+  });
+
+})();
