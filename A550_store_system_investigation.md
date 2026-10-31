@@ -377,9 +377,9 @@ delivery_status  : 納品（未納品 / 納品待ち / 納品済）
 
 ## 13. 判断が必要な未確定事項
 
-1. **個人顧客の正 ID**（最重要）  
+1. **個人顧客の正 ID**（最重要） — **設計確定案あり**  
    - 現状: App8 に個人なし。App16 は `client_name` のみ。  
-   - 案: (a) App16 に `personal_customer_id` を採番し受付時必須 (b) 個人マスタ App 新設 (c) 電話番号ハッシュ等（プライバシー要検討）
+   - 方針: 新規個人顧客マスタ＋`personal_customer_id`（`P000001`）。詳細は [`personal_customer_master_design.md`](./personal_customer_master_design.md)
 2. **税込金額の定義** — App16 に税フィールドなし。税込をスマレジ側正とするか、税抜 `amount` 合計か
 3. **店舗入金の保管先** — S1（専用 App）vs S2（App21 拡張）
 4. **引き取り済み時の `location_status`** — `店舗` のまま / `納品済` に合わせるか（法人は納品済）
