@@ -27,8 +27,8 @@ const assert = (name, cond) => {
 };
 
 assert('config version', !!C.VERSION);
-assert('PCM_APP_ID placeholder is 0', C.PCM_APP_ID === 0);
-assert('COUNTER_APP_ID placeholder is 0', C.COUNTER_APP_ID === 0);
+assert('PCM_APP_ID is 96', C.PCM_APP_ID === 96);
+assert('COUNTER_APP_ID is 95', C.COUNTER_APP_ID === 95);
 assert('format P000001', N.formatPersonalCustomerId(1) === 'P000001');
 assert('format P000012', N.formatPersonalCustomerId(12) === 'P000012');
 assert('valid id', N.isValidPersonalCustomerId('P000001') === true);

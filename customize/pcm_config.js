@@ -8,11 +8,11 @@
 
   const PCM_CONFIG_VERSION = '1.0.0-phase1';
 
-  /** @type {number} 個人顧客マスタ App ID（作成後に設定） */
-  const PCM_APP_ID = 0;
+  /** @type {number} 個人顧客マスタ App ID */
+  const PCM_APP_ID = 96;
 
-  /** @type {number} 個人顧客ID採番 App ID（作成後に設定） */
-  const COUNTER_APP_ID = 0;
+  /** @type {number} 個人顧客ID採番 App ID */
+  const COUNTER_APP_ID = 95;
 
   const COUNTER_KEY = 'PCM_PERSONAL_ID';
   const ID_PREFIX = 'P';
