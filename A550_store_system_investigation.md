@@ -433,4 +433,31 @@ delivery_status  : 納品（未納品 / 納品待ち / 納品済）
 5. **4軸は維持**。「店舗移動待ち／引き取り待ち」は現行値の組合せで表現可能。  
 6. 実装は新規シェル App＋JS が既存法人フローへの影響最小。
 
+---
+
+## 付録 D. コードベース再確認で補強した点
+
+（リポジトリ横断調査の追記。本番変更なし。）
+
+| 項目 | 内容 | 参照 |
+|------|------|------|
+| **A550 を App16「納品済」にする自動経路が無い** | App19 同期は A550 をスキップ。他 JS にも A550 専用の納品済 PUT は見当たらない。店舗で App19 を使ってもスリップ採番のみ → **納品待ちのまま残りうる**。店舗専用画面が埋めるべき最大の穴 | `delivery_complete_sync.js` |
+| **App19 ガードと同期の非対称** | `delivery_completion_guard.js` は A550 も完了補完しうる（`process=完了` / `delivery=納品待ち`）。一方同期だけ A550 除外。テストでも明示 | `scripts/test_delivery_completion_guard.js` ケース12 |
+| **`customer_code` 空も App16 納品済同期スキップ** | A550 と同じく非法人扱い。一般客・空欄と店舗 A550 の切り分けは同期ロジック上ない | `isCorporateCustomer` |
+| **店舗顧客マスタは未着手の予約コメントのみ** | ビジネスメニューに「アプリ完成後に追加」 | `customize/business_menu_config.js` |
+| **和裁士支払率のみ A550 特例** | 既定 0.70、A550 は 0.65。入金・引き取りとは別系統 | `customize/wasai_config.js` |
+| **店舗作業ポータル** | メニュー上 App87「店舗作業状況」。App85 しみ抜き docs は本番 App 不存在と整合（レガシー） | `business_menu_config.js`, `floor_portal_*` |
+| **App92「引き取り候補」定義** | 表示専用: `process=完了` ∧ `delivery=納品待ち`（location 条件なし） | `store_deadline_engine.js` `isReadyForPickup` |
+
+**現行 A550 フロー（ギャップ図示）**
+
+```text
+受注(A550 + client_name)
+ → App34/作業/App30 … process=完了, delivery=納品待ち
+ → App92/ポータルで「納品待ち」表示
+ → App19 納品書: delivery_no 採番可 / App16 納品済は書かない
+ → App21 入金: 請求(App35)がある場合のみ（店舗都度会計とは未接続）
+ → App16 納品済: 手動 or 自動化なし ← 店舗専用画面の主目的
+```
+
 （本ドキュメント作成時点で、本番アプリ設定・JS・データの変更は行っていない。）
