@@ -67,7 +67,7 @@ in  = ex + tax   ← 入金・残額・充当の正
 
 | 種別 | 結果 |
 |------|------|
-| `node scripts/test_store_payment_s1.js` | **実行時に記載** |
+| `node scripts/test_store_payment_s1.js` | **47/47 OK** |
 | 本番 JS 反映後 E2E | **未実施**（承認後） |
 | 実スマレジ突合 | **未実施** |
 
