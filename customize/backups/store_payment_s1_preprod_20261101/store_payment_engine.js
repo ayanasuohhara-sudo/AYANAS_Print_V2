@@ -360,7 +360,7 @@
       return '';
     }
     return C.HEADER_FIELDS.personalCustomerId + ' = "' + escapeQuery(id) + '"'
-      + ' order by ' + C.HEADER_FIELDS.paymentDate + ' desc, レコード番号 desc limit 200';
+      + ' order by ' + C.HEADER_FIELDS.paymentDate + ' desc, $id desc limit 200';
   };
 
   const buildPaymentsByDateQuery = (paymentDate) => {

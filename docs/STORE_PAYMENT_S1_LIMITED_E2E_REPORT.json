@@ -1,0 +1,765 @@
+{
+  "at": "2026-11-01T05:47:23.616Z",
+  "appUrl": "https://o5nppg7kb4ly.cybozu.com/k/97/",
+  "e2e": [
+    {
+      "name": "redeploy 1.1.2",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "deploy": {
+          "app": "97",
+          "status": "SUCCESS"
+        },
+        "js": [
+          "store_payment_config.js",
+          "store_payment_engine.js",
+          "store_payment_numbering.js",
+          "store_payment_api.js",
+          "store_payment_desktop.js",
+          "store_payment_ui.js"
+        ],
+        "ver": null
+      }
+    },
+    {
+      "name": "version",
+      "ok": true,
+      "detail": "1.1.2-s1"
+    },
+    {
+      "name": "barcode load",
+      "ok": true,
+      "detail": {
+        "rows": 3,
+        "pid": "P000002"
+      }
+    },
+    {
+      "name": "customer id load",
+      "ok": true,
+      "detail": {
+        "rows": 3
+      }
+    },
+    {
+      "name": "pcm name search",
+      "ok": true,
+      "detail": 1
+    },
+    {
+      "name": "rows found",
+      "ok": true,
+      "detail": {
+        "b1": 8800,
+        "b2": 5500,
+        "b3": 3300
+      }
+    },
+    {
+      "name": "multi intake payment",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "recordId": "1",
+        "storePaymentNo": "SP-261101-000001",
+        "transactionId": "STP-1793512060759-4g7px6oj"
+      }
+    },
+    {
+      "name": "partial payment",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "recordId": "2",
+        "storePaymentNo": "SP-261101-000002",
+        "transactionId": "STP-1793512063580-cslvw1z0"
+      }
+    },
+    {
+      "name": "partial balance",
+      "ok": true,
+      "detail": {
+        "orderRecordId": "3388",
+        "revision": "2",
+        "manageNo": "TE2E9396013",
+        "personalCustomerId": "P000002",
+        "clientName": "[TEST]山田花子",
+        "kimonoType": "",
+        "itemNames": "変色直し",
+        "processStatus": "完了",
+        "locationStatus": "店舗",
+        "deliveryStatus": "納品待ち",
+        "deliveryNo": "",
+        "exclusive": 3000,
+        "tax": 300,
+        "billedInclusive": 3300,
+        "paid": 1000,
+        "balance": 2300,
+        "state": "一部入金",
+        "selectable": true,
+        "pickupEligible": false
+      }
+    },
+    {
+      "name": "paid not selectable",
+      "ok": true,
+      "detail": {
+        "orderRecordId": "3386",
+        "revision": "2",
+        "manageNo": "TE2E9396011",
+        "personalCustomerId": "P000002",
+        "clientName": "[TEST]山田花子",
+        "kimonoType": "",
+        "itemNames": "変色直し",
+        "processStatus": "完了",
+        "locationStatus": "店舗",
+        "deliveryStatus": "納品待ち",
+        "deliveryNo": "",
+        "exclusive": 8000,
+        "tax": 800,
+        "billedInclusive": 8800,
+        "paid": 8800,
+        "balance": 0,
+        "state": "入金済",
+        "selectable": false,
+        "pickupEligible": true
+      }
+    },
+    {
+      "name": "reentry blocked",
+      "ok": true,
+      "detail": [
+        "明細1: 過剰充当です（残額 0）。",
+        "明細1: 入金済みのため再入金できません。"
+      ]
+    },
+    {
+      "name": "partial pickup blocked",
+      "ok": true,
+      "detail": {
+        "ok": false,
+        "error": "一部入金のため引き取りできません。全額入金するか、管理者承認（未収入金引き渡し）が必要です。",
+        "balance": {
+          "exclusive": 3000,
+          "tax": 300,
+          "billedInclusive": 3300,
+          "paid": 1000,
+          "balance": 2300,
+          "state": "一部入金"
+        }
+      }
+    },
+    {
+      "name": "pickup o1",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "balance": {
+          "exclusive": 8000,
+          "tax": 800,
+          "billedInclusive": 8800,
+          "paid": 8800,
+          "balance": 0,
+          "state": "入金済"
+        },
+        "exception": false
+      }
+    },
+    {
+      "name": "o1 delivery done",
+      "ok": true,
+      "detail": "納品済"
+    },
+    {
+      "name": "o2 not done yet",
+      "ok": true,
+      "detail": "納品待ち"
+    },
+    {
+      "name": "pickup rerun alreadyDone",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "alreadyDone": true
+      }
+    },
+    {
+      "name": "pickup o2",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "balance": {
+          "exclusive": 5000,
+          "tax": 500,
+          "billedInclusive": 5500,
+          "paid": 5500,
+          "balance": 0,
+          "state": "入金済"
+        },
+        "exception": false
+      }
+    },
+    {
+      "name": "refund",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "recordId": "3",
+        "storePaymentNo": "SP-261101-000003",
+        "transactionId": "STP-1793512069030-i01wp25x"
+      }
+    },
+    {
+      "name": "cancel history",
+      "ok": true,
+      "detail": "取消"
+    },
+    {
+      "name": "o3 selectable after cancel",
+      "ok": true,
+      "detail": {
+        "orderRecordId": "3388",
+        "revision": "2",
+        "manageNo": "TE2E9396013",
+        "personalCustomerId": "P000002",
+        "clientName": "[TEST]山田花子",
+        "kimonoType": "",
+        "itemNames": "変色直し",
+        "processStatus": "完了",
+        "locationStatus": "店舗",
+        "deliveryStatus": "納品待ち",
+        "deliveryNo": "",
+        "exclusive": 3000,
+        "tax": 300,
+        "billedInclusive": 3300,
+        "paid": 0,
+        "balance": 3300,
+        "state": "未入金",
+        "selectable": true,
+        "pickupEligible": false
+      }
+    },
+    {
+      "name": "concurrency one win",
+      "ok": true,
+      "detail": {
+        "raOk": false,
+        "rbOk": true,
+        "ra": {
+          "ok": false,
+          "errors": [
+            "Missing or invalid input."
+          ]
+        },
+        "rb": {
+          "ok": true,
+          "recordId": "4",
+          "storePaymentNo": "SP-261101-000004",
+          "transactionId": "STP-1793512071732-qjscdy9u"
+        }
+      }
+    },
+    {
+      "name": "no overpay",
+      "ok": true,
+      "detail": {
+        "orderRecordId": "3388",
+        "revision": "2",
+        "manageNo": "TE2E9396013",
+        "personalCustomerId": "P000002",
+        "clientName": "[TEST]山田花子",
+        "kimonoType": "",
+        "itemNames": "変色直し",
+        "processStatus": "完了",
+        "locationStatus": "店舗",
+        "deliveryStatus": "納品待ち",
+        "deliveryNo": "",
+        "exclusive": 3000,
+        "tax": 300,
+        "billedInclusive": 3300,
+        "paid": 3300,
+        "balance": 0,
+        "state": "入金済",
+        "selectable": false,
+        "pickupEligible": true
+      }
+    },
+    {
+      "name": "daily reconcile",
+      "ok": true,
+      "detail": {
+        "s1Total": 17600,
+        "smaregiTotal": 17600,
+        "diff": 0,
+        "matched": true
+      }
+    },
+    {
+      "name": "app92 waiting excludes o1",
+      "ok": true,
+      "detail": [
+        "TE2E9396013"
+      ]
+    },
+    {
+      "name": "corporate unchanged",
+      "ok": true,
+      "detail": "未納品"
+    },
+    {
+      "name": "tax no auto-correct",
+      "ok": true,
+      "detail": {
+        "s1PerOrder": 17600,
+        "cartSame": 17600,
+        "diff": 0,
+        "smaregiApi": "none",
+        "autoCorrect": false
+      }
+    }
+  ],
+  "deploy": {
+    "ok": true,
+    "deploy": {
+      "app": "97",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "store_payment_config.js",
+      "store_payment_engine.js",
+      "store_payment_numbering.js",
+      "store_payment_api.js",
+      "store_payment_desktop.js",
+      "store_payment_ui.js"
+    ],
+    "ver": null
+  },
+  "core": {
+    "steps": [
+      {
+        "n": "version",
+        "ok": true,
+        "detail": "1.1.2-s1"
+      },
+      {
+        "n": "barcode load",
+        "ok": true,
+        "detail": {
+          "rows": 3,
+          "pid": "P000002"
+        }
+      },
+      {
+        "n": "customer id load",
+        "ok": true,
+        "detail": {
+          "rows": 3
+        }
+      },
+      {
+        "n": "pcm name search",
+        "ok": true,
+        "detail": 1
+      },
+      {
+        "n": "rows found",
+        "ok": true,
+        "detail": {
+          "b1": 8800,
+          "b2": 5500,
+          "b3": 3300
+        }
+      },
+      {
+        "n": "multi intake payment",
+        "ok": true,
+        "detail": {
+          "ok": true,
+          "recordId": "1",
+          "storePaymentNo": "SP-261101-000001",
+          "transactionId": "STP-1793512060759-4g7px6oj"
+        }
+      },
+      {
+        "n": "partial payment",
+        "ok": true,
+        "detail": {
+          "ok": true,
+          "recordId": "2",
+          "storePaymentNo": "SP-261101-000002",
+          "transactionId": "STP-1793512063580-cslvw1z0"
+        }
+      },
+      {
+        "n": "partial balance",
+        "ok": true,
+        "detail": {
+          "orderRecordId": "3388",
+          "revision": "2",
+          "manageNo": "TE2E9396013",
+          "personalCustomerId": "P000002",
+          "clientName": "[TEST]山田花子",
+          "kimonoType": "",
+          "itemNames": "変色直し",
+          "processStatus": "完了",
+          "locationStatus": "店舗",
+          "deliveryStatus": "納品待ち",
+          "deliveryNo": "",
+          "exclusive": 3000,
+          "tax": 300,
+          "billedInclusive": 3300,
+          "paid": 1000,
+          "balance": 2300,
+          "state": "一部入金",
+          "selectable": true,
+          "pickupEligible": false
+        }
+      },
+      {
+        "n": "paid not selectable",
+        "ok": true,
+        "detail": {
+          "orderRecordId": "3386",
+          "revision": "2",
+          "manageNo": "TE2E9396011",
+          "personalCustomerId": "P000002",
+          "clientName": "[TEST]山田花子",
+          "kimonoType": "",
+          "itemNames": "変色直し",
+          "processStatus": "完了",
+          "locationStatus": "店舗",
+          "deliveryStatus": "納品待ち",
+          "deliveryNo": "",
+          "exclusive": 8000,
+          "tax": 800,
+          "billedInclusive": 8800,
+          "paid": 8800,
+          "balance": 0,
+          "state": "入金済",
+          "selectable": false,
+          "pickupEligible": true
+        }
+      },
+      {
+        "n": "reentry blocked",
+        "ok": true,
+        "detail": [
+          "明細1: 過剰充当です（残額 0）。",
+          "明細1: 入金済みのため再入金できません。"
+        ]
+      },
+      {
+        "n": "partial pickup blocked",
+        "ok": true,
+        "detail": {
+          "ok": false,
+          "error": "一部入金のため引き取りできません。全額入金するか、管理者承認（未収入金引き渡し）が必要です。",
+          "balance": {
+            "exclusive": 3000,
+            "tax": 300,
+            "billedInclusive": 3300,
+            "paid": 1000,
+            "balance": 2300,
+            "state": "一部入金"
+          }
+        }
+      },
+      {
+        "n": "pickup o1",
+        "ok": true,
+        "detail": {
+          "ok": true,
+          "balance": {
+            "exclusive": 8000,
+            "tax": 800,
+            "billedInclusive": 8800,
+            "paid": 8800,
+            "balance": 0,
+            "state": "入金済"
+          },
+          "exception": false
+        }
+      },
+      {
+        "n": "o1 delivery done",
+        "ok": true,
+        "detail": "納品済"
+      },
+      {
+        "n": "o2 not done yet",
+        "ok": true,
+        "detail": "納品待ち"
+      },
+      {
+        "n": "pickup rerun alreadyDone",
+        "ok": true,
+        "detail": {
+          "ok": true,
+          "alreadyDone": true
+        }
+      },
+      {
+        "n": "pickup o2",
+        "ok": true,
+        "detail": {
+          "ok": true,
+          "balance": {
+            "exclusive": 5000,
+            "tax": 500,
+            "billedInclusive": 5500,
+            "paid": 5500,
+            "balance": 0,
+            "state": "入金済"
+          },
+          "exception": false
+        }
+      },
+      {
+        "n": "refund",
+        "ok": true,
+        "detail": {
+          "ok": true,
+          "recordId": "3",
+          "storePaymentNo": "SP-261101-000003",
+          "transactionId": "STP-1793512069030-i01wp25x"
+        }
+      },
+      {
+        "n": "cancel history",
+        "ok": true,
+        "detail": "取消"
+      },
+      {
+        "n": "o3 selectable after cancel",
+        "ok": true,
+        "detail": {
+          "orderRecordId": "3388",
+          "revision": "2",
+          "manageNo": "TE2E9396013",
+          "personalCustomerId": "P000002",
+          "clientName": "[TEST]山田花子",
+          "kimonoType": "",
+          "itemNames": "変色直し",
+          "processStatus": "完了",
+          "locationStatus": "店舗",
+          "deliveryStatus": "納品待ち",
+          "deliveryNo": "",
+          "exclusive": 3000,
+          "tax": 300,
+          "billedInclusive": 3300,
+          "paid": 0,
+          "balance": 3300,
+          "state": "未入金",
+          "selectable": true,
+          "pickupEligible": false
+        }
+      },
+      {
+        "n": "concurrency one win",
+        "ok": true,
+        "detail": {
+          "raOk": false,
+          "rbOk": true,
+          "ra": {
+            "ok": false,
+            "errors": [
+              "Missing or invalid input."
+            ]
+          },
+          "rb": {
+            "ok": true,
+            "recordId": "4",
+            "storePaymentNo": "SP-261101-000004",
+            "transactionId": "STP-1793512071732-qjscdy9u"
+          }
+        }
+      },
+      {
+        "n": "no overpay",
+        "ok": true,
+        "detail": {
+          "orderRecordId": "3388",
+          "revision": "2",
+          "manageNo": "TE2E9396013",
+          "personalCustomerId": "P000002",
+          "clientName": "[TEST]山田花子",
+          "kimonoType": "",
+          "itemNames": "変色直し",
+          "processStatus": "完了",
+          "locationStatus": "店舗",
+          "deliveryStatus": "納品待ち",
+          "deliveryNo": "",
+          "exclusive": 3000,
+          "tax": 300,
+          "billedInclusive": 3300,
+          "paid": 3300,
+          "balance": 0,
+          "state": "入金済",
+          "selectable": false,
+          "pickupEligible": true
+        }
+      },
+      {
+        "n": "daily reconcile",
+        "ok": true,
+        "detail": {
+          "s1Total": 17600,
+          "smaregiTotal": 17600,
+          "diff": 0,
+          "matched": true
+        }
+      },
+      {
+        "n": "app92 waiting excludes o1",
+        "ok": true,
+        "detail": [
+          "TE2E9396013"
+        ]
+      },
+      {
+        "n": "corporate unchanged",
+        "ok": true,
+        "detail": "未納品"
+      },
+      {
+        "n": "tax no auto-correct",
+        "ok": true,
+        "detail": {
+          "s1PerOrder": 17600,
+          "cartSame": 17600,
+          "diff": 0,
+          "smaregiApi": "none",
+          "autoCorrect": false
+        }
+      }
+    ],
+    "ver": "1.1.2-s1",
+    "pay1": {
+      "ok": true,
+      "recordId": "1",
+      "storePaymentNo": "SP-261101-000001",
+      "transactionId": "STP-1793512060759-4g7px6oj"
+    },
+    "concurrency": {
+      "raOk": false,
+      "rbOk": true,
+      "ra": {
+        "ok": false,
+        "errors": [
+          "Missing or invalid input."
+        ]
+      },
+      "rb": {
+        "ok": true,
+        "recordId": "4",
+        "storePaymentNo": "SP-261101-000004",
+        "transactionId": "STP-1793512071732-qjscdy9u"
+      }
+    },
+    "reconcile": {
+      "ok": true,
+      "paymentDate": "2026-11-01",
+      "summary": {
+        "count": 2,
+        "total": 17600,
+        "byMethod": {
+          "現金": 17600
+        },
+        "rows": [
+          {
+            "storePaymentNo": "SP-261101-000001",
+            "personalCustomerId": "P000002",
+            "paymentAmount": 14300,
+            "paymentMethod": "現金",
+            "posTransactionId": "SMR-TEST-E2E-1",
+            "transactionId": "STP-1793512060759-4g7px6oj"
+          },
+          {
+            "storePaymentNo": "SP-261101-000004",
+            "personalCustomerId": "P000002",
+            "paymentAmount": 3300,
+            "paymentMethod": "現金",
+            "posTransactionId": "",
+            "transactionId": "STP-1793512071732-qjscdy9u"
+          }
+        ]
+      },
+      "compare": {
+        "s1Total": 17600,
+        "smaregiTotal": 17600,
+        "diff": 0,
+        "matched": true
+      }
+    },
+    "tax": {
+      "s1PerOrder": 17600,
+      "cartSame": 17600,
+      "diff": 0,
+      "smaregiApi": "none",
+      "autoCorrect": false
+    }
+  },
+  "concurrency": {
+    "raOk": false,
+    "rbOk": true,
+    "ra": {
+      "ok": false,
+      "errors": [
+        "Missing or invalid input."
+      ]
+    },
+    "rb": {
+      "ok": true,
+      "recordId": "4",
+      "storePaymentNo": "SP-261101-000004",
+      "transactionId": "STP-1793512071732-qjscdy9u"
+    }
+  },
+  "taxCompare": {
+    "s1PerOrder": 17600,
+    "cartSame": 17600,
+    "diff": 0,
+    "smaregiApi": "none",
+    "autoCorrect": false
+  },
+  "reconcile": {
+    "ok": true,
+    "paymentDate": "2026-11-01",
+    "summary": {
+      "count": 2,
+      "total": 17600,
+      "byMethod": {
+        "現金": 17600
+      },
+      "rows": [
+        {
+          "storePaymentNo": "SP-261101-000001",
+          "personalCustomerId": "P000002",
+          "paymentAmount": 14300,
+          "paymentMethod": "現金",
+          "posTransactionId": "SMR-TEST-E2E-1",
+          "transactionId": "STP-1793512060759-4g7px6oj"
+        },
+        {
+          "storePaymentNo": "SP-261101-000004",
+          "personalCustomerId": "P000002",
+          "paymentAmount": 3300,
+          "paymentMethod": "現金",
+          "posTransactionId": "",
+          "transactionId": "STP-1793512071732-qjscdy9u"
+        }
+      ]
+    },
+    "compare": {
+      "s1Total": 17600,
+      "smaregiTotal": 17600,
+      "diff": 0,
+      "matched": true
+    }
+  },
+  "passedCount": 26,
+  "failedCount": 0,
+  "generalRelease": "NO — await final approval",
+  "aclNote": "everyone view/add false; verifier + Administrators only"
+}

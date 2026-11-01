@@ -12,7 +12,7 @@
    * スマレジ: 当面 API なし。会計後に S1 手入力。日次照合は手入力/CSV 想定。
    */
 
-  const STORE_PAYMENT_VERSION = '1.1.1-s1';
+  const STORE_PAYMENT_VERSION = '1.1.2-s1';
 
   /** @type {number} 店舗入金管理 App ID */
   const STORE_PAYMENT_APP_ID = 97;
