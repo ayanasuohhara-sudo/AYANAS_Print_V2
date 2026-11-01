@@ -9,10 +9,10 @@
    *   ex = Σ App16.detail_table.amount（税抜・受注単位）
    *   tax = Math.round(ex * 0.10)   // 印刷プラグイン core.js / delivery と同型
    *   in  = ex + tax
-   * スマレジ店舗の税丸めが floor/ceil の場合は TAX_ROUNDING を変更し、POS と突合する。
+   * スマレジ: 当面 API なし。会計後に S1 手入力。日次照合は手入力/CSV 想定。
    */
 
-  const STORE_PAYMENT_VERSION = '1.0.1-s1';
+  const STORE_PAYMENT_VERSION = '1.1.0-s1';
 
   /** @type {number} 店舗入金管理 App ID */
   const STORE_PAYMENT_APP_ID = 97;
@@ -54,6 +54,16 @@
   const RECORD_KIND = {
     payment: '入金',
     refund: '返金',
+  };
+
+  const DELIVERY = {
+    waiting: '納品待ち',
+    done: '納品済',
+    none: '未納品',
+  };
+
+  const LOCATION = {
+    store: '店舗',
   };
 
   const HEADER_FIELDS = {
@@ -103,6 +113,10 @@
     deliveryStatus: 'delivery_status',
     processStatus: 'process_status',
     locationStatus: 'location_status',
+    workStatus: 'work_status',
+    deliveryNo: 'delivery_no',
+    deliveryDate: 'delivery_date',
+    revision: '$revision',
   };
 
   const PCM_FIELDS = {
@@ -116,6 +130,11 @@
   const NUMBERING = {
     prefix: 'SP',
     pad: 6,
+  };
+
+  const UI = {
+    rootId: 'stp-s1-accounting-root',
+    pageLimit: 100,
   };
 
   window.CAYANAS_StorePayment = {
@@ -132,10 +151,13 @@
     PAYMENT_TIMING: PAYMENT_TIMING,
     PAYMENT_METHOD: PAYMENT_METHOD,
     RECORD_KIND: RECORD_KIND,
+    DELIVERY: DELIVERY,
+    LOCATION: LOCATION,
     HEADER_FIELDS: HEADER_FIELDS,
     LINE_FIELDS: LINE_FIELDS,
     ORDER_FIELDS: ORDER_FIELDS,
     PCM_FIELDS: PCM_FIELDS,
     NUMBERING: NUMBERING,
+    UI: UI,
   };
 }());

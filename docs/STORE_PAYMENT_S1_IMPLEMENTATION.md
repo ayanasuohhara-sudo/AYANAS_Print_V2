@@ -1,134 +1,108 @@
-# 店舗入金管理 S1 — 完了報告
+# 店舗入金管理 S1 — 実装報告（v1.1）
 
 - **日付**: 2026-11-01（Asia/Tokyo）
-- **範囲**: 新規 App 作成 + リポジトリ JS/単体テスト。**本番 JS 反映・実顧客データ登録は未実施**（別途承認待ち）
+- **範囲**: App97 + リポジトリ JS（会計画面・引き取り・日次照合まで）
+- **本番 JS 反映**: **未実施**（別途承認待ち）
+- **実顧客データ登録・変更**: **未実施**
 
 ---
 
-## 1. 新規 S1 アプリ ID
+## 1. アプリ
 
 | 項目 | 値 |
 |------|-----|
 | アプリ名 | 店舗入金管理 |
-| **App ID** | **97** |
+| App ID | **97** |
 | URL | https://o5nppg7kb4ly.cybozu.com/k/97/ |
-| 本番 JS | **未反映** |
+
+フィールド一覧: [`STORE_PAYMENT_S1_FIELDS.json`](./STORE_PAYMENT_S1_FIELDS.json)
 
 ---
 
-## 2. フィールド一覧
-
-### ヘッダ
-
-| コード | ラベル | 種類 |
-|--------|--------|------|
-| `store_payment_no` | 入金番号 | 文字列1行（unique） |
-| `personal_customer_id` | 個人顧客ID | 文字列1行（必須） |
-| `client_name_snapshot` | お客様名（当時） | 文字列1行 |
-| `payment_date` | 入金日 | 日付（必須） |
-| `payment_amount` | 入金額 | 数値（必須） |
-| `payment_method` | 入金方法 | DROP_DOWN |
-| `pos_transaction_id` | スマレジ取引番号 | 文字列1行 |
-| `payment_staff` | 担当者 | ユーザー選択（必須） |
-| `transaction_id` | 処理ID | 文字列1行（unique・必須） |
-| `payment_status` | 入金処理状態 | DROP_DOWN（有効/取消/返金済） |
-| `payment_channel` | 入金チャネル | DROP_DOWN |
-| `payment_timing` | 入金タイミング | DROP_DOWN |
-| `record_kind` | レコード種別 | DROP_DOWN（入金/返金） |
-| `related_refund_of` | 返金元入金番号 | 文字列1行 |
-| `cancel_reason` | 取消・返金理由 | 複数行 |
-| `cancel_datetime` | 取消日時 | 日時 |
-| `unpaid_handover_approved` | 未収入金引き渡し承認 | CHECK_BOX |
-| `notes` | メモ | 複数行 |
-| `store_payment_lines` | 入金充当明細 | サブテーブル |
-
-### 明細（`store_payment_lines`）
-
-| コード | ラベル |
-|--------|--------|
-| `order_record_id` | App16レコードID |
-| `manage_no` | 管理番号 |
-| `personal_customer_id_line` | 個人顧客ID（行） |
-| `kimono_type_snapshot` | 着物種類（当時） |
-| `billed_ex_tax` | 請求税抜（スナップショット） |
-| `billed_amount` | 請求税込（スナップショット） |
-| `allocated_amount` | 今回充当額 |
-| `previously_paid_amount` | 充当前累計入金 |
-| `balance_after_line` | 充当後残額 |
-| `line_note` | 行メモ |
-
-詳細 JSON: [`STORE_PAYMENT_S1_FIELDS.json`](./STORE_PAYMENT_S1_FIELDS.json)
-
----
-
-## 3. JavaScript ファイル
-
-| ファイル | 役割 | 本番反映 |
-|----------|------|----------|
-| `customize/store_payment_config.js` | 定数・`STORE_PAYMENT_APP_ID=97`・税設定 | 未 |
-| `customize/store_payment_engine.js` | 税込・残額・バリデーション・txid | 未 |
-| `customize/store_payment_numbering.js` | `SP-YYMMDD-######` 採番 | 未 |
-| `customize/store_payment_desktop.js` | レコード画面ガード（店舗 UI は次段） | 未 |
-| `customize/store_payment.css` | バナー样式 | 未 |
-| `scripts/test_store_payment_s1.js` | 単体テスト | — |
-| `scripts/_create_store_payment_s1_app.js` | App 作成用 CDP スクリプト | — |
-
-読込順: config → engine → numbering → desktop → css
-
----
-
-## 4. 税計算仕様
+## 2. 確定した金額・紐付け仕様
 
 ```text
 ex  = Σ App16.detail_table.amount（受注単位・税抜）
 tax = Math.round(ex * 0.10)
-in  = ex + tax
+in  = ex + tax   ← 入金・残額・充当の正
 ```
 
-入金・残額・充当の正は **税込 `in`**。詳細: [`STORE_PAYMENT_S1_TAX_CONFIRMATION.md`](./STORE_PAYMENT_S1_TAX_CONFIRMATION.md)
+- 紐付け: **App96 `personal_customer_id` + App16 `$id`（order_record_id）**
+- `manage_no` はバーコード検索用。氏名のみでは入金対象を確定しない
+- スマレジ: **API なし**。会計後に S1 手入力。日次照合は手入力金額と比較
 
 ---
 
-## 5. テスト結果
+## 3. JavaScript（本番未反映）
 
-| 種別 | 結果 | 備考 |
-|------|------|------|
-| 単体 `scripts/test_store_payment_s1.js` | **25/25 OK** | 税・残額・充当一致・再入金禁止・返金必須・差額検出・txid |
-| 本番 App97 フィールド検証 | **OK** | unique(`store_payment_no`,`transaction_id`)、サブテーブルあり、JS 件数 0 |
-| 本番 E2E（実データ） | **未実施** | 別途承認後 |
-| 本番 JS 反映 | **未実施** | 別途承認後（承認条件どおり） |
-| 複数端末同時操作 | **未実施** | JS 反映後に実施 |
+読込順:
 
----
+1. `store_payment_config.js`（v1.1.0-s1, APP_ID=97）
+2. `store_payment_engine.js` — 税込・残額・充当・引き取り PUT・日次集計
+3. `store_payment_numbering.js` — `SP-YYMMDD-######`
+4. `store_payment_api.js` — 検索 / 入金 POST / 引き取り / 照合
+5. `store_payment_desktop.js` — レコード画面ガード
+6. `store_payment_ui.js` — **一覧の店舗会計画面**
+7. `store_payment.css`
 
-## 6. 未解決事項
+### 店舗会計画面（App97 一覧）
 
-1. スマレジ店舗の税丸め実機確認（S1 は印刷同型 round で固定）
-2. App97 への本番 JS/CSS デプロイ承認
-3. レイアウト調整・権限・一覧ビューの業務最適化
-4. 本番 E2E（テスト顧客のみ想定）と同時操作検証
-5. 店舗専用会計 UI（次段階）
+| 機能 | 内容 |
+|------|------|
+| バーコード | `manage_no` → 当該商品 + 同一個人の未精算一覧 |
+| 顧客ID | PCM / App16 から未納品済一覧 |
+| 氏名検索 | 候補表示のみ。選択で ID 確定 |
+| 複数選択一括会計 | 充当合計 = 入金額。入金済は選択不可 |
+| 入金登録 | S1 POST。`transaction_id` 冪等。失敗時 App16 非更新 |
+| 引き取り完了 | 入金確認後。`delivery_status=納品済` のみ（location/process/work 不変） |
+| 日次照合 | 当日 S1 有効入金合計 vs スマレジ手入力 |
 
----
+### App92 整合
 
-## 7. 次の店舗専用画面との連携仕様
-
-店舗 UI（次段）は S1 をバックエンドとして使う。
-
-| 店舗 UI 操作 | S1 / 周辺 |
-|--------------|-----------|
-| 顧客検索 | App96 `personal_customer_id`（氏名のみで入金対象を決めない） |
-| 受注一覧 | App16 GET（`personal_customer_id` + 未納品等）。識別子は **`$id`（order_record_id）**。`manage_no` はバーコード検索用 |
-| 税込・残額表示 | `store_payment_engine.getOrderBilledInclusive` / `getOrderBalance` |
-| 複数商品一括入金 | 1 ヘッダ + `store_payment_lines` 複数行。充当合計 = `payment_amount` |
-| 入金登録 | S1 POST。`transaction_id` unique。失敗時は引き取り完了へ進まない |
-| 一部入金 | 可。ただし `canPickupWithBalance` は残額>0 で原則 NG（`unpaid_handover_approved` のみ例外） |
-| 返金 | `record_kind=返金`・負額・`related_refund_of` 必須 |
-| 取消 | `payment_status=取消`（履歴残置）。返金と区別 |
-| App8/19/21/35 | **変更しない** |
+引き取りで `delivery_status=納品済` にするため、納品待ち在庫・スケジュール双方から除外される（現行 App92 は納品済除外）。S1 は `delivery_no` を書き換えない。
 
 ---
 
-## 変更しないアプリ
+## 4. テスト結果
 
-App8 / App19 / App21 / App35 — 本フェーズで未変更。
+| 種別 | 結果 |
+|------|------|
+| `node scripts/test_store_payment_s1.js` | **実行時に記載** |
+| 本番 JS 反映後 E2E | **未実施**（承認後） |
+| 実スマレジ突合 | **未実施** |
+
+カバレッジ（単体）: 税計算、一部入金、再入金禁止、複数充当、返金必須、txid、バーコード正規化、会計行、引き取り PUT 形、日次照合一致/不一致、重複明細禁止。
+
+---
+
+## 5. 既存システム保護
+
+| 対象 | 方針 |
+|------|------|
+| App21 | 変更なし |
+| App19 | 変更なし（法人処理維持） |
+| App16 採番・工程 JS | 変更なし。引き取り時のみ delivery 系 PUT |
+| App96 | 参照のみ |
+| App8 / App35 | 変更なし |
+
+---
+
+## 6. 未解決・次承認
+
+1. App97 への **本番 JS/CSS デプロイ**
+2. テスト顧客での E2E（バーコード〜入金〜引き取り〜照合）
+3. スマレジ CSV 取込（現状は手入力）
+4. App19 A550 納品書→スケジュール除外（別提案 `A550_DELIVERY_SCHEDULE_INVENTORY_PROPOSAL.md`）との本番同時適用タイミング
+
+---
+
+## 7. 開発順序との対応
+
+| # | 方針 | 状態 |
+|---|------|------|
+| 1 | フィールド・税仕様確定 | **完了** |
+| 2 | 入金登録・商品別充当 | **完了**（エンジン+API） |
+| 3 | バーコード・顧客検索画面 | **完了**（`store_payment_ui.js`） |
+| 4 | 引き取り完了 | **完了**（API+UI） |
+| 5 | 日次入金照合 | **完了**（手入力比較） |
+| 6 | 総合テスト | 単体完了 / 本番 E2E は承認後 |

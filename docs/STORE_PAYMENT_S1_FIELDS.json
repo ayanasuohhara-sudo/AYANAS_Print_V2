@@ -47,8 +47,17 @@
     "store_payment_config.js",
     "store_payment_engine.js",
     "store_payment_numbering.js",
+    "store_payment_api.js",
     "store_payment_desktop.js",
+    "store_payment_ui.js",
     "store_payment.css"
   ],
-  "prodJsDeployed": false
+  "prodJsDeployed": false,
+  "features": [
+    "barcode / manage_no load",
+    "PCM personal_customer_id search",
+    "multi-order allocation payment",
+    "pickup after payment (delivery_status=納品済 only)",
+    "daily reconcile vs hand-entered Smaregi total"
+  ]
 }
