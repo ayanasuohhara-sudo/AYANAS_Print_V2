@@ -1,0 +1,66 @@
+[
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 0,
+    "name": "internal_ops_config.js",
+    "file": "desktop_js1_internal_ops_config.js",
+    "size": 2533
+  },
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 1,
+    "name": "complete_register_engine.js",
+    "file": "desktop_js2_complete_register_engine.js",
+    "size": 12361
+  },
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 2,
+    "name": "delivery_completion_guard.js",
+    "file": "desktop_js3_delivery_completion_guard.js",
+    "size": 6129
+  },
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 3,
+    "name": "barcode_delivery.js",
+    "file": "desktop_js4_barcode_delivery.js",
+    "size": 7674
+  },
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 4,
+    "name": "delivery_complete_sync.js",
+    "file": "desktop_js5_delivery_complete_sync.js",
+    "size": 9660
+  },
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 5,
+    "name": "price_master_register.js",
+    "file": "desktop_js6_price_master_register.js",
+    "size": 13465
+  },
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 6,
+    "name": "delivery_additional_item_guard.js",
+    "file": "desktop_js7_delivery_additional_item_guard.js",
+    "size": 1917
+  },
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 7,
+    "name": "additional_item_engine.js",
+    "file": "desktop_js8_additional_item_engine.js",
+    "size": 25384
+  }
+]
