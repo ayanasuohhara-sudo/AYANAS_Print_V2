@@ -1,0 +1,51 @@
+[
+  {
+    "kind": "js",
+    "index": 0,
+    "name": "store_payment_config.js",
+    "fileKey": "20261101152345CE99DA9C21B2415FBD85CE6A82690FC1147",
+    "file": "desktop_js1_store_payment_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 1,
+    "name": "store_payment_engine.js",
+    "fileKey": "2026110115234546F670DC26AB4A87A3CAE5AA8BADF801218",
+    "file": "desktop_js2_store_payment_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 2,
+    "name": "store_payment_numbering.js",
+    "fileKey": "202611011523464C79E49923424226880D7857132ED06C110",
+    "file": "desktop_js3_store_payment_numbering.js"
+  },
+  {
+    "kind": "js",
+    "index": 3,
+    "name": "store_payment_api.js",
+    "fileKey": "202611011523462C8D1AA4E2DA47FD8C292F46776BE3D0021",
+    "file": "desktop_js4_store_payment_api.js"
+  },
+  {
+    "kind": "js",
+    "index": 4,
+    "name": "store_payment_desktop.js",
+    "fileKey": "202611011523462196F74BB2CB4083853819049A126693072",
+    "file": "desktop_js5_store_payment_desktop.js"
+  },
+  {
+    "kind": "js",
+    "index": 5,
+    "name": "store_payment_ui.js",
+    "fileKey": "202611011523465A737838EE834CD8B15FD8015168E76E276",
+    "file": "desktop_js6_store_payment_ui.js"
+  },
+  {
+    "kind": "css",
+    "index": 0,
+    "name": "store_payment.css",
+    "fileKey": "202611011523452AA1A19FE944439B9872325294B79DD5081",
+    "file": "desktop_css1_store_payment.css"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "kind": "js",
+    "index": 0,
+    "name": "internal_ops_config.js",
+    "fileKey": "202610251558168908685757804A1487F9791C81AE9113309",
+    "file": "desktop_js1_internal_ops_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 1,
+    "name": "barcode_batch_core.js",
+    "fileKey": "20261025155816B9744E36DCD24B89B4B808FBEEEC8EF4169",
+    "file": "desktop_js2_barcode_batch_core.js"
+  },
+  {
+    "kind": "js",
+    "index": 2,
+    "name": "barcode_batch_ui.js",
+    "fileKey": "202610251558165DDD12E2D6564BF3B0004CAB3250EBA0118",
+    "file": "desktop_js3_barcode_batch_ui.js"
+  },
+  {
+    "kind": "js",
+    "index": 3,
+    "name": "location_inbound_engine.js",
+    "fileKey": "202610251558167C19968AC8384EFB8395082568F5AADD322",
+    "file": "desktop_js4_location_inbound_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 4,
+    "name": "location_inbound_desktop.js",
+    "fileKey": "2026102515581781740D627D6E40829EF6CCEF28DBBEF7096",
+    "file": "desktop_js5_location_inbound_desktop.js"
+  }
+]

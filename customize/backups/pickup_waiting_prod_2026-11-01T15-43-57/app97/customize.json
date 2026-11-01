@@ -1,0 +1,77 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101152345CE99DA9C21B2415FBD85CE6A82690FC1147",
+          "name": "store_payment_config.js",
+          "contentType": "text/javascript",
+          "size": "4355"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110115234546F670DC26AB4A87A3CAE5AA8BADF801218",
+          "name": "store_payment_engine.js",
+          "contentType": "text/javascript",
+          "size": "23271"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011523464C79E49923424226880D7857132ED06C110",
+          "name": "store_payment_numbering.js",
+          "contentType": "text/javascript",
+          "size": "2360"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011523462C8D1AA4E2DA47FD8C292F46776BE3D0021",
+          "name": "store_payment_api.js",
+          "contentType": "text/javascript",
+          "size": "15491"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011523462196F74BB2CB4083853819049A126693072",
+          "name": "store_payment_desktop.js",
+          "contentType": "text/javascript",
+          "size": "6394"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011523465A737838EE834CD8B15FD8015168E76E276",
+          "name": "store_payment_ui.js",
+          "contentType": "text/javascript",
+          "size": "20781"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011523452AA1A19FE944439B9872325294B79DD5081",
+          "name": "store_payment.css",
+          "contentType": "text/css",
+          "size": "4495"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "11"
+}

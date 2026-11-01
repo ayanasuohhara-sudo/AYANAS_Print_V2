@@ -1,0 +1,30 @@
+[
+  {
+    "kind": "js",
+    "index": 0,
+    "name": "store_deadline_config.js",
+    "fileKey": "202611011406287FC4C73222BD43CDB25D6C46F50B823D158",
+    "file": "desktop_js1_store_deadline_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 1,
+    "name": "store_deadline_engine.js",
+    "fileKey": "20261101140628B50729307C534FF486980271D4E2250E082",
+    "file": "desktop_js2_store_deadline_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 2,
+    "name": "store_deadline_desktop.js",
+    "fileKey": "20261101140628F851387F43574E91A2CA43124FC74450314",
+    "file": "desktop_js3_store_deadline_desktop.js"
+  },
+  {
+    "kind": "css",
+    "index": 0,
+    "name": "store_deadline.css",
+    "fileKey": "20261101140628B7ED4F75BCDE4C139B7D0BC163F87888106",
+    "file": "desktop_css1_store_deadline.css"
+  }
+]
