@@ -13,10 +13,10 @@
 
 ## App97
 - store_payment_* 一式：**本番一致**
-- ACL（段階運用）:
-  - `info@ayanas.co.jp` / `matsuura@ayanas.co.jp` / `ayanas20126@gmail.com`
-  - Administrators / CREATOR
-  - **everyone: view/add false**（一斉公開していない）
+- ACL:
+  - Administrators / `info@ayanas.co.jp` / CREATOR
+  - **everyone: view/add/edit true・delete false**（2026-11-02 一斉公開）
+  - 詳細: `docs/APP97_EVERYONE_RELEASE_REPORT.md`
 
 ## 補足
-「全スタッフへの everyone 開放」は未実施。別途明示承認が必要。
+全スタッフ一斉公開は実施済。入金の物理削除は一般不可。

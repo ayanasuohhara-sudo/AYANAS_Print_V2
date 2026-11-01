@@ -31,7 +31,7 @@
 | 10 | App97 バーコード入金 UI | ✓ | ✓（段階ACL） | ✓（26/26） | **段階運用開始** |
 | 11 | App97 二重入金防止 | ✓ | ✓ | ✓ | **運用中** |
 | 12 | App97 引き渡し → 選択分のみ `納品済` | ✓ | ✓ | ✓ | **運用中** |
-| 13 | App97 一般スタッフ公開 | — | ✗（everyone false）／店舗・指定のみ | — | **段階1完了・全社公開は別判断** |
+| 13 | App97 一般スタッフ公開 | ✓ | ✓（everyone view/add/edit・delete不可） | — | **一斉公開済（2026-11-02）** |
 | 14 | App92↔97 表示整合（納品書後〜入金前） | — | — | 部分のみ | **未完了**（#5–8 依存） |
 
 ---
@@ -104,9 +104,9 @@
 
 ### P1 — App97 段階運用 → 全スタッフ公開
 
-- 段階1 ACL（店舗・指定のみ）実施済: `docs/APP97_PHASED_ROLLOUT_RUNBOOK.md`
-- 実取引（段階2）は店舗スマレジ実施待ち。監視: `scripts/_app97_stage_ops_monitor.js`
-- **everyone 全スタッフ公開は別判断**（`docs/APP97_PHASED_ROLLOUT_STAGE3_REPORT.md`）
+- 段階1 → **everyone 一斉公開 実施済（2026-11-02）**: `docs/APP97_EVERYONE_RELEASE_REPORT.md`
+- 監視・日次照合: `scripts/_app97_stage_ops_monitor.js`
+- 実取引モニタリング継続（差異時は停止して報告）
 
 ### P2 — 運用エッジ
 
