@@ -1,0 +1,35 @@
+{
+  "at": "2026-11-01T12:53:24.399Z",
+  "apps": {
+    "30": {
+      "url": "https://o5nppg7kb4ly.cybozu.com/k/30/",
+      "hasLabels": true,
+      "labelsVersion": "1.0.0",
+      "hasInternal": true,
+      "hasFloor": false,
+      "internalWork": "未着",
+      "floorPending": null,
+      "pageErrors": []
+    },
+    "84": {
+      "url": "https://o5nppg7kb4ly.cybozu.com/k/84/",
+      "hasLabels": true,
+      "labelsVersion": "1.0.0",
+      "hasInternal": true,
+      "hasFloor": false,
+      "internalWork": "未着",
+      "floorPending": null,
+      "pageErrors": []
+    },
+    "87": {
+      "url": "https://o5nppg7kb4ly.cybozu.com/k/87/",
+      "hasLabels": true,
+      "labelsVersion": "1.0.0",
+      "hasInternal": false,
+      "hasFloor": true,
+      "internalWork": null,
+      "floorPending": "未着",
+      "pageErrors": []
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "at": "2026-11-01T12:53:00.446Z",
+  "apps": {
+    "30": {
+      "ok": true,
+      "deploy": {
+        "app": "30",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "work_status_labels.js",
+        "internal_ops_config.js",
+        "barcode_batch_core.js",
+        "barcode_batch_ui.js",
+        "complete_register_engine.js",
+        "complete_register_desktop.js"
+      ],
+      "desktopCss": []
+    },
+    "84": {
+      "ok": true,
+      "deploy": {
+        "app": "84",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "work_status_labels.js",
+        "internal_ops_config.js",
+        "barcode_batch_core.js",
+        "barcode_batch_ui.js",
+        "internal_work_engine.js",
+        "internal_work_desktop.js"
+      ],
+      "desktopCss": []
+    },
+    "87": {
+      "ok": true,
+      "deploy": {
+        "app": "87",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "work_status_labels.js",
+        "floor_portal_config.js",
+        "floor_portal_engine.js",
+        "floor_portal_desktop.js"
+      ],
+      "desktopCss": [
+        "floor_portal.css"
+      ]
+    }
+  }
+}

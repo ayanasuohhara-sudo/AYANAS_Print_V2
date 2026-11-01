@@ -1,6 +1,6 @@
 {
   "outDir": "/workspace/customize/backups/app16_work_status_prep_20261101",
-  "at": "2026-11-01T12:38:25.906Z",
+  "at": "2026-11-01T12:50:23.028Z",
   "defaultValue": "未着手",
   "labels": [
     "未着手",
@@ -34,7 +34,8 @@
     },
     "しみ抜き待ち": {
       "existsInForm": true,
-      "count": 0
+      "count": 0,
+      "note": "from form option counts"
     },
     "未着": {
       "existsInForm": false,
@@ -45,6 +46,11 @@
       "existsInForm": false,
       "count": null,
       "note": "option not in form; query skipped"
+    },
+    "未着手": {
+      "existsInForm": true,
+      "count": 403,
+      "note": "from form option counts"
     }
   },
   "target未着手": 403

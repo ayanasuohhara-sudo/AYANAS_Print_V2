@@ -5,3 +5,6 @@ private.ppk
 *.log
 customize/backups/app16_work_status_full_*/records.jsonl
 customize/backups/app16_work_status_full_*/records.jsonl.gz
+customize/backups/app16_work_status_cutover_*/full_backup/records.jsonl
+customize/backups/app16_work_status_cutover_*/full_backup/records.jsonl.gz
+customize/backups/app16_work_status_migrate_*/migrate_report.json
