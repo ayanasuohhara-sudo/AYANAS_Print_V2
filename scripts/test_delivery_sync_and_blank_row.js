@@ -109,17 +109,20 @@ const run = () => {
     assert('A550と空欄は法人同期しない', S.isCorporateCustomer('A550') === false
         && S.isCorporateCustomer('') === false
         && S.isCorporateCustomer('M070') === true);
+    assert('A550は店舗同期対象', S.isStoreCustomer('A550') === true);
 
     const syncSrc = fs.readFileSync(path.join(root, 'customize/delivery_complete_sync.js'), 'utf8');
     const assignPos = syncSrc.indexOf('await assignDeliveryNoIfNeeded');
-    const corporateGatePos = syncSrc.indexOf('if (!isCorporateCustomer(customerCode))');
+    const corporateGatePos = syncSrc.indexOf('if (isCorporateCustomer(customerCode))');
+    const storeGatePos = syncSrc.indexOf('if (isStoreCustomer(customerCode))');
     const afterSavePos = syncSrc.indexOf('async function afterDeliverySave');
 
     assert('納品番号採番関数を公開', typeof S.assignDeliveryNoIfNeeded === 'function');
-    assert('採番は法人判定より前', afterSavePos !== -1
+    assert('採番は顧客分岐より前', afterSavePos !== -1
         && assignPos !== -1
         && corporateGatePos !== -1
         && assignPos < corporateGatePos);
+    assert('A550店舗同期ルートがある', storeGatePos !== -1 && syncSrc.indexOf('syncStoreOrders') !== -1);
     assert('一般客でも採番ルートがある', syncSrc.indexOf('afterDeliverySave') !== -1
         && syncSrc.indexOf('syncCorporateOrders') !== -1
         && syncSrc.indexOf('全顧客') !== -1);

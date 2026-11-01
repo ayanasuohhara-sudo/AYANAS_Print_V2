@@ -235,10 +235,66 @@
         readValue(record, cfg().FIELDS.deliveryStatus) === cfg().DELIVERY_DONE
     );
 
+    const hasDeliveryNo = (record) => (
+        Boolean(readValue(record, cfg().FIELDS.deliveryNo))
+    );
+
+    /**
+     * スケジュール（カレンダー／納期KPI）から除外: 納品済 または 納品書番号あり。
+     */
+    const isExcludedFromSchedule = (record) => (
+        isDelivered(record) || hasDeliveryNo(record)
+    );
+
     const isReadyForPickup = (record) => (
         readValue(record, cfg().FIELDS.processStatus) === cfg().PROCESS_DONE
         && readValue(record, cfg().FIELDS.deliveryStatus) === cfg().DELIVERY_WAITING
     );
+
+    /**
+     * 納品待ち在庫（店舗現物）: 完了 ∧ 店舗 ∧ 納品待ち ∧ delivery_no 非空 ∧ 未取消
+     */
+    const isWaitingStockAtStore = (record) => (
+        isStoreCustomer(record)
+        && !isCancelled(record)
+        && readValue(record, cfg().FIELDS.processStatus) === cfg().PROCESS_DONE
+        && readValue(record, cfg().FIELDS.locationStatus) === cfg().LOCATION_STORE
+        && readValue(record, cfg().FIELDS.deliveryStatus) === cfg().DELIVERY_WAITING
+        && hasDeliveryNo(record)
+        && !isDelivered(record)
+    );
+
+    /**
+     * 納品書済・店舗未到着: delivery_no あり ∧ 未納品済 ∧ location ≠ 店舗
+     */
+    const isSlipCreatedNotAtStore = (record) => (
+        isStoreCustomer(record)
+        && !isCancelled(record)
+        && hasDeliveryNo(record)
+        && !isDelivered(record)
+        && readValue(record, cfg().FIELDS.locationStatus) !== cfg().LOCATION_STORE
+    );
+
+    const ymdToUtcMs = (ymdText) => {
+        const parts = String(ymdText ?? '').trim().slice(0, 10).split('-').map(Number);
+
+        if (parts.length < 3 || parts.some((part) => !Number.isFinite(part))) {
+            return null;
+        }
+
+        return Date.UTC(parts[0], parts[1] - 1, parts[2]);
+    };
+
+    const storageDaysBetween = (fromYmd, todayYmd) => {
+        const fromMs = ymdToUtcMs(fromYmd);
+        const toMs = ymdToUtcMs(todayYmd);
+
+        if (fromMs === null || toMs === null) {
+            return null;
+        }
+
+        return Math.floor((toMs - fromMs) / 86400000);
+    };
 
     const detailRows = (record) => {
 
@@ -452,18 +508,21 @@
             workStatus: readValue(record, F.workStatus),
             locationStatus: readValue(record, F.locationStatus),
             deliveryStatus: readValue(record, F.deliveryStatus),
+            deliveryNo: readValue(record, F.deliveryNo),
+            deliveryDate: readValue(record, F.deliveryDate).slice(0, 10),
             duplicate: false,
         };
 
     };
 
     /**
-     * 店舗カレンダー: 納品済は除外（今後対応すべき商品を優先）。
+     * 店舗カレンダー: 納品済および納品書番号ありは除外（今後対応すべき商品を優先）。
      */
     const aggregateMonth = (records, subcategoryByCode, year, month, options) => {
 
         const bounds = monthBounds(year, month);
         const excludeDelivered = !options || options.excludeDelivered !== false;
+        const excludeSlipCreated = !options || options.excludeSlipCreated !== false;
         const groups = new Map();
 
         (Array.isArray(records) ? records : []).forEach((record) => {
@@ -477,6 +536,10 @@
             }
 
             if (excludeDelivered && isDelivered(record)) {
+                return;
+            }
+
+            if (excludeSlipCreated && hasDeliveryNo(record)) {
                 return;
             }
 
@@ -606,9 +669,20 @@
 
     };
 
+    const enrichInventoryRow = (row, todayYmd) => {
+        const days = storageDaysBetween(row.deliveryDate, todayYmd);
+
+        return {
+            ...row,
+            storageDays: days,
+            storageDaysLabel: days === null ? '—' : String(days),
+        };
+    };
+
     /**
      * KPI 用行を組み立て。取消・他顧客は除外。
-     * ready は納期空欄可。deadline 系は納品済除外。
+     * ready は納期空欄可。deadline 系は納品済・納品書番号あり除外。
+     * waitingStock / slipNotAtStore は納品書連携パネル用。
      */
     const buildKpiModel = (records, subcategoryByCode, todayYmd) => {
 
@@ -617,6 +691,8 @@
             today: [],
             within7: [],
             ready: [],
+            waitingStock: [],
+            slipNotAtStore: [],
         };
 
         (Array.isArray(records) ? records : []).forEach((record) => {
@@ -636,7 +712,15 @@
                 buckets.ready.push(row);
             }
 
-            if (isDelivered(record)) {
+            if (isWaitingStockAtStore(record)) {
+                buckets.waitingStock.push(enrichInventoryRow(row, todayYmd));
+            }
+
+            if (isSlipCreatedNotAtStore(record)) {
+                buckets.slipNotAtStore.push(enrichInventoryRow(row, todayYmd));
+            }
+
+            if (isExcludedFromSchedule(record)) {
                 return;
             }
 
@@ -790,6 +874,8 @@
             F.workStatus,
             F.locationStatus,
             F.deliveryStatus,
+            F.deliveryNo,
+            F.deliveryDate,
             F.aggregationStatus,
             F.detailTable,
         ];
@@ -853,7 +939,12 @@
         isCancelled,
         isStoreCustomer,
         isDelivered,
+        hasDeliveryNo,
+        isExcludedFromSchedule,
         isReadyForPickup,
+        isWaitingStockAtStore,
+        isSlipCreatedNotAtStore,
+        storageDaysBetween,
         joinProcessing,
         subcategoriesForRecord,
         pickPriorityCategoryKey,

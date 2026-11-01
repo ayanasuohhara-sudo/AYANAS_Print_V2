@@ -6,7 +6,7 @@
      * 表示専用。正本は App16。A550 のみ。
      */
 
-    const STORE_DEADLINE_VERSION = '1.0.4';
+    const STORE_DEADLINE_VERSION = '1.1.0';
 
     const CAYANAS_STORE_DEADLINE = {
         VERSION: STORE_DEADLINE_VERSION,
@@ -21,6 +21,7 @@
         DELIVERY_DONE: '納品済',
         DELIVERY_WAITING: '納品待ち',
         PROCESS_DONE: '完了',
+        LOCATION_STORE: '店舗',
         PROCESSING_SEPARATOR: ' / ',
         CATEGORY_SEPARATOR: ' / ',
         DUPLICATE_LABEL: '重複',
@@ -88,6 +89,14 @@
                 key: 'ready',
                 label: '完了・納品待ち',
             },
+            waitingStock: {
+                key: 'waitingStock',
+                label: '納品待ち在庫（店舗）',
+            },
+            slipNotAtStore: {
+                key: 'slipNotAtStore',
+                label: '納品書済・店舗未到着',
+            },
         },
         MESSAGES: {
             loading: '読み込み中…',
@@ -102,8 +111,12 @@
             kpiPrefix: '',
             kpiSuffix: '件',
             uncategorized: '未分類',
-            lead: 'A550の納期と、完了して納品待ちの商品を確認します。',
+            lead: 'A550の納期・納品待ち在庫・店舗未到着を確認します。納品書番号がある商品はスケジュールから外れます。',
             depMissing: '店舗納期カレンダーのJS読込に失敗しました。config → engine → desktop の順で登録されているか確認してください。',
+            waitingStockEmpty: '店舗にある納品待ち在庫はありません。',
+            slipNotAtStoreEmpty: '納品書作成済で店舗以外にある商品はありません。',
+            waitingStockLead: '現物が店舗にあり、納品書番号がある納品待ち商品です。引き渡し（納品済）後は表示されません。',
+            slipNotAtStoreLead: '納品書は作成済みですが、現物がまだ店舗にありません。店舗へ移動すると納品待ち在庫に出ます。',
         },
         FIELDS: {
             id: '$id',
@@ -118,6 +131,8 @@
             workStatus: 'work_status',
             locationStatus: 'location_status',
             deliveryStatus: 'delivery_status',
+            deliveryNo: 'delivery_no',
+            deliveryDate: 'delivery_date',
             aggregationStatus: 'aggregation_status',
             detailTable: 'detail_table',
             itemCode: 'item_code',

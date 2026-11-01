@@ -48,6 +48,8 @@ const rec = (manageNo, deadline, lines, extra) => {
         customer_code: { value: opts.customerCode === undefined ? 'A550' : opts.customerCode },
         aggregation_status: { value: opts.aggregation === undefined ? '有効' : opts.aggregation },
         delivery_status: { value: opts.delivery || '未納品' },
+        delivery_no: { value: opts.deliveryNo === undefined ? '' : opts.deliveryNo },
+        delivery_date: { value: opts.deliveryDate === undefined ? '' : opts.deliveryDate },
         process_status: { value: opts.process || '工場作業中' },
         customer_name: { value: opts.customerName || '松葉屋' },
         client_name: { value: opts.clientName || '山田' },
@@ -256,9 +258,74 @@ const run = async () => {
         rec('D1', '2026-10-10', [line('DOM', '国内仕立')], { delivery: '納品済' }),
     ], '2026-10-10')) === 0);
 
+    assert('納品書番号ありはカレンダー除外', sumCounts(countsOn([
+        rec('S1', '2026-10-10', [line('DOM', '国内仕立')], {
+            delivery: '納品待ち',
+            deliveryNo: 'N20261010-1',
+            process: '完了',
+            location: '店舗',
+        }),
+    ], '2026-10-10')) === 0);
+
+    assert('納品書番号空は従来どおり表示', countsOn([
+        rec('S0', '2026-10-10', [line('DOM', '国内仕立')], { delivery: '未納品', deliveryNo: '' }),
+    ], '2026-10-10').domestic === 1);
+
     assert('納品済除外をオフにできる', countsOn([
         rec('D2', '2026-10-10', [line('DOM', '国内仕立')], { delivery: '納品済' }),
-    ], '2026-10-10', { excludeDelivered: false }).domestic === 1);
+    ], '2026-10-10', { excludeDelivered: false, excludeSlipCreated: false }).domestic === 1);
+
+    const inventoryRecords = [
+        rec('WS1', '2026-10-20', [line('DOM', '国内仕立')], {
+            id: 'ws1',
+            process: '完了',
+            delivery: '納品待ち',
+            deliveryNo: 'N1',
+            deliveryDate: '2026-10-10',
+            location: '店舗',
+        }),
+        rec('WS2', '2026-10-20', [line('DOM', '国内仕立')], {
+            id: 'ws2',
+            process: '完了',
+            delivery: '納品待ち',
+            deliveryNo: 'N2',
+            deliveryDate: '2026-10-12',
+            location: '工場',
+        }),
+        rec('WS3', '2026-11-30', [line('DOM', '国内仕立')], {
+            id: 'ws3',
+            process: '完了',
+            delivery: '納品待ち',
+            deliveryNo: '',
+            location: '店舗',
+        }),
+        rec('WS4', '2026-10-20', [line('DOM', '国内仕立')], {
+            id: 'ws4',
+            process: '完了',
+            delivery: '納品済',
+            deliveryNo: 'N4',
+            location: '店舗',
+        }),
+        rec('WS5', TODAY, [line('WASH', '丸洗い')], {
+            id: 'ws5',
+            process: '工場作業中',
+            delivery: '未納品',
+            deliveryNo: '',
+        }),
+    ];
+    const inventoryKpi = E.buildKpiModel(inventoryRecords, products, TODAY);
+
+    assert('納品待ち在庫は店舗のみ', inventoryKpi.counts.waitingStock === 1
+        && inventoryKpi.lists.waitingStock[0].manageNo === 'WS1'
+        && inventoryKpi.lists.waitingStock[0].deliveryNo === 'N1'
+        && inventoryKpi.lists.waitingStock[0].storageDays === 5);
+    assert('店舗未到着は工場の納品書済', inventoryKpi.counts.slipNotAtStore === 1
+        && inventoryKpi.lists.slipNotAtStore[0].manageNo === 'WS2');
+    assert('納品済は在庫から除外', inventoryKpi.lists.waitingStock.every((row) => row.deliveryStatus !== '納品済'));
+    assert('納品書番号ありは納期KPIから除外', inventoryKpi.counts.within7 === 1
+        && inventoryKpi.lists.within7[0].manageNo === 'WS5');
+    assert('保管日数計算', E.storageDaysBetween('2026-10-10', '2026-10-15') === 5
+        && E.storageDaysBetween('', '2026-10-15') === null);
 
     const pages = [];
     const fetched = await E.fetchAllPages(
@@ -317,17 +384,21 @@ const run = async () => {
     assert('App89非共用', desktop.indexOf('CAYANAS_DEADLINE_LOAD') === -1
         && desktop.indexOf('deadline_load') === -1
         && app89Config.indexOf('STORE_DEADLINE') === -1
-        && C.VERSION === '1.0.4'
+        && C.VERSION === '1.1.0'
         && C.CATEGORIES.find((c) => c.key === 'repair').subcategories.indexOf('修理') !== -1
         && desktop.indexOf('productDenied') !== -1
         && desktop.indexOf('buildKpiPoolQuery') !== -1
         && desktop.indexOf('Number(kintone.app.getId())') !== -1
-        && desktop.indexOf('ayanas-store-deadline-boot-error') !== -1);
+        && desktop.indexOf('ayanas-store-deadline-boot-error') !== -1
+        && desktop.indexOf('waitingStock') !== -1
+        && desktop.indexOf('slipNotAtStore') !== -1
+        && desktop.indexOf('inventoryTableWrap') !== -1);
 
     assert('iPad向け見た目', css.indexOf('min-height: 44px') !== -1
         && css.indexOf('overflow-x: auto') !== -1
         && css.indexOf('.is-overdue') !== -1
-        && css.indexOf('.cayan-sd-kpi') !== -1);
+        && css.indexOf('.cayan-sd-kpi') !== -1
+        && css.indexOf('.is-warn') !== -1);
 
     if (failed) {
         process.exit(1);

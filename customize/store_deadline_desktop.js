@@ -229,18 +229,30 @@
             today: 0,
             within7: 0,
             ready: 0,
+            waitingStock: 0,
+            slipNotAtStore: 0,
         };
         const items = [
             cfg().KPI.overdue,
             cfg().KPI.today,
             cfg().KPI.within7,
             cfg().KPI.ready,
+            cfg().KPI.waitingStock,
+            cfg().KPI.slipNotAtStore,
         ];
 
         return '<div class="cayan-sd-kpi" role="group" aria-label="店舗KPI">'
             + items.map((item) => {
                 const active = selectedKpi === item.key ? ' is-active' : '';
-                const tone = item.key === 'overdue' ? ' is-overdue' : (item.key === 'ready' ? ' is-ready' : '');
+                let tone = '';
+
+                if (item.key === 'overdue') {
+                    tone = ' is-overdue';
+                } else if (item.key === 'ready' || item.key === 'waitingStock') {
+                    tone = ' is-ready';
+                } else if (item.key === 'slipNotAtStore') {
+                    tone = ' is-warn';
+                }
 
                 return '<button type="button" class="cayan-sd-kpi-card' + active + tone + '"'
                     + ' data-kpi="' + escapeHtml(item.key) + '"'
@@ -253,15 +265,22 @@
 
     };
 
+    const manageLinkHtml = (row) => {
+
+        if (!row.recordId) {
+            return escapeHtml(row.manageNo);
+        }
+
+        return '<a class="cayan-sd-link" href="'
+            + escapeHtml(location.origin + Engine.orderDetailPath(row.recordId))
+            + '" target="_blank" rel="noopener noreferrer">'
+            + escapeHtml(row.manageNo)
+            + '</a>';
+
+    };
+
     const detailRowHtml = (row) => {
 
-        const manageCell = row.recordId
-            ? '<a class="cayan-sd-link" href="'
-                + escapeHtml(location.origin + Engine.orderDetailPath(row.recordId))
-                + '" target="_blank" rel="noopener noreferrer">'
-                + escapeHtml(row.manageNo)
-                + '</a>'
-            : escapeHtml(row.manageNo);
         const duplicate = row.duplicate
             ? '<span class="cayan-sd-dup">' + escapeHtml(cfg().DUPLICATE_LABEL) + '</span>'
             : '';
@@ -270,7 +289,7 @@
         );
 
         return '<tr>'
-            + '<td class="cayan-sd-key">' + manageCell + duplicate + '</td>'
+            + '<td class="cayan-sd-key">' + manageLinkHtml(row) + duplicate + '</td>'
             + cell(row.clientName, true)
             + cell(row.kimonoType, false)
             + cell(row.processing, true)
@@ -283,10 +302,37 @@
 
     };
 
+    const inventoryRowHtml = (row) => {
+
+        const cell = (value, key) => (
+            '<td class="' + (key ? 'cayan-sd-key' : '') + '">' + escapeHtml(value) + '</td>'
+        );
+        const customerLabel = [row.customerName, row.clientName].filter(Boolean).join(' / ');
+
+        return '<tr>'
+            + '<td class="cayan-sd-key">' + manageLinkHtml(row) + '</td>'
+            + cell(customerLabel, true)
+            + cell(row.kimonoType, false)
+            + cell(row.processing, true)
+            + cell(row.deadline || '（未設定）', false)
+            + cell(row.deliveryNo || '—', true)
+            + cell(row.locationStatus, true)
+            + cell(row.storageDaysLabel || '—', false)
+            + '</tr>';
+
+    };
+
     const tableWrap = (bodyRows) => (
         '<div class="cayan-sd-table-wrap"><table class="cayan-sd-table"><thead><tr>'
         + '<th>管理番号</th><th>お客様名</th><th>着物種類</th><th>加工内容</th>'
         + '<th>納期</th><th>工程</th><th>保管場所</th><th>作業状態</th><th>納品状態</th>'
+        + '</tr></thead><tbody>' + bodyRows + '</tbody></table></div>'
+    );
+
+    const inventoryTableWrap = (bodyRows) => (
+        '<div class="cayan-sd-table-wrap"><table class="cayan-sd-table"><thead><tr>'
+        + '<th>管理番号</th><th>顧客名</th><th>着物種類</th><th>加工内容</th>'
+        + '<th>納期</th><th>納品書番号</th><th>保管場所</th><th>保管日数</th>'
         + '</tr></thead><tbody>' + bodyRows + '</tbody></table></div>'
     );
 
@@ -332,15 +378,27 @@
 
         const meta = cfg().KPI[selectedKpi];
         const rows = kpiModel.lists?.[selectedKpi] || [];
+        const isInventory = selectedKpi === 'waitingStock' || selectedKpi === 'slipNotAtStore';
+        const lead = selectedKpi === 'waitingStock'
+            ? cfg().MESSAGES.waitingStockLead
+            : (selectedKpi === 'slipNotAtStore' ? cfg().MESSAGES.slipNotAtStoreLead : '');
+        const emptyText = selectedKpi === 'waitingStock'
+            ? cfg().MESSAGES.waitingStockEmpty
+            : (selectedKpi === 'slipNotAtStore' ? cfg().MESSAGES.slipNotAtStoreEmpty : cfg().MESSAGES.emptyKpi);
         const heading = '<h2 class="cayan-sd-detail-title">'
             + escapeHtml(meta ? meta.label : selectedKpi)
             + '</h2>'
+            + (lead ? '<p class="cayan-sd-detail-lead">' + escapeHtml(lead) + '</p>' : '')
             + '<p class="cayan-sd-detail-count">'
             + escapeHtml((meta ? meta.label : '') + ' ' + rows.length + cfg().MESSAGES.kpiSuffix)
             + '</p>';
 
         if (!rows.length) {
-            return heading + '<p class="cayan-sd-empty">' + escapeHtml(cfg().MESSAGES.emptyKpi) + '</p>';
+            return heading + '<p class="cayan-sd-empty">' + escapeHtml(emptyText) + '</p>';
+        }
+
+        if (isInventory) {
+            return heading + inventoryTableWrap(rows.map(inventoryRowHtml).join(''));
         }
 
         return heading + tableWrap(rows.map(detailRowHtml).join(''));
@@ -491,7 +549,7 @@
                 subcategoryByCode,
                 year,
                 month,
-                { excludeDelivered: true }
+                { excludeDelivered: true, excludeSlipCreated: true }
             );
             kpiModel = Engine.buildKpiModel(allRecords, subcategoryByCode, today);
             loading = false;

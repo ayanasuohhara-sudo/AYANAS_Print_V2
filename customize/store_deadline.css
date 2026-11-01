@@ -42,7 +42,7 @@ body.ayanas-store-deadline-active .gaia-argoui-app-index-pager {
 
 .cayan-sd-kpi {
   display: grid;
-  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
   margin-bottom: 14px;
 }
@@ -75,6 +75,16 @@ body.ayanas-store-deadline-active .gaia-argoui-app-index-pager {
 
 .cayan-sd-kpi-card.is-ready .cayan-sd-kpi-count {
   color: #166534;
+}
+
+.cayan-sd-kpi-card.is-warn .cayan-sd-kpi-count {
+  color: #b45309;
+}
+
+.cayan-sd-detail-lead {
+  margin: 0 0 6px;
+  color: #475569;
+  font-size: 14px;
 }
 
 .cayan-sd-kpi-label {

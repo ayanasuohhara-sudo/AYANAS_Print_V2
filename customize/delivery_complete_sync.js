@@ -4,7 +4,8 @@
   /**
    * App19 納品書保存時:
    * - delivery_no 採番: 全顧客（一般客・A550・法人）
-   * - App16 納品済連携: 法人のみ（A550 / customer_code 空欄は更新しない）
+   * - App16 納品済連携: 法人のみ（location + delivery = 納品済）
+   * - App16 店舗同期: A550 のみ（delivery_status/delivery_no/delivery_date。process/location/work 不変）
    */
 
   const DELIVERY_APP_ID = 19;
@@ -12,6 +13,7 @@
   const A550_CUSTOMER_CODE = 'A550';
   const PROCESS_COMPLETE = '完了';
   const STATUS_DELIVERED = '納品済';
+  const STATUS_WAITING = '納品待ち';
 
   const FIELD = {
     customerCode: 'customer_code',
@@ -21,6 +23,7 @@
     manageNo: 'manage_no',
     processStatus: 'process_status',
     locationStatus: 'location_status',
+    workStatus: 'work_status',
     deliveryStatus: 'delivery_status',
   };
 
@@ -44,6 +47,10 @@
 
   function isCorporateCustomer(customerCode) {
     return customerCode !== '' && customerCode !== A550_CUSTOMER_CODE;
+  }
+
+  function isStoreCustomer(customerCode) {
+    return String(customerCode ?? '').trim() === A550_CUSTOMER_CODE;
   }
 
   function collectManageNos(record) {
@@ -123,6 +130,90 @@
     return record;
   }
 
+  /**
+   * A550 店舗同期用 PUT。process / location / work は含めない。
+   */
+  function buildStoreOrderUpdate(deliveryDate, deliveryNo) {
+    const record = {
+      [FIELD.deliveryStatus]: { value: STATUS_WAITING },
+    };
+    const date = String(deliveryDate ?? '').trim();
+    const number = String(deliveryNo ?? '').trim();
+
+    if (number) {
+      record[FIELD.deliveryNo] = { value: number };
+    }
+
+    if (date) {
+      record[FIELD.deliveryDate] = { value: date };
+    }
+
+    return record;
+  }
+
+  /**
+   * A550 同期の判定（kintone 非依存）。
+   * @returns {{ action: 'put'|'skip'|'warn', reason: string, record?: object }}
+   */
+  function planStoreOrderSync(orderRec, deliveryDate, deliveryNo) {
+    const number = String(deliveryNo ?? '').trim();
+    const date = String(deliveryDate ?? '').trim();
+    const currentDelivery = String(fieldValue(orderRec, FIELD.deliveryStatus) ?? '').trim();
+    const currentNo = String(fieldValue(orderRec, FIELD.deliveryNo) ?? '').trim();
+    const currentDate = String(fieldValue(orderRec, FIELD.deliveryDate) ?? '').trim();
+
+    if (!number) {
+      return { action: 'skip', reason: 'delivery_no_empty' };
+    }
+
+    if (currentDelivery === STATUS_DELIVERED) {
+      return { action: 'skip', reason: 'already_delivered' };
+    }
+
+    if (currentNo && currentNo !== number) {
+      return {
+        action: 'warn',
+        reason: 'different_delivery_no:' + currentNo,
+      };
+    }
+
+    if (
+      currentDelivery === STATUS_WAITING
+      && currentNo === number
+      && (!date || currentDate === date)
+    ) {
+      return { action: 'skip', reason: 'already_applied' };
+    }
+
+    return {
+      action: 'put',
+      reason: 'apply_waiting',
+      record: buildStoreOrderUpdate(date, number),
+    };
+  }
+
+  function isStoreDeliveryApplied(orderRec, deliveryDate, deliveryNo) {
+    const delivery = String(fieldValue(orderRec, FIELD.deliveryStatus) ?? '').trim();
+    const date = String(deliveryDate ?? '').trim();
+    const number = String(deliveryNo ?? '').trim();
+    const currentDate = String(fieldValue(orderRec, FIELD.deliveryDate) ?? '').trim();
+    const currentNo = String(fieldValue(orderRec, FIELD.deliveryNo) ?? '').trim();
+
+    if (delivery !== STATUS_WAITING) {
+      return false;
+    }
+
+    if (number && currentNo !== number) {
+      return false;
+    }
+
+    if (date && currentDate !== date) {
+      return false;
+    }
+
+    return true;
+  }
+
   async function fetchOrdersByManageNo(manageNo) {
     const resp = await kintone.api(
       kintone.api.url('/k/v1/records.json', true),
@@ -135,6 +226,7 @@
           FIELD.manageNo,
           FIELD.processStatus,
           FIELD.locationStatus,
+          FIELD.workStatus,
           FIELD.deliveryStatus,
           FIELD.deliveryDate,
           FIELD.deliveryNo,
@@ -202,9 +294,49 @@
     return { updated: true, skipped: false };
   }
 
-  async function syncCorporateOrders(record, deliveryDate, deliveryNo) {
+  async function markStoreOrderWaiting(orderRec, manageNo, deliveryDate, deliveryNo) {
+    const plan = planStoreOrderSync(orderRec, deliveryDate, deliveryNo);
+
+    if (plan.action === 'skip') {
+      return { updated: false, skipped: true, reason: plan.reason };
+    }
+
+    if (plan.action === 'warn') {
+      return { updated: false, skipped: true, warned: true, reason: plan.reason };
+    }
+
+    await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
+      app: ORDER_APP_ID,
+      id: orderRec.$id.value,
+      record: plan.record,
+    });
+
+    const confirmed = await fetchOrdersByManageNo(manageNo);
+    const after = confirmed[0];
+
+    if (!after || !isStoreDeliveryApplied(after, deliveryDate, deliveryNo)) {
+      throw new Error('納品待ち・納品日・納品番号の反映を確認できません');
+    }
+
+    // process / location / work が変わっていないこと
+    const beforeP = String(fieldValue(orderRec, FIELD.processStatus) ?? '').trim();
+    const beforeL = String(fieldValue(orderRec, FIELD.locationStatus) ?? '').trim();
+    const beforeW = String(fieldValue(orderRec, FIELD.workStatus) ?? '').trim();
+    const afterP = String(fieldValue(after, FIELD.processStatus) ?? '').trim();
+    const afterL = String(fieldValue(after, FIELD.locationStatus) ?? '').trim();
+    const afterW = String(fieldValue(after, FIELD.workStatus) ?? '').trim();
+
+    if (beforeP !== afterP || beforeL !== afterL || beforeW !== afterW) {
+      throw new Error('process/location/work が意図せず変更されました');
+    }
+
+    return { updated: true, skipped: false, reason: plan.reason };
+  }
+
+  async function syncOrdersByPath(record, deliveryDate, deliveryNo, mode) {
     const manageNos = collectManageNos(record);
     const failures = [];
+    const warnings = [];
 
     for (const manageNo of manageNos) {
       let orders;
@@ -240,7 +372,24 @@
       }
 
       try {
-        await markOrderDelivered(orders[0], manageNo, deliveryDate, deliveryNo);
+        if (mode === 'corporate') {
+          await markOrderDelivered(orders[0], manageNo, deliveryDate, deliveryNo);
+        } else {
+          const result = await markStoreOrderWaiting(
+            orders[0],
+            manageNo,
+            deliveryDate,
+            deliveryNo
+          );
+
+          if (result.warned) {
+            warnings.push(
+              manageNo + ' は別納品書番号(' +
+              String(result.reason || '').replace('different_delivery_no:', '') +
+              ')が既にあるため更新しませんでした'
+            );
+          }
+        }
       } catch (err) {
         console.error(
           '[delivery_complete_sync] App16 更新失敗: manage_no=' + manageNo,
@@ -250,12 +399,28 @@
       }
     }
 
-    if (failures.length > 0) {
+    if (warnings.length > 0) {
       window.alert(
-        '納品書は保存されましたが、受注への納品済反映に失敗しました。\n\n' +
+        '納品書は保存されましたが、一部の受注は二重登録防止のため更新しませんでした。\n\n' +
+        warnings.join('\n')
+      );
+    }
+
+    if (failures.length > 0) {
+      const label = mode === 'corporate' ? '納品済反映' : '店舗納品待ち反映';
+      window.alert(
+        '納品書は保存されましたが、受注への' + label + 'に失敗しました。\n\n' +
         failures.join('\n')
       );
     }
+  }
+
+  async function syncCorporateOrders(record, deliveryDate, deliveryNo) {
+    return syncOrdersByPath(record, deliveryDate, deliveryNo, 'corporate');
+  }
+
+  async function syncStoreOrders(record, deliveryDate, deliveryNo) {
+    return syncOrdersByPath(record, deliveryDate, deliveryNo, 'store');
   }
 
   async function afterDeliverySave(recordId, isCreate) {
@@ -274,24 +439,34 @@
     }
 
     const customerCode = trimCustomerCode(record);
+    const deliveryNo = String(fieldValue(record, FIELD.deliveryNo) ?? '').trim();
 
-    if (!isCorporateCustomer(customerCode)) {
-      if (customerCode === A550_CUSTOMER_CODE) {
-        console.info(
-          '[delivery_complete_sync] A550 のため App16 更新なし (recordId=' + recordId + ')'
-        );
-      } else if (customerCode === '') {
-        console.info(
-          '[delivery_complete_sync] customer_code 空のため App16 更新なし (recordId=' +
-          recordId +
-          ')'
-        );
-      }
+    if (isCorporateCustomer(customerCode)) {
+      await syncCorporateOrders(record, deliveryDate, deliveryNo);
       return;
     }
 
-    const deliveryNo = String(fieldValue(record, FIELD.deliveryNo) ?? '').trim();
-    await syncCorporateOrders(record, deliveryDate, deliveryNo);
+    if (isStoreCustomer(customerCode)) {
+      if (!deliveryNo) {
+        console.warn(
+          '[delivery_complete_sync] A550 だが delivery_no が空のため App16 同期スキップ (recordId=' +
+          recordId +
+          ')'
+        );
+        return;
+      }
+
+      await syncStoreOrders(record, deliveryDate, deliveryNo);
+      return;
+    }
+
+    if (customerCode === '') {
+      console.info(
+        '[delivery_complete_sync] customer_code 空のため App16 更新なし (recordId=' +
+        recordId +
+        ')'
+      );
+    }
   }
 
   kintone.events.on(
@@ -318,7 +493,14 @@
 
   window.CAYANAS_DeliveryCompleteSync = {
     buildCorporateOrderUpdate: buildCorporateOrderUpdate,
+    buildStoreOrderUpdate: buildStoreOrderUpdate,
+    planStoreOrderSync: planStoreOrderSync,
     isCorporateCustomer: isCorporateCustomer,
+    isStoreCustomer: isStoreCustomer,
+    isStoreDeliveryApplied: isStoreDeliveryApplied,
     assignDeliveryNoIfNeeded: assignDeliveryNoIfNeeded,
+    A550_CUSTOMER_CODE: A550_CUSTOMER_CODE,
+    STATUS_WAITING: STATUS_WAITING,
+    STATUS_DELIVERED: STATUS_DELIVERED,
   };
 })();
