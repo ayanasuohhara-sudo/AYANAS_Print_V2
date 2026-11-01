@@ -1,0 +1,636 @@
+{
+  "at": "2026-11-01T15:04:04.469Z",
+  "fixtures": {
+    "ok": true,
+    "today": "2026-11-01",
+    "created": [
+      {
+        "id": "3400",
+        "manageNo": "TFN361236A",
+        "location": "店舗"
+      },
+      {
+        "id": "3401",
+        "manageNo": "TFN361236B",
+        "location": "工場"
+      },
+      {
+        "id": "3402",
+        "manageNo": "TFN361236C",
+        "location": "店舗"
+      }
+    ]
+  },
+  "scope": {
+    "19": {
+      "everyoneView": true,
+      "everyoneAdd": true,
+      "js": [
+        "internal_ops_config.js",
+        "complete_register_engine.js",
+        "delivery_completion_guard.js",
+        "barcode_delivery.js",
+        "delivery_complete_sync.js",
+        "delivery_a550_edit_guard.js",
+        "price_master_register.js",
+        "delivery_additional_item_guard.js",
+        "additional_item_engine.js"
+      ],
+      "hasA550Guard": true,
+      "hasStoreDeadline": false,
+      "hasPayment": false
+    },
+    "92": {
+      "everyoneView": true,
+      "everyoneAdd": true,
+      "js": [
+        "store_deadline_config.js",
+        "store_deadline_engine.js",
+        "store_deadline_desktop.js"
+      ],
+      "hasA550Guard": false,
+      "hasStoreDeadline": true,
+      "hasPayment": false
+    },
+    "97": {
+      "everyoneView": false,
+      "everyoneAdd": false,
+      "js": [
+        "store_payment_config.js",
+        "store_payment_engine.js",
+        "store_payment_numbering.js",
+        "store_payment_api.js",
+        "store_payment_desktop.js",
+        "store_payment_ui.js"
+      ],
+      "hasA550Guard": false,
+      "hasStoreDeadline": false,
+      "hasPayment": true
+    }
+  },
+  "ui": [
+    {
+      "name": "App19 everyone に新JS適用（view/add true + edit_guard）",
+      "ok": true,
+      "detail": {
+        "everyoneView": true,
+        "everyoneAdd": true,
+        "js": [
+          "internal_ops_config.js",
+          "complete_register_engine.js",
+          "delivery_completion_guard.js",
+          "barcode_delivery.js",
+          "delivery_complete_sync.js",
+          "delivery_a550_edit_guard.js",
+          "price_master_register.js",
+          "delivery_additional_item_guard.js",
+          "additional_item_engine.js"
+        ],
+        "hasA550Guard": true,
+        "hasStoreDeadline": false,
+        "hasPayment": false
+      }
+    },
+    {
+      "name": "App92 everyone に v1.1.0 適用",
+      "ok": true,
+      "detail": {
+        "everyoneView": true,
+        "everyoneAdd": true,
+        "js": [
+          "store_deadline_config.js",
+          "store_deadline_engine.js",
+          "store_deadline_desktop.js"
+        ],
+        "hasA550Guard": false,
+        "hasStoreDeadline": true,
+        "hasPayment": false
+      }
+    },
+    {
+      "name": "App97 は限定ACL維持（everyone view/add false）",
+      "ok": true,
+      "detail": {
+        "everyoneView": false,
+        "everyoneAdd": false,
+        "js": [
+          "store_payment_config.js",
+          "store_payment_engine.js",
+          "store_payment_numbering.js",
+          "store_payment_api.js",
+          "store_payment_desktop.js",
+          "store_payment_ui.js"
+        ],
+        "hasA550Guard": false,
+        "hasStoreDeadline": false,
+        "hasPayment": true
+      }
+    },
+    {
+      "name": "App19 実画面でA550納品書を保存",
+      "ok": true,
+      "detail": {
+        "url": "https://o5nppg7kb4ly.cybozu.com/k/19/show#record=648",
+        "id": "648",
+        "text": "kintone\n大原健嗣\n09_納品書作成\nApp:09_納品書作成Record:\n\t\nNew record\nEdit record\nDuplicate record\nApp settings\nApp settings menuOptions\n \nNow loading...\nComments\nHistory\nNow loading..."
+      }
+    },
+    {
+      "name": "App16 納品書番号・納品待ち更新",
+      "ok": true,
+      "detail": {
+        "s": {
+          "id": "3400",
+          "mn": "TFN361236A",
+          "ds": "納品待ち",
+          "dn": "N20261102-648",
+          "dd": "2026-11-01",
+          "ps": "完了",
+          "ls": "店舗",
+          "ws": "仕上げ完了"
+        },
+        "f": {
+          "id": "3401",
+          "mn": "TFN361236B",
+          "ds": "納品待ち",
+          "dn": "N20261102-648",
+          "dd": "2026-11-01",
+          "ps": "完了",
+          "ls": "工場",
+          "ws": "仕上げ完了"
+        },
+        "deliveryNo": "N20261102-648"
+      }
+    },
+    {
+      "name": "process/location/work 不変",
+      "ok": true,
+      "detail": {
+        "s": {
+          "id": "3400",
+          "mn": "TFN361236A",
+          "ds": "納品待ち",
+          "dn": "N20261102-648",
+          "dd": "2026-11-01",
+          "ps": "完了",
+          "ls": "店舗",
+          "ws": "仕上げ完了"
+        },
+        "f": {
+          "id": "3401",
+          "mn": "TFN361236B",
+          "ds": "納品待ち",
+          "dn": "N20261102-648",
+          "dd": "2026-11-01",
+          "ps": "完了",
+          "ls": "工場",
+          "ws": "仕上げ完了"
+        }
+      }
+    },
+    {
+      "name": "明細外 C は未同期",
+      "ok": true,
+      "detail": {
+        "id": "3402",
+        "mn": "TFN361236C",
+        "ds": "納品待ち",
+        "dn": "",
+        "dd": null,
+        "ps": "完了",
+        "ls": "店舗",
+        "ws": "仕上げ完了"
+      }
+    },
+    {
+      "name": "App92 VERSION 1.1.0 / KPIラベル表示",
+      "ok": true,
+      "detail": {
+        "ver": "1.1.0",
+        "uiHasWaiting": true,
+        "uiHasSlip": true,
+        "storeExcluded": true,
+        "factoryExcluded": true,
+        "extraExcluded": false,
+        "storeWaiting": true,
+        "factorySlip": true,
+        "factoryWaiting": false
+      }
+    },
+    {
+      "name": "App92 スケジュールから除外（A/B）",
+      "ok": true,
+      "detail": {
+        "ver": "1.1.0",
+        "uiHasWaiting": true,
+        "uiHasSlip": true,
+        "storeExcluded": true,
+        "factoryExcluded": true,
+        "extraExcluded": false,
+        "storeWaiting": true,
+        "factorySlip": true,
+        "factoryWaiting": false
+      }
+    },
+    {
+      "name": "App92 納品待ち在庫（店舗A）",
+      "ok": true,
+      "detail": {
+        "ver": "1.1.0",
+        "uiHasWaiting": true,
+        "uiHasSlip": true,
+        "storeExcluded": true,
+        "factoryExcluded": true,
+        "extraExcluded": false,
+        "storeWaiting": true,
+        "factorySlip": true,
+        "factoryWaiting": false
+      }
+    },
+    {
+      "name": "App92 店舗未到着（工場B）",
+      "ok": true,
+      "detail": {
+        "ver": "1.1.0",
+        "uiHasWaiting": true,
+        "uiHasSlip": true,
+        "storeExcluded": true,
+        "factoryExcluded": true,
+        "extraExcluded": false,
+        "storeWaiting": true,
+        "factorySlip": true,
+        "factoryWaiting": false
+      }
+    },
+    {
+      "name": "未納品書Cはスケジュール残存",
+      "ok": true,
+      "detail": {
+        "ver": "1.1.0",
+        "uiHasWaiting": true,
+        "uiHasSlip": true,
+        "storeExcluded": true,
+        "factoryExcluded": true,
+        "extraExcluded": false,
+        "storeWaiting": true,
+        "factorySlip": true,
+        "factoryWaiting": false
+      }
+    },
+    {
+      "name": "App97 バーコード読取",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "ui": true,
+        "barcode": true,
+        "pay": {
+          "ok": true,
+          "recordId": "6",
+          "storePaymentNo": "SP-261101-000006",
+          "transactionId": "STP-1793545474126-110onpe4"
+        },
+        "pick": {
+          "ok": true,
+          "balance": {
+            "exclusive": 3000,
+            "tax": 300,
+            "billedInclusive": 3300,
+            "paid": 3300,
+            "balance": 0,
+            "state": "入金済"
+          },
+          "exception": false
+        },
+        "ds": "納品済",
+        "dn": "N20261102-648"
+      }
+    },
+    {
+      "name": "App97 入金登録",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "ui": true,
+        "barcode": true,
+        "pay": {
+          "ok": true,
+          "recordId": "6",
+          "storePaymentNo": "SP-261101-000006",
+          "transactionId": "STP-1793545474126-110onpe4"
+        },
+        "pick": {
+          "ok": true,
+          "balance": {
+            "exclusive": 3000,
+            "tax": 300,
+            "billedInclusive": 3300,
+            "paid": 3300,
+            "balance": 0,
+            "state": "入金済"
+          },
+          "exception": false
+        },
+        "ds": "納品済",
+        "dn": "N20261102-648"
+      }
+    },
+    {
+      "name": "App97 引き渡し完了→納品済",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "ui": true,
+        "barcode": true,
+        "pay": {
+          "ok": true,
+          "recordId": "6",
+          "storePaymentNo": "SP-261101-000006",
+          "transactionId": "STP-1793545474126-110onpe4"
+        },
+        "pick": {
+          "ok": true,
+          "balance": {
+            "exclusive": 3000,
+            "tax": 300,
+            "billedInclusive": 3300,
+            "paid": 3300,
+            "balance": 0,
+            "state": "入金済"
+          },
+          "exception": false
+        },
+        "ds": "納品済",
+        "dn": "N20261102-648"
+      }
+    },
+    {
+      "name": "App92在庫から除外（納品済）",
+      "ok": true,
+      "detail": {
+        "waiting": false,
+        "slip": false,
+        "excluded": true,
+        "ds": "納品済"
+      }
+    }
+  ],
+  "abnormal": [
+    {
+      "name": "同じ納品書の再保存は skip",
+      "ok": true,
+      "detail": {
+        "action": "skip",
+        "reason": "already_applied"
+      }
+    },
+    {
+      "name": "別納品書への重複は warn",
+      "ok": true,
+      "detail": {
+        "action": "warn",
+        "reason": "different_delivery_no:N20261102-648"
+      }
+    },
+    {
+      "name": "編集ガード対象判定（A550+番号）",
+      "ok": true,
+      "detail": {
+        "resave": {
+          "action": "skip",
+          "reason": "already_applied"
+        },
+        "dual": {
+          "action": "warn",
+          "reason": "different_delivery_no:N20261102-648"
+        },
+        "guardHit": true,
+        "guardCorp": true,
+        "warningText": true,
+        "syncFailDetect": true,
+        "syncRepair": true,
+        "syncRetrySkip": true
+      }
+    },
+    {
+      "name": "App16同期漏れを検出して安全に再実行",
+      "ok": true,
+      "detail": {
+        "resave": {
+          "action": "skip",
+          "reason": "already_applied"
+        },
+        "dual": {
+          "action": "warn",
+          "reason": "different_delivery_no:N20261102-648"
+        },
+        "guardHit": true,
+        "guardCorp": true,
+        "warningText": true,
+        "syncFailDetect": true,
+        "syncRepair": true,
+        "syncRetrySkip": true
+      }
+    },
+    {
+      "name": "App97入金成功後のApp16失敗を模擬し、入金は残る",
+      "ok": true,
+      "detail": {
+        "payOk": true,
+        "payNo": "SP-261101-000007",
+        "failSimulated": true,
+        "stillWaitingAfterFail": true,
+        "recoverOk": true,
+        "finalDs": "納品済"
+      }
+    },
+    {
+      "name": "App16更新失敗後に引き取り再実行で復旧",
+      "ok": true,
+      "detail": {
+        "payOk": true,
+        "payNo": "SP-261101-000007",
+        "failSimulated": true,
+        "stillWaitingAfterFail": true,
+        "recoverOk": true,
+        "finalDs": "納品済"
+      }
+    }
+  ],
+  "bugs": [
+    {
+      "severity": "low",
+      "title": "初回最終確認スクリプトは保存完了前に同期確認し、誤って未発火と判断した",
+      "status": "resolved-by-retest",
+      "mitigation": "再テストで t+2s に delivery_no 反映を確認。コード修正不要",
+      "detail": {
+        "conclusion": "UI create.submit.success → App16 sync works (observed at t+2s)",
+        "order": {
+          "id": "3403",
+          "mn": "TUI46835",
+          "today": "2026-11-02"
+        },
+        "slipId": "650",
+        "times": [
+          {
+            "t": 2,
+            "dn": "N20261102-650",
+            "ds": "納品待ち",
+            "dd": "2026-11-02",
+            "slipNo": "N20261102-650"
+          }
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "初回の同期未反映疑いはタイミング競合。再テストで自動同期OK"
+  ],
+  "uiSync": {
+    "orders": [
+      {
+        "id": "3400",
+        "mn": "TFN361236A",
+        "ds": "納品待ち",
+        "dn": "N20261102-648",
+        "dd": "2026-11-01",
+        "ps": "完了",
+        "ls": "店舗",
+        "ws": "仕上げ完了"
+      },
+      {
+        "id": "3401",
+        "mn": "TFN361236B",
+        "ds": "納品待ち",
+        "dn": "N20261102-648",
+        "dd": "2026-11-01",
+        "ps": "完了",
+        "ls": "工場",
+        "ws": "仕上げ完了"
+      },
+      {
+        "id": "3402",
+        "mn": "TFN361236C",
+        "ds": "納品待ち",
+        "dn": "",
+        "dd": null,
+        "ps": "完了",
+        "ls": "店舗",
+        "ws": "仕上げ完了"
+      }
+    ],
+    "slipNo": "N20261102-648",
+    "slipDate": "2026-11-02",
+    "syncGlobal": "object"
+  },
+  "uiRepair": {
+    "ok": true,
+    "id": "648",
+    "dn": "N20261102-648",
+    "results": [
+      {
+        "mn": "TFN361236A",
+        "action": "put",
+        "reason": "apply_waiting"
+      },
+      {
+        "mn": "TFN361236B",
+        "action": "put",
+        "reason": "apply_waiting"
+      }
+    ]
+  },
+  "app92": {
+    "ver": "1.1.0",
+    "uiHasWaiting": true,
+    "uiHasSlip": true,
+    "storeExcluded": true,
+    "factoryExcluded": true,
+    "extraExcluded": false,
+    "storeWaiting": true,
+    "factorySlip": true,
+    "factoryWaiting": false
+  },
+  "app97": {
+    "ok": true,
+    "ui": true,
+    "barcode": true,
+    "pay": {
+      "ok": true,
+      "recordId": "6",
+      "storePaymentNo": "SP-261101-000006",
+      "transactionId": "STP-1793545474126-110onpe4"
+    },
+    "pick": {
+      "ok": true,
+      "balance": {
+        "exclusive": 3000,
+        "tax": 300,
+        "billedInclusive": 3300,
+        "paid": 3300,
+        "balance": 0,
+        "state": "入金済"
+      },
+      "exception": false
+    },
+    "ds": "納品済",
+    "dn": "N20261102-648"
+  },
+  "abnormalDetail": {
+    "resave": {
+      "action": "skip",
+      "reason": "already_applied"
+    },
+    "dual": {
+      "action": "warn",
+      "reason": "different_delivery_no:N20261102-648"
+    },
+    "guardHit": true,
+    "guardCorp": true,
+    "warningText": true,
+    "syncFailDetect": true,
+    "syncRepair": true,
+    "syncRetrySkip": true
+  },
+  "app97Failure": {
+    "payOk": true,
+    "payNo": "SP-261101-000007",
+    "failSimulated": true,
+    "stillWaitingAfterFail": true,
+    "recoverOk": true,
+    "finalDs": "納品済"
+  },
+  "passedUi": 16,
+  "failedUi": 0,
+  "passedAbnormal": 6,
+  "failedAbnormal": 0,
+  "app97GeneralRelease": "NO — keep limited ACL; await final approval",
+  "staffImpact": {
+    "app19": "everyone に新JS適用済み（A550保存で App16 同期・編集警告）。法人経路は従来どおり",
+    "app92": "everyone に v1.1.0 適用済み（納品書番号除外・在庫KPI）。A550のみ表示",
+    "app97": "everyone 不可。verifier/Administrators のみ"
+  },
+  "autosyncRetest": {
+    "conclusion": "UI create.submit.success → App16 sync works (observed at t+2s)",
+    "order": {
+      "id": "3403",
+      "mn": "TUI46835",
+      "today": "2026-11-02"
+    },
+    "slipId": "650",
+    "times": [
+      {
+        "t": 2,
+        "dn": "N20261102-650",
+        "ds": "納品待ち",
+        "dd": "2026-11-02",
+        "slipNo": "N20261102-650"
+      }
+    ]
+  },
+  "screenshots": [
+    "/opt/cursor/artifacts/screenshots/final_app92_waiting_stock.png",
+    "/opt/cursor/artifacts/screenshots/final_app97_accounting.png",
+    "/opt/cursor/artifacts/screenshots/final_app19_slip_650.png"
+  ]
+}
