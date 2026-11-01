@@ -21,15 +21,27 @@
 
     const CFG = () => CAYANAS_FACTORY_INBOUND;
 
+    const isSortPendingWork = (workStatus) => {
+
+        const C = CFG();
+        const W = C.WORK;
+
+        if (typeof C.workStatusEquals === 'function') {
+            return C.workStatusEquals(workStatus, W.sortPending);
+        }
+
+        return String(workStatus ?? '').trim() === W.sortPending;
+
+    };
+
     const isEligibleForSorting = (locationStatus, workStatus) => {
 
         assertConfig();
 
         const L = CFG().LOCATION;
-        const W = CFG().WORK;
 
         return String(locationStatus ?? '').trim() === L.factory
-            && String(workStatus ?? '').trim() === W.sortPending;
+            && isSortPendingWork(workStatus);
 
     };
 
@@ -44,8 +56,8 @@
                 + '現在地: ' + loc + '\n作業: ' + work;
         }
 
-        if (work !== W.sortPending) {
-            return '振り分け対象外です。「' + W.sortPending + '」ではありません。\n'
+        if (!isSortPendingWork(workStatus)) {
+            return '振り分け対象外です。「' + W.sortPending + '」（または移行中の旧「未着手」）ではありません。\n'
                 + '現在地: ' + loc + '\n作業: ' + work;
         }
 
@@ -75,15 +87,16 @@
         if (action === ACTION.storeShimi) {
             return {
                 locationStatus: L.store,
-                workStatus: W.shimiWait,
+                workStatus: W.shimiInProgress,
                 actionLabel: '店舗しみ抜きへ',
             };
         }
 
         if (action === ACTION.finish) {
+            // 仕上げ待ち廃止 → 仕上げ中へ（実際に仕上げ工程へ進める）
             return {
                 locationStatus: L.factory,
-                workStatus: W.finishWait,
+                workStatus: W.finishInProgress,
                 actionLabel: '仕上げへ',
             };
         }

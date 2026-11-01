@@ -29,6 +29,18 @@
 
     const norm = (value) => String(value ?? '').trim();
 
+    const workEq = (left, right) => {
+
+        const C = CFG();
+
+        if (typeof C.workStatusEquals === 'function') {
+            return C.workStatusEquals(left, right);
+        }
+
+        return norm(left) === norm(right);
+
+    };
+
     const isAtStore = (locationStatus) => {
 
         assertConfig();
@@ -57,7 +69,8 @@
             };
         }
 
-        if (work === W.shimiWait) {
+        // 旧「しみ抜き待ち」のみ開始可（移行中 dual-read）。新規書込はしみ抜き中のため開始不要。
+        if (work === W.shimiWait || work === 'しみ抜き待ち') {
             return {
                 uiState: UI_STATE.shimiWait,
                 message: '',
@@ -65,7 +78,7 @@
             };
         }
 
-        if (work === W.shimiInProgress) {
+        if (workEq(work, W.shimiInProgress)) {
             return {
                 uiState: UI_STATE.shimiInProgress,
                 message: '',
@@ -107,9 +120,10 @@
         }
 
         if (action === ACTION.shimiCompleteToFactory) {
+            // しみ抜き完了・工場戻し → 仕上げ中（仕上げ待ち廃止）
             return {
                 locationStatus: L.factory,
-                workStatus: W.finishWait,
+                workStatus: W.finishInProgress,
             };
         }
 

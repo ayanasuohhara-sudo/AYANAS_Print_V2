@@ -341,18 +341,21 @@
             .sort(compareRows);
 
         const cards = workCardsForMode(mode);
+        const normalizeWork = typeof cfg().normalizeWorkStatus === 'function'
+            ? cfg().normalizeWorkStatus
+            : (value) => String(value ?? '').trim();
         const work = {};
 
         cards.forEach((name) => {
 
-            work[name] = countDistinct(rows, (row) => row.workStatus === name);
+            work[name] = countDistinct(rows, (row) => normalizeWork(row.workStatus) === name);
 
         });
 
         const kpis = {
             total: countDistinct(rows, () => true),
             work,
-            other: countDistinct(rows, (row) => cards.indexOf(row.workStatus) === -1),
+            other: countDistinct(rows, (row) => cards.indexOf(normalizeWork(row.workStatus)) === -1),
             deliveryWaiting: mode === cfg().MODE.store
                 ? countDistinct(rows, (row) => row.deliveryStatus === cfg().DELIVERY.waiting)
                 : null,
@@ -384,9 +387,15 @@
         const query = String(filters?.query || '').trim().toLowerCase();
         const list = Array.isArray(rows) ? rows : [];
 
+        const normalizeWork = typeof cfg().normalizeWorkStatus === 'function'
+            ? cfg().normalizeWorkStatus
+            : (value) => String(value ?? '').trim();
+
         return list.filter((row) => {
 
-            if (workId === 'other' && cards.indexOf(row.workStatus) !== -1) {
+            const canonicalWork = normalizeWork(row.workStatus);
+
+            if (workId === 'other' && cards.indexOf(canonicalWork) !== -1) {
                 return false;
             }
 
@@ -394,7 +403,7 @@
                 return false;
             }
 
-            if (workId && workId !== 'other' && workId !== 'deliveryWaiting' && row.workStatus !== workId) {
+            if (workId && workId !== 'other' && workId !== 'deliveryWaiting' && canonicalWork !== workId) {
                 return false;
             }
 

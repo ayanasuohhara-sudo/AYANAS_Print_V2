@@ -13,6 +13,11 @@ const root = path.resolve(__dirname, '..');
 global.window = global;
 
 vm.runInThisContext(
+    fs.readFileSync(path.join(root, 'customize/work_status_labels.js'), 'utf8'),
+    { filename: 'work_status_labels.js' }
+);
+
+vm.runInThisContext(
     fs.readFileSync(path.join(root, 'customize/factory_inbound_config.js'), 'utf8'),
     { filename: 'factory_inbound_config.js' }
 );
@@ -42,16 +47,18 @@ const assert = (name, cond) => {
 assert('ケース1 丸洗い開始可能', W.canPerformAction(A.maruStart, '工場', '丸洗い待ち'));
 assert(
     'ケース1 PUT先',
-    W.getNextWorkStatusForAction(A.maruStart) === '丸洗い中'
+    W.getNextWorkStatusForAction(A.maruStart) === '丸洗い中・乾燥'
 );
 
-assert('ケース2 丸洗い完了可能', W.canPerformAction(A.maruComplete, '工場', '丸洗い中'));
+assert('ケース2 丸洗い完了可能（正本）', W.canPerformAction(A.maruComplete, '工場', '丸洗い中・乾燥'));
+assert('ケース2b dual-read 丸洗い中', W.canPerformAction(A.maruComplete, '工場', '丸洗い中'));
 assert(
-    'ケース2 PUT先',
-    W.getNextWorkStatusForAction(A.maruComplete) === '仕上げ待ち'
+    'ケース2 PUT先→仕上げ中',
+    W.getNextWorkStatusForAction(A.maruComplete) === '仕上げ中'
 );
 
-assert('ケース3 仕上げ完了可能', W.canPerformAction(A.finishComplete, '工場', '仕上げ待ち'));
+assert('ケース3 仕上げ完了可能（正本）', W.canPerformAction(A.finishComplete, '工場', '仕上げ中'));
+assert('ケース3b dual-read 仕上げ待ち', W.canPerformAction(A.finishComplete, '工場', '仕上げ待ち'));
 assert(
     'ケース3 PUT先',
     W.getNextWorkStatusForAction(A.finishComplete) === '仕上げ完了'
@@ -60,15 +67,18 @@ assert(
 const done = W.resolveWorkUiState('工場', '仕上げ完了');
 assert('ケース4 仕上げ完了済み', done.uiState === W.UI_STATE.finishDone && !done.enabledAction);
 
-const sort = W.resolveWorkUiState('工場', '未着手');
-assert('ケース5 未着手', sort.uiState === W.UI_STATE.sortPending && sort.message.indexOf('振り分け') >= 0);
+const sort = W.resolveWorkUiState('工場', '未着');
+assert('ケース5 未着', sort.uiState === W.UI_STATE.sortPending && sort.message.indexOf('振り分け') >= 0);
 
-const store = W.resolveWorkUiState('店舗', 'しみ抜き待ち');
+const sortLegacy = W.resolveWorkUiState('工場', '未着手');
+assert('ケース5b dual-read 未着手', sortLegacy.uiState === W.UI_STATE.sortPending);
+
+const store = W.resolveWorkUiState('店舗', 'しみ抜き中');
 assert('ケース6 店舗', store.uiState === W.UI_STATE.notFactory);
 
 assert(
     'ケース7 stale文言',
-    W.buildStaleStateMessage('工場', '丸洗い中').indexOf('すでに変更') >= 0
+    W.buildStaleStateMessage('工場', '丸洗い中・乾燥').indexOf('すでに変更') >= 0
 );
 
 assert(
@@ -79,6 +89,11 @@ assert(
 assert(
     'ケース8b 丸洗い待ち→丸洗い完了不可',
     !W.canPerformAction(A.maruComplete, '工場', '丸洗い待ち')
+);
+
+assert(
+    '確認文に仕上げ中',
+    W.buildConfirmMessage('1', '工場', '丸洗い中・乾燥', A.maruComplete).indexOf('仕上げ中') >= 0
 );
 
 if (failed > 0) {

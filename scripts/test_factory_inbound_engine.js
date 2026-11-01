@@ -14,12 +14,15 @@ const root = path.resolve(__dirname, '..');
 const loadFactoryInbound = () => {
 
     global.window = global;
+    global.CAYANAS_WORK_STATUS = undefined;
     global.CAYANAS_FACTORY_INBOUND = undefined;
     global.CAYANAS_FactoryInboundEngine = undefined;
 
+    const labelsSrc = fs.readFileSync(path.join(root, 'customize/work_status_labels.js'), 'utf8');
     const configSrc = fs.readFileSync(path.join(root, 'customize/factory_inbound_config.js'), 'utf8');
     const engineSrc = fs.readFileSync(path.join(root, 'customize/factory_inbound_engine.js'), 'utf8');
 
+    vm.runInThisContext(labelsSrc, { filename: 'work_status_labels.js' });
     vm.runInThisContext(configSrc, { filename: 'factory_inbound_config.js' });
     vm.runInThisContext(engineSrc, { filename: 'factory_inbound_engine.js' });
 
@@ -42,22 +45,22 @@ const cases = [
         expect: { action: 'put', workStatus: '丸洗い待ち' },
     },
     {
-        name: 'ケース2 店舗+しみのみ(丸洗いなし)',
+        name: 'ケース2 店舗+しみのみ(丸洗いなし)→仕上げ中',
         from: '店舗',
         analysis: noMaru,
-        expect: { action: 'put', workStatus: '仕上げ待ち' },
+        expect: { action: 'put', workStatus: '仕上げ中' },
     },
     {
-        name: 'ケース3 本社+丸洗いあり',
+        name: 'ケース3 本社+丸洗いあり→未着',
         from: '本社',
         analysis: resolved,
-        expect: { action: 'put', workStatus: '未着手' },
+        expect: { action: 'put', workStatus: '未着' },
     },
     {
-        name: 'ケース4 本社+しみのみ',
+        name: 'ケース4 本社+しみのみ→未着',
         from: '本社',
         analysis: noMaru,
-        expect: { action: 'put', workStatus: '未着手' },
+        expect: { action: 'put', workStatus: '未着' },
     },
     {
         name: 'ケース5 すでに工場',

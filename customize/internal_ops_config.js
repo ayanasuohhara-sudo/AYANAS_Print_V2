@@ -3,9 +3,75 @@
 
     /**
      * 社内オペレーション共通 — App34 / App84 / App30
+     * work_status 正本は work_status_labels.js（任意読込）と同期。
      */
 
-    const INTERNAL_OPS_VERSION = '1.0.4';
+    const INTERNAL_OPS_VERSION = '1.1.0';
+
+    const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
+        ? window.CAYANAS_WORK_STATUS
+        : null;
+
+    const WORK = WS
+        ? {
+            sortPending: WS.LABELS.notArrived,
+            inquireEstimate: WS.LABELS.inquireEstimate,
+            maruWait: WS.LABELS.maruWait,
+            maruInProgress: WS.LABELS.maruInProgress,
+            shimiInProgress: WS.LABELS.shimiInProgress,
+            repairInProgress: WS.LABELS.repairInProgress,
+            reworkInProgress: WS.LABELS.reworkInProgress,
+            finishInProgress: WS.LABELS.finishInProgress,
+            finishDone: WS.LABELS.finishDone,
+            /** @deprecated 読み取り互換用。書き込みは shimiInProgress */
+            shimiWait: WS.LABELS.shimiInProgress,
+        }
+        : {
+            sortPending: '未着',
+            inquireEstimate: '問合せ・見積り',
+            maruWait: '丸洗い待ち',
+            maruInProgress: '丸洗い中・乾燥',
+            shimiInProgress: 'しみ抜き中',
+            repairInProgress: '修理中',
+            reworkInProgress: '再直し中',
+            finishInProgress: '仕上げ中',
+            finishDone: '仕上げ完了',
+            shimiWait: 'しみ抜き中',
+        };
+
+    const WORK_SELECT_OPTIONS = WS
+        ? WS.APP84_SELECT_OPTIONS.slice()
+        : [
+            '未着',
+            '問合せ・見積り',
+            '丸洗い待ち',
+            '丸洗い中・乾燥',
+            'しみ抜き中',
+            '修理中',
+            '再直し中',
+            '仕上げ中',
+        ];
+
+    const normalizeWorkStatus = (value) => {
+
+        if (WS) {
+            return WS.normalize(value);
+        }
+
+        const raw = String(value ?? '').trim();
+        const aliases = {
+            '未着手': '未着',
+            '振り分け待ち': '未着',
+            'しみ抜き待ち': 'しみ抜き中',
+            '仕上げ待ち': '仕上げ中',
+            '丸洗い中': '丸洗い中・乾燥',
+        };
+
+        return aliases[raw] || raw;
+
+    };
+
+    const workStatusEquals = (left, right) => normalizeWorkStatus(left) === normalizeWorkStatus(right);
 
     const CAYANAS_INTERNAL_OPS = {
         VERSION: INTERNAL_OPS_VERSION,
@@ -34,28 +100,11 @@
             factoryWorking: '工場作業中',
             storeWorking: '店舗作業中',
         },
-        WORK: {
-            sortPending: '未着手',
-            maruWait: '丸洗い待ち',
-            maruInProgress: '丸洗い中・乾燥',
-            shimiWait: 'しみ抜き待ち',
-            shimiInProgress: 'しみ抜き中',
-            repairInProgress: '修理中',
-            reworkInProgress: '再直し中',
-            finishInProgress: '仕上げ中',
-            finishDone: '仕上げ完了',
-        },
+        WORK,
         /** App84 作業登録で選択可能（仕上げ完了は App30） */
-        WORK_SELECT_OPTIONS: [
-            '未着手',
-            '丸洗い待ち',
-            '丸洗い中・乾燥',
-            'しみ抜き待ち',
-            'しみ抜き中',
-            '修理中',
-            '再直し中',
-            '仕上げ中',
-        ],
+        WORK_SELECT_OPTIONS,
+        normalizeWorkStatus,
+        workStatusEquals,
         DELIVERY: {
             waiting: '納品待ち',
             delivered: '納品済',

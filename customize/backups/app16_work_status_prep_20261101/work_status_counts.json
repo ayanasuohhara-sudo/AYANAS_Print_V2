@@ -1,0 +1,92 @@
+{
+  "at": "2026-11-01T12:38:25.906Z",
+  "workField": {
+    "type": "DROP_DOWN",
+    "required": false,
+    "defaultValue": "未着手",
+    "labels": [
+      "未着手",
+      "問合せ・見積り",
+      "丸洗い待ち",
+      "丸洗い中・乾燥",
+      "しみ抜き待ち",
+      "修理中",
+      "再直し中",
+      "仕上げ中",
+      "仕上げ完了"
+    ],
+    "options": {
+      "仕上げ中": {
+        "label": "仕上げ中",
+        "index": "7"
+      },
+      "未着手": {
+        "label": "未着手",
+        "index": "0"
+      },
+      "丸洗い待ち": {
+        "label": "丸洗い待ち",
+        "index": "2"
+      },
+      "しみ抜き待ち": {
+        "label": "しみ抜き待ち",
+        "index": "4"
+      },
+      "問合せ・見積り": {
+        "label": "問合せ・見積り",
+        "index": "1"
+      },
+      "仕上げ完了": {
+        "label": "仕上げ完了",
+        "index": "8"
+      },
+      "再直し中": {
+        "label": "再直し中",
+        "index": "6"
+      },
+      "丸洗い中・乾燥": {
+        "label": "丸洗い中・乾燥",
+        "index": "3"
+      },
+      "修理中": {
+        "label": "修理中",
+        "index": "5"
+      }
+    }
+  },
+  "counts": {
+    "未着手": 403,
+    "問合せ・見積り": 0,
+    "丸洗い待ち": 3,
+    "丸洗い中・乾燥": 27,
+    "しみ抜き待ち": 0,
+    "修理中": 0,
+    "再直し中": 0,
+    "仕上げ中": 98,
+    "仕上げ完了": 624,
+    "__empty__": 2059,
+    "__total__": 3214
+  },
+  "extraCounts": {
+    "仕上げ待ち": {
+      "existsInForm": false,
+      "count": null,
+      "note": "option not in form; query skipped"
+    },
+    "しみ抜き待ち": {
+      "existsInForm": true,
+      "count": 0
+    },
+    "未着": {
+      "existsInForm": false,
+      "count": null,
+      "note": "option not in form; query skipped"
+    },
+    "しみ抜き中": {
+      "existsInForm": false,
+      "count": null,
+      "note": "option not in form; query skipped"
+    }
+  },
+  "target未着手Count": 403
+}

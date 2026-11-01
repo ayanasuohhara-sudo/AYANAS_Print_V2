@@ -1,7 +1,7 @@
 # App16 `work_status` 選択肢変更 — 影響調査・変更案
 
 - **作成**: 2026-11-01（Asia/Tokyo）
-- **範囲**: 調査と変更案のみ。**フィールド変更・データ移行・本番 JS 反映は未実施（確認待ち）**
+- **範囲**: 調査完了 → **JS 改修・テスト・移行準備まで実施済**。本番選択肢変更・403 一括更新は最終確認後（`docs/APP16_WORK_STATUS_MIGRATION_RUNBOOK.md`）
 - **非変更**: `process_status` / `location_status` / `delivery_status`
 
 ---

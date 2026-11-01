@@ -80,9 +80,10 @@
 
             const hasMaruarai = Boolean(lineAnalysis?.hasMaruarai);
 
+            // 丸洗いなし → 仕上げ中（仕上げ待ちは廃止。INTERNAL_OPS_SETUP）
             return {
                 action: 'put',
-                workStatus: hasMaruarai ? W.maruWait : W.finishWait,
+                workStatus: hasMaruarai ? W.maruWait : W.finishInProgress,
                 maruaraiNote: hasMaruarai ? '丸洗いあり' : '丸洗いなし',
             };
         }

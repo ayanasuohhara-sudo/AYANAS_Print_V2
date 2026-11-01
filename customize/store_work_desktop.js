@@ -482,7 +482,7 @@
             + '<h2 class="cayan-sw-title">店舗しみ抜き作業</h2>'
             + '<label class="cayan-sw-label" for="' + INPUT_ID + '">管理番号</label>'
             + '<input type="text" id="' + INPUT_ID + '" class="cayan-sw-input" autocomplete="off" placeholder="バーコードを読み取る">'
-            + '<p class="cayan-sw-hint">対象: 現在地「店舗」。しみ抜き待ち → しみ抜き中 → 工場・仕上げ待ち。</p>'
+            + '<p class="cayan-sw-hint">対象: 現在地「店舗」。しみ抜き中 → 工場・仕上げ中（旧「しみ抜き待ち」も開始可）。</p>'
             + '<div id="' + PANEL_ID + '-preview"></div>'
             + '<p id="' + PANEL_ID + '-notice" class="cayan-sw-notice"></p>'
             + '<div class="cayan-sw-actions">'

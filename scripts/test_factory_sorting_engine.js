@@ -13,6 +13,11 @@ const root = path.resolve(__dirname, '..');
 global.window = global;
 
 vm.runInThisContext(
+    fs.readFileSync(path.join(root, 'customize/work_status_labels.js'), 'utf8'),
+    { filename: 'work_status_labels.js' }
+);
+
+vm.runInThisContext(
     fs.readFileSync(path.join(root, 'customize/factory_inbound_config.js'), 'utf8'),
     { filename: 'factory_inbound_config.js' }
 );
@@ -23,7 +28,6 @@ vm.runInThisContext(
 );
 
 const S = global.CAYANAS_FactorySortingEngine;
-const C = global.CAYANAS_FACTORY_INBOUND;
 
 let failed = 0;
 
@@ -39,30 +43,31 @@ const assert = (name, cond) => {
 
 };
 
-assert('eligible 工場+未着手', S.isEligibleForSorting('工場', '未着手'));
+assert('eligible 工場+未着', S.isEligibleForSorting('工場', '未着'));
+assert('eligible dual-read 工場+未着手', S.isEligibleForSorting('工場', '未着手'));
 assert('ineligible 工場+丸洗い待ち', !S.isEligibleForSorting('工場', '丸洗い待ち'));
-assert('ineligible 店舗+しみ抜き待ち', !S.isEligibleForSorting('店舗', 'しみ抜き待ち'));
+assert('ineligible 店舗+しみ抜き中', !S.isEligibleForSorting('店舗', 'しみ抜き中'));
 
 const maru = S.getPutTargetsForAction(S.ACTION.maru);
 assert('ケース1 丸洗い PUT', maru.locationStatus === '工場' && maru.workStatus === '丸洗い待ち');
 
 const store = S.getPutTargetsForAction(S.ACTION.storeShimi);
-assert('ケース2 店舗しみ PUT', store.locationStatus === '店舗' && store.workStatus === 'しみ抜き待ち');
+assert('ケース2 店舗しみ PUT→しみ抜き中', store.locationStatus === '店舗' && store.workStatus === 'しみ抜き中');
 
 const finish = S.getPutTargetsForAction(S.ACTION.finish);
-assert('ケース3 仕上げ PUT', finish.locationStatus === '工場' && finish.workStatus === '仕上げ待ち');
+assert('ケース3 仕上げ PUT→仕上げ中', finish.locationStatus === '工場' && finish.workStatus === '仕上げ中');
 
 assert(
     'ケース4 メッセージ',
-    S.buildIneligibleMessage('工場', '丸洗い待ち').indexOf('未着手') >= 0
+    S.buildIneligibleMessage('工場', '丸洗い待ち').indexOf('未着') >= 0
 );
 
 assert(
     'ケース5 メッセージ',
-    S.buildIneligibleMessage('店舗', 'しみ抜き待ち').indexOf('工場') >= 0
+    S.buildIneligibleMessage('店舗', 'しみ抜き中').indexOf('工場') >= 0
 );
 
-const stale = S.buildStaleStateMessage('店舗', 'しみ抜き待ち');
+const stale = S.buildStaleStateMessage('店舗', 'しみ抜き中');
 assert('ケース6 stale', stale.indexOf('すでに変更') >= 0);
 
 if (failed > 0) {

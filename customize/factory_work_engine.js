@@ -33,6 +33,18 @@
 
     const norm = (value) => String(value ?? '').trim();
 
+    const workEq = (left, right) => {
+
+        const C = CFG();
+
+        if (typeof C.workStatusEquals === 'function') {
+            return C.workStatusEquals(left, right);
+        }
+
+        return norm(left) === norm(right);
+
+    };
+
     const isAtFactory = (locationStatus) => {
 
         assertConfig();
@@ -61,7 +73,7 @@
             };
         }
 
-        if (work === W.sortPending) {
+        if (workEq(work, W.sortPending)) {
             return {
                 uiState: UI_STATE.sortPending,
                 message: '先に振り分けを行ってください。',
@@ -69,7 +81,7 @@
             };
         }
 
-        if (work === W.maruWait) {
+        if (workEq(work, W.maruWait)) {
             return {
                 uiState: UI_STATE.maruWait,
                 message: '',
@@ -77,7 +89,7 @@
             };
         }
 
-        if (work === W.maruInProgress) {
+        if (workEq(work, W.maruInProgress)) {
             return {
                 uiState: UI_STATE.maruInProgress,
                 message: '',
@@ -85,7 +97,8 @@
             };
         }
 
-        if (work === W.finishWait) {
+        // 仕上げ中（正本）＋旧「仕上げ待ち」を dual-read
+        if (workEq(work, W.finishInProgress) || workEq(work, W.finishWait)) {
             return {
                 uiState: UI_STATE.finishWait,
                 message: '',
@@ -93,7 +106,7 @@
             };
         }
 
-        if (work === W.finishDone) {
+        if (workEq(work, W.finishDone)) {
             return {
                 uiState: UI_STATE.finishDone,
                 message: 'この商品は仕上げ完了済みです。',
@@ -127,7 +140,8 @@
         }
 
         if (action === ACTION.maruComplete) {
-            return W.finishWait;
+            // 丸洗い完了後は仕上げ工程へ（仕上げ待ち廃止 → 仕上げ中）
+            return W.finishInProgress;
         }
 
         if (action === ACTION.finishComplete) {
@@ -158,7 +172,7 @@
         if (action === ACTION.maruStart) {
             lines.push('丸洗いを開始しますか？');
         } else if (action === ACTION.maruComplete) {
-            lines.push('丸洗い・乾燥完了として、仕上げ待ちへ進めますか？');
+            lines.push('丸洗い・乾燥完了として、仕上げ中へ進めますか？');
         } else if (action === ACTION.finishComplete) {
             lines.push('仕上げ完了として登録しますか？');
         } else {

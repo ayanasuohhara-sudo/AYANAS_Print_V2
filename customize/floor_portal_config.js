@@ -3,14 +3,84 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.0.4
+     * FLOOR_PORTAL_VERSION: 1.1.0
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
      * 0 のままでは画面は出ません。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.0.4';
+    const FLOOR_PORTAL_VERSION = '1.1.0';
+
+    const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
+        ? window.CAYANAS_WORK_STATUS
+        : null;
+
+    const WORK = WS
+        ? {
+            pending: WS.LABELS.notArrived,
+            inquireEstimate: WS.LABELS.inquireEstimate,
+            maruWait: WS.LABELS.maruWait,
+            maruInProgress: WS.LABELS.maruInProgress,
+            shimiInProgress: WS.LABELS.shimiInProgress,
+            repairInProgress: WS.LABELS.repairInProgress,
+            reworkInProgress: WS.LABELS.reworkInProgress,
+            finishInProgress: WS.LABELS.finishInProgress,
+            finishDone: WS.LABELS.finishDone,
+            /** @deprecated dual-read 用。カード正本は shimiInProgress */
+            shimiWait: WS.LABELS.shimiInProgress,
+        }
+        : {
+            pending: '未着',
+            inquireEstimate: '問合せ・見積り',
+            maruWait: '丸洗い待ち',
+            maruInProgress: '丸洗い中・乾燥',
+            shimiInProgress: 'しみ抜き中',
+            repairInProgress: '修理中',
+            reworkInProgress: '再直し中',
+            finishInProgress: '仕上げ中',
+            finishDone: '仕上げ完了',
+            shimiWait: 'しみ抜き中',
+        };
+
+    const FACTORY_WORK_CARDS = [
+        WORK.pending,
+        WORK.inquireEstimate,
+        WORK.maruWait,
+        WORK.maruInProgress,
+        WORK.shimiInProgress,
+        WORK.repairInProgress,
+        WORK.reworkInProgress,
+        WORK.finishInProgress,
+    ];
+
+    const STORE_WORK_CARDS = [
+        WORK.pending,
+        WORK.inquireEstimate,
+        WORK.shimiInProgress,
+        WORK.repairInProgress,
+        WORK.reworkInProgress,
+        WORK.finishInProgress,
+    ];
+
+    const normalizeWorkStatus = (value) => {
+
+        if (WS) {
+            return WS.normalize(value);
+        }
+
+        const raw = String(value ?? '').trim();
+        const aliases = {
+            '未着手': '未着',
+            '振り分け待ち': '未着',
+            'しみ抜き待ち': 'しみ抜き中',
+            '仕上げ待ち': '仕上げ中',
+            '丸洗い中': '丸洗い中・乾燥',
+        };
+
+        return aliases[raw] || raw;
+
+    };
 
     const CAYANAS_FLOOR_PORTAL = {
         VERSION: FLOOR_PORTAL_VERSION,
@@ -39,20 +109,12 @@
             fieldCode: 'aggregation_status',
             cancelled: '取消',
         },
-        WORK: {
-            pending: '未着手',
-            maruWait: '丸洗い待ち',
-            maruInProgress: '丸洗い中・乾燥',
-            shimiWait: 'しみ抜き待ち',
-            shimiInProgress: 'しみ抜き中',
-            repairInProgress: '修理中',
-            reworkInProgress: '再直し中',
-            finishInProgress: '仕上げ中',
-            finishDone: '仕上げ完了',
-        },
-        LEGACY_WORK: ['振り分け待ち', '丸洗い中', '仕上げ待ち', '修理・直し中'],
-        FACTORY_WORK_CARDS: ['未着手', '丸洗い待ち', '丸洗い中・乾燥', 'しみ抜き待ち', 'しみ抜き中', '修理中', '再直し中', '仕上げ中'],
-        STORE_WORK_CARDS: ['未着手', 'しみ抜き待ち', 'しみ抜き中', '修理中', '再直し中', '仕上げ中'],
+        WORK,
+        /** 正規化後もカード外に残る旧値（修理・直し中など） */
+        LEGACY_WORK: ['修理・直し中'],
+        FACTORY_WORK_CARDS,
+        STORE_WORK_CARDS,
+        normalizeWorkStatus,
         SHOW_OTHER_CARD: {
             factory: true,
             store: false,
@@ -91,7 +153,7 @@
             shortcutInbound: '社内入庫登録',
             shortcutWork: '社内作業登録',
             shortcutComplete: '検品・仕上げ完了',
-            factoryOtherNote: '上の作業カード以外、旧値、空欄は「その他」です。',
+            factoryOtherNote: '上の作業カード以外、旧値、空欄は「その他」です。移行中の旧ラベルは正本カードに合算します。',
             storeWaitingNote: '納品待ちは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',
             loading: '読み込み中…',
             errorPrefix: '取得に失敗しました。',

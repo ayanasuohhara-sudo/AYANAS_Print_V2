@@ -13,6 +13,11 @@ const root = path.resolve(__dirname, '..');
 global.window = global;
 
 vm.runInThisContext(
+    fs.readFileSync(path.join(root, 'customize/work_status_labels.js'), 'utf8'),
+    { filename: 'work_status_labels.js' }
+);
+
+vm.runInThisContext(
     fs.readFileSync(path.join(root, 'customize/store_work_config.js'), 'utf8'),
     { filename: 'store_work_config.js' }
 );
@@ -41,17 +46,18 @@ const assert = (name, cond) => {
 
 const startTargets = S.getPutTargetsForAction(A.shimiStart);
 assert('しみ抜き開始', startTargets.locationStatus === '店舗' && startTargets.workStatus === 'しみ抜き中');
-assert('開始 canPerform', S.canPerformAction(A.shimiStart, '店舗', 'しみ抜き待ち'));
+assert('開始 canPerform（旧待ち）', S.canPerformAction(A.shimiStart, '店舗', 'しみ抜き待ち'));
+assert('正本しみ抜き中は開始不要', !S.canPerformAction(A.shimiStart, '店舗', 'しみ抜き中'));
 
 const completeTargets = S.getPutTargetsForAction(A.shimiCompleteToFactory);
-assert('完了・工場', completeTargets.locationStatus === '工場' && completeTargets.workStatus === '仕上げ待ち');
+assert('完了・工場→仕上げ中', completeTargets.locationStatus === '工場' && completeTargets.workStatus === '仕上げ中');
 assert('完了 canPerform', S.canPerformAction(A.shimiCompleteToFactory, '店舗', 'しみ抜き中'));
 
 assert('工場は対象外', !S.canPerformAction(A.shimiStart, '工場', 'しみ抜き待ち'));
 assert('待ちから完了不可', !S.canPerformAction(A.shimiCompleteToFactory, '店舗', 'しみ抜き待ち'));
 assert('店舗・その他', S.resolveWorkUiState('店舗', '丸洗い待ち').enabledAction === null);
 
-assert('stale', S.buildStaleStateMessage('工場', '仕上げ待ち').indexOf('すでに変更') >= 0);
+assert('stale', S.buildStaleStateMessage('工場', '仕上げ中').indexOf('すでに変更') >= 0);
 
 if (failed > 0) {
     process.exit(1);

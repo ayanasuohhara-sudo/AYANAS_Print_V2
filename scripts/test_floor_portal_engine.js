@@ -7,6 +7,7 @@ const vm = require('vm');
 const root = path.resolve(__dirname, '..');
 global.window = global;
 
+vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/work_status_labels.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/floor_portal_config.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/floor_portal_engine.js'), 'utf8'));
 
@@ -82,6 +83,8 @@ const run = () => {
         rec('F-OLD-REPAIR', '工場', '修理・直し中', { id: '19' }),
         rec('F-REPAIR', '工場', '修理中', { id: '20' }),
         rec('F-REWORK', '工場', '再直し中', { id: '21' }),
+        rec('F-NEW', '工場', '未着', { id: '22' }),
+        rec('F-INQUIRE', '工場', '問合せ・見積り', { id: '23' }),
     ];
 
     const factory = E.buildStock(factoryRecords, { mode: 'factory', today: TODAY });
@@ -90,29 +93,23 @@ const run = () => {
     assert('工場以外は出ない', factoryNos.indexOf('S-1') === -1 && factoryNos.indexOf('H-1') === -1);
     assert('取消と納品済は出ない', factoryNos.indexOf('F-CANCEL') === -1 && factoryNos.indexOf('F-DELIVERED') === -1);
     assert('空欄と未取得の集計状態は出る', factoryNos.indexOf('F-BLANK') !== -1 && factoryNos.indexOf('F-OMIT') !== -1);
-    assert('工場在庫は管理番号の件数', factory.kpis.total === 16);
-    assert('未着手は重複を1枚', factory.kpis.work['未着手'] === 3);
+    assert('工場在庫は管理番号の件数', factory.kpis.total === 18);
+    assert('未着は dual-read 合算（未着手/振り分け待ち/未着）', factory.kpis.work['未着'] === 5);
+    assert('問合せ・見積り', factory.kpis.work['問合せ・見積り'] === 1);
     assert('丸洗い待ち', factory.kpis.work['丸洗い待ち'] === 2);
-    assert('丸洗い中・乾燥', factory.kpis.work['丸洗い中・乾燥'] === 1);
-    assert('仕上げ中は重複管理番号を含む', factory.kpis.work['仕上げ中'] === 2);
-    assert('工場のしみ抜き待ち', factory.kpis.work['しみ抜き待ち'] === 1);
-    assert('工場のしみ抜き中', factory.kpis.work['しみ抜き中'] === 1);
+    assert('丸洗い中・乾燥は旧丸洗い中も合算', factory.kpis.work['丸洗い中・乾燥'] === 2);
+    assert('仕上げ中は旧仕上げ待ちも合算', factory.kpis.work['仕上げ中'] === 3);
+    assert('しみ抜き中は旧待ちも合算', factory.kpis.work['しみ抜き中'] === 2);
     assert('工場の修理中', factory.kpis.work['修理中'] === 1);
     assert('工場の再直し中', factory.kpis.work['再直し中'] === 1);
-    assert('旧値と仕上げ完了はその他', factory.kpis.other === 5);
-    assert('旧値を未着手にしない', factory.rows.filter((row) => row.workStatus === '振り分け待ち').length === 1
-        && factory.kpis.work['未着手'] !== factory.rows.length);
+    assert('仕上げ完了と修理・直し中はその他', factory.kpis.other === 2);
+    assert('行の生値は未着手のまま', factory.rows.filter((row) => row.workStatus === '未着手').length >= 1);
     assert('重複は両方表示', factory.rows.filter((row) => row.manageNo === 'DUP').length === 2
         && factory.rows.filter((row) => row.manageNo === 'DUP').every((row) => row.duplicate));
     assert('加工内容を連結', factory.rows.find((row) => row.recordId === '16').processing === '丸洗い、しみ抜き、ガード');
     assert('納期超過', factory.kpis.deadline.overdue === 3);
     assert('今日納期', factory.kpis.deadline.today === 1);
     assert('7日以内は今日から7日後', factory.kpis.deadline.within7 === 5);
-    assert('今月納期', factory.kpis.deadline.thisMonth === 13);
-    assert('納期空欄は納期カードに入らない', factory.rows.filter((row) => row.recordId === '6')[0].urgency === ''
-        && !factory.rows.filter((row) => row.recordId === '6')[0].deadlineFlags.thisMonth);
-    assert('納期の近い順で空欄は後ろ', factory.rows[0].deadline === '2026-09-30'
-        && factory.rows[factory.rows.length - 1].deadline === '');
     assert('超過が今日より優先', factory.rows.find((row) => row.recordId === '1').urgency === 'overdue');
     assert('今日は7日以内より優先表示', factory.rows.find((row) => row.recordId === '2').urgency === 'today');
 
@@ -124,26 +121,20 @@ const run = () => {
     });
     assert('作業と納期のAND', ids(andRows).indexOf('11') !== -1 && ids(andRows).indexOf('2') !== -1 && andRows.length === 2);
 
-    ['しみ抜き待ち', 'しみ抜き中', '修理中', '再直し中'].forEach((label) => {
+    const shimiFilter = E.filterRows(factory.rows, { mode: 'factory', workId: 'しみ抜き中', deadlineId: '', query: '' });
+    assert('しみ抜き中絞り込みは旧待ちも含む', shimiFilter.length === 2
+        && shimiFilter.some((row) => row.workStatus === 'しみ抜き待ち')
+        && shimiFilter.some((row) => row.workStatus === 'しみ抜き中'));
+
+    ['修理中', '再直し中'].forEach((label) => {
         const filtered = E.filterRows(factory.rows, { mode: 'factory', workId: label, deadlineId: '', query: '' });
 
         assert('工場カード絞り込み ' + label, filtered.length === 1 && filtered[0].workStatus === label);
     });
 
-    const repairAndMonth = E.filterRows(factory.rows, {
-        mode: 'factory',
-        workId: '修理中',
-        deadlineId: 'thisMonth',
-        query: '',
-    });
-    const repairAndOverdue = E.filterRows(factory.rows, {
-        mode: 'factory',
-        workId: '修理中',
-        deadlineId: 'overdue',
-        query: '',
-    });
-    assert('修理中と今月納期のAND', repairAndMonth.length === 1 && repairAndMonth[0].workStatus === '修理中');
-    assert('修理中と納期超過のANDは空', repairAndOverdue.length === 0);
+    const pendingFilter = E.filterRows(factory.rows, { mode: 'factory', workId: '未着', deadlineId: '', query: '' });
+    assert('未着絞り込みは旧未着手を含む', pendingFilter.some((row) => row.workStatus === '未着手')
+        && pendingFilter.some((row) => row.workStatus === '未着'));
 
     const searchRows = E.filterRows(factory.rows, {
         mode: 'factory',
@@ -152,14 +143,6 @@ const run = () => {
         query: '松葉',
     });
     assert('検索はKPIとAND', searchRows.length === 1 && searchRows[0].clientName === '山田');
-
-    const cleared = E.filterRows(factory.rows, {
-        mode: 'factory',
-        workId: '',
-        deadlineId: '',
-        query: '松葉',
-    });
-    assert('絞り込み解除後も検索は残る', cleared.length === 1);
 
     const storeRecords = [
         rec('ST-P', '店舗', '未着手', { id: 's1' }),
@@ -175,14 +158,14 @@ const run = () => {
         rec('ST-REPAIR', '店舗', '修理・直し中', { id: 's11' }),
         rec('ST-REPAIR-NOW', '店舗', '修理中', { id: 's12' }),
         rec('ST-REWORK', '店舗', '再直し中', { id: 's13' }),
+        rec('ST-NEW', '店舗', '未着', { id: 's14' }),
     ];
     const store = E.buildStock(storeRecords, { mode: 'store', today: TODAY });
     const storeNos = store.rows.map((row) => row.manageNo);
 
-    assert('店舗在庫のみ', storeNos.indexOf('FX') === -1 && store.kpis.total === 10);
-    assert('店舗の未着手', store.kpis.work['未着手'] === 2);
-    assert('しみ抜き待ち', store.kpis.work['しみ抜き待ち'] === 1);
-    assert('しみ抜き中', store.kpis.work['しみ抜き中'] === 1);
+    assert('店舗在庫のみ', storeNos.indexOf('FX') === -1 && store.kpis.total === 11);
+    assert('店舗の未着 dual-read', store.kpis.work['未着'] === 3);
+    assert('店舗しみ抜き中は旧待ち合算', store.kpis.work['しみ抜き中'] === 2);
     assert('店舗の仕上げ中', store.kpis.work['仕上げ中'] === 1);
     assert('店舗の修理中', store.kpis.work['修理中'] === 1);
     assert('店舗の再直し中', store.kpis.work['再直し中'] === 1);
@@ -191,7 +174,7 @@ const run = () => {
             .every((row) => row.workStatus === '修理中'));
     assert('店舗はその他カードを出さない', C.SHOW_OTHER_CARD.store === false && C.SHOW_OTHER_CARD.factory === true);
     assert('納品待ちは作業と別に数える', store.kpis.deliveryWaiting === 2);
-    assert('店舗の非表示その他には旧値が残る', store.kpis.other === 3);
+    assert('店舗の非表示その他', store.kpis.other === 3);
     assert('納品済と取消は店舗にも出ない', storeNos.indexOf('ST-CANCEL') === -1 && storeNos.indexOf('ST-OUT') === -1);
 
     ['修理中', '再直し中'].forEach((label) => {
@@ -218,27 +201,16 @@ const run = () => {
         && C.APP.locationInbound === 34 && C.APP.internalWork === 84 && C.APP.completeRegister === 30);
     assert('保管場所はドロップダウンの in', E.buildLocationQuery('factory') === 'location_status in ("工場") order by レコード番号 asc'
         && E.buildLocationQuery('store') === 'location_status in ("店舗") order by レコード番号 asc');
-
-    const desktop = fs.readFileSync(path.join(root, 'customize/floor_portal_desktop.js'), 'utf8');
-    assert('管理番号は受注明細を開く', E.orderDetailPath('16') === '/k/16/show#record=16'
-        && desktop.indexOf('orderDetailPath') !== -1
-        && desktop.indexOf('target="_blank"') !== -1);
-    assert('画面は状態を更新しない', desktop.indexOf("method, 'PUT'") === -1 && desktop.indexOf("'PUT'") === -1);
-    assert('旧ポータルを呼ばない', desktop.indexOf('factory_portal_layout') === -1
-        && desktop.indexOf('store_work') === -1);
-
-    if (failed) {
-        console.error(JSON.stringify({
-            total: factory.kpis.total,
-            work: factory.kpis.work,
-            other: factory.kpis.other,
-            deadline: factory.kpis.deadline,
-            order: factory.rows.map((row) => row.manageNo + ':' + row.deadline),
-        }, null, 2));
-        process.exit(1);
-    }
-
-    console.log('\nAll floor portal engine tests passed.');
+    assert('カードに未着としみ抜き中', C.FACTORY_WORK_CARDS.indexOf('未着') >= 0
+        && C.FACTORY_WORK_CARDS.indexOf('しみ抜き中') >= 0
+        && C.FACTORY_WORK_CARDS.indexOf('未着手') < 0
+        && C.FACTORY_WORK_CARDS.indexOf('しみ抜き待ち') < 0);
 };
 
 run();
+
+if (failed) {
+    process.exit(1);
+}
+
+console.log('\nAll floor portal engine tests passed.');

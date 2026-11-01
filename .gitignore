@@ -3,3 +3,5 @@ plugin.zip
 private.ppk
 .vscode/
 *.log
+customize/backups/app16_work_status_full_*/records.jsonl
+customize/backups/app16_work_status_full_*/records.jsonl.gz
