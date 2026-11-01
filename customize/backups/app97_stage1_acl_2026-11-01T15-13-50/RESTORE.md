@@ -1,0 +1,1 @@
+# App97 Stage1 ACL backup\nCreated: 2026-11-01T15:13:55.258Z\n\nBefore/after: acl_before_after.json\nRollback: restore previous rights via preview ACL + deploy, or re-run limited verifier-only set.

@@ -1,0 +1,84 @@
+{
+  "at": "2026-11-01T15:14:47.466Z",
+  "day": "2026-11-02",
+  "acl": {
+    "everyoneView": false,
+    "everyoneAdd": false,
+    "rights": [
+      {
+        "type": "USER",
+        "code": "info@ayanas.co.jp",
+        "view": true,
+        "add": true,
+        "del": false
+      },
+      {
+        "type": "USER",
+        "code": "matsuura@ayanas.co.jp",
+        "view": true,
+        "add": true,
+        "del": false
+      },
+      {
+        "type": "USER",
+        "code": "ayanas20126@gmail.com",
+        "view": true,
+        "add": true,
+        "del": false
+      },
+      {
+        "type": "GROUP",
+        "code": "Administrators",
+        "view": true,
+        "add": true,
+        "del": true
+      },
+      {
+        "type": "CREATOR",
+        "code": null,
+        "view": true,
+        "add": true,
+        "del": false
+      },
+      {
+        "type": "GROUP",
+        "code": "everyone",
+        "view": false,
+        "add": false,
+        "del": false
+      }
+    ],
+    "stage1Ok": true
+  },
+  "payments": {
+    "dayTotal": 0,
+    "dayReal": 0,
+    "dayTest": 0,
+    "cancelled": 0,
+    "autoCancelExcess": 0,
+    "rows": []
+  },
+  "reconcile": {
+    "smaregiAmountInput": null,
+    "summary": {
+      "count": 0,
+      "total": 0,
+      "byMethod": {},
+      "rows": []
+    },
+    "compare": {
+      "s1Total": 0,
+      "smaregiTotal": 0,
+      "diff": 0,
+      "matched": true
+    },
+    "note": "SMAREGI_AMOUNT 未指定。画面の日次照合タブで手入力するか、環境変数で再実行"
+  },
+  "alerts": [
+    {
+      "level": "info",
+      "msg": "当日の実顧客入金はまだない（TESTのみまたは0件）"
+    }
+  ],
+  "pickupCandidatesToVerify": []
+}
