@@ -2,8 +2,9 @@
 
 - **日付**: 2026-11-01（Asia/Tokyo）
 - **範囲**: App97 + リポジトリ JS（会計画面・引き取り・日次照合まで）
-- **本番 JS 反映**: **未実施**（別途承認待ち）
+- **本番 JS 反映**: **未実施**（最終確認: [`STORE_PAYMENT_S1_PREPROD_CHECKLIST.md`](./STORE_PAYMENT_S1_PREPROD_CHECKLIST.md)）
 - **実顧客データ登録・変更**: **未実施**
+- **版**: v1.1.1-s1（POST 後過剰充当の自動取消を追加）
 
 ---
 
@@ -67,7 +68,7 @@ in  = ex + tax   ← 入金・残額・充当の正
 
 | 種別 | 結果 |
 |------|------|
-| `node scripts/test_store_payment_s1.js` | **47/47 OK** |
+| `node scripts/test_store_payment_s1.js` | **49/49 OK** |
 | 本番 JS 反映後 E2E | **未実施**（承認後） |
 | 実スマレジ突合 | **未実施** |
 
