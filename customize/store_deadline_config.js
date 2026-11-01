@@ -3,16 +3,17 @@
 
     /**
      * 店舗納期カレンダー App92 — 定数。
-     * 表示専用。正本は App16。A550 のみ。
+     * 納期表示 + バーコード引き取り。正本は App16。A550 のみ。
      */
 
-    const STORE_DEADLINE_VERSION = '1.1.0';
+    const STORE_DEADLINE_VERSION = '1.2.0';
 
     const CAYANAS_STORE_DEADLINE = {
         VERSION: STORE_DEADLINE_VERSION,
         STORE_DEADLINE_APP_ID: 92,
         ORDER_APP_ID: 16,
         PRODUCT_APP_ID: 13,
+        STORE_PAYMENT_APP_ID: 97,
         PAGE_LIMIT: 500,
         MAX_OFFSET: 10000,
         PRODUCT_BATCH: 100,
@@ -20,6 +21,7 @@
         AGGREGATION_CANCELLED: '取消',
         DELIVERY_DONE: '納品済',
         DELIVERY_WAITING: '納品待ち',
+        DELIVERY_PICKUP_WAITING: '引き取り待ち',
         PROCESS_DONE: '完了',
         LOCATION_STORE: '店舗',
         PROCESSING_SEPARATOR: ' / ',
@@ -91,7 +93,7 @@
             },
             waitingStock: {
                 key: 'waitingStock',
-                label: '納品待ち在庫（店舗）',
+                label: '引き取り待ち在庫（店舗）',
             },
             slipNotAtStore: {
                 key: 'slipNotAtStore',
@@ -111,12 +113,18 @@
             kpiPrefix: '',
             kpiSuffix: '件',
             uncategorized: '未分類',
-            lead: 'A550の納期・納品待ち在庫・店舗未到着を確認します。納品書番号がある商品はスケジュールから外れます。',
+            lead: 'A550の納期・引き取り待ち在庫・店舗未到着を確認し、バーコードで引き取り完了できます。',
             depMissing: '店舗納期カレンダーのJS読込に失敗しました。config → engine → desktop の順で登録されているか確認してください。',
-            waitingStockEmpty: '店舗にある納品待ち在庫はありません。',
+            waitingStockEmpty: '店舗にある引き取り待ち在庫はありません。',
             slipNotAtStoreEmpty: '納品書作成済で店舗以外にある商品はありません。',
-            waitingStockLead: '現物が店舗にあり、納品書番号がある納品待ち商品です。引き渡し（納品済）後は表示されません。',
-            slipNotAtStoreLead: '納品書は作成済みですが、現物がまだ店舗にありません。店舗へ移動すると納品待ち在庫に出ます。',
+            waitingStockLead: '現物が店舗にあり、納品書番号がある引き取り待ち（移行中は納品待ち）商品です。引き渡し後は表示されません。',
+            slipNotAtStoreLead: '納品書は作成済みですが、現物がまだ店舗にありません。店舗へ移動すると引き取り待ち在庫に出ます。',
+            pickupLead: '管理番号を読み取り、入金済みの同一お客様商品をまとめて引き取り完了します。未入金・一部入金は App97 で入金してください。',
+            pickupNeedShared: '引き取り機能の共通JSが未読込です。store_payment_config/engine → store_pickup_shared/api を App92 に登録してください。',
+            pickupEmpty: 'カートに商品がありません。',
+            pickupUnpaid: '未入金または一部入金です。App97（店舗入金管理）で入金後に再度お試しください。',
+            pickupDone: '引き取り完了しました（delivery_status=納品済）。',
+            pickupGuideApp97: '入金が必要です → App97 店舗入金管理へ',
         },
         FIELDS: {
             id: '$id',
@@ -139,6 +147,7 @@
             itemName: 'item_name',
             productCode: 'item_code',
             subcategory: 'subcategory',
+            personalCustomerId: 'personal_customer_id',
         },
     };
 

@@ -332,6 +332,107 @@ body.ayanas-store-deadline-active .gaia-argoui-app-index-pager {
   vertical-align: middle;
 }
 
+.cayan-sd-pickup-wrap {
+  margin: 0 0 14px;
+}
+
+.cayan-sd-pickup {
+  padding: 14px 16px;
+  border: 1px solid #94a3b8;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.cayan-sd-pickup__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.cayan-sd-pickup__lead,
+.cayan-sd-pickup__customer,
+.cayan-sd-pickup__guide,
+.cayan-sd-pickup__warn,
+.cayan-sd-pickup__msg {
+  margin: 6px 0 0;
+  color: #334155;
+}
+
+.cayan-sd-pickup__warn,
+.cayan-sd-pickup__guide,
+.cayan-sd-pickup__msg.is-warn {
+  color: #9f1239;
+  font-weight: 700;
+}
+
+.cayan-sd-pickup__scan {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.cayan-sd-pickup__label {
+  font-weight: 700;
+}
+
+.cayan-sd-pickup__input {
+  min-width: 220px;
+  flex: 1 1 220px;
+  padding: 8px 10px;
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.cayan-sd-pickup__table-wrap {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.cayan-sd-pickup__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.cayan-sd-pickup__table th,
+.cayan-sd-pickup__table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.cayan-sd-pickup__table th {
+  background: #e2e8f0;
+  font-weight: 700;
+}
+
+.cayan-sd-pickup__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.cayan-sd-pickup__count {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.cayan-sd-pickup__ok {
+  color: #166534;
+  font-weight: 700;
+}
+
+.cayan-sd-pickup__ng {
+  color: #9f1239;
+  font-weight: 700;
+}
+
 @media (max-width: 900px) {
   .cayan-sd-kpi {
     grid-template-columns: repeat(2, minmax(140px, 1fr));

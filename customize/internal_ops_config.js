@@ -107,11 +107,14 @@
         workStatusEquals,
         DELIVERY: {
             waiting: '納品待ち',
+            pickupWaiting: '引き取り待ち',
             delivered: '納品済',
         },
+        STORE_CUSTOMER_CODE: 'A550',
         FIELDS: {
             order: {
                 manageNo: 'manage_no',
+                customerCode: 'customer_code',
                 customerName: 'customer_name',
                 clientName: 'client_name',
                 kimonoType: 'kimono_type',
@@ -119,6 +122,7 @@
                 processStatus: 'process_status',
                 workStatus: 'work_status',
                 deliveryStatus: 'delivery_status',
+                deliveryNo: 'delivery_no',
                 completionDate: 'completion_date',
             },
         },

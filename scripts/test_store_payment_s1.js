@@ -13,9 +13,11 @@ global.kintone = {
 };
 global.kintone.api.url = (p) => p;
 
+vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_pickup_shared.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_config.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_engine.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_numbering.js'), 'utf8'));
+vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_pickup_api.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_api.js'), 'utf8'));
 
 const C = global.CAYANAS_StorePayment;
@@ -33,7 +35,7 @@ const assert = (name, cond) => {
   console.error('FAIL ' + name);
 };
 
-assert('version 1.1', String(C.VERSION).indexOf('1.1') === 0);
+assert('version 1.2', String(C.VERSION).indexOf('1.2') === 0);
 assert('app id 97', C.STORE_PAYMENT_APP_ID === 97);
 assert('tax rate 10%', C.TAX_RATE === 0.1);
 assert('tax rounding round', C.TAX_ROUNDING === 'round');
@@ -284,10 +286,13 @@ assert('kintone record lines', kintoneRec.store_payment_lines.value.length === 1
 assert('kintone staff', kintoneRec.payment_staff.value[0].code === 'u1');
 
 const pickupPut = E.buildPickupPutRecord('2026-11-01');
-assert('pickup put delivery only', pickupPut.delivery_status.value === '納品済'
-  && pickupPut.delivery_date.value === '2026-11-01'
+assert('pickup put delivery_status only', pickupPut.delivery_status.value === '納品済'
+  && !pickupPut.delivery_date
   && !pickupPut.location_status
-  && !pickupPut.process_status);
+  && !pickupPut.process_status
+  && Object.keys(pickupPut).length === 1);
+assert('shared api completePickup exported', typeof A.completePickup === 'function'
+  && typeof global.CAYANAS_StorePickup_Api.completePickup === 'function');
 
 assert('pickup already done', E.isPickupAlreadyDone({
   delivery_status: { value: '納品済' },

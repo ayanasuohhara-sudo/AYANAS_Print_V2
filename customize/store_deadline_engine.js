@@ -192,19 +192,26 @@
             + ' order by ' + cfg().FIELDS.deadline + ' asc';
     };
 
+    const pickupWaitingStatusesClause = () => (
+        cfg().FIELDS.deliveryStatus + ' in ('
+        + quote(cfg().DELIVERY_PICKUP_WAITING) + ', '
+        + quote(cfg().DELIVERY_WAITING)
+        + ')'
+    );
+
     /*
      * process_status は App16 上で = 演算子が使えない（GAIA_IQ03）。
      * 完了判定はクエリに含めず、取得後に isReadyForPickup で絞り込む。
      */
     const buildReadyQuery = () => (
         storeCustomerClause()
-        + ' and ' + cfg().FIELDS.deliveryStatus + ' in (' + quote(cfg().DELIVERY_WAITING) + ')'
+        + ' and ' + pickupWaitingStatusesClause()
         + ' order by ' + cfg().FIELDS.manageNo + ' asc'
     );
 
     /**
-     * KPI用の一括取得。納期超過〜7日以内＋納品待ちを1クエリで取る。
-     * 完了・納品待ちの process_status 条件はクライアント側。
+     * KPI用の一括取得。納期超過〜7日以内＋引き取り待ち/納品待ちを1クエリで取る。
+     * 完了判定の process_status 条件はクライアント側。
      */
     const buildKpiPoolQuery = (todayYmd) => {
         const end = addDaysYmd(todayYmd, 7);
@@ -214,7 +221,7 @@
             + notDeliveredClause()
             + ' and ' + cfg().FIELDS.deadline + ' <= ' + quote(end)
             + ') or ('
-            + cfg().FIELDS.deliveryStatus + ' in (' + quote(cfg().DELIVERY_WAITING) + ')'
+            + pickupWaitingStatusesClause()
             + ')) order by ' + cfg().FIELDS.deadline + ' asc';
     };
 
@@ -246,20 +253,28 @@
         isDelivered(record) || hasDeliveryNo(record)
     );
 
+    const isPickupWaitingStatus = (deliveryStatus) => {
+        const status = String(deliveryStatus ?? '').trim();
+        const C = cfg();
+        return status === C.DELIVERY_PICKUP_WAITING
+            || status === C.DELIVERY_WAITING;
+    };
+
     const isReadyForPickup = (record) => (
         readValue(record, cfg().FIELDS.processStatus) === cfg().PROCESS_DONE
-        && readValue(record, cfg().FIELDS.deliveryStatus) === cfg().DELIVERY_WAITING
+        && isPickupWaitingStatus(readValue(record, cfg().FIELDS.deliveryStatus))
     );
 
     /**
-     * 納品待ち在庫（店舗現物）: 完了 ∧ 店舗 ∧ 納品待ち ∧ delivery_no 非空 ∧ 未取消
+     * 引き取り待ち在庫（店舗現物）:
+     * 完了 ∧ 店舗 ∧ (引き取り待ち|納品待ち互換) ∧ delivery_no 非空 ∧ 未取消
      */
     const isWaitingStockAtStore = (record) => (
         isStoreCustomer(record)
         && !isCancelled(record)
         && readValue(record, cfg().FIELDS.processStatus) === cfg().PROCESS_DONE
         && readValue(record, cfg().FIELDS.locationStatus) === cfg().LOCATION_STORE
-        && readValue(record, cfg().FIELDS.deliveryStatus) === cfg().DELIVERY_WAITING
+        && isPickupWaitingStatus(readValue(record, cfg().FIELDS.deliveryStatus))
         && hasDeliveryNo(record)
         && !isDelivered(record)
     );
@@ -942,6 +957,7 @@
         hasDeliveryNo,
         isExcludedFromSchedule,
         isReadyForPickup,
+        isPickupWaitingStatus,
         isWaitingStockAtStore,
         isSlipCreatedNotAtStore,
         storageDaysBetween,

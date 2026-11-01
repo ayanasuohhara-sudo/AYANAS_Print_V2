@@ -402,8 +402,18 @@
       balance: balance.balance,
       state: balance.state,
       selectable: balance.balance > 0.0001,
-      pickupEligible: balance.balance <= 0.0001
-        && readValue(orderRecord, F.deliveryStatus) !== C.DELIVERY.done,
+      pickupEligible: (() => {
+        const deliveryStatus = readValue(orderRecord, F.deliveryStatus);
+        if (balance.balance > 0.0001 || deliveryStatus === C.DELIVERY.done) {
+          return false;
+        }
+        if (typeof window.CAYANAS_StorePickup !== 'undefined') {
+          return window.CAYANAS_StorePickup.isPickupEligibleDeliveryStatus(deliveryStatus);
+        }
+        return deliveryStatus === C.DELIVERY.waiting
+          || deliveryStatus === C.DELIVERY.pickupWaiting
+          || !deliveryStatus;
+      })(),
     };
   };
 
@@ -497,22 +507,25 @@
   };
 
   /**
-   * 引き取り完了 PUT。location/process/work は変更しない（App92 在庫整合・法人と分離）。
+   * 引き取り完了 PUT。delivery_status=納品済 のみ（location/process/work 不変）。
+   * deliveryDate 引数は後方互換のため受け取るが送らない。
    */
   const buildPickupPutRecord = (deliveryDate) => {
+    void deliveryDate;
+    if (typeof window.CAYANAS_StorePickup !== 'undefined') {
+      return window.CAYANAS_StorePickup.buildPickupPutRecord();
+    }
     const C = cfg();
     const F = C.ORDER_FIELDS;
-    const record = {
+    return {
       [F.deliveryStatus]: { value: C.DELIVERY.done },
     };
-    const date = String(deliveryDate || todayYmd()).trim();
-    if (date) {
-      record[F.deliveryDate] = { value: date };
-    }
-    return record;
   };
 
   const isPickupAlreadyDone = (orderRecord) => {
+    if (typeof window.CAYANAS_StorePickup !== 'undefined') {
+      return window.CAYANAS_StorePickup.isPickupAlreadyDone(orderRecord);
+    }
     const C = cfg();
     return readValue(orderRecord, C.ORDER_FIELDS.deliveryStatus) === C.DELIVERY.done;
   };

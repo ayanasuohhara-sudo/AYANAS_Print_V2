@@ -382,10 +382,17 @@
 
   /**
    * 入金確認後の引き取り。入金失敗経路からは呼ばないこと。
+   * 実装本体は store_pickup_api.js（共有）。未読込時のみレガシー経路。
    */
   const completePickup = async (orderRecordId, options) => {
+    if (window.CAYANAS_StorePickup_Api
+      && typeof window.CAYANAS_StorePickup_Api.completePickup === 'function') {
+      return window.CAYANAS_StorePickup_Api.completePickup(orderRecordId, options);
+    }
+
     const C = cfg();
     const E = engine();
+    const P = window.CAYANAS_StorePickup;
     const opts = options || {};
     const id = String(orderRecordId ?? '').trim();
     if (!id) {
@@ -401,12 +408,27 @@
     const personalCustomerId = E.readValue(order, C.ORDER_FIELDS.personalCustomerId);
     const payments = await fetchPaymentsByCustomer(personalCustomerId);
     const balance = E.getOrderBalance(order, payments);
-    const gate = E.canPickupWithBalance(balance, !!opts.unpaidHandoverApproved);
-    if (!gate.ok) {
-      return { ok: false, error: gate.reason, balance: balance };
+
+    if (P && typeof P.evaluatePickupGate === 'function') {
+      const gate = P.evaluatePickupGate(order, {
+        balanceInfo: balance,
+        unpaidHandoverApproved: !!opts.unpaidHandoverApproved,
+        expectedPersonalCustomerId: opts.expectedPersonalCustomerId || '',
+      });
+      if (gate.alreadyDone) {
+        return { ok: true, alreadyDone: true, balance: balance };
+      }
+      if (!gate.ok) {
+        return { ok: false, error: gate.reason, code: gate.code, balance: balance };
+      }
+    } else {
+      const gate = E.canPickupWithBalance(balance, !!opts.unpaidHandoverApproved);
+      if (!gate.ok) {
+        return { ok: false, error: gate.reason, balance: balance };
+      }
     }
 
-    const putRecord = E.buildPickupPutRecord(opts.deliveryDate || E.todayYmd());
+    const putRecord = E.buildPickupPutRecord();
     const revision = order.$revision && order.$revision.value;
     try {
       await api('/k/v1/record.json', 'PUT', {
@@ -423,7 +445,11 @@
       return { ok: false, error: err && err.message ? err.message : String(err) };
     }
 
-    return { ok: true, balance: balance, exception: !!gate.exception };
+    return {
+      ok: true,
+      balance: balance,
+      exception: !!opts.unpaidHandoverApproved && balance.balance > 0.0001,
+    };
   };
 
   const loadDailyReconcile = async (paymentDate, smaregiAmount) => {

@@ -97,6 +97,7 @@
                 fields: [
                     '$id',
                     F.manageNo,
+                    F.customerCode,
                     F.customerName,
                     F.clientName,
                     F.kimonoType,
@@ -104,6 +105,7 @@
                     F.processStatus,
                     F.workStatus,
                     F.deliveryStatus,
+                    F.deliveryNo,
                 ],
             }
         );
@@ -202,6 +204,7 @@
             const row = {
                 recordId: order.$id.value,
                 manageNo: getField(order, F.manageNo),
+                customerCode: getField(order, F.customerCode),
                 customerName: getField(order, F.customerName),
                 clientName: getField(order, F.clientName),
                 kimonoType: getField(order, F.kimonoType),
@@ -209,6 +212,7 @@
                 processStatus: getField(order, F.processStatus),
                 workStatus: getField(order, F.workStatus),
                 deliveryStatus: getField(order, F.deliveryStatus),
+                deliveryNo: getField(order, F.deliveryNo),
             };
 
             const addResult = Batch.addOrRejectDuplicate(list, row);
@@ -289,10 +293,12 @@
                 }
 
                 const snapshot = {
+                    customerCode: getField(fresh, F.customerCode),
                     locationStatus: getField(fresh, F.locationStatus),
                     processStatus: getField(fresh, F.processStatus),
                     workStatus: getField(fresh, F.workStatus),
                     deliveryStatus: getField(fresh, F.deliveryStatus),
+                    deliveryNo: getField(fresh, F.deliveryNo),
                 };
 
                 const plan = Engine.buildInboundPutRecord(dest, snapshot);

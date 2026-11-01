@@ -2,8 +2,8 @@
     'use strict';
 
     /**
-     * 店舗納期カレンダー App92 — A550 表示専用。
-     * App16 / App13 は参照のみ。状態は変更しない。
+     * 店舗納期カレンダー App92 — A550 納期表示 + バーコード引き取り。
+     * 引き取り完了は store_deadline_pickup.js（共有 API）経由で delivery_status のみ更新。
      */
 
     const ROOT_ID = 'ayanas-store-deadline-root';
@@ -42,6 +42,7 @@
                 showBootError(
                     '店舗納期カレンダーのJS読込に失敗しました。'
                     + 'store_deadline_config.js → store_deadline_engine.js → store_deadline_desktop.js'
+                    + '（引き取りは payment/pickup 共有JSの後に store_deadline_pickup.js）'
                     + ' の順で登録してください。'
                 );
             }

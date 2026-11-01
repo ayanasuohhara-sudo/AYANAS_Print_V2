@@ -279,8 +279,16 @@ const run = async () => {
         rec('WS1', '2026-10-20', [line('DOM', '国内仕立')], {
             id: 'ws1',
             process: '完了',
-            delivery: '納品待ち',
+            delivery: '引き取り待ち',
             deliveryNo: 'N1',
+            deliveryDate: '2026-10-10',
+            location: '店舗',
+        }),
+        rec('WS1b', '2026-10-20', [line('DOM', '国内仕立')], {
+            id: 'ws1b',
+            process: '完了',
+            delivery: '納品待ち',
+            deliveryNo: 'N1b',
             deliveryDate: '2026-10-10',
             location: '店舗',
         }),
@@ -315,10 +323,10 @@ const run = async () => {
     ];
     const inventoryKpi = E.buildKpiModel(inventoryRecords, products, TODAY);
 
-    assert('納品待ち在庫は店舗のみ', inventoryKpi.counts.waitingStock === 1
-        && inventoryKpi.lists.waitingStock[0].manageNo === 'WS1'
-        && inventoryKpi.lists.waitingStock[0].deliveryNo === 'N1'
-        && inventoryKpi.lists.waitingStock[0].storageDays === 5);
+    assert('引き取り待ち在庫は店舗（互換納品待ち含む）', inventoryKpi.counts.waitingStock === 2
+        && inventoryKpi.lists.waitingStock.map((r) => r.manageNo).sort().join(',') === 'WS1,WS1b'
+        && inventoryKpi.lists.waitingStock.find((r) => r.manageNo === 'WS1').deliveryNo === 'N1'
+        && inventoryKpi.lists.waitingStock.find((r) => r.manageNo === 'WS1').storageDays === 5);
     assert('店舗未到着は工場の納品書済', inventoryKpi.counts.slipNotAtStore === 1
         && inventoryKpi.lists.slipNotAtStore[0].manageNo === 'WS2');
     assert('納品済は在庫から除外', inventoryKpi.lists.waitingStock.every((row) => row.deliveryStatus !== '納品済'));
@@ -355,8 +363,9 @@ const run = async () => {
         && E.todayParts(new Date(2026, 9, 15)).ymd === '2026-10-15'
         && E.addDaysYmd('2026-10-15', 7) === '2026-10-22');
 
-    assert('20 App16 PUTなし', desktop.indexOf("'GET'") !== -1
-        && desktop.indexOf('PUT') === -1
+    const pickupUi = fs.readFileSync(path.join(root, 'customize/store_deadline_pickup.js'), 'utf8');
+
+    assert('20 カレンダーdesktopは参照GET中心', desktop.indexOf("'GET'") !== -1
         && desktop.indexOf('DELETE') === -1
         && desktop.indexOf('POST') === -1
         && desktop.indexOf('STORE_DEADLINE_APP_ID') !== -1
@@ -367,7 +376,8 @@ const run = async () => {
         && E.buildOverdueQuery(TODAY).indexOf('not in ("納品済")') !== -1
         && E.buildWithin7Query(TODAY).indexOf('deadline <= "2026-10-22"') !== -1
         && E.buildReadyQuery().indexOf('process_status') === -1
-        && E.buildReadyQuery().indexOf('delivery_status in ("納品待ち")') !== -1
+        && E.buildReadyQuery().indexOf('引き取り待ち') !== -1
+        && E.buildReadyQuery().indexOf('納品待ち') !== -1
         && E.buildKpiPoolQuery(TODAY).indexOf('customer_code = "A550"') !== -1
         && E.buildKpiPoolQuery(TODAY).indexOf('process_status') === -1
         && E.buildProductQuery([]) === '');
@@ -376,6 +386,10 @@ const run = async () => {
         process: '完了',
         delivery: '納品待ち',
     })) === true
+        && E.isReadyForPickup(rec('R3', '', [line('DOM', 'x')], {
+            process: '完了',
+            delivery: '引き取り待ち',
+        })) === true
         && E.isReadyForPickup(rec('R2', '', [line('DOM', 'x')], {
             process: '工場作業中',
             delivery: '納品待ち',
@@ -384,7 +398,7 @@ const run = async () => {
     assert('App89非共用', desktop.indexOf('CAYANAS_DEADLINE_LOAD') === -1
         && desktop.indexOf('deadline_load') === -1
         && app89Config.indexOf('STORE_DEADLINE') === -1
-        && C.VERSION === '1.1.0'
+        && C.VERSION === '1.2.0'
         && C.CATEGORIES.find((c) => c.key === 'repair').subcategories.indexOf('修理') !== -1
         && desktop.indexOf('productDenied') !== -1
         && desktop.indexOf('buildKpiPoolQuery') !== -1
@@ -392,7 +406,10 @@ const run = async () => {
         && desktop.indexOf('ayanas-store-deadline-boot-error') !== -1
         && desktop.indexOf('waitingStock') !== -1
         && desktop.indexOf('slipNotAtStore') !== -1
-        && desktop.indexOf('inventoryTableWrap') !== -1);
+        && desktop.indexOf('inventoryTableWrap') !== -1
+        && pickupUi.indexOf('loadPickupByBarcode') !== -1
+        && pickupUi.indexOf('completePickup') !== -1
+        && css.indexOf('cayan-sd-pickup') !== -1);
 
     assert('iPad向け見た目', css.indexOf('min-height: 44px') !== -1
         && css.indexOf('overflow-x: auto') !== -1

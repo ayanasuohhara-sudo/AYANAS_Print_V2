@@ -17,6 +17,7 @@ global.kintone = {
   api: { url: () => '' },
 };
 
+vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_pickup_shared.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/delivery_complete_sync.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/delivery_a550_edit_guard.js'), 'utf8'));
 
@@ -38,6 +39,7 @@ const order = (extra) => {
   return {
     $id: { value: opts.id || '1' },
     manage_no: { value: opts.manageNo || 'M1' },
+    customer_code: { value: opts.customerCode || 'A550' },
     process_status: { value: opts.process === undefined ? '完了' : opts.process },
     location_status: { value: opts.location === undefined ? '工場' : opts.location },
     work_status: { value: opts.work === undefined ? '仕上げ完了' : opts.work },
@@ -50,32 +52,63 @@ const order = (extra) => {
 assert('A550 は店舗顧客', S.isStoreCustomer('A550') && !S.isCorporateCustomer('A550'));
 assert('法人は店舗ではない', S.isCorporateCustomer('M070') && !S.isStoreCustomer('M070'));
 
-const put = S.buildStoreOrderUpdate('2026-11-01', 'N20261101-10');
-assert('店舗PUTは納品待ち', put.delivery_status.value === '納品待ち');
-assert('店舗PUTに納品番号', put.delivery_no.value === 'N20261101-10');
-assert('店舗PUTに納品日', put.delivery_date.value === '2026-11-01');
+const putFactory = S.buildStoreOrderUpdate('2026-11-01', 'N20261101-10', '納品待ち');
+assert('店舗PUTは納品待ち(工場)', putFactory.delivery_status.value === '納品待ち');
+assert('店舗PUTに納品番号', putFactory.delivery_no.value === 'N20261101-10');
+assert('店舗PUTに納品日', putFactory.delivery_date.value === '2026-11-01');
 assert('店舗PUTに process/location/work なし',
-  put.process_status === undefined
-  && put.location_status === undefined
-  && put.work_status === undefined);
+  putFactory.process_status === undefined
+  && putFactory.location_status === undefined
+  && putFactory.work_status === undefined);
+
+const putStore = S.buildStoreOrderUpdate('2026-11-01', 'N20261101-10', '引き取り待ち');
+assert('店舗到着済は引き取り待ちPUT', putStore.delivery_status.value === '引き取り待ち');
 
 const corporate = S.buildCorporateOrderUpdate('2026-11-01', 'N20261101-10');
 assert('法人PUTは従来どおり納品済+location',
   corporate.delivery_status.value === '納品済'
   && corporate.location_status.value === '納品済');
 
-assert('初回は put', S.planStoreOrderSync(order(), '2026-11-01', 'N1').action === 'put');
+assert('工場は納品待ち put', (() => {
+  const plan = S.planStoreOrderSync(order({ location: '工場' }), '2026-11-01', 'N1');
+  return plan.action === 'put'
+    && plan.targetStatus === '納品待ち'
+    && plan.record.delivery_status.value === '納品待ち';
+})());
+
+assert('店舗完了は引き取り待ち put', (() => {
+  const plan = S.planStoreOrderSync(order({ location: '店舗' }), '2026-11-01', 'N1');
+  return plan.action === 'put'
+    && plan.targetStatus === '引き取り待ち'
+    && plan.record.delivery_status.value === '引き取り待ち';
+})());
+
 assert('納品済は skip', S.planStoreOrderSync(order({ delivery: '納品済', deliveryNo: 'OLD' }), '2026-11-01', 'N1').action === 'skip');
 assert('別番号は warn', S.planStoreOrderSync(order({ delivery: '納品待ち', deliveryNo: 'OLD' }), '2026-11-01', 'N1').action === 'warn');
-assert('同一番号は skip', S.planStoreOrderSync(
-  order({ delivery: '納品待ち', deliveryNo: 'N1', deliveryDate: '2026-11-01' }),
+assert('同一引き取り待ちは skip', S.planStoreOrderSync(
+  order({ location: '店舗', delivery: '引き取り待ち', deliveryNo: 'N1', deliveryDate: '2026-11-01' }),
   '2026-11-01',
   'N1'
 ).action === 'skip');
+assert('納品待ち→引き取り待ちへ昇格', (() => {
+  const plan = S.planStoreOrderSync(
+    order({ location: '店舗', delivery: '納品待ち', deliveryNo: 'N1', deliveryDate: '2026-11-01' }),
+    '2026-11-01',
+    'N1'
+  );
+  return plan.action === 'put' && plan.targetStatus === '引き取り待ち';
+})());
 assert('番号空は skip', S.planStoreOrderSync(order(), '2026-11-01', '').action === 'skip');
 
-assert('未完了でも put 可（在庫表示は別条件）',
-  S.planStoreOrderSync(order({ process: '工場作業中' }), '2026-11-01', 'N2').action === 'put');
+assert('未完了でも納品待ち put 可',
+  S.planStoreOrderSync(order({ process: '工場作業中' }), '2026-11-01', 'N2').targetStatus === '納品待ち');
+
+assert('applied 引き取り待ち', S.isStoreDeliveryApplied(
+  order({ delivery: '引き取り待ち', deliveryNo: 'N1', deliveryDate: '2026-11-01' }),
+  '2026-11-01',
+  'N1',
+  '引き取り待ち'
+));
 
 assert('edit guard A550+番号', G.isA550WithSlip({
   customer_code: { value: 'A550' },
@@ -93,8 +126,7 @@ assert('edit guard 番号なしは対象外', G.isA550WithSlip({
 const syncSrc = fs.readFileSync(path.join(root, 'customize/delivery_complete_sync.js'), 'utf8');
 assert('A550 で syncStoreOrders を呼ぶ', syncSrc.indexOf('syncStoreOrders') !== -1);
 assert('法人経路は残る', syncSrc.indexOf('syncCorporateOrders') !== -1);
-assert('A550 スキップの info のみログは廃止方向',
-  syncSrc.indexOf('A550 のため App16 更新なし') === -1);
+assert('引き取り待ち定数', syncSrc.indexOf('STATUS_PICKUP_WAITING') !== -1);
 
 if (failed) {
   process.exit(1);

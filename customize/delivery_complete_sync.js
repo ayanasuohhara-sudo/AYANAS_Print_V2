@@ -6,6 +6,9 @@
    * - delivery_no 採番: 全顧客（一般客・A550・法人）
    * - App16 納品済連携: 法人のみ（location + delivery = 納品済）
    * - App16 店舗同期: A550 のみ（delivery_status/delivery_no/delivery_date。process/location/work 不変）
+   *   完了∧店舗∧delivery_no → delivery_status=引き取り待ち、それ以外は納品待ち
+   *
+   * 依存: store_pickup_shared.js（任意だが推奨。未読込時はローカル定数で同等判定）
    */
 
   const DELIVERY_APP_ID = 19;
@@ -14,6 +17,14 @@
   const PROCESS_COMPLETE = '完了';
   const STATUS_DELIVERED = '納品済';
   const STATUS_WAITING = '納品待ち';
+  const STATUS_PICKUP_WAITING = '引き取り待ち';
+  const LOCATION_STORE = '店舗';
+
+  function pickupShared() {
+    return typeof window.CAYANAS_StorePickup !== 'undefined'
+      ? window.CAYANAS_StorePickup
+      : null;
+  }
 
   const FIELD = {
     customerCode: 'customer_code',
@@ -130,12 +141,44 @@
     return record;
   }
 
+  function resolveTargetStoreDeliveryStatus(orderRec, deliveryNo) {
+    const P = pickupShared();
+    const processStatus = String(fieldValue(orderRec, FIELD.processStatus) ?? '').trim();
+    const locationStatus = String(fieldValue(orderRec, FIELD.locationStatus) ?? '').trim();
+    const deliveryStatus = String(fieldValue(orderRec, FIELD.deliveryStatus) ?? '').trim();
+    const number = String(deliveryNo ?? '').trim()
+      || String(fieldValue(orderRec, FIELD.deliveryNo) ?? '').trim();
+
+    if (P) {
+      return P.resolveStoreDeliveryStatusAfterSlip({
+        customerCode: A550_CUSTOMER_CODE,
+        processStatus: processStatus,
+        locationStatus: locationStatus,
+        deliveryStatus: deliveryStatus,
+        deliveryNo: number,
+      }, number);
+    }
+
+    if (
+      processStatus === PROCESS_COMPLETE
+      && locationStatus === LOCATION_STORE
+      && number
+      && deliveryStatus !== STATUS_DELIVERED
+    ) {
+      return STATUS_PICKUP_WAITING;
+    }
+
+    return STATUS_WAITING;
+  }
+
   /**
    * A550 店舗同期用 PUT。process / location / work は含めない。
+   * @param {string} deliveryStatus 納品待ち | 引き取り待ち
    */
-  function buildStoreOrderUpdate(deliveryDate, deliveryNo) {
+  function buildStoreOrderUpdate(deliveryDate, deliveryNo, deliveryStatus) {
+    const status = String(deliveryStatus ?? '').trim() || STATUS_WAITING;
     const record = {
-      [FIELD.deliveryStatus]: { value: STATUS_WAITING },
+      [FIELD.deliveryStatus]: { value: status },
     };
     const date = String(deliveryDate ?? '').trim();
     const number = String(deliveryNo ?? '').trim();
@@ -153,7 +196,7 @@
 
   /**
    * A550 同期の判定（kintone 非依存）。
-   * @returns {{ action: 'put'|'skip'|'warn', reason: string, record?: object }}
+   * @returns {{ action: 'put'|'skip'|'warn', reason: string, record?: object, targetStatus?: string }}
    */
   function planStoreOrderSync(orderRec, deliveryDate, deliveryNo) {
     const number = String(deliveryNo ?? '').trim();
@@ -177,29 +220,42 @@
       };
     }
 
+    const targetStatus = resolveTargetStoreDeliveryStatus(orderRec, number);
+
     if (
-      currentDelivery === STATUS_WAITING
+      currentDelivery === targetStatus
       && currentNo === number
       && (!date || currentDate === date)
     ) {
-      return { action: 'skip', reason: 'already_applied' };
+      return { action: 'skip', reason: 'already_applied', targetStatus: targetStatus };
     }
 
     return {
       action: 'put',
-      reason: 'apply_waiting',
-      record: buildStoreOrderUpdate(date, number),
+      reason: targetStatus === STATUS_PICKUP_WAITING
+        ? 'apply_pickup_waiting'
+        : 'apply_waiting',
+      targetStatus: targetStatus,
+      record: buildStoreOrderUpdate(date, number, targetStatus),
     };
   }
 
-  function isStoreDeliveryApplied(orderRec, deliveryDate, deliveryNo) {
+  function isStoreDeliveryApplied(orderRec, deliveryDate, deliveryNo, expectedStatus) {
     const delivery = String(fieldValue(orderRec, FIELD.deliveryStatus) ?? '').trim();
     const date = String(deliveryDate ?? '').trim();
     const number = String(deliveryNo ?? '').trim();
     const currentDate = String(fieldValue(orderRec, FIELD.deliveryDate) ?? '').trim();
     const currentNo = String(fieldValue(orderRec, FIELD.deliveryNo) ?? '').trim();
+    const expected = String(expectedStatus ?? '').trim();
 
-    if (delivery !== STATUS_WAITING) {
+    if (expected) {
+      if (delivery !== expected) {
+        return false;
+      }
+    } else if (
+      delivery !== STATUS_WAITING
+      && delivery !== STATUS_PICKUP_WAITING
+    ) {
       return false;
     }
 
@@ -224,6 +280,7 @@
         fields: [
           '$id',
           FIELD.manageNo,
+          FIELD.customerCode,
           FIELD.processStatus,
           FIELD.locationStatus,
           FIELD.workStatus,
@@ -313,9 +370,13 @@
 
     const confirmed = await fetchOrdersByManageNo(manageNo);
     const after = confirmed[0];
+    const expectedStatus = plan.targetStatus
+      || (plan.record && plan.record[FIELD.deliveryStatus]
+        && plan.record[FIELD.deliveryStatus].value)
+      || STATUS_WAITING;
 
-    if (!after || !isStoreDeliveryApplied(after, deliveryDate, deliveryNo)) {
-      throw new Error('納品待ち・納品日・納品番号の反映を確認できません');
+    if (!after || !isStoreDeliveryApplied(after, deliveryDate, deliveryNo, expectedStatus)) {
+      throw new Error('店舗納品状態・納品日・納品番号の反映を確認できません');
     }
 
     // process / location / work が変わっていないこと
@@ -407,7 +468,7 @@
     }
 
     if (failures.length > 0) {
-      const label = mode === 'corporate' ? '納品済反映' : '店舗納品待ち反映';
+      const label = mode === 'corporate' ? '納品済反映' : '店舗納品状態反映';
       window.alert(
         '納品書は保存されましたが、受注への' + label + 'に失敗しました。\n\n' +
         failures.join('\n')
@@ -495,12 +556,14 @@
     buildCorporateOrderUpdate: buildCorporateOrderUpdate,
     buildStoreOrderUpdate: buildStoreOrderUpdate,
     planStoreOrderSync: planStoreOrderSync,
+    resolveTargetStoreDeliveryStatus: resolveTargetStoreDeliveryStatus,
     isCorporateCustomer: isCorporateCustomer,
     isStoreCustomer: isStoreCustomer,
     isStoreDeliveryApplied: isStoreDeliveryApplied,
     assignDeliveryNoIfNeeded: assignDeliveryNoIfNeeded,
     A550_CUSTOMER_CODE: A550_CUSTOMER_CODE,
     STATUS_WAITING: STATUS_WAITING,
+    STATUS_PICKUP_WAITING: STATUS_PICKUP_WAITING,
     STATUS_DELIVERED: STATUS_DELIVERED,
   };
 })();
