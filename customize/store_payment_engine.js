@@ -572,6 +572,51 @@
     };
   };
 
+  /**
+   * 同時入金レース後の過剰充当検査。
+   * @returns {{ ok: boolean, offenders: Array<{orderRecordId:string, billed:number, paid:number}> }}
+   */
+  const detectOverAllocation = (orderRecords, paymentRecords) => {
+    const offenders = [];
+    (orderRecords || []).forEach(function(order) {
+      const bal = getOrderBalance(order, paymentRecords);
+      if (bal.paid > bal.billedInclusive + 0.0001) {
+        offenders.push({
+          orderRecordId: String(order.$id && order.$id.value),
+          manageNo: readValue(order, cfg().ORDER_FIELDS.manageNo),
+          billed: bal.billedInclusive,
+          paid: bal.paid,
+        });
+      }
+    });
+    return { ok: offenders.length === 0, offenders: offenders };
+  };
+
+  /**
+   * 複数受注の税込合計（受注単位丸めの合計）。
+   * カート一括丸めとは端数で ±1 円差が出得る。
+   */
+  const sumInclusiveForOrders = (orderRecords) => {
+    let exclusive = 0;
+    let tax = 0;
+    let inclusive = 0;
+    (orderRecords || []).forEach(function(order) {
+      const billed = getOrderBilledInclusive(order);
+      exclusive += billed.exclusive;
+      tax += billed.tax;
+      inclusive += billed.inclusive;
+    });
+    const cartTax = roundTaxYen(exclusive);
+    return {
+      exclusive: exclusive,
+      taxPerOrderSum: tax,
+      inclusivePerOrderSum: inclusive,
+      cartTax: cartTax,
+      inclusiveCart: exclusive + cartTax,
+      roundingDiff: inclusive - (exclusive + cartTax),
+    };
+  };
+
   window.CAYANAS_StorePayment_Engine = {
     readValue: readValue,
     toNumber: toNumber,
@@ -604,5 +649,7 @@
     isPickupAlreadyDone: isPickupAlreadyDone,
     summarizeDailyPayments: summarizeDailyPayments,
     compareDailyReconcile: compareDailyReconcile,
+    detectOverAllocation: detectOverAllocation,
+    sumInclusiveForOrders: sumInclusiveForOrders,
   };
 }());

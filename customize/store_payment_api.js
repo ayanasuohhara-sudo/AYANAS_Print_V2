@@ -294,17 +294,13 @@
         || (login && login.code ? [login.code] : []),
     });
 
+    let createdId = '';
     try {
       const created = await api('/k/v1/record.json', 'POST', {
         app: C.STORE_PAYMENT_APP_ID,
         record: record,
       });
-      return {
-        ok: true,
-        recordId: created.id,
-        storePaymentNo: storePaymentNo,
-        transactionId: draft.transactionId,
-      };
+      createdId = String(created.id);
     } catch (err) {
       // unique 衝突 → 再取得して冪等成功扱い
       const again = await findPaymentsByTransactionId(draft.transactionId);
@@ -321,6 +317,67 @@
         errors: [err && err.message ? err.message : String(err)],
       };
     }
+
+    // 同時端末レース: POST 成功後に過剰充当なら当該入金を取消して失敗返却（App16 は未更新のまま）
+    if (draft.recordKind === C.RECORD_KIND.payment) {
+      try {
+        const orders = [];
+        for (let i = 0; i < draft.lines.length; i += 1) {
+          const orderResp = await api('/k/v1/record.json', 'GET', {
+            app: C.ORDER_APP_ID,
+            id: draft.lines[i].orderRecordId,
+          });
+          orders.push(orderResp.record);
+        }
+        const afterPayments = await fetchPaymentsByCustomer(draft.personalCustomerId);
+        const over = E.detectOverAllocation(orders, afterPayments);
+        if (!over.ok) {
+          const nowIso = new Date().toISOString();
+          await api('/k/v1/record.json', 'PUT', {
+            app: C.STORE_PAYMENT_APP_ID,
+            id: createdId,
+            record: {
+              [C.HEADER_FIELDS.paymentStatus]: { value: C.PAYMENT_STATUS.cancelled },
+              [C.HEADER_FIELDS.cancelReason]: {
+                value: '同時入金による過剰充当を検出したため自動取消: '
+                  + over.offenders.map(function(o) {
+                    return (o.manageNo || o.orderRecordId) + ' paid=' + o.paid + '/' + o.billed;
+                  }).join('; '),
+              },
+              [C.HEADER_FIELDS.cancelDatetime]: { value: nowIso },
+            },
+          });
+          return {
+            ok: false,
+            errors: [
+              '同時入金の競合で過剰充当になるため登録を取り消しました。画面を再読込して残額を確認してください。',
+            ],
+            cancelledRecordId: createdId,
+            storePaymentNo: storePaymentNo,
+          };
+        }
+      } catch (guardErr) {
+        return {
+          ok: false,
+          errors: [
+            '入金は作成されましたが過剰検査に失敗しました。入金番号 '
+              + storePaymentNo
+              + ' を確認し、過剰なら取消してください: '
+              + (guardErr && guardErr.message ? guardErr.message : String(guardErr)),
+          ],
+          recordId: createdId,
+          storePaymentNo: storePaymentNo,
+          needsManualReview: true,
+        };
+      }
+    }
+
+    return {
+      ok: true,
+      recordId: createdId,
+      storePaymentNo: storePaymentNo,
+      transactionId: draft.transactionId,
+    };
   };
 
   /**

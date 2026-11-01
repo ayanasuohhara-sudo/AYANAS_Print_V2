@@ -335,6 +335,32 @@ const mismatchPos = E.compareDailyReconcile(daily, 4900);
 assert('reconcile match', match.matched && match.diff === 0);
 assert('reconcile mismatch', !mismatchPos.matched && mismatchPos.diff === 100);
 
+const overPay = E.detectOverAllocation([order], [{
+  payment_status: { value: '有効' },
+  store_payment_lines: {
+    value: [{
+      value: {
+        order_record_id: { value: '100' },
+        allocated_amount: { value: '12000' },
+      },
+    }],
+  },
+}]);
+assert('over allocation detected', !overPay.ok && overPay.offenders[0].paid === 12000);
+
+const edgeA = {
+  $id: { value: '1' },
+  detail_table: { value: [{ value: { amount: { value: '5' } } }] },
+};
+const edgeB = {
+  $id: { value: '2' },
+  detail_table: { value: [{ value: { amount: { value: '5' } } }] },
+};
+const multiTax = E.sumInclusiveForOrders([edgeA, edgeB]);
+assert('multi tax per-order vs cart can differ', multiTax.inclusivePerOrderSum === 12
+  && multiTax.inclusiveCart === 11
+  && multiTax.roundingDiff === 1);
+
 if (failed > 0) {
   console.error(failed + ' failed');
   process.exit(1);
