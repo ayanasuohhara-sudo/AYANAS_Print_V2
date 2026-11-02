@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * 店舗ポータル App87 本番反映（v1.3.0）
+ * 店舗ポータル App87 本番反映（v1.3.1・文字サイズ拡大）
  *   node scripts/_store_portal_prod_deploy.js
  *
  * App86（工場）は変更しない。ACL は変更しない。
@@ -307,7 +307,7 @@ async function main() {
   fs.mkdirSync('/opt/cursor/artifacts/screenshots', { recursive: true });
   fs.writeFileSync('/opt/cursor/artifacts/screenshots/store_portal_prod_live.png', Buffer.from(store.screenshot, 'base64'));
   console.log(JSON.stringify(store.ui, null, 2));
-  if (!store.ui || store.ui.ver !== '1.3.0') throw new Error('version not 1.3.0');
+  if (!store.ui || store.ui.ver !== '1.3.1') throw new Error('version not 1.3.1');
   if (!store.ui.hasMenu || !store.ui.hasSummary) throw new Error('menu/summary missing');
   if (store.ui.has85) throw new Error('App85 link present');
   if (!store.ui.hasLocationMove || !store.ui.hasInternalWork) throw new Error('required work links missing');

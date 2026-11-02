@@ -8,8 +8,8 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
   box-sizing: border-box;
   padding: 12px 16px 32px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: 17px;
+  line-height: 1.5;
   color: #0f172a;
   background: #f1f5f9;
 }
@@ -29,7 +29,7 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 
 .cayan-fp-title {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
 }
 
@@ -69,8 +69,8 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 }
 
 .cayan-fp-menu__title {
-  margin: 0 0 6px;
-  font-size: 18px;
+  margin: 0 0 8px;
+  font-size: 22px;
   font-weight: 700;
 }
 
@@ -90,7 +90,7 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 
 .cayan-fp-menu-group__title {
   margin: 0 0 10px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #334155;
   letter-spacing: 0.02em;
@@ -103,11 +103,11 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 
 .cayan-fp-btn--menu {
   width: 100%;
-  min-height: 52px;
+  min-height: 56px;
   justify-content: flex-start;
   gap: 8px;
-  padding: 10px 14px;
-  font-size: 16px;
+  padding: 12px 16px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -117,11 +117,11 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 
 .cayan-fp-menu__note {
   margin-left: auto;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 999px;
   background: #e2e8f0;
   color: #475569;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -140,7 +140,7 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 
 .cayan-fp-summary__title {
   margin: 0 0 10px;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
 }
 
@@ -170,7 +170,7 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 }
 
 .cayan-fp-summary-card__label {
-  font-size: 13px;
+  font-size: 15px;
   color: #9a3412;
   font-weight: 600;
 }
@@ -180,20 +180,20 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 }
 
 .cayan-fp-summary-card__value {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: #0f172a;
 }
 
 .cayan-fp-summary-card.is-unavailable .cayan-fp-summary-card__value {
-  font-size: 18px;
+  font-size: 20px;
   color: #64748b;
 }
 
 .cayan-fp-section h2 {
   margin: 0 0 8px;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .cayan-fp-btn,
@@ -204,7 +204,15 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
   border: 1px solid #cbd5e1;
   background: #fff;
   color: #0f172a;
-  font: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.cayan-fp-btn.cayan-fp-btn--menu {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .cayan-fp-btn {
@@ -241,12 +249,12 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 }
 
 .cayan-fp-card__label {
-  font-size: 13px;
+  font-size: 15px;
   color: #334155;
 }
 
 .cayan-fp-card__count {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -255,7 +263,13 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 .cayan-fp-status {
   margin: 8px 0 0;
   color: #64748b;
-  font-size: 13px;
+  font-size: 15px;
+}
+
+.cayan-fp-menu > .cayan-fp-note {
+  margin: 0 0 6px;
+  font-size: 15px;
+  line-height: 1.55;
 }
 
 .cayan-fp-search {
@@ -303,7 +317,11 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 
 .cayan-fp-table th {
   background: #e2e8f0;
-  font-size: 13px;
+  font-size: 15px;
+}
+
+.cayan-fp-table td {
+  font-size: 15px;
 }
 
 .cayan-fp-link {
@@ -346,7 +364,7 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
   }
 
   .cayan-fp-title {
-    font-size: 22px;
+    font-size: 26px;
   }
 
   .cayan-fp-card {
@@ -359,17 +377,17 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
   }
 
   .cayan-fp-btn--menu {
-    min-height: 56px;
-    font-size: 17px;
+    min-height: 60px;
+    font-size: 19px;
   }
 
   .cayan-fp-summary-card {
     flex: 1 1 calc(50% - 10px);
-    min-height: 76px;
+    min-height: 80px;
   }
 
   .cayan-fp-summary-card__value {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   .cayan-fp-search {

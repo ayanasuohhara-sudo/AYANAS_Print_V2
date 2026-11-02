@@ -3,7 +3,7 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.3.0
+     * FLOOR_PORTAL_VERSION: 1.3.1
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
@@ -15,7 +15,7 @@
      * メニュー表示は権限を付与しない（ACL は各アプリ側）。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.3.0';
+    const FLOOR_PORTAL_VERSION = '1.3.1';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
