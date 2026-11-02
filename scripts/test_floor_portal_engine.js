@@ -208,6 +208,8 @@ const run = () => {
     assert('店舗メニューに App84 作業を含む', storeMenuAppKeys.indexOf('internalWork') >= 0 && C.APP.internalWork === 84);
     assert('店舗メニューに App34/30 を含む', storeMenuAppKeys.indexOf('locationInbound') >= 0
         && storeMenuAppKeys.indexOf('completeRegister') >= 0);
+    assert('店舗メニューに App88 受注検索を含む', storeMenuAppKeys.indexOf('orderSearch') >= 0
+        && C.APP.orderSearch === 88);
     assert('店舗メニューに App85 を含めない', storeMenuAppIds.indexOf(85) < 0
         && storeMenuAppKeys.indexOf('storeWork') < 0);
     const workGroup = (C.STORE_MENU_GROUPS || []).find((g) => g.id === 'work');
@@ -215,6 +217,12 @@ const run = () => {
     assert('App34 表示名は保管場所移動', workLabels.indexOf('保管場所移動') >= 0
         && workLabels.indexOf('社内入庫登録') < 0);
     assert('App84 表示名は社内作業登録', workLabels.indexOf('社内作業登録') >= 0);
+    const groupIds = (C.STORE_MENU_GROUPS || []).map((g) => g.id);
+    assert('メニューグループは受付・作業・納品会計', groupIds.join(',') === 'reception,work,delivery_accounting');
+    const featuredKeys = (C.STORE_MENU_GROUPS || []).flatMap((g) => (g.links || [])
+        .filter((l) => l.featured).map((l) => l.appKey));
+    assert('強調は受注登録・検索・引き取り・入金', featuredKeys.join(',') === 'order,orderSearch,storeDeadline,storePayment');
+    assert('バージョン 1.6.0', C.VERSION === '1.6.0');
     assert('工場クエリは A550 なし', E.buildLocationQuery('factory') === 'location_status in ("工場") order by レコード番号 asc');
     assert('店舗クエリは A550 あり', E.buildLocationQuery('store')
         === 'location_status in ("店舗") and customer_code = "A550" order by レコード番号 asc');
@@ -247,8 +255,10 @@ const run = () => {
     assert('納期超過', summaryOk.overdueCount.status === 'ok'
         && summaryOk.overdueCount.value === store.kpis.deadline.overdue);
     assert('取得済の0件は0表示', E.formatSummaryMetric({ status: 'ok', value: 0 }) === '0件');
-    assert('未取得は未取得表示', E.formatSummaryMetric({ status: 'unavailable', value: null }) === '未取得');
+    assert('未取得はダッシュ表示', E.formatSummaryMetric({ status: 'unavailable', value: null }) === '—');
     assert('金額フォーマット', E.formatSummaryMetric({ status: 'ok', value: 12345 }, { currency: true }) === '12,345円');
+    assert('KPIラベルはA550明示', C.UI.summaryTodayOrders.indexOf('A550') >= 0
+        && C.UI.summaryPaymentAmount.indexOf('店舗入金') >= 0);
 
     const summaryFail = E.buildStoreDailySummary({
         stockFetched: false,
@@ -260,7 +270,7 @@ const run = () => {
         && summaryFail.pickupWaitingCount.status === 'unavailable'
         && summaryFail.paymentAmountToday.status === 'unavailable'
         && summaryFail.overdueCount.status === 'unavailable'
-        && E.formatSummaryMetric(summaryFail.paymentAmountToday, { currency: true }) === '未取得');
+        && E.formatSummaryMetric(summaryFail.paymentAmountToday, { currency: true }) === '—');
 
     assert('工場モード分離', E.resolveMode(86) === 'factory' && E.resolveMode(87) === 'store');
     assert('本日受注クエリ', E.buildTodayStoreOrderQuery(TODAY)

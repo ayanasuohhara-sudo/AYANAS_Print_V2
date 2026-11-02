@@ -3,12 +3,13 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.5.0
+     * FLOOR_PORTAL_VERSION: 1.6.0
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
      * 0 のままでは画面は出ません。
      *
+     * 切替: App86=工場 / App87=店舗（アプリ ID で resolveMode。同一画面トグルではない）。
      * 店舗ポータル（App87）は A550 業務メニュー＋日次サマリ。
      * 工場ポータル（App86）も日次サマリ／現在状況／納期を同型で表示。
      * App85（旧店舗しみ抜き）は削除済のためメニューに含めない。
@@ -17,7 +18,7 @@
      * 文字サイズは工場／店舗で共通（工場相当）。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.5.0';
+    const FLOOR_PORTAL_VERSION = '1.6.0';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
@@ -104,6 +105,7 @@
             /** A550 店舗メニュー用（App85 は載せない） */
             personalCustomer: 96,
             order: 16,
+            orderSearch: 88,
             deliverySlip: 19,
             storeDeadline: 92,
             storePayment: 97,
@@ -136,40 +138,36 @@
             paymentKind: '入金',
         },
         /**
-         * 店舗ポータル作業メニュー（A550 中心・PC/iPad）。
+         * 店舗ポータル作業メニュー（A550 中心・PC/iPad・業務順）。
+         * featured: よく使う操作（受注登録／受注検索／引き取り／入金）。
          * App85 は意図的に除外。リンク先アプリの処理ロジックは変更しない。
          */
         STORE_MENU_GROUPS: [
             {
                 id: 'reception',
-                label: '受付',
+                label: '受付・顧客',
                 links: [
-                    { appKey: 'personalCustomer', label: '個人顧客マスタ' },
-                    { appKey: 'order', label: '受注登録' },
+                    { appKey: 'personalCustomer', label: '個人顧客管理' },
+                    { appKey: 'order', label: '受注登録', featured: true },
+                    { appKey: 'orderSearch', label: '受注検索', featured: true },
                 ],
             },
             {
                 id: 'work',
-                label: '作業',
+                label: '作業・移動',
                 links: [
                     { appKey: 'locationInbound', label: '保管場所移動', note: 'App34' },
                     { appKey: 'internalWork', label: '社内作業登録', note: '作業＋場所可' },
-                    { appKey: 'completeRegister', label: '検品・仕上げ完了', note: '工程完了' },
+                    { appKey: 'completeRegister', label: '仕上げ完了', note: 'App30' },
                 ],
             },
             {
-                id: 'delivery',
-                label: '納品・在庫',
+                id: 'delivery_accounting',
+                label: '納品・会計',
                 links: [
                     { appKey: 'deliverySlip', label: '納品書作成' },
-                    { appKey: 'storeDeadline', label: '納期・引き取り在庫' },
-                ],
-            },
-            {
-                id: 'payment',
-                label: '会計・引き取り',
-                links: [
-                    { appKey: 'storePayment', label: '店舗入金管理' },
+                    { appKey: 'storeDeadline', label: '納期・引き取り待ち管理', featured: true },
+                    { appKey: 'storePayment', label: '入金登録', featured: true },
                 ],
             },
         ],
@@ -222,22 +220,25 @@
             shortcutInbound: '保管場所移動',
             shortcutWork: '社内作業登録',
             shortcutComplete: '検品・仕上げ完了',
-            storeMenuTitle: '店舗メニュー',
-            storeMenuLead: 'A550 専用。保管場所移動＝App34、社内作業登録＝作業（＋任意で保管場所）、仕上げ完了＝工程完了。メニューはショートカットであり権限付与ではありません。',
-            storePermissionNote: 'App92／App97 など権限制限のあるアプリは、権限のあるユーザーのみ利用できます。',
+            storeMenuTitle: '店舗メニュー（A550）',
+            storeMenuLead: 'A550 専用・業務順。保管場所移動＝App34、社内作業登録＝作業（＋任意で保管場所）、仕上げ完了＝App30。メニューはショートカットであり権限付与ではありません。',
+            storePermissionNote: 'App92／App97 など権限制限のあるアプリは、権限のないユーザーには操作できません（表示だけでは権限は付きません）。',
+            factoryModeBadge: '工場',
+            storeModeBadge: '店舗 A550',
             factoryOtherNote: '工場現物のみ。上の作業カード以外、旧値、空欄は「その他」です。納品待ちカードは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',
-            storeWaitingNote: 'A550・店舗現物のみ。納品待ちカードは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',
-            storeSummaryTitle: '本日の店舗状況',
+            storeWaitingNote: 'A550・店舗現物のみ（法人データは含めません）。納品待ちカードは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',
+            storeSummaryTitle: '本日の店舗状況（A550）',
             factorySummaryTitle: '本日の工場状況',
-            summaryTitle: '本日の店舗状況',
-            summaryTodayOrders: '本日の店舗受注',
+            summaryTitle: '本日の店舗状況（A550）',
+            summaryTodayOrders: '本日のA550受注件数',
             factorySummaryTodayOrders: '本日の工場受注',
-            summaryDueToday: '本日納期',
-            summaryPickupWaiting: '引き取り待ち',
+            summaryDueToday: '本日納期件数',
+            summaryPickupWaiting: '引き取り待ち件数',
             factorySummaryDeliveryWaiting: '納品待ち',
-            summaryPaymentAmount: '本日入金金額',
-            summaryOverdue: '納期超過',
-            summaryUnavailable: '未取得',
+            summaryPaymentAmount: '本日の店舗入金額',
+            summaryOverdue: '納期超過件数',
+            summaryUnavailable: '—',
+            summaryUnavailableTitle: '取得失敗',
             summaryYenSuffix: '円',
             summaryCountSuffix: '件',
             loading: '読み込み中…',

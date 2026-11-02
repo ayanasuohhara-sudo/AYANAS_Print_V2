@@ -77,8 +77,9 @@
                 const note = link.note
                     ? '<span class="cayan-fp-menu__note">' + escapeHtml(link.note) + '</span>'
                     : '';
+                const featuredClass = link.featured ? ' is-featured' : '';
                 return ''
-                    + '<a class="cayan-fp-btn cayan-fp-btn--menu" href="'
+                    + '<a class="cayan-fp-btn cayan-fp-btn--menu' + featuredClass + '" href="'
                     + escapeHtml(appUrl(id))
                     + '" target="_blank" rel="noopener">'
                     + '<span class="cayan-fp-menu__label">' + escapeHtml(link.label) + '</span>'
@@ -123,12 +124,23 @@
             + '</section>';
     };
 
-    const summaryCardHtml = (label, text, unavailable) => (
-        '<div class="cayan-fp-summary-card' + (unavailable ? ' is-unavailable' : '') + '">'
-        + '<span class="cayan-fp-summary-card__label">' + escapeHtml(label) + '</span>'
-        + '<span class="cayan-fp-summary-card__value">' + escapeHtml(text) + '</span>'
-        + '</div>'
-    );
+    const summaryCardHtml = (label, text, unavailable) => {
+        const ui = cfg().UI;
+        const titleAttr = unavailable
+            ? ' title="' + escapeHtml(ui.summaryUnavailableTitle || '取得失敗') + '"'
+            : '';
+        return ''
+            + '<div class="cayan-fp-summary-card' + (unavailable ? ' is-unavailable' : '') + '"'
+            + titleAttr + '>'
+            + '<span class="cayan-fp-summary-card__label">' + escapeHtml(label) + '</span>'
+            + '<span class="cayan-fp-summary-card__value">' + escapeHtml(text) + '</span>'
+            + (unavailable
+                ? '<span class="cayan-fp-summary-card__hint">'
+                    + escapeHtml(ui.summaryUnavailableTitle || '取得失敗')
+                    + '</span>'
+                : '')
+            + '</div>';
+    };
 
     const paintSummary = () => {
         const el = document.getElementById('cayan-fp-summary-cards');
@@ -522,8 +534,16 @@
         }
 
         const ui = cfg().UI;
-        const title = mode === cfg().MODE.store ? ui.storeTitle : ui.factoryTitle;
-        const note = mode === cfg().MODE.store ? ui.storeWaitingNote : ui.factoryOtherNote;
+        const isStore = mode === cfg().MODE.store;
+        const title = isStore ? ui.storeTitle : ui.factoryTitle;
+        const note = isStore ? ui.storeWaitingNote : ui.factoryOtherNote;
+        const modeBadge = isStore
+            ? (ui.storeModeBadge || '店舗 A550')
+            : (ui.factoryModeBadge || '工場');
+
+        root.classList.remove('cayan-fp-root--store', 'cayan-fp-root--factory');
+        root.classList.add(isStore ? 'cayan-fp-root--store' : 'cayan-fp-root--factory');
+        root.dataset.mode = mode;
 
         const hubLinks = [
             { href: location.origin + '/k/91/', label: ui.hubAyanasMenu || 'AYANAS 業務メニュー' },
@@ -543,7 +563,10 @@
         root.innerHTML = ''
             + '<header class="cayan-fp-header">'
             + '<div class="cayan-fp-header__main">'
+            + '<div class="cayan-fp-title-row">'
+            + '<span class="cayan-fp-mode-badge" aria-label="画面区分">' + escapeHtml(modeBadge) + '</span>'
             + '<h1 class="cayan-fp-title">' + escapeHtml(title) + '</h1>'
+            + '</div>'
             + hubsHtml
             + '</div>'
             + '<div class="cayan-fp-header__side">'
@@ -557,7 +580,7 @@
             + '<section class="cayan-fp-section"><h2>納期</h2><div class="cayan-fp-cards" id="cayan-fp-deadline-cards"></div>'
             + '<p class="cayan-fp-note">納期のカードは重なります。空欄の納期は入りません。</p></section>'
             + '<div class="cayan-fp-tools">'
-            + '<input id="cayan-fp-search" class="cayan-fp-search" type="search" placeholder="' + escapeHtml(ui.searchPlaceholder) + '" autocomplete="off">'
+            + '<input id="cayan-fp-search" class="cayan-fp-search" type="search" placeholder="' + escapeHtml(ui.searchPlaceholder) + '" autocomplete="off" inputmode="search">'
             + '<button type="button" class="cayan-fp-btn" id="cayan-fp-clear">' + escapeHtml(ui.clearFilters) + '</button>'
             + '<span class="cayan-fp-status" id="cayan-fp-status"></span>'
             + '</div>'
