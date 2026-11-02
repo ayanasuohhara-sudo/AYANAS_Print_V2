@@ -1,0 +1,101 @@
+{
+  "portal": {
+    "ver": "1.1.0",
+    "lead": "工場・店舗ポータル、または業務内容を選んでください",
+    "labels": [
+      "工場ポータル（業務）",
+      "店舗ポータル（業務）",
+      "受注登録・検索",
+      "出庫・入庫",
+      "納品書・請求書・入金",
+      "作業進捗・完了登録",
+      "納期・作業負荷状況",
+      "納期・納品スケジュール管理",
+      "各種データ・集計",
+      "マスタ登録"
+    ],
+    "hubs": [
+      "工場ポータル（業務）",
+      "店舗ポータル（業務）"
+    ],
+    "hrefs": [
+      {
+        "label": "工場ポータル（業務）",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+      },
+      {
+        "label": "店舗ポータル（業務）",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+      },
+      {
+        "label": "受注登録・検索",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=order"
+      },
+      {
+        "label": "出庫・入庫",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=logistics"
+      }
+    ]
+  },
+  "app91": {
+    "ver": "1.2.0",
+    "hubs": [
+      {
+        "text": "工場業務メニュー",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+      },
+      {
+        "text": "店舗業務メニュー",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+      }
+    ]
+  },
+  "app90": {
+    "ver": "1.2.0",
+    "title": "工場業務メニュー",
+    "hubs": [
+      {
+        "text": "AYANAS 業務メニュー",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/"
+      },
+      {
+        "text": "店舗業務メニュー",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+      },
+      {
+        "text": "ポータルTOP",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/#/portal"
+      }
+    ]
+  },
+  "app87": {
+    "ver": "1.5.0",
+    "hubs": [
+      {
+        "text": "AYANAS 業務メニュー",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/"
+      },
+      {
+        "text": "工場業務メニュー",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+      },
+      {
+        "text": "店舗業務メニュー",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+      },
+      {
+        "text": "ポータルTOP",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/#/portal"
+      }
+    ]
+  },
+  "app16": {
+    "ver": "1.2.0",
+    "hubTexts": [
+      "AYANAS 業務メニュー",
+      "工場業務メニュー",
+      "店舗業務メニュー"
+    ],
+    "hasBanner": true
+  }
+}

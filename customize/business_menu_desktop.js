@@ -214,11 +214,23 @@
 
         const category = findCategory(activeId) || findCategory(cfg().DEFAULT_CATEGORY);
 
+        const hubs = Array.isArray(cfg().HUB_LINKS) ? cfg().HUB_LINKS : [];
+        const hubsHtml = hubs.map((link) => {
+            const appId = Number(link.appId);
+            if (!appId) {
+                return '';
+            }
+            return '<a class="cayan-bm-hub" href="' + escapeHtml(location.origin + '/k/' + appId + '/') + '">'
+                + escapeHtml(link.label || '')
+                + '</a>';
+        }).join('');
+
         return ''
             + '<div class="cayan-bm-topbar">'
             + '<a class="cayan-bm-top-link" href="' + escapeHtml(topUrl()) + '">'
-            + escapeHtml(cfg().TOP_LABEL || 'AYANAS TOPへ戻る')
+            + escapeHtml(cfg().TOP_LABEL || 'ポータルTOPへ戻る')
             + '</a>'
+            + (hubsHtml ? '<div class="cayan-bm-hubs">' + hubsHtml + '</div>' : '')
             + '</div>'
             + '<header class="cayan-bm-header">'
             + '<h1 class="cayan-bm-title">' + escapeHtml(cfg().TITLE) + '</h1>'
@@ -267,7 +279,15 @@
             '  overflow-x: hidden;',
             '}',
             '.cayan-bm-root * { box-sizing: border-box; }',
-            '.cayan-bm-topbar { margin: 0 0 14px; }',
+            '.cayan-bm-topbar { margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }',
+            '.cayan-bm-hubs { display: flex; flex-wrap: wrap; gap: 8px; }',
+            '.cayan-bm-hub {',
+            '  display: inline-flex; align-items: center; justify-content: center;',
+            '  min-height: 44px; padding: 0 14px; border-radius: 8px;',
+            '  border: 1px solid #c5ced9; background: #eef6ff; color: #1a1a1a;',
+            '  font-size: 14px !important; font-weight: 700; text-decoration: none;',
+            '}',
+            '.cayan-bm-hub:hover, .cayan-bm-hub:focus { border-color: #2f5f8a; background: #fff; }',
             '.cayan-bm-top-link {',
             '  display: inline-flex; align-items: center; justify-content: center;',
             '  min-height: 48px !important; padding: 10px 20px;',

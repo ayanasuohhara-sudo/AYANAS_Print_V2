@@ -3,16 +3,27 @@
 
     /**
      * アプリリンクバナー — リンク定義
-     * 環境に合わせて appId / label を編集してください。
+     * 各アプリから業務ハブへ戻れるようにする。
      * tone は app_nav_banner.css の色クラス（例: blue, teal）
      */
 
-    const APP_NAV_BANNER_VERSION = '1.1.4';
+    const APP_NAV_BANNER_VERSION = '1.2.0';
 
     window.CAYANAS_APP_NAV = {
         VERSION: APP_NAV_BANNER_VERSION,
         highlightCurrent: true,
         title: 'AYANASU',
+        /**
+         * 業務ハブへの戻りリンク（各アプリ上部に常時表示）
+         * - AYANAS 業務メニュー = App91
+         * - 工場業務メニュー = App90
+         * - 店舗業務メニュー = App87
+         */
+        hubLinks: [
+            { appId: 91, label: 'AYANAS 業務メニュー', tone: 'amber' },
+            { appId: 90, label: '工場業務メニュー', tone: 'slate' },
+            { appId: 87, label: '店舗業務メニュー', tone: 'teal' },
+        ],
         /** 日常業務で使うアプリのみ（マスタ類は載せない） */
         groups: [
             {
@@ -28,7 +39,7 @@
                     { appId: 16, label: '受注登録', tone: 'blue' },
                     { appId: 88, label: '受注検索', tone: 'sky' },
                     { appId: 19, label: '納品書', tone: 'teal' },
-                    { appId: 34, label: '社内入庫', tone: 'green' },
+                    { appId: 34, label: '保管場所移動', tone: 'green' },
                     { appId: 84, label: '社内作業登録', tone: 'slate' },
                     { appId: 30, label: '検品・仕上げ完了', tone: 'amber' },
                 ],
@@ -52,7 +63,7 @@
             },
         ],
         portalLink: {
-            label: 'TOPメニューへ戻る',
+            label: 'ポータルTOPへ戻る',
             hash: '#/portal',
         },
     };

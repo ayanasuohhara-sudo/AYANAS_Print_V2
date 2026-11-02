@@ -65,6 +65,39 @@
   text-decoration: underline;
 }
 
+.ayanas-app-nav__hubs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.ayanas-app-nav__hub {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--ayanas-nav-link-min-h);
+  min-width: 11em;
+  padding: 0 var(--ayanas-nav-link-pad-x);
+  border-radius: 6px;
+  border: 1px solid #d6d3d1;
+  background: #fff;
+  color: #1c1917;
+  font-size: var(--ayanas-nav-link-font);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ayanas-app-nav__hub:hover {
+  filter: brightness(0.97);
+  text-decoration: none;
+}
+
+.ayanas-app-nav__hub.is-current {
+  outline: 2px solid #92400e;
+  outline-offset: 1px;
+}
+
 .ayanas-app-nav__groups {
   display: flex;
   flex-wrap: wrap;

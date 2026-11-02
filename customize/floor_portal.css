@@ -21,16 +21,50 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 .cayan-fp-header {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+.cayan-fp-header__main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
 }
 
 .cayan-fp-title {
   margin: 0;
   font-size: 24px;
   font-weight: 700;
+}
+
+.cayan-fp-hubs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cayan-fp-hub {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.cayan-fp-hub:hover,
+.cayan-fp-hub:focus {
+  border-color: #334155;
+  background: #e2e8f0;
 }
 
 .cayan-fp-header__side {

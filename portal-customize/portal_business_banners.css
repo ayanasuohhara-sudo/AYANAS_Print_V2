@@ -56,6 +56,11 @@
   font-weight: 700;
 }
 
+#ayanas-portal-business-banners .ayanas-pbb-item--hub {
+  background: #eef6ff;
+  border-color: #7aa2c9;
+}
+
 #ayanas-portal-business-banners a.ayanas-pbb-item:hover,
 #ayanas-portal-business-banners a.ayanas-pbb-item:focus {
   background: #ffffff;

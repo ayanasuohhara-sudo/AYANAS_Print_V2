@@ -7,14 +7,19 @@
      * FACTORY_MENU_APP_ID が 0 のときは画面を出さない。
      */
 
-    const FACTORY_MENU_VERSION = '1.1.1';
+    const FACTORY_MENU_VERSION = '1.2.0';
 
     const CAYANAS_FACTORY_MENU = {
         VERSION: FACTORY_MENU_VERSION,
-        /** 工場ポータルアプリ（App90）。0 のときは起動しない */
+        /** 工場業務メニューアプリ（App90）。0 のときは起動しない */
         FACTORY_MENU_APP_ID: 90,
-        TITLE: 'AYANAS 工場ポータル',
-        LEAD: '工場の日常業務で使うアプリへ移動します。',
+        TITLE: '工場業務メニュー',
+        LEAD: '工場の日常業務で使うアプリへ移動します。AYANAS 業務メニュー／店舗業務メニューへも戻れます。',
+        HUB_LINKS: [
+            { appId: 91, label: 'AYANAS 業務メニュー' },
+            { appId: 87, label: '店舗業務メニュー' },
+            { hash: '#/portal', label: 'ポータルTOP' },
+        ],
         /**
          * メニュー追加・削除・並び替えはこの配列だけ編集する。
          * appId を画面には出さない。icon は desktop 側の定義キー。

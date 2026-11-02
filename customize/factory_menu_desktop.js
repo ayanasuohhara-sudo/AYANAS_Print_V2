@@ -94,6 +94,26 @@
 
     };
 
+    const hubLinksHtml = () => {
+        const hubs = Array.isArray(cfg().HUB_LINKS) ? cfg().HUB_LINKS : [];
+
+        if (!hubs.length) {
+            return '';
+        }
+
+        return '<div class="cayan-fm-hubs" aria-label="業務メニューへ戻る">'
+            + hubs.map((link) => {
+                const appId = Number(link.appId);
+                const href = appId
+                    ? (location.origin + '/k/' + appId + '/')
+                    : (location.origin + '/k/' + String(link.hash || '#/portal'));
+                return '<a class="cayan-fm-hub" href="' + escapeHtml(href) + '">'
+                    + escapeHtml(link.label || '')
+                    + '</a>';
+            }).join('')
+            + '</div>';
+    };
+
     const shellHtml = () => {
 
         const sections = Array.isArray(cfg().SECTIONS) ? cfg().SECTIONS : [];
@@ -101,6 +121,7 @@
         return '<header class="cayan-fm-header">'
             + '<h1 class="cayan-fm-title">' + escapeHtml(cfg().TITLE) + '</h1>'
             + '<p class="cayan-fm-lead">' + escapeHtml(cfg().LEAD) + '</p>'
+            + hubLinksHtml()
             + '</header>'
             + sections.map(sectionHtml).join('');
 
@@ -141,6 +162,11 @@
             '.cayan-fm-header { margin: 0 0 28px; padding: 8px 0 20px; border-bottom: 2px solid #e8e8e8; }',
             '.cayan-fm-title { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 0.04em; color: #111; }',
             '.cayan-fm-lead { margin: 8px 0 0; font-size: 16px; color: #555; }',
+            '.cayan-fm-hubs { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }',
+            '.cayan-fm-hub { display: inline-flex; align-items: center; justify-content: center;',
+            '  min-height: 40px; padding: 0 14px; border-radius: 6px; border: 1px solid #c5ced9;',
+            '  background: #fff; color: #1a1a1a; font-size: 14px; font-weight: 700; text-decoration: none; }',
+            '.cayan-fm-hub:hover, .cayan-fm-hub:focus { border-color: #2f5f8a; background: #f5f7fa; }',
             '.cayan-fm-section { margin: 0 0 28px; }',
             '.cayan-fm-section__title { margin: 0 0 12px; font-size: 18px; font-weight: 700; color: #222; }',
             '.cayan-fm-grid { display: grid; gap: 14px; }',

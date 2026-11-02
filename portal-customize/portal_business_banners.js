@@ -80,8 +80,10 @@
             return '';
         }
 
+        const hubClass = category.hub ? ' ayanas-pbb-item--hub' : '';
+
         return ''
-            + '<a class="ayanas-pbb-item" href="' + escapeHtml(href) + '">'
+            + '<a class="ayanas-pbb-item' + hubClass + '" href="' + escapeHtml(href) + '">'
             + '<span class="ayanas-pbb-item__no">' + no + '</span>'
             + '<span class="ayanas-pbb-item__label">' + label + '</span>'
             + '</a>';
@@ -155,6 +157,10 @@
             '  color: #111;',
             '  text-decoration: none;',
             '  font-weight: 700;',
+            '}',
+            '#' + cfg().ROOT_ID + ' .ayanas-pbb-item--hub {',
+            '  background: #eef6ff;',
+            '  border-color: #7aa2c9;',
             '}',
             '#' + cfg().ROOT_ID + ' a.ayanas-pbb-item:hover,',
             '#' + cfg().ROOT_ID + ' a.ayanas-pbb-item:focus {',

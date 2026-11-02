@@ -1,0 +1,138 @@
+{
+  "ok": true,
+  "update": {
+    "status": 200,
+    "text": "{\"result\":{\"executable\":true,\"configurable\":true,\"scripts\":[{\"id\":\"47\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"14565\",\"hash\":\"932960096c998628f6e49ccc7c2b654c4af1890f\",\"name\":\"portal_business_banners_config.js\",\"size\":3361,\"contentUrl\":null,\"sortOrder\":0},{\"id\":\"48\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"14566\",\"hash\":\"7cf41906400e283678c0834fbf39b79066210da7\",\"name\":\"portal_business_banners.js\",\"size\":8794,\"contentUrl\":null,\"sortOrder\":1},{\"id\":\"49\",\"type\":\"DESKTOP_CSS\",\"locationType\":\"BLOB\",\"contentId\":\"14567\",\"hash\":\"0e712a5b346bfc59b9af299e0f826ad8c6b55293\",\"name\":\"portal_business_banners.css\",\"size\":2844,\"contentUrl\":null,\"sortOrder\":0}],\"scope\":\"ALL\",\"active\":true},\"success\":true}",
+    "json": {
+      "result": {
+        "executable": true,
+        "configurable": true,
+        "scripts": [
+          {
+            "id": "47",
+            "type": "DESKTOP",
+            "locationType": "BLOB",
+            "contentId": "14565",
+            "hash": "932960096c998628f6e49ccc7c2b654c4af1890f",
+            "name": "portal_business_banners_config.js",
+            "size": 3361,
+            "contentUrl": null,
+            "sortOrder": 0
+          },
+          {
+            "id": "48",
+            "type": "DESKTOP",
+            "locationType": "BLOB",
+            "contentId": "14566",
+            "hash": "7cf41906400e283678c0834fbf39b79066210da7",
+            "name": "portal_business_banners.js",
+            "size": 8794,
+            "contentUrl": null,
+            "sortOrder": 1
+          },
+          {
+            "id": "49",
+            "type": "DESKTOP_CSS",
+            "locationType": "BLOB",
+            "contentId": "14567",
+            "hash": "0e712a5b346bfc59b9af299e0f826ad8c6b55293",
+            "name": "portal_business_banners.css",
+            "size": 2844,
+            "contentUrl": null,
+            "sortOrder": 0
+          }
+        ],
+        "scope": "ALL",
+        "active": true
+      },
+      "success": true
+    }
+  },
+  "before": {
+    "executable": true,
+    "configurable": true,
+    "scripts": [
+      {
+        "id": "44",
+        "type": "DESKTOP",
+        "locationType": "BLOB",
+        "contentId": "12866",
+        "hash": "efb5330ffd9d2c8c018752fd5960f4868d1a61df",
+        "name": "portal_business_banners_config.js",
+        "size": 2795,
+        "contentUrl": null,
+        "sortOrder": 0
+      },
+      {
+        "id": "45",
+        "type": "DESKTOP",
+        "locationType": "BLOB",
+        "contentId": "12867",
+        "hash": "95b02afad6e68f02e71ffaa8dd3eaa92ddffb7e2",
+        "name": "portal_business_banners.js",
+        "size": 8804,
+        "contentUrl": null,
+        "sortOrder": 1
+      },
+      {
+        "id": "46",
+        "type": "DESKTOP_CSS",
+        "locationType": "BLOB",
+        "contentId": "12429",
+        "hash": "66e6470ddd5f1d2c2b550763c36437c27e905eb8",
+        "name": "portal_business_banners.css",
+        "size": 2855,
+        "contentUrl": null,
+        "sortOrder": 0
+      }
+    ],
+    "scope": "ALL",
+    "active": true
+  },
+  "after": {
+    "executable": true,
+    "configurable": true,
+    "scripts": [
+      {
+        "id": "47",
+        "type": "DESKTOP",
+        "locationType": "BLOB",
+        "contentId": "14565",
+        "hash": "932960096c998628f6e49ccc7c2b654c4af1890f",
+        "name": "portal_business_banners_config.js",
+        "size": 3361,
+        "contentUrl": null,
+        "sortOrder": 0
+      },
+      {
+        "id": "48",
+        "type": "DESKTOP",
+        "locationType": "BLOB",
+        "contentId": "14566",
+        "hash": "7cf41906400e283678c0834fbf39b79066210da7",
+        "name": "portal_business_banners.js",
+        "size": 8794,
+        "contentUrl": null,
+        "sortOrder": 1
+      },
+      {
+        "id": "49",
+        "type": "DESKTOP_CSS",
+        "locationType": "BLOB",
+        "contentId": "14567",
+        "hash": "0e712a5b346bfc59b9af299e0f826ad8c6b55293",
+        "name": "portal_business_banners.css",
+        "size": 2844,
+        "contentUrl": null,
+        "sortOrder": 0
+      }
+    ],
+    "scope": "ALL",
+    "active": true
+  },
+  "keys": {
+    "kConfig": "1c6ea96b-dca3-45cb-a202-a49fc64b273f",
+    "kJs": "1bec263d-8d90-4b68-a1a2-7d193c2094d4",
+    "kCss": "94971663-2d3b-4055-a204-3d7154d813fa"
+  }
+}

@@ -12,7 +12,7 @@
      * - 表示名は工場／店舗ポータルと揃える（保管場所移動・社内作業登録 など）
      */
 
-    const BUSINESS_MENU_VERSION = '1.1.0';
+    const BUSINESS_MENU_VERSION = '1.2.0';
 
     const CAYANAS_BUSINESS_MENU = {
         VERSION: BUSINESS_MENU_VERSION,
@@ -21,9 +21,13 @@
         BUSINESS_MENU_APP_ID: 91,
 
         TITLE: 'AYANAS 業務メニュー',
-        LEAD: '業務内容からアプリを選んで移動します。店舗専用の入金・引き取りは「店舗ポータル（A550）」から。',
-        TOP_LABEL: 'AYANAS TOPへ戻る',
+        LEAD: '業務内容からアプリを選んで移動します。店舗専用の入金・引き取りは店舗業務メニューから。',
+        TOP_LABEL: 'ポータルTOPへ戻る',
         TOP_HASH: '#/portal',
+        HUB_LINKS: [
+            { appId: 90, label: '工場業務メニュー' },
+            { appId: 87, label: '店舗業務メニュー' },
+        ],
 
         /** URLパラメータ名 */
         QUERY_KEY: 'cat',

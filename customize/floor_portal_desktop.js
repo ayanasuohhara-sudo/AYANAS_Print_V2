@@ -525,10 +525,27 @@
         const title = mode === cfg().MODE.store ? ui.storeTitle : ui.factoryTitle;
         const note = mode === cfg().MODE.store ? ui.storeWaitingNote : ui.factoryOtherNote;
 
+        const hubLinks = [
+            { href: location.origin + '/k/91/', label: ui.hubAyanasMenu || 'AYANAS 業務メニュー' },
+            { href: location.origin + '/k/90/', label: ui.hubFactoryMenu || '工場業務メニュー' },
+            { href: location.origin + '/k/87/', label: ui.hubStoreMenu || '店舗業務メニュー' },
+            { href: location.origin + '/k/#/portal', label: ui.hubPortalTop || 'ポータルTOP' },
+        ];
+        const hubsHtml = '<div class="cayan-fp-hubs" aria-label="業務メニューへ戻る">'
+            + hubLinks.map((link) => (
+                '<a class="cayan-fp-hub" href="' + escapeHtml(link.href) + '">'
+                + escapeHtml(link.label)
+                + '</a>'
+            )).join('')
+            + '</div>';
+
         root.dataset.shell = '1';
         root.innerHTML = ''
             + '<header class="cayan-fp-header">'
+            + '<div class="cayan-fp-header__main">'
             + '<h1 class="cayan-fp-title">' + escapeHtml(title) + '</h1>'
+            + hubsHtml
+            + '</div>'
             + '<div class="cayan-fp-header__side">'
             + '<span class="cayan-fp-updated" id="cayan-fp-updated"></span>'
             + '<button type="button" class="cayan-fp-btn" id="cayan-fp-refresh">' + escapeHtml(ui.refresh) + '</button>'

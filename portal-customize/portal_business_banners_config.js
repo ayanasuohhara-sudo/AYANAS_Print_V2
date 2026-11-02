@@ -2,20 +2,24 @@
     'use strict';
 
     /**
-     * AYANAS 標準ポータル — 8分類バナー定義。
+     * AYANAS 標準ポータル — 業務バナー定義。
      * 登録先: kintoneシステム管理 → JavaScript / CSSでカスタマイズ（全体・PC用）
-     * App91 / App90 / 共通ナビのファイルは変更しない。
+     *
+     * 01–02: 工場／店舗の業務ポータル（直接遷移）
+     * 03–10: 従来の8分類（App91 ?cat= または直接アプリ）
      */
 
-    const PORTAL_BUSINESS_BANNERS_VERSION = '1.0.2';
+    const PORTAL_BUSINESS_BANNERS_VERSION = '1.1.0';
 
     const CAYANAS_PORTAL_BUSINESS_BANNERS = {
         VERSION: PORTAL_BUSINESS_BANNERS_VERSION,
         TITLE: 'AYANAS 業務メニュー',
-        LEAD: '業務内容を選んでください（店舗専用は店舗ポータルへ）',
+        LEAD: '工場・店舗ポータル、または業務内容を選んでください',
         ROOT_ID: 'ayanas-portal-business-banners',
         STYLE_ID: 'ayanas-portal-business-banners-style',
         BUSINESS_MENU_APP_ID: 91,
+        FACTORY_MENU_APP_ID: 90,
+        STORE_PORTAL_APP_ID: 87,
         QUERY_KEY: 'cat',
         /**
          * mode:
@@ -25,57 +29,73 @@
          */
         CATEGORIES: [
             {
-                id: 'order',
+                id: 'factory_portal',
                 no: '01',
+                label: '工場ポータル（業務）',
+                mode: 'direct',
+                appId: 90,
+                hub: true,
+            },
+            {
+                id: 'store_portal',
+                no: '02',
+                label: '店舗ポータル（業務）',
+                mode: 'direct',
+                appId: 87,
+                hub: true,
+            },
+            {
+                id: 'order',
+                no: '03',
                 label: '受注登録・検索',
                 mode: 'menu',
                 cat: 'order',
             },
             {
                 id: 'logistics',
-                no: '02',
+                no: '04',
                 label: '出庫・入庫',
                 mode: 'menu',
                 cat: 'logistics',
             },
             {
                 id: 'billing',
-                no: '03',
+                no: '05',
                 label: '納品書・請求書・入金',
                 mode: 'menu',
                 cat: 'billing',
             },
             {
                 id: 'work',
-                no: '04',
+                no: '06',
                 label: '作業進捗・完了登録',
                 mode: 'menu',
                 cat: 'work',
             },
             {
                 id: 'deadline',
-                no: '05',
+                no: '07',
                 label: '納期・作業負荷状況',
                 mode: 'direct',
                 appId: 89,
             },
             {
                 id: 'customer_schedule',
-                no: '06',
+                no: '08',
                 label: '納期・納品スケジュール管理',
                 mode: 'direct',
                 appId: 94,
             },
             {
                 id: 'analytics',
-                no: '07',
+                no: '09',
                 label: '各種データ・集計',
                 mode: 'menu',
                 cat: 'analytics',
             },
             {
                 id: 'masters',
-                no: '08',
+                no: '10',
                 label: 'マスタ登録',
                 mode: 'menu',
                 cat: 'masters',

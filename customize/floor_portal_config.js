@@ -3,7 +3,7 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.4.2
+     * FLOOR_PORTAL_VERSION: 1.5.0
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
@@ -17,7 +17,7 @@
      * 文字サイズは工場／店舗で共通（工場相当）。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.4.2';
+    const FLOOR_PORTAL_VERSION = '1.5.0';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
@@ -204,6 +204,10 @@
         UI: {
             factoryTitle: '工場 作業状況',
             storeTitle: '店舗ポータル（A550）',
+            hubAyanasMenu: 'AYANAS 業務メニュー',
+            hubFactoryMenu: '工場業務メニュー',
+            hubStoreMenu: '店舗業務メニュー',
+            hubPortalTop: 'ポータルTOP',
             refresh: '更新',
             clearFilters: '絞り込み解除',
             searchPlaceholder: '管理番号・顧客名・お客様名',

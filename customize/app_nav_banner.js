@@ -88,12 +88,35 @@
             ? `<a class="ayanas-app-nav__portal" href="${escapeHtml(`${location.origin}/k/${portal.hash || '#/portal'}`)}">${escapeHtml(portal.label || 'TOPメニューへ戻る')}</a>`
             : '';
 
+        const hubLinksHtml = (config.hubLinks || []).map((link) => {
+            const appId = Number(link.appId);
+
+            if (!appId) {
+                return '';
+            }
+
+            const isCurrent = config.highlightCurrent !== false && appId === currentAppId;
+            const tone = sanitizeTone(link.tone || 'amber');
+            const className = [
+                'ayanas-app-nav__hub',
+                `ayanas-app-nav__link--${tone}`,
+                isCurrent ? 'is-current' : '',
+            ].filter(Boolean).join(' ');
+
+            return `<a class="${className}" href="${escapeHtml(buildAppUrl(appId))}">${escapeHtml(link.label || appId)}</a>`;
+        }).join('');
+
+        const hubsBlock = hubLinksHtml
+            ? `<div class="ayanas-app-nav__hubs" aria-label="業務メニューへ戻る">${hubLinksHtml}</div>`
+            : '';
+
         return `
 <nav class="ayanas-app-nav" aria-label="アプリリンク">
   <div class="ayanas-app-nav__head">
     <p class="ayanas-app-nav__title">${escapeHtml(config.title || 'AYANASU')}</p>
     ${portalHtml}
   </div>
+  ${hubsBlock}
   <div class="ayanas-app-nav__groups">${groupsHtml}</div>
 </nav>`;
 
