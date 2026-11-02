@@ -3747,19 +3747,24 @@ body {
     white-space: nowrap;
 }
 
-.report-store-order .order-detail-left-bottom {
+.report-store-order .store-order-left-lower {
     margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1mm;
 }
 
-.report-store-order .order-detail-barcode--bottom .order-detail-barcode__svg {
+.report-store-order .order-detail-barcode--tag {
+    margin: 0.5mm auto;
+}
+
+.report-store-order .order-detail-barcode--tag .order-detail-barcode__svg {
     width: 48mm;
     height: 7mm;
 }
 
-.report-store-order .order-detail-bottom-info {
-    margin-top: 0.5mm;
-    font-size: 9pt;
-    line-height: 1.25;
+.report-store-order .store-order-left-lower .order-sleeve-tag-table {
+    margin: 0 auto;
 }
 
 .report-store-order .store-order-payment {

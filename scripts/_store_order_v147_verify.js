@@ -8,13 +8,13 @@ const path = require('path');
 const SUB = 'o5nppg7kb4ly';
 const MANAGE_NO = 'TSP815835U';
 const CORP_MANAGE = '110226491';
-const WORK_DIR = process.env.V147_WORK
+const WORK_DIR = process.env.V148_WORK
   || fs.readdirSync('/workspace/customize/backups')
-    .filter((d) => d.startsWith('store_order_v147_'))
+    .filter((d) => d.startsWith('store_order_v148_'))
     .map((d) => path.join('/workspace/customize/backups', d))
     .sort()
     .slice(-1)[0];
-const ART_DIR = '/opt/cursor/artifacts/store_order_v147';
+const ART_DIR = '/opt/cursor/artifacts/store_order_v148';
 
 const httpJson = (p, method = 'GET') =>
   new Promise((resolve, reject) => {
@@ -199,7 +199,14 @@ function analyzeStoreHtml(html) {
     paymentBinary: /入金状態/.test(html) && (/入金済/.test(html) || /未入金/.test(html)),
     noPartial: !/一部入金/.test(html),
     noOldCut: !/仕上げ完了登録票/.test(html),
-    barcodes: (html.match(/data-barcode-value="/g) || []).length >= 2,
+    removedFields: !/>顧客名</.test(html)
+      && html.indexOf('得意先伝票番号') === -1
+      && html.indexOf('得意先担当・係') === -1,
+    leftLower: /store-order-left-lower/.test(html)
+      && (html.match(/order-sleeve-tag-table/g) || []).length >= 2
+      && (html.match(/data-barcode-value="/g) || []).length >= 3,
+    noBottomInfo: !/order-detail-bottom-info/.test(html)
+      && !/order-detail-left-bottom/.test(html),
   };
   checks.ok = Object.keys(checks).filter((k) => k !== 'ok').every((k) => checks[k] === true);
   return checks;

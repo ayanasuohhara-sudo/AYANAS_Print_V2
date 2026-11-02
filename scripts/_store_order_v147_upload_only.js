@@ -6,12 +6,12 @@ const fs = require('fs');
 const path = require('path');
 
 const ZIP_SRC = '/workspace/plugin.zip';
-const ZIP = '/tmp/ayanas-print-v147.zip';
+const ZIP = '/tmp/ayanas-print-v148.zip';
 const WORK_DIR = path.join(
   '/workspace/customize/backups',
-  'store_order_v147_' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+  'store_order_v148_' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
 );
-const ART_DIR = '/opt/cursor/artifacts/store_order_v147';
+const ART_DIR = '/opt/cursor/artifacts/store_order_v148';
 
 const httpJson = (p, method = 'GET') =>
   new Promise((resolve, reject) => {
@@ -78,7 +78,7 @@ async function openPage(url) {
   fs.copyFileSync(ZIP_SRC, ZIP);
   fs.mkdirSync(WORK_DIR, { recursive: true });
   fs.mkdirSync(ART_DIR, { recursive: true });
-  fs.copyFileSync(ZIP, path.join(WORK_DIR, 'plugin_v147.zip'));
+  fs.copyFileSync(ZIP, path.join(WORK_DIR, 'plugin_v148.zip'));
 
   const page = await openPage('https://o5nppg7kb4ly.cybozu.com/k/admin/system/plugin/');
   await new Promise((r) => setTimeout(r, 4000));
@@ -140,7 +140,7 @@ async function openPage(url) {
       expression: `(() => {
         const text = document.body && document.body.innerText || '';
         return {
-          has147: /\\b147\\b/.test(text) && /AYANAS\\s*Print/i.test(text),
+          has148: /\\b148\\b/.test(text) && /AYANAS\\s*Print/i.test(text),
           sample: [...text.matchAll(/AYANAS\\s*Print[^\\n]{0,100}/gi)].map((m) => m[0]).slice(0, 5),
           versions: (text.match(/Version:\\s*\\d+/g) || []).slice(0, 5),
         };
@@ -148,15 +148,15 @@ async function openPage(url) {
     });
     verify = r.result && r.result.result && r.result.result.value;
     console.log('tick', i, verify);
-    if (verify && verify.has147) break;
+    if (verify && verify.has148) break;
   }
 
   const shot = await page.send('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync(path.join(WORK_DIR, 'plugin_list_v147.png'), Buffer.from(shot.result.data, 'base64'));
-  fs.writeFileSync(path.join(ART_DIR, 'plugin_list_v147.png'), Buffer.from(shot.result.data, 'base64'));
+  fs.writeFileSync(path.join(WORK_DIR, 'plugin_list_v148.png'), Buffer.from(shot.result.data, 'base64'));
+  fs.writeFileSync(path.join(ART_DIR, 'plugin_list_v148.png'), Buffer.from(shot.result.data, 'base64'));
 
   const out = {
-    ok: !!(verify && verify.has147),
+    ok: !!(verify && verify.has148),
     verify,
     zip: ZIP,
     work: WORK_DIR,

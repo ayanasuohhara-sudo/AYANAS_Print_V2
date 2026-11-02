@@ -1,14 +1,15 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 const http = require('http');
 const WebSocket = require('ws');
 
-const htmlPath = '/opt/cursor/artifacts/store_order_v147/store_order_TSP815835U.html';
+const htmlPath = '/opt/cursor/artifacts/store_order_v148/store_order_TSP815835U.html';
 const css = fs.readFileSync('/workspace/css/print.css', 'utf8');
 let html = fs.readFileSync(htmlPath, 'utf8');
 html = html.replace(/<link rel="stylesheet"[^>]*>/i, '<style>' + css + '</style>');
-const out = '/tmp/store_order_v147_preview.html';
+const out = '/tmp/store_order_v148_preview.html';
 fs.writeFileSync(out, html);
 
 const httpJson = (p, method = 'GET') =>
@@ -61,11 +62,17 @@ const httpJson = (p, method = 'GET') =>
     captureBeyondViewport: true,
   });
   const buf = Buffer.from(shot.result.data, 'base64');
-  fs.writeFileSync('/opt/cursor/artifacts/store_order_v147/store_order_TSP815835U_styled.png', buf);
-  fs.writeFileSync(
-    '/workspace/customize/backups/store_order_v147_2026-11-02T13-19-11/screens/store_order_TSP815835U_styled.png',
-    buf
-  );
+  fs.mkdirSync('/opt/cursor/artifacts/store_order_v148', { recursive: true });
+  fs.writeFileSync('/opt/cursor/artifacts/store_order_v148/store_order_TSP815835U_styled.png', buf);
+  const workScreens = fs.readdirSync('/workspace/customize/backups')
+    .filter((d) => d.startsWith('store_order_v148_'))
+    .map((d) => path.join('/workspace/customize/backups', d, 'screens'))
+    .sort()
+    .slice(-1)[0];
+  if (workScreens) {
+    fs.mkdirSync(workScreens, { recursive: true });
+    fs.writeFileSync(path.join(workScreens, 'store_order_TSP815835U_styled.png'), buf);
+  }
   console.log('wrote styled screenshot', buf.length);
   await httpJson('/json/close/' + page.id);
   ws.close();

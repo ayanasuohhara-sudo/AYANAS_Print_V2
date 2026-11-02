@@ -227,7 +227,13 @@ assert('store_order landscape page', storeOrderHtml.indexOf('order-detail-page')
 assert('store_order title', storeOrderHtml.indexOf('店舗受注表') !== -1);
 assert('store_order left/right sheets', storeOrderHtml.indexOf('order-detail-sheet--left') !== -1
   && storeOrderHtml.indexOf('order-detail-sheet--right') !== -1);
-assert('store_order dual barcodes', (storeOrderHtml.match(/data-barcode-value="PKTEST1"/g) || []).length >= 2);
+assert('store_order left lower barcodes+tables', storeOrderHtml.indexOf('store-order-left-lower') !== -1
+  && (storeOrderHtml.match(/order-sleeve-tag-table/g) || []).length >= 2
+  && (storeOrderHtml.match(/data-barcode-value="PKTEST1"/g) || []).length >= 3);
+assert('store_order removed customer_name label', !/>顧客名</.test(storeOrderHtml));
+assert('store_order removed slip_no label', storeOrderHtml.indexOf('得意先伝票番号') === -1);
+assert('store_order removed in_charge label', storeOrderHtml.indexOf('得意先担当・係') === -1);
+assert('store_order keeps client_name', storeOrderHtml.indexOf('お客様名') !== -1);
 assert('store_order work checks', storeOrderHtml.indexOf('□ 下洗い済み') !== -1
   && storeOrderHtml.indexOf('□ しみ抜き済み') !== -1
   && storeOrderHtml.indexOf('□ 修理済み') !== -1);
@@ -304,7 +310,7 @@ assert('print does not PUT delivery_status', desktopJs.indexOf('store_order') !=
   && !/store_order[\s\S]{0,200}delivery_status/.test(desktopJs));
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
-assert('manifest v147', manifest.version === 147);
+assert('manifest v148', manifest.version === 148);
 assert('manifest desktop/js <= 30', Array.isArray(manifest.desktop.js) && manifest.desktop.js.length <= 30);
 assert('manifest includes store print bundle',
   manifest.desktop.js.indexOf('js/store_print_bundle.js') !== -1);
