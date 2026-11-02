@@ -126,6 +126,71 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
   white-space: nowrap;
 }
 
+.cayan-fp-note--warn {
+  color: #9a3412;
+}
+
+.cayan-fp-summary {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #fdba74;
+  background: #fff7ed;
+}
+
+.cayan-fp-summary__title {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.cayan-fp-summary__cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cayan-fp-summary-card {
+  flex: 1 1 140px;
+  min-width: 132px;
+  min-height: 72px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #fed7aa;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.cayan-fp-summary-card.is-unavailable {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.cayan-fp-summary-card__label {
+  font-size: 13px;
+  color: #9a3412;
+  font-weight: 600;
+}
+
+.cayan-fp-summary-card.is-unavailable .cayan-fp-summary-card__label {
+  color: #64748b;
+}
+
+.cayan-fp-summary-card__value {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #0f172a;
+}
+
+.cayan-fp-summary-card.is-unavailable .cayan-fp-summary-card__value {
+  font-size: 18px;
+  color: #64748b;
+}
+
 .cayan-fp-section h2 {
   margin: 0 0 8px;
   font-size: 16px;
@@ -296,6 +361,15 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
   .cayan-fp-btn--menu {
     min-height: 56px;
     font-size: 17px;
+  }
+
+  .cayan-fp-summary-card {
+    flex: 1 1 calc(50% - 10px);
+    min-height: 76px;
+  }
+
+  .cayan-fp-summary-card__value {
+    font-size: 20px;
   }
 
   .cayan-fp-search {

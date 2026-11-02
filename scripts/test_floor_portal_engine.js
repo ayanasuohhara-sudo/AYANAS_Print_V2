@@ -40,6 +40,7 @@ const rec = (manageNo, location, work, extra) => {
         manage_no: { value: manageNo },
         order_date: { value: opts.orderDate || '2026-09-01' },
         deadline: { value: opts.deadline === undefined ? '2026-10-20' : opts.deadline },
+        customer_code: { value: opts.customerCode === undefined ? (location === '店舗' ? 'A550' : 'A545') : opts.customerCode },
         customer_name: { value: opts.customerName || '顧客A' },
         client_name: { value: opts.clientName || 'お客様B' },
         kimono_type: { value: opts.kimonoType || '訪問着' },
@@ -159,11 +160,14 @@ const run = () => {
         rec('ST-REPAIR-NOW', '店舗', '修理中', { id: 's12' }),
         rec('ST-REWORK', '店舗', '再直し中', { id: 's13' }),
         rec('ST-NEW', '店舗', '未着', { id: 's14' }),
+        rec('ST-CORP', '店舗', '仕上げ中', { id: 's15', customerCode: 'A545' }),
+        rec('ST-PICK', '店舗', '仕上げ完了', { id: 's16', delivery: '引き取り待ち', deadline: '2026-10-01' }),
     ];
     const store = E.buildStock(storeRecords, { mode: 'store', today: TODAY });
     const storeNos = store.rows.map((row) => row.manageNo);
 
-    assert('店舗在庫のみ', storeNos.indexOf('FX') === -1 && store.kpis.total === 11);
+    assert('店舗在庫のみ', storeNos.indexOf('FX') === -1 && store.kpis.total === 12);
+    assert('A550以外の店舗在庫は出ない', storeNos.indexOf('ST-CORP') === -1);
     assert('店舗の未着 dual-read', store.kpis.work['未着'] === 3);
     assert('店舗しみ抜き中は旧待ち合算', store.kpis.work['しみ抜き中'] === 2);
     assert('店舗の仕上げ中', store.kpis.work['仕上げ中'] === 1);
@@ -174,7 +178,7 @@ const run = () => {
             .every((row) => row.workStatus === '修理中'));
     assert('店舗はその他カードを出さない', C.SHOW_OTHER_CARD.store === false && C.SHOW_OTHER_CARD.factory === true);
     assert('納品待ちは作業と別に数える', store.kpis.deliveryWaiting === 2);
-    assert('店舗の非表示その他', store.kpis.other === 3);
+    assert('店舗の非表示その他', store.kpis.other === 4);
     assert('納品済と取消は店舗にも出ない', storeNos.indexOf('ST-CANCEL') === -1 && storeNos.indexOf('ST-OUT') === -1);
 
     ['修理中', '再直し中'].forEach((label) => {
@@ -206,12 +210,61 @@ const run = () => {
         && storeMenuAppKeys.indexOf('completeRegister') >= 0);
     assert('店舗メニューに App85 を含めない', storeMenuAppIds.indexOf(85) < 0
         && storeMenuAppKeys.indexOf('storeWork') < 0);
-    assert('保管場所はドロップダウンの in', E.buildLocationQuery('factory') === 'location_status in ("工場") order by レコード番号 asc'
-        && E.buildLocationQuery('store') === 'location_status in ("店舗") order by レコード番号 asc');
+    const workGroup = (C.STORE_MENU_GROUPS || []).find((g) => g.id === 'work');
+    const workLabels = (workGroup && workGroup.links || []).map((l) => l.label);
+    assert('App34 表示名は保管場所移動', workLabels.indexOf('保管場所移動') >= 0
+        && workLabels.indexOf('社内入庫登録') < 0);
+    assert('App84 表示名は社内作業登録', workLabels.indexOf('社内作業登録') >= 0);
+    assert('工場クエリは A550 なし', E.buildLocationQuery('factory') === 'location_status in ("工場") order by レコード番号 asc');
+    assert('店舗クエリは A550 あり', E.buildLocationQuery('store')
+        === 'location_status in ("店舗") and customer_code = "A550" order by レコード番号 asc');
     assert('カードに未着としみ抜き中', C.FACTORY_WORK_CARDS.indexOf('未着') >= 0
         && C.FACTORY_WORK_CARDS.indexOf('しみ抜き中') >= 0
         && C.FACTORY_WORK_CARDS.indexOf('未着手') < 0
         && C.FACTORY_WORK_CARDS.indexOf('しみ抜き待ち') < 0);
+
+    const summaryOk = E.buildStoreDailySummary({
+        todayOrderRecords: [
+            rec('TODAY-1', '店舗', '未着', { orderDate: TODAY, id: 't1' }),
+            rec('TODAY-1', '工場', '未着', { orderDate: TODAY, id: 't1b' }),
+            rec('TODAY-2', '本社', '未着', { orderDate: TODAY, id: 't2' }),
+            rec('OLD', '店舗', '未着', { orderDate: '2026-10-01', id: 't3' }),
+            rec('CORP', '店舗', '未着', { orderDate: TODAY, customerCode: 'A545', id: 't4' }),
+        ],
+        stock: store,
+        stockFetched: true,
+        paymentAmount: 12345,
+        paymentFetched: true,
+    });
+    assert('本日受注は A550 の管理番号ユニーク', summaryOk.todayOrderCount.status === 'ok'
+        && summaryOk.todayOrderCount.value === 2);
+    assert('本日納期は在庫KPI', summaryOk.dueTodayCount.status === 'ok'
+        && summaryOk.dueTodayCount.value === store.kpis.deadline.today);
+    assert('引き取り待ちは納品待ち互換含む', summaryOk.pickupWaitingCount.status === 'ok'
+        && summaryOk.pickupWaitingCount.value >= 2);
+    assert('本日入金金額', summaryOk.paymentAmountToday.status === 'ok'
+        && summaryOk.paymentAmountToday.value === 12345);
+    assert('納期超過', summaryOk.overdueCount.status === 'ok'
+        && summaryOk.overdueCount.value === store.kpis.deadline.overdue);
+    assert('取得済の0件は0表示', E.formatSummaryMetric({ status: 'ok', value: 0 }) === '0件');
+    assert('未取得は未取得表示', E.formatSummaryMetric({ status: 'unavailable', value: null }) === '未取得');
+    assert('金額フォーマット', E.formatSummaryMetric({ status: 'ok', value: 12345 }, { currency: true }) === '12,345円');
+
+    const summaryFail = E.buildStoreDailySummary({
+        stockFetched: false,
+        paymentFetched: false,
+        todayOrderRecords: null,
+    });
+    assert('失敗時は未取得（0にしない）', summaryFail.todayOrderCount.status === 'unavailable'
+        && summaryFail.dueTodayCount.status === 'unavailable'
+        && summaryFail.pickupWaitingCount.status === 'unavailable'
+        && summaryFail.paymentAmountToday.status === 'unavailable'
+        && summaryFail.overdueCount.status === 'unavailable'
+        && E.formatSummaryMetric(summaryFail.paymentAmountToday, { currency: true }) === '未取得');
+
+    assert('工場モード分離', E.resolveMode(86) === 'factory' && E.resolveMode(87) === 'store');
+    assert('本日受注クエリ', E.buildTodayStoreOrderQuery(TODAY)
+        === 'customer_code = "A550" and order_date = "2026-10-05" order by レコード番号 asc');
 };
 
 run();

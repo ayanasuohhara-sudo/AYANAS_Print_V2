@@ -92,6 +92,11 @@
 
     const isDelivered = (record) => readValue(record, cfg().FIELDS.deliveryStatus) === cfg().DELIVERY.delivered;
 
+    const isStoreCustomerRecord = (record) => {
+        const code = cfg().STORE_CUSTOMER_CODE || 'A550';
+        return readValue(record, cfg().FIELDS.customerCode) === code;
+    };
+
     const locationForMode = (mode) => {
 
         const C = cfg();
@@ -149,6 +154,10 @@
             return false;
         }
 
+        if (mode === cfg().MODE.store && !isStoreCustomerRecord(record)) {
+            return false;
+        }
+
         if (!isAggregationActive(record)) {
             return false;
         }
@@ -159,6 +168,82 @@
 
         return true;
 
+    };
+
+    const isPickupWaitingDelivery = (deliveryStatus) => {
+        const list = cfg().PICKUP_WAITING_DELIVERY_STATUSES || [
+            cfg().DELIVERY.pickupWaiting,
+            cfg().DELIVERY.waiting,
+        ];
+        return list.indexOf(String(deliveryStatus ?? '').trim()) !== -1;
+    };
+
+    const metricOk = (value) => ({ status: 'ok', value: value });
+
+    const metricUnavailable = () => ({ status: 'unavailable', value: null });
+
+    const formatSummaryMetric = (metric, options) => {
+        const ui = cfg().UI;
+        const opts = options || {};
+
+        if (!metric || metric.status !== 'ok' || metric.value === null || metric.value === undefined) {
+            return ui.summaryUnavailable;
+        }
+
+        if (opts.currency) {
+            return Number(metric.value).toLocaleString('ja-JP') + (ui.summaryYenSuffix || '円');
+        }
+
+        return String(metric.value) + (ui.summaryCountSuffix || '件');
+    };
+
+    /**
+     * 店舗サマリ。取得失敗の項目は status=unavailable（0 と表示しない）。
+     */
+    const buildStoreDailySummary = (options) => {
+        const opts = options || {};
+        const stock = opts.stock || null;
+        const todayOrderRecords = Array.isArray(opts.todayOrderRecords) ? opts.todayOrderRecords : null;
+        const paymentAmount = opts.paymentAmount;
+        const paymentFetched = opts.paymentFetched === true;
+        const stockFetched = opts.stockFetched === true && !!stock;
+
+        const summary = {
+            todayOrderCount: metricUnavailable(),
+            dueTodayCount: metricUnavailable(),
+            pickupWaitingCount: metricUnavailable(),
+            paymentAmountToday: metricUnavailable(),
+            overdueCount: metricUnavailable(),
+        };
+
+        if (todayOrderRecords) {
+            const active = todayOrderRecords.filter((record) => (
+                isStoreCustomerRecord(record) && isAggregationActive(record)
+            ));
+            const set = new Set();
+            active.forEach((record) => {
+                const manageNo = readValue(record, cfg().FIELDS.manageNo);
+                if (manageNo) {
+                    set.add(manageNo);
+                }
+            });
+            summary.todayOrderCount = metricOk(set.size);
+        }
+
+        if (stockFetched) {
+            summary.dueTodayCount = metricOk(stock.kpis.deadline.today);
+            summary.overdueCount = metricOk(stock.kpis.deadline.overdue);
+            summary.pickupWaitingCount = metricOk(countDistinct(
+                stock.rows,
+                (row) => isPickupWaitingDelivery(row.deliveryStatus)
+            ));
+        }
+
+        if (paymentFetched && typeof paymentAmount === 'number' && Number.isFinite(paymentAmount)) {
+            summary.paymentAmountToday = metricOk(paymentAmount);
+        }
+
+        return summary;
     };
 
     const deadlineFlags = (deadline, today) => {
@@ -491,6 +576,7 @@
             F.manageNo,
             F.orderDate,
             F.deadline,
+            F.customerCode,
             F.customerName,
             F.clientName,
             F.kimonoType,
@@ -513,9 +599,51 @@
 
         const F = cfg().FIELDS;
         const location = locationForMode(mode);
+        let query = F.locationStatus + ' in ("' + escapeQueryValue(location) + '")';
 
-        return F.locationStatus + ' in ("' + escapeQueryValue(location) + '") order by レコード番号 asc';
+        if (mode === cfg().MODE.store) {
+            const code = cfg().STORE_CUSTOMER_CODE || 'A550';
+            query += ' and ' + F.customerCode + ' = "' + escapeQueryValue(code) + '"';
+        }
 
+        return query + ' order by レコード番号 asc';
+
+    };
+
+    const buildTodayStoreOrderQuery = (today) => {
+        const F = cfg().FIELDS;
+        const code = cfg().STORE_CUSTOMER_CODE || 'A550';
+        const day = normalizeYmd(today) || todayYmdJst();
+
+        return F.customerCode + ' = "' + escapeQueryValue(code) + '"'
+            + ' and ' + F.orderDate + ' = "' + escapeQueryValue(day) + '"'
+            + ' order by レコード番号 asc';
+    };
+
+    const buildTodayPaymentQuery = (today) => {
+        const P = cfg().PAYMENT || {};
+        const day = normalizeYmd(today) || todayYmdJst();
+
+        return P.dateField + ' = "' + escapeQueryValue(day) + '"'
+            + ' and ' + P.statusField + ' in ("' + escapeQueryValue(P.activeStatus) + '")'
+            + ' and ' + P.kindField + ' in ("' + escapeQueryValue(P.paymentKind) + '")'
+            + ' order by レコード番号 asc';
+    };
+
+    const sumPaymentAmount = (records) => {
+        const P = cfg().PAYMENT || {};
+        const list = Array.isArray(records) ? records : [];
+        let total = 0;
+
+        list.forEach((record) => {
+            const raw = record?.[P.amountField]?.value;
+            const amount = Number(raw);
+            if (Number.isFinite(amount)) {
+                total += amount;
+            }
+        });
+
+        return total;
     };
 
     const buildManageNoQuery = (manageNo) => {
@@ -533,11 +661,15 @@
     window.CAYANAS_FloorPortalEngine = {
         todayYmdJst,
         isAggregationActive,
+        isStoreCustomerRecord,
         isStockRecord,
+        isPickupWaitingDelivery,
         deadlineFlags,
         joinProcessingNames,
         compareRows,
         buildStock,
+        buildStoreDailySummary,
+        formatSummaryMetric,
         filterRows,
         describeLookup,
         shouldFetch,
@@ -545,6 +677,9 @@
         workCardsForMode,
         orderFetchFields,
         buildLocationQuery,
+        buildTodayStoreOrderQuery,
+        buildTodayPaymentQuery,
+        sumPaymentAmount,
         buildManageNoQuery,
         orderDetailPath,
     };

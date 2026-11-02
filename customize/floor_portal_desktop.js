@@ -20,6 +20,7 @@
 
     let mode = '';
     let stock = null;
+    let storeSummary = null;
     let workId = '';
     let deadlineId = '';
     let query = '';
@@ -96,8 +97,71 @@
             + '<section class="cayan-fp-menu" aria-label="' + escapeHtml(ui.storeMenuTitle || '店舗メニュー') + '">'
             + '<h2 class="cayan-fp-menu__title">' + escapeHtml(ui.storeMenuTitle || '店舗メニュー') + '</h2>'
             + '<p class="cayan-fp-note">' + escapeHtml(ui.storeMenuLead || '') + '</p>'
+            + '<p class="cayan-fp-note cayan-fp-note--warn">' + escapeHtml(ui.storePermissionNote || '') + '</p>'
             + '<div class="cayan-fp-menu__groups">' + groupsHtml + '</div>'
             + '</section>';
+    };
+
+    const renderSummaryHtml = () => {
+        if (mode !== cfg().MODE.store) {
+            return '';
+        }
+
+        const ui = cfg().UI;
+        return ''
+            + '<section class="cayan-fp-summary" aria-label="' + escapeHtml(ui.summaryTitle || '本日の店舗状況') + '">'
+            + '<h2 class="cayan-fp-summary__title">' + escapeHtml(ui.summaryTitle || '本日の店舗状況') + '</h2>'
+            + '<div class="cayan-fp-summary__cards" id="cayan-fp-summary-cards"></div>'
+            + '</section>';
+    };
+
+    const summaryCardHtml = (label, text, unavailable) => (
+        '<div class="cayan-fp-summary-card' + (unavailable ? ' is-unavailable' : '') + '">'
+        + '<span class="cayan-fp-summary-card__label">' + escapeHtml(label) + '</span>'
+        + '<span class="cayan-fp-summary-card__value">' + escapeHtml(text) + '</span>'
+        + '</div>'
+    );
+
+    const paintSummary = () => {
+        const el = document.getElementById('cayan-fp-summary-cards');
+        if (!el || mode !== cfg().MODE.store) {
+            return;
+        }
+
+        const ui = cfg().UI;
+        if (loading && !storeSummary) {
+            el.innerHTML = summaryCardHtml(ui.summaryTitle || '状況', ui.loading, true);
+            return;
+        }
+
+        const s = storeSummary || Engine.buildStoreDailySummary({});
+        el.innerHTML = [
+            summaryCardHtml(
+                ui.summaryTodayOrders,
+                Engine.formatSummaryMetric(s.todayOrderCount),
+                s.todayOrderCount.status !== 'ok'
+            ),
+            summaryCardHtml(
+                ui.summaryDueToday,
+                Engine.formatSummaryMetric(s.dueTodayCount),
+                s.dueTodayCount.status !== 'ok'
+            ),
+            summaryCardHtml(
+                ui.summaryPickupWaiting,
+                Engine.formatSummaryMetric(s.pickupWaitingCount),
+                s.pickupWaitingCount.status !== 'ok'
+            ),
+            summaryCardHtml(
+                ui.summaryPaymentAmount,
+                Engine.formatSummaryMetric(s.paymentAmountToday, { currency: true }),
+                s.paymentAmountToday.status !== 'ok'
+            ),
+            summaryCardHtml(
+                ui.summaryOverdue,
+                Engine.formatSummaryMetric(s.overdueCount),
+                s.overdueCount.status !== 'ok'
+            ),
+        ].join('');
     };
 
     const visibleRows = () => {
@@ -117,8 +181,11 @@
 
     const kintoneApi = (path, method, body) => kintone.api(path, method, body);
 
-    const fetchAll = async (queryText) => {
+    const fetchAll = async (queryText, options) => {
 
+        const opts = options || {};
+        const appId = opts.appId || cfg().ORDER_APP_ID;
+        const fields = opts.fields || Engine.orderFetchFields();
         const all = [];
         let offset = 0;
         const limit = 500;
@@ -129,9 +196,9 @@
                 kintone.api.url('/k/v1/records.json', true),
                 'GET',
                 {
-                    app: cfg().ORDER_APP_ID,
+                    app: appId,
                     query: queryText + ' limit ' + limit + ' offset ' + offset,
-                    fields: Engine.orderFetchFields(),
+                    fields,
                 }
             );
             const records = response.records || [];
@@ -148,6 +215,15 @@
 
         return all;
 
+    };
+
+    const fetchTodayPaymentAmount = async (today) => {
+        const P = cfg().PAYMENT || {};
+        const records = await fetchAll(Engine.buildTodayPaymentQuery(today), {
+            appId: cfg().STORE_PAYMENT_APP_ID || cfg().APP.storePayment,
+            fields: [P.amountField, P.statusField, P.dateField, P.kindField],
+        });
+        return Engine.sumPaymentAmount(records);
     };
 
     const reload = async (cause) => {
@@ -167,14 +243,52 @@
         paint();
 
         try {
+            const today = Engine.todayYmdJst();
             const records = await fetchAll(Engine.buildLocationQuery(mode));
 
             if (serial !== requestSerial) {
                 return;
             }
 
-            stock = Engine.buildStock(records, { mode, today: Engine.todayYmdJst() });
+            stock = Engine.buildStock(records, { mode, today });
             stock.fetchedAt = new Date();
+
+            if (mode === cfg().MODE.store) {
+                let todayOrderRecords = null;
+                let paymentAmount = null;
+                let paymentFetched = false;
+
+                try {
+                    todayOrderRecords = await fetchAll(Engine.buildTodayStoreOrderQuery(today));
+                } catch (orderError) {
+                    console.error('[floor_portal] today orders', orderError && orderError.message, orderError);
+                    todayOrderRecords = null;
+                }
+
+                try {
+                    paymentAmount = await fetchTodayPaymentAmount(today);
+                    paymentFetched = true;
+                } catch (paymentError) {
+                    console.error('[floor_portal] today payments', paymentError && paymentError.message, paymentError);
+                    paymentAmount = null;
+                    paymentFetched = false;
+                }
+
+                if (serial !== requestSerial) {
+                    return;
+                }
+
+                storeSummary = Engine.buildStoreDailySummary({
+                    todayOrderRecords,
+                    stock,
+                    stockFetched: true,
+                    paymentAmount,
+                    paymentFetched,
+                });
+            } else {
+                storeSummary = null;
+            }
+
             loading = false;
             paint();
         } catch (error) {
@@ -185,6 +299,12 @@
 
             loading = false;
             loadError = error && error.message ? error.message : String(error);
+            if (mode === cfg().MODE.store) {
+                storeSummary = Engine.buildStoreDailySummary({
+                    stockFetched: false,
+                    paymentFetched: false,
+                });
+            }
             console.error('[floor_portal]', error && error.code, error && error.message, error);
             paint();
 
@@ -358,6 +478,7 @@
             + '<button type="button" class="cayan-fp-btn" id="cayan-fp-refresh">' + escapeHtml(ui.refresh) + '</button>'
             + '</div></header>'
             + renderMenuHtml()
+            + renderSummaryHtml()
             + '<section class="cayan-fp-section"><h2>現在状況</h2><div class="cayan-fp-cards" id="cayan-fp-work-cards"></div>'
             + '<p class="cayan-fp-note">' + escapeHtml(note) + '</p></section>'
             + '<section class="cayan-fp-section"><h2>納期</h2><div class="cayan-fp-cards" id="cayan-fp-deadline-cards"></div>'
@@ -419,6 +540,8 @@
         if (list) {
             list.innerHTML = renderTable(rows);
         }
+
+        paintSummary();
 
     };
 
