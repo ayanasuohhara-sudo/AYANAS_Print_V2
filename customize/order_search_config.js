@@ -4,10 +4,10 @@
     /**
      * 受注検索 App88 — 定数。
      * 検索結果は保存しない。正本は App16。
-     * v1.1.0: お客様名ふりがな予測・着物種類・受注日・ページ上限表示。
+     * v1.1.1: ふりがな欄の漢字入力を client_name OR（かな未登録の過去データを救済）。
      */
 
-    const ORDER_SEARCH_VERSION = '1.1.0';
+    const ORDER_SEARCH_VERSION = '1.1.1';
 
     const CAYANAS_ORDER_SEARCH = {
         VERSION: ORDER_SEARCH_VERSION,
@@ -43,7 +43,7 @@
             truncatedMid: ' 件まで表示（取得上限 offset ',
             truncatedSuffix: '）。条件を絞ってください。',
             suggestHint: 'ふりがな入力で候補を表示します（ひらがな・カタカナ同一視）',
-            kanaEmptyNote: 'ふりがな未登録の過去データは、法人コード・着物種類・受注日・管理番号・漢字氏名で探せます。',
+            kanaEmptyNote: 'ふりがな未登録の過去データは、お客様名（漢字）・法人コード・管理番号でも探せます。ふりがな欄に漢字を入れても氏名として検索します。',
             excludeA550: '店舗(A550)を除外',
         },
         FIELDS: {

@@ -120,11 +120,9 @@
         }
 
         if (criteria.clientNameKana) {
-            const kanaToken = kn
-                ? kn.toHiragana(toHalfSafe(criteria.clientNameKana)).replace(/\s+/g, '')
-                : criteria.clientNameKana.replace(/\s+/g, '');
-            // 登録済みかなに部分一致。未登録は他条件で残すため、ここだけで除外しない。
-            parts.push(F.clientNameKana + ' like ' + quote(kanaToken));
+            // ふりがな欄に漢字が入った場合（電話時の誤入力・漢字氏名の代用）は
+            // client_name にも OR して、かな未登録の過去データを落とさない。
+            parts.push(buildKanaClause(F, criteria.clientNameKana, kn));
         }
 
         if (criteria.slipNo) {
@@ -175,9 +173,43 @@
 
     };
 
+    const kanaSearchToken = (raw, kn) => {
+
+        const text = String(raw ?? '');
+
+        if (kn) {
+            return kn.toHiragana(toHalfSafe(text)).replace(/\s+/g, '');
+        }
+
+        return text.replace(/\s+/g, '');
+
+    };
+
+    const isKanjiHeavyKanaInput = (raw, kn) => Boolean(kn && kn.hasKanjiChars(raw));
+
+    /**
+     * かな条件。漢字混じり入力時は client_name を OR（過渡期の未登録救済）。
+     */
+    const buildKanaClause = (F, raw, kn) => {
+
+        const token = kanaSearchToken(raw, kn);
+
+        if (isKanjiHeavyKanaInput(raw, kn)) {
+            return '('
+                + F.clientNameKana + ' like ' + quote(token)
+                + ' or '
+                + F.clientName + ' like ' + quote(String(raw).trim())
+                + ')';
+        }
+
+        return F.clientNameKana + ' like ' + quote(token);
+
+    };
+
     /**
      * サーバクエリ後のクライアント側ふりがな再フィルタ（正規化ゆれ吸収）。
-     * kana 条件が無いときは全件通過。空かなは kana 条件時のみ除外（サーバで既に like 済み）。
+     * kana 条件が無いときは全件通過。
+     * 漢字混じり入力は client_name 一致も残す（空かなの過去データを落とさない）。
      */
     const filterRowsByKana = (rows, criteria) => {
 
@@ -188,7 +220,23 @@
             return list;
         }
 
-        return list.filter((row) => kn.matchesKana(row.clientNameKana, criteria.clientNameKana, 'partial'));
+        const raw = criteria.clientNameKana;
+        const allowKanjiName = isKanjiHeavyKanaInput(raw, kn);
+        const nameNeedle = String(raw).trim();
+
+        return list.filter((row) => {
+
+            if (kn.matchesKana(row.clientNameKana, raw, 'partial')) {
+                return true;
+            }
+
+            if (allowKanjiName && nameNeedle && String(row.clientName || '').indexOf(nameNeedle) !== -1) {
+                return true;
+            }
+
+            return false;
+
+        });
 
     };
 
@@ -454,11 +502,7 @@
             parts.push(F.customerCode + ' != ' + quote(cfg().STORE_CUSTOMER_CODE));
         }
 
-        const kanaToken = kn
-            ? kn.toHiragana(toHalfSafe(criteria.clientNameKana)).replace(/\s+/g, '')
-            : criteria.clientNameKana.replace(/\s+/g, '');
-
-        parts.push(F.clientNameKana + ' like ' + quote(kanaToken));
+        parts.push(buildKanaClause(F, criteria.clientNameKana, kn));
 
         return {
             ok: true,
@@ -476,13 +520,19 @@
 
         const kn = kana();
         const rows = buildRows(records);
+        const allowKanjiName = isKanjiHeavyKanaInput(queryKana, kn);
+        const nameNeedle = String(queryKana || '').trim();
         const filtered = rows.filter((row) => {
 
-            if (!row.clientNameKana) {
-                return false;
+            if (row.clientNameKana && (!kn || kn.matchesKana(row.clientNameKana, queryKana, 'partial'))) {
+                return true;
             }
 
-            return !kn || kn.matchesKana(row.clientNameKana, queryKana, 'partial');
+            if (allowKanjiName && nameNeedle && String(row.clientName || '').indexOf(nameNeedle) !== -1) {
+                return true;
+            }
+
+            return false;
 
         });
 
@@ -494,7 +544,7 @@
             const key = [
                 row.customerCode,
                 row.clientName,
-                kn ? kn.normalizeKanaKey(row.clientNameKana) : row.clientNameKana,
+                kn ? kn.normalizeKanaKey(row.clientNameKana || row.clientName) : (row.clientNameKana || row.clientName),
             ].join('\u0001');
 
             if (!map.has(key)) {
@@ -504,7 +554,7 @@
                     clientName: row.clientName,
                     clientNameKana: row.clientNameKana,
                     clientNameKanaStatus: status,
-                    unconfirmed: status !== cfg().KANA_STATUS.confirmed,
+                    unconfirmed: !row.clientNameKana || status !== cfg().KANA_STATUS.confirmed,
                     kimonoTypes: new Set(),
                     count: 0,
                     latestOrderDate: row.orderDate,

@@ -211,6 +211,28 @@ assert('ふりがなひらがな', kanaHira.indexOf('client_name_kana like "や�
 assert('ふりがなカタカナ同一視クエリ', kanaKata.indexOf('client_name_kana like "やまもときよこ"') !== -1);
 assert('ふりがな空白除去', kanaSpace.indexOf('client_name_kana like "やまもときよこ"') !== -1);
 
+const kanaKanji = queryOf({ customerCode: 'M032', clientNameKana: '宮田節子' });
+
+assert('ふりがな欄漢字はclient_name OR', kanaKanji.indexOf('client_name_kana like "宮田節子"') !== -1
+    && kanaKanji.indexOf('client_name like "宮田節子"') !== -1
+    && kanaKanji.indexOf(' or ') !== -1);
+
+const filteredKanji = E.filterRowsByKana([
+    {
+        clientName: '宮田節子',
+        clientNameKana: '',
+        manageNo: '110226490',
+    },
+    {
+        clientName: '山田',
+        clientNameKana: '',
+        manageNo: 'x',
+    },
+], { clientNameKana: '宮田節子' });
+
+assert('漢字入力時は空かなでも氏名一致を残す', filteredKanji.length === 1
+    && filteredKanji[0].manageNo === '110226490');
+
 const corpKimono = queryOf({
     customerCode: 'M032',
     kimonoType: '訪問着',
