@@ -49,6 +49,7 @@
       F.clientName,
       F.manageNo,
       F.kimonoType,
+      F.kimonoSpec,
       F.detailTable,
       F.deliveryStatus,
       F.processStatus,
@@ -124,13 +125,18 @@
       requirePaid: true,
       unpaidHandoverApproved: false,
     });
+    const kimonoType = E.readValue(order, F.kimonoType);
+    const kimonoSpec = F.kimonoSpec ? E.readValue(order, F.kimonoSpec) : '';
+    const productName = [kimonoType, kimonoSpec].filter(Boolean).join('　');
     return {
       orderRecordId: String((order.$id && order.$id.value) || ''),
       revision: String((order.$revision && order.$revision.value) || ''),
       manageNo: E.readValue(order, F.manageNo),
       personalCustomerId: E.readValue(order, F.personalCustomerId),
       clientName: E.readValue(order, F.clientName),
-      kimonoType: E.readValue(order, F.kimonoType),
+      productName: productName,
+      kimonoType: kimonoType,
+      kimonoSpec: kimonoSpec,
       itemNames: E.joinItemNames(order),
       processStatus: E.readValue(order, F.processStatus),
       locationStatus: E.readValue(order, F.locationStatus),
@@ -138,6 +144,7 @@
       deliveryNo: E.readValue(order, F.deliveryNo),
       balance: balance,
       paymentState: balance.state,
+      unpaidBalance: balance.balance,
       paid: balance.balance <= 0.0001,
       pickupGate: gate,
       canComplete: !!(gate.ok && !gate.alreadyDone && balance.balance <= 0.0001),

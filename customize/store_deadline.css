@@ -423,6 +423,12 @@ body.ayanas-store-deadline-active .gaia-argoui-app-index-pager {
   font-weight: 700;
 }
 
+.cayan-sd-pickup__num {
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
 .cayan-sd-pickup__ok {
   color: #166534;
   font-weight: 700;

@@ -717,6 +717,23 @@
 
     });
 
+    window.CAYANAS_StoreDeadlineDesktop = {
+        reloadCurrent: (options) => {
+            const opts = options || {};
+            const today = Engine.todayParts(new Date());
+            const year = viewYear || today.year;
+            const month = viewMonth || today.month;
+            const ymd = selectedYmd || today.ymd;
+            const preferKpi = opts.preferKpi || selectedKpi || '';
+            return loadMonth(year, month, ymd).then(() => {
+                if (preferKpi) {
+                    selectedKpi = preferKpi;
+                    paint();
+                }
+            });
+        },
+    };
+
     kintone.events.on('app.record.index.hide', (event) => {
 
         requestSerial += 1;

@@ -457,7 +457,7 @@
     if (errors.length) {
       setMessage('引き取り完了 ' + okCount + ' 件。失敗:\n' + errors.join('\n'), true);
     } else {
-      setMessage('引き取り完了: ' + okCount + ' 件（delivery_status=納品済）。App92 納品待ち在庫からも除外されます。', false);
+      setMessage('引き取り完了: ' + okCount + ' 件（delivery_status=納品済）。App92 引き取り待ち在庫からも除外されます。', false);
     }
     await applyLoadResult(await Api.loadByPersonalCustomerId(state.personalCustomerId));
   });

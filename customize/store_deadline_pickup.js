@@ -75,15 +75,13 @@
         '<tr>'
         + '<td>' + escapeHtml(row.manageNo) + '</td>'
         + '<td>' + escapeHtml(row.clientName) + '</td>'
-        + '<td>' + escapeHtml(row.kimonoType) + '</td>'
-        + '<td>' + escapeHtml(row.itemNames) + '</td>'
-        + '<td>' + escapeHtml(row.deliveryStatus) + '</td>'
-        + '<td>' + escapeHtml(row.paymentState)
-        + '（残 ' + yen(row.balance && row.balance.balance) + '）</td>'
-        + '<td>' + (row.canComplete
-          ? '<span class="cayan-sd-pickup__ok">可</span>'
-          : '<span class="cayan-sd-pickup__ng">不可</span>')
-        + '</td>'
+        + '<td>' + escapeHtml(row.productName || row.kimonoType || '—') + '</td>'
+        + '<td>' + escapeHtml(row.kimonoType || '—') + '</td>'
+        + '<td>' + escapeHtml(row.itemNames || '—') + '</td>'
+        + '<td>' + escapeHtml(row.paymentState || '—') + '</td>'
+        + '<td class="cayan-sd-pickup__num">' + yen(row.unpaidBalance != null
+          ? row.unpaidBalance
+          : (row.balance && row.balance.balance)) + '</td>'
         + '<td><button type="button" class="cayan-sd-btn cayan-sd-pickup__remove" data-id="'
         + escapeHtml(row.orderRecordId) + '">削除</button></td>'
         + '</tr>'
@@ -119,12 +117,12 @@
         : '')
       + '<div class="cayan-sd-pickup__table-wrap"><table class="cayan-sd-pickup__table">'
       + '<thead><tr>'
-      + '<th>管理番号</th><th>お客様</th><th>着物種類</th><th>加工内容</th>'
-      + '<th>納品状態</th><th>入金</th><th>引き取り</th><th></th>'
+      + '<th>管理番号</th><th>お客様氏名</th><th>商品名</th><th>着物種類名</th>'
+      + '<th>加工内容</th><th>入金状況</th><th>未入金残額</th><th></th>'
       + '</tr></thead><tbody>' + rows + '</tbody></table></div>'
       + '<div class="cayan-sd-pickup__actions">'
       + '<button type="button" class="cayan-sd-btn is-primary" id="cayan-sd-pickup-complete"'
-      + (canComplete ? '' : ' disabled') + '>選択分を引き取り完了</button>'
+      + (canComplete ? '' : ' disabled') + '>引き取り完了</button>'
       + '<span class="cayan-sd-pickup__count">' + items.length + ' 件</span>'
       + '</div>'
       + (state.message
@@ -293,6 +291,12 @@
     }
     paint();
     focusInput();
+    // 引き取り待ち在庫 KPI を再読込
+    if (okCount > 0
+      && window.CAYANAS_StoreDeadlineDesktop
+      && typeof window.CAYANAS_StoreDeadlineDesktop.reloadCurrent === 'function') {
+      window.CAYANAS_StoreDeadlineDesktop.reloadCurrent({ preferKpi: 'waitingStock' });
+    }
   };
 
   const bindPanel = (panel) => {

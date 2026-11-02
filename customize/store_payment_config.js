@@ -108,6 +108,7 @@
     clientName: 'client_name',
     manageNo: 'manage_no',
     kimonoType: 'kimono_type',
+    kimonoSpec: 'kimono_spec',
     detailTable: 'detail_table',
     detailAmount: 'amount',
     detailItemName: 'item_name',
