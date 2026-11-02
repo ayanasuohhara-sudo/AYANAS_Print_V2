@@ -3,7 +3,7 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.4.1
+     * FLOOR_PORTAL_VERSION: 1.4.2
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
@@ -17,7 +17,7 @@
      * 文字サイズは工場／店舗で共通（工場相当）。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.4.1';
+    const FLOOR_PORTAL_VERSION = '1.4.2';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
@@ -215,7 +215,7 @@
             dueToday: '今日納期',
             within7: '7日以内',
             thisMonth: '今月納期',
-            shortcutInbound: '社内入庫登録',
+            shortcutInbound: '保管場所移動',
             shortcutWork: '社内作業登録',
             shortcutComplete: '検品・仕上げ完了',
             storeMenuTitle: '店舗メニュー',

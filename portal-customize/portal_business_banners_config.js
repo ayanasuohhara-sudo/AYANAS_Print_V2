@@ -7,12 +7,12 @@
      * App91 / App90 / 共通ナビのファイルは変更しない。
      */
 
-    const PORTAL_BUSINESS_BANNERS_VERSION = '1.0.1';
+    const PORTAL_BUSINESS_BANNERS_VERSION = '1.0.2';
 
     const CAYANAS_PORTAL_BUSINESS_BANNERS = {
         VERSION: PORTAL_BUSINESS_BANNERS_VERSION,
         TITLE: 'AYANAS 業務メニュー',
-        LEAD: '業務内容を選んでください',
+        LEAD: '業務内容を選んでください（店舗専用は店舗ポータルへ）',
         ROOT_ID: 'ayanas-portal-business-banners',
         STYLE_ID: 'ayanas-portal-business-banners-style',
         BUSINESS_MENU_APP_ID: 91,

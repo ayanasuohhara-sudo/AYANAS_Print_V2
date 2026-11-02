@@ -7,7 +7,7 @@
      * FACTORY_MENU_APP_ID が 0 のときは画面を出さない。
      */
 
-    const FACTORY_MENU_VERSION = '1.1.0';
+    const FACTORY_MENU_VERSION = '1.1.1';
 
     const CAYANAS_FACTORY_MENU = {
         VERSION: FACTORY_MENU_VERSION,
@@ -38,12 +38,12 @@
                 items: [
                     { appId: 16, label: '受注登録', icon: 'order', path: 'edit' },
                     { appId: 16, label: '受注明細', icon: 'order' },
-                    { appId: 30, label: '仕上げ完了登録', icon: 'complete' },
-                    { appId: 84, label: '作業状況登録', icon: 'work' },
+                    { appId: 30, label: '検品・仕上げ完了', icon: 'complete' },
+                    { appId: 84, label: '社内作業登録', icon: 'work' },
                     { appId: 78, label: '外注入庫', icon: 'inbound' },
                     { appId: 27, label: '国内外注出庫', icon: 'outsource' },
                     { appId: 74, label: '国内和裁士出庫', icon: 'wasai' },
-                    { appId: 34, label: '社内入庫登録・保管場所移動', icon: 'move' },
+                    { appId: 34, label: '保管場所移動', icon: 'move' },
                 ],
             },
             {

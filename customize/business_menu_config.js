@@ -8,9 +8,11 @@
      * - cat 未指定・不正時は DEFAULT_CATEGORY を表示（エラーにしない）
      * - BUSINESS_MENU_APP_ID が 0 のときは画面を出さない（アプリ作成後に設定）
      * - レコードは保存しない。業務アプリへの遷移のみ
+     * - App85 は載せない。店舗専用（App92/97）は App87 店舗ポータル側
+     * - 表示名は工場／店舗ポータルと揃える（保管場所移動・社内作業登録 など）
      */
 
-    const BUSINESS_MENU_VERSION = '1.0.1';
+    const BUSINESS_MENU_VERSION = '1.1.0';
 
     const CAYANAS_BUSINESS_MENU = {
         VERSION: BUSINESS_MENU_VERSION,
@@ -19,7 +21,7 @@
         BUSINESS_MENU_APP_ID: 91,
 
         TITLE: 'AYANAS 業務メニュー',
-        LEAD: '業務内容からアプリを選んで移動します。',
+        LEAD: '業務内容からアプリを選んで移動します。店舗専用の入金・引き取りは「店舗ポータル（A550）」から。',
         TOP_LABEL: 'AYANAS TOPへ戻る',
         TOP_HASH: '#/portal',
 
@@ -56,11 +58,11 @@
                 icon: 'logistics',
                 mode: 'menu',
                 items: [
+                    { appId: 34, label: '保管場所移動', icon: 'move' },
                     { appId: 27, label: '外注出庫', icon: 'outsource' },
                     { appId: 28, label: '海外外注出庫', icon: 'overseas' },
                     { appId: 74, label: '和裁士出庫', icon: 'wasai' },
                     { appId: 78, label: '外注入庫', icon: 'inbound' },
-                    { appId: 34, label: '社内移動入庫、保管場所登録', icon: 'move' },
                 ],
             },
             {
@@ -84,10 +86,10 @@
                 icon: 'work',
                 mode: 'menu',
                 items: [
-                    { appId: 86, label: '工場作業状況', icon: 'status' },
-                    { appId: 87, label: '店舗作業状況', icon: 'store' },
-                    { appId: 84, label: '作業状況登録', icon: 'work' },
-                    { appId: 30, label: '仕上げ完了登録', icon: 'complete' },
+                    { appId: 86, label: '工場作業状況ポータル', icon: 'status' },
+                    { appId: 87, label: '店舗ポータル（A550）', icon: 'store' },
+                    { appId: 84, label: '社内作業登録', icon: 'work' },
+                    { appId: 30, label: '検品・仕上げ完了', icon: 'complete' },
                 ],
             },
             {
@@ -125,13 +127,13 @@
                 mode: 'menu',
                 items: [
                     { appId: 8, label: '顧客マスタ', icon: 'customer' },
+                    { appId: 96, label: '個人顧客マスタ', icon: 'customer' },
                     { appId: 11, label: '着物種類マスタ', icon: 'kimono' },
                     { appId: 13, label: '商品マスタ', icon: 'product' },
                     { appId: 14, label: '価格マスタ', icon: 'price' },
                     { appId: 23, label: '外注加工マスタ', icon: 'process' },
                     { appId: 26, label: '外注先マスタ', icon: 'vendor' },
                     { appId: 73, label: '和裁士マスタ', icon: 'wasai' },
-                    /* 店舗顧客マスタはアプリ完成後にここに追加 */
                 ],
             },
         ],
