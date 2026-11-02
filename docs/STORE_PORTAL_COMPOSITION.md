@@ -3,10 +3,10 @@
 - **作成**: 2026-11-02（Asia/Tokyo）／実装報告: 2026-11-03
 - **対象アプリ**: App87「店舗作業状況ポータル」
 - **方針**: App85 は追加しない。App84 を作業メニューに配置。既存アプリの処理ロジックは変更しない
-- **実装版（ローカル最新）**: floor_portal **v1.6.0**（App88 追加・メニュー再編・強調ボタン・失敗表示「—」）
-- **本番反映版**: **v1.4.0**（App86/App87 SUCCESS／ACL は既存のまま）※v1.6.0 は承認後
+- **実装版／本番反映版**: floor_portal **v1.6.0**（App88 追加・メニュー再編・強調ボタン・失敗表示「—」／App86・87 公開済）
+- **ACL**: 既存のまま（本反映では変更なし）
 - **実装報告**: `docs/STORE_PORTAL_IMPLEMENTATION_REPORT.md`／`docs/STORE_PORTAL_DEDICATED_V160_REPORT.md`
-- **本番反映報告**: `docs/STORE_PORTAL_PROD_RELEASE_REPORT.md`
+- **本番反映報告**: `docs/STORE_PORTAL_PROD_RELEASE_REPORT.md`／`docs/STORE_PORTAL_V160_PROD_RELEASE_REPORT.md`
 
 関連: `docs/APP85_VS_APP84_INVESTIGATION.md`
 
