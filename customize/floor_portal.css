@@ -46,7 +46,9 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 
 .cayan-fp-links,
 .cayan-fp-tools,
-.cayan-fp-cards {
+.cayan-fp-cards,
+.cayan-fp-menu__groups,
+.cayan-fp-menu-group__links {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -54,8 +56,74 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 
 .cayan-fp-links,
 .cayan-fp-section,
-.cayan-fp-tools {
+.cayan-fp-tools,
+.cayan-fp-menu {
   margin-bottom: 14px;
+}
+
+.cayan-fp-menu {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+}
+
+.cayan-fp-menu__title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.cayan-fp-menu__groups {
+  align-items: stretch;
+  gap: 12px;
+}
+
+.cayan-fp-menu-group {
+  flex: 1 1 220px;
+  min-width: 200px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.cayan-fp-menu-group__title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+  letter-spacing: 0.02em;
+}
+
+.cayan-fp-menu-group__links {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cayan-fp-btn--menu {
+  width: 100%;
+  min-height: 52px;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cayan-fp-menu__label {
+  flex: 1 1 auto;
+}
+
+.cayan-fp-menu__note {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .cayan-fp-section h2 {
@@ -208,7 +276,30 @@ body.ayanas-floor-portal-active .gaia-argoui-app-index-pager {
 }
 
 @media (max-width: 900px) {
+  .cayan-fp-root {
+    padding: 10px 12px 28px;
+  }
+
+  .cayan-fp-title {
+    font-size: 22px;
+  }
+
   .cayan-fp-card {
     flex: 1 1 140px;
+    min-height: 64px;
+  }
+
+  .cayan-fp-menu-group {
+    flex: 1 1 100%;
+  }
+
+  .cayan-fp-btn--menu {
+    min-height: 56px;
+    font-size: 17px;
+  }
+
+  .cayan-fp-search {
+    flex: 1 1 100%;
+    font-size: 18px;
   }
 }

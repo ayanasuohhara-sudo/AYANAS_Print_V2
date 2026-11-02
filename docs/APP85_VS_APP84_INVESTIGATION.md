@@ -82,6 +82,8 @@
 
 将来 App85 相当を復活させる場合は、新 App ID・ACL・`store_work_*` の現行 9 値追随・ポータル追加を **別承認**で行うこと。
 
+店舗ポータル構成の確定案: `docs/STORE_PORTAL_COMPOSITION.md`（App85 非掲載・App84 を作業メニューへ）。
+
 ---
 
 ## 5. 参照

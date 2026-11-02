@@ -46,6 +46,60 @@
 
     const appUrl = (appId) => location.origin + '/k/' + appId + '/';
 
+    const resolveAppId = (appKey) => {
+        const app = cfg().APP || {};
+        const id = app[appKey];
+        return typeof id === 'number' && id > 0 ? id : 0;
+    };
+
+    /** 店舗: グループ化メニュー。工場: 従来の3ショートカット。App85 は載せない。 */
+    const renderMenuHtml = () => {
+        const ui = cfg().UI;
+        const app = cfg().APP;
+
+        if (mode !== cfg().MODE.store) {
+            return ''
+                + '<nav class="cayan-fp-links" aria-label="工場ショートカット">'
+                + '<a class="cayan-fp-btn" href="' + escapeHtml(appUrl(app.locationInbound)) + '" target="_blank" rel="noopener">' + escapeHtml(ui.shortcutInbound) + '</a>'
+                + '<a class="cayan-fp-btn" href="' + escapeHtml(appUrl(app.internalWork)) + '" target="_blank" rel="noopener">' + escapeHtml(ui.shortcutWork) + '</a>'
+                + '<a class="cayan-fp-btn" href="' + escapeHtml(appUrl(app.completeRegister)) + '" target="_blank" rel="noopener">' + escapeHtml(ui.shortcutComplete) + '</a>'
+                + '</nav>';
+        }
+
+        const groups = Array.isArray(cfg().STORE_MENU_GROUPS) ? cfg().STORE_MENU_GROUPS : [];
+        const groupsHtml = groups.map((group) => {
+            const links = (group.links || []).map((link) => {
+                const id = resolveAppId(link.appKey);
+                if (!id) {
+                    return '';
+                }
+                const note = link.note
+                    ? '<span class="cayan-fp-menu__note">' + escapeHtml(link.note) + '</span>'
+                    : '';
+                return ''
+                    + '<a class="cayan-fp-btn cayan-fp-btn--menu" href="'
+                    + escapeHtml(appUrl(id))
+                    + '" target="_blank" rel="noopener">'
+                    + '<span class="cayan-fp-menu__label">' + escapeHtml(link.label) + '</span>'
+                    + note
+                    + '</a>';
+            }).join('');
+
+            return ''
+                + '<div class="cayan-fp-menu-group" data-menu-group="' + escapeHtml(group.id || '') + '">'
+                + '<h3 class="cayan-fp-menu-group__title">' + escapeHtml(group.label || '') + '</h3>'
+                + '<div class="cayan-fp-menu-group__links">' + links + '</div>'
+                + '</div>';
+        }).join('');
+
+        return ''
+            + '<section class="cayan-fp-menu" aria-label="' + escapeHtml(ui.storeMenuTitle || '店舗メニュー') + '">'
+            + '<h2 class="cayan-fp-menu__title">' + escapeHtml(ui.storeMenuTitle || '店舗メニュー') + '</h2>'
+            + '<p class="cayan-fp-note">' + escapeHtml(ui.storeMenuLead || '') + '</p>'
+            + '<div class="cayan-fp-menu__groups">' + groupsHtml + '</div>'
+            + '</section>';
+    };
+
     const visibleRows = () => {
 
         if (!stock) {
@@ -294,7 +348,6 @@
         const ui = cfg().UI;
         const title = mode === cfg().MODE.store ? ui.storeTitle : ui.factoryTitle;
         const note = mode === cfg().MODE.store ? ui.storeWaitingNote : ui.factoryOtherNote;
-        const app = cfg().APP;
 
         root.dataset.shell = '1';
         root.innerHTML = ''
@@ -304,11 +357,7 @@
             + '<span class="cayan-fp-updated" id="cayan-fp-updated"></span>'
             + '<button type="button" class="cayan-fp-btn" id="cayan-fp-refresh">' + escapeHtml(ui.refresh) + '</button>'
             + '</div></header>'
-            + '<nav class="cayan-fp-links">'
-            + '<a class="cayan-fp-btn" href="' + escapeHtml(appUrl(app.locationInbound)) + '" target="_blank" rel="noopener">' + escapeHtml(ui.shortcutInbound) + '</a>'
-            + '<a class="cayan-fp-btn" href="' + escapeHtml(appUrl(app.internalWork)) + '" target="_blank" rel="noopener">' + escapeHtml(ui.shortcutWork) + '</a>'
-            + '<a class="cayan-fp-btn" href="' + escapeHtml(appUrl(app.completeRegister)) + '" target="_blank" rel="noopener">' + escapeHtml(ui.shortcutComplete) + '</a>'
-            + '</nav>'
+            + renderMenuHtml()
             + '<section class="cayan-fp-section"><h2>現在状況</h2><div class="cayan-fp-cards" id="cayan-fp-work-cards"></div>'
             + '<p class="cayan-fp-note">' + escapeHtml(note) + '</p></section>'
             + '<section class="cayan-fp-section"><h2>納期</h2><div class="cayan-fp-cards" id="cayan-fp-deadline-cards"></div>'

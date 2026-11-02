@@ -199,6 +199,13 @@ const run = () => {
     assert('更新間隔は2分', C.REFRESH_INTERVAL_MS === 120000);
     assert('App IDは設定に集約', C.APP.factoryPortal === 86 && C.APP.storePortal === 87
         && C.APP.locationInbound === 34 && C.APP.internalWork === 84 && C.APP.completeRegister === 30);
+    const storeMenuAppKeys = (C.STORE_MENU_GROUPS || []).flatMap((g) => (g.links || []).map((l) => l.appKey));
+    const storeMenuAppIds = storeMenuAppKeys.map((k) => C.APP[k]);
+    assert('店舗メニューに App84 作業を含む', storeMenuAppKeys.indexOf('internalWork') >= 0 && C.APP.internalWork === 84);
+    assert('店舗メニューに App34/30 を含む', storeMenuAppKeys.indexOf('locationInbound') >= 0
+        && storeMenuAppKeys.indexOf('completeRegister') >= 0);
+    assert('店舗メニューに App85 を含めない', storeMenuAppIds.indexOf(85) < 0
+        && storeMenuAppKeys.indexOf('storeWork') < 0);
     assert('保管場所はドロップダウンの in', E.buildLocationQuery('factory') === 'location_status in ("工場") order by レコード番号 asc'
         && E.buildLocationQuery('store') === 'location_status in ("店舗") order by レコード番号 asc');
     assert('カードに未着としみ抜き中', C.FACTORY_WORK_CARDS.indexOf('未着') >= 0

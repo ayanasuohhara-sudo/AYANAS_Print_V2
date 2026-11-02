@@ -3,14 +3,18 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.1.0
+     * FLOOR_PORTAL_VERSION: 1.2.0
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
      * 0 のままでは画面は出ません。
+     *
+     * 店舗ポータル（App87）は A550 業務メニュー。
+     * App85（旧店舗しみ抜き）は削除済のためメニューに含めない。
+     * 作業ステータスは App84（work_status のみ）、場所は App34、完了は App30。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.1.0';
+    const FLOOR_PORTAL_VERSION = '1.2.0';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
@@ -92,6 +96,12 @@
             locationInbound: 34,
             internalWork: 84,
             completeRegister: 30,
+            /** A550 店舗メニュー用（App85 は載せない） */
+            personalCustomer: 96,
+            order: 16,
+            deliverySlip: 19,
+            storeDeadline: 92,
+            storePayment: 97,
         },
         MODE: {
             factory: 'factory',
@@ -109,6 +119,44 @@
             fieldCode: 'aggregation_status',
             cancelled: '取消',
         },
+        /**
+         * 店舗ポータル作業メニュー（A550 中心・PC/iPad）。
+         * App85 は意図的に除外。リンク先アプリの処理ロジックは変更しない。
+         */
+        STORE_MENU_GROUPS: [
+            {
+                id: 'reception',
+                label: '受付',
+                links: [
+                    { appKey: 'personalCustomer', label: '個人顧客マスタ' },
+                    { appKey: 'order', label: '受注登録' },
+                ],
+            },
+            {
+                id: 'work',
+                label: '作業',
+                links: [
+                    { appKey: 'locationInbound', label: '社内入庫登録', note: '場所移動' },
+                    { appKey: 'internalWork', label: '社内作業登録', note: 'work_status のみ' },
+                    { appKey: 'completeRegister', label: '検品・仕上げ完了', note: '工程完了' },
+                ],
+            },
+            {
+                id: 'delivery',
+                label: '納品・在庫',
+                links: [
+                    { appKey: 'deliverySlip', label: '納品書作成' },
+                    { appKey: 'storeDeadline', label: '納期・引き取り在庫' },
+                ],
+            },
+            {
+                id: 'payment',
+                label: '会計・引き取り',
+                links: [
+                    { appKey: 'storePayment', label: '店舗入金管理' },
+                ],
+            },
+        ],
         WORK,
         /** 正規化後もカード外に残る旧値（修理・直し中など） */
         LEGACY_WORK: ['修理・直し中'],
@@ -138,7 +186,7 @@
         },
         UI: {
             factoryTitle: '工場 作業状況',
-            storeTitle: '店舗 作業状況',
+            storeTitle: '店舗ポータル（A550）',
             refresh: '更新',
             clearFilters: '絞り込み解除',
             searchPlaceholder: '管理番号・顧客名・お客様名',
@@ -153,8 +201,10 @@
             shortcutInbound: '社内入庫登録',
             shortcutWork: '社内作業登録',
             shortcutComplete: '検品・仕上げ完了',
+            storeMenuTitle: '店舗メニュー',
+            storeMenuLead: 'A550 の受付〜作業〜納品〜会計。場所移動は入庫、作業状況は社内作業登録、工程完了は仕上げ完了を使います。',
             factoryOtherNote: '上の作業カード以外、旧値、空欄は「その他」です。移行中の旧ラベルは正本カードに合算します。',
-            storeWaitingNote: '納品待ちは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',
+            storeWaitingNote: '店舗現物の作業状況です。納品待ちカードは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',
             loading: '読み込み中…',
             errorPrefix: '取得に失敗しました。',
             empty: '該当する商品はありません。',
