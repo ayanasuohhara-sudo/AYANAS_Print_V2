@@ -1,0 +1,38 @@
+{
+  "app88": {
+    "ver": "1.1.0",
+    "kanaVer": "1.0.0",
+    "hasKanaInput": true,
+    "hasExcludeA550": true,
+    "hasKimono": true,
+    "title": "受注検索"
+  },
+  "app16": {
+    "kanaVer": "1.0.0",
+    "normalizeVer": "1.0.0",
+    "hasPanel": true,
+    "hasKanaField": true,
+    "fieldCodes": null,
+    "panelText": "お客様名ふりがな",
+    "note": "電話問い合わせ用。読み候補はスタッフが確認してから確定してください。同姓同名は統合しません。",
+    "kanaInputEnabled": true
+  },
+  "app16fields": {
+    "client_name_kana": {
+      "label": "お客様名ふりがな",
+      "type": "SINGLE_LINE_TEXT"
+    },
+    "client_name_kana_status": {
+      "label": "ふりがな確認状態",
+      "options": [
+        "確認済",
+        "不明",
+        "未確認"
+      ]
+    }
+  },
+  "kanaQuery": {
+    "ok": true,
+    "totalCount": 0
+  }
+}
