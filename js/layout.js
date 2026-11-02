@@ -221,6 +221,26 @@
     });
 
     registerReport({
+        reportType: 'store_order',
+        title: '店舗受注表',
+        templatePath: 'js/templates/store_order.js',
+        templateGlobal: 'StoreOrderTemplate',
+        pageClass: 'report-store-order',
+        barcodeField: 'manage_no',
+        paperSize: 'A4',
+        orientation: 'portrait',
+        buttonLabel: '店舗受注表',
+        // appIds は付けない（App16 既定帳票を上書きしない。ボタンから reportType 指定）
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '1',
+            page_margin: '0',
+            print_orientation: 'portrait',
+        },
+        definition: {},
+    });
+
+    registerReport({
         reportType: 'overseas_order',
         title: '海外用受注表',
         templatePath: 'js/templates/overseas_order.js',
@@ -271,6 +291,25 @@
         configDefaults: {
             barcode_type: 'CODE39',
             barcode_visible: '0',
+        },
+        definition: DeliveryDefinition,
+    });
+
+    registerReport({
+        reportType: 'store_delivery',
+        title: '店舗納品書',
+        templatePath: 'js/templates/store_delivery.js',
+        templateGlobal: 'StoreDeliveryTemplate',
+        pageClass: 'report-store-delivery',
+        barcodeField: 'barcode_manage_no',
+        paperSize: 'A4',
+        orientation: 'portrait',
+        buttonLabel: '店舗納品書',
+        company: { ...DEFAULT_COMPANY },
+        configDefaults: {
+            barcode_type: 'CODE39',
+            barcode_visible: '0',
+            print_orientation: 'portrait',
         },
         definition: DeliveryDefinition,
     });

@@ -202,6 +202,21 @@
       const appRecord = kintone.app.record.get();
       const record = appRecord.record;
 
+      // 店舗同一PCM拘束（法人は従来どおり）
+      const Pcm = window.CAYANAS_StoreDeliveryPcm;
+      if (Pcm && typeof Pcm.evaluateScan === 'function') {
+        const gate = Pcm.evaluateScan(order, record);
+        if (!gate.ok) {
+          alert(gate.reason || '追加できません');
+          record.barcode_input.value = '';
+          kintone.app.record.set(appRecord);
+          return;
+        }
+        if (gate.setContext) {
+          Pcm.applyContextFromOrder(order);
+        }
+      }
+
       if (!record.customer_code.value) {
         record.customer_code.value = order.customer_code.value || '';
         record.customer_name.value = order.customer_name.value || '';
@@ -231,6 +246,10 @@
 
       record.barcode_input.value = '';
       kintone.app.record.set(appRecord);
+
+      if (Pcm && typeof Pcm.ensureBanner === 'function') {
+        Pcm.ensureBanner(Pcm.isStoreHeader(record) || !String(record.customer_code.value || '').trim());
+      }
 
       if (
         window.CAYANAS_priceMasterRegister

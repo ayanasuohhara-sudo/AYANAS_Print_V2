@@ -1,0 +1,68 @@
+<!DOCTYPE html><html><head><title>店舗受注表</title></head><body class="report-store_order">
+<div class="page store-order-page">
+  <header class="store-order-header">
+    <div class="store-order-header__left">
+      <p class="store-order-eyebrow">A550 店舗</p>
+      <h1 class="store-order-title">店舗受注表</h1>
+      <p class="store-order-manage">管理番号：<strong>PKTEST1</strong></p>
+    </div>
+    <div class="store-order-header__right">
+      <div class="store-order-barcode">
+        <svg class="barcode"></svg>
+        <p class="store-order-barcode__value">PKTEST1</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="store-order-section">
+    <h2 class="store-order-section__title">お客様</h2>
+    <dl class="store-order-dl">
+      <div><dt>お名前</dt><dd>山田花子 様</dd></div>
+      <div><dt>PCM</dt><dd>P000002</dd></div>
+      <div><dt>電話</dt><dd>—</dd></div>
+      <div><dt>顧客コード</dt><dd>A550</dd></div>
+    </dl>
+  </section>
+
+  <section class="store-order-section">
+    <h2 class="store-order-section__title">商品・納期</h2>
+    <dl class="store-order-dl">
+      <div><dt>着物種類</dt><dd>小紋</dd></div>
+      <div><dt>仕様</dt><dd>袷</dd></div>
+      <div><dt>納期</dt><dd>2026-11-10</dd></div>
+      <div><dt>受注日</dt><dd>2026-11-01</dd></div>
+    </dl>
+  </section>
+
+  <section class="store-order-section">
+    <h2 class="store-order-section__title">加工内容</h2>
+    <ul class="store-order-processing"><li><span class="store-order-processing__name">丸洗い</span><span class="store-order-processing__amount">3,000</span></li><li><span class="store-order-processing__name">しみぬき</span><span class="store-order-processing__amount">2,000</span></li></ul>
+  </section>
+
+  <section class="store-order-section store-order-section--payment">
+    <h2 class="store-order-section__title">入金状況（App97・印刷時点）</h2>
+    <p class="store-order-payment-state is-paid">入金済</p>
+    <table class="store-order-payment-table">
+      <thead>
+        <tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>5,000</td>
+          <td>500</td>
+          <td>5,500</td>
+          <td>5,500</td>
+          <td>0</td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </section>
+
+  <footer class="store-order-footer">
+    <p>作業・保管・引き取り管理用（印刷のみ・状態は更新しません）</p>
+    <div class="store-order-checks">
+      <span>□ 受付</span><span>□ 作業中</span><span>□ 店舗保管</span><span>□ 引取済</span>
+    </div>
+  </footer>
+</div></body></html>

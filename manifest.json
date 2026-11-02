@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 144,
+  "version": 145,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 144（desktop初期化修正）",
-    "en": "AYANAS Print Plugin V144 (fix desktop init)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 145（店舗受注表・店舗納品書）",
+    "en": "AYANAS Print Plugin V145 (store order / store delivery)"
   },
   "desktop": {
     "js": [
@@ -25,6 +25,9 @@
       "js/templates/order.js",
       "js/templates/order_detail_shared.js",
       "js/templates/order_detail.js",
+      "js/store_print_payment.js",
+      "js/templates/store_order.js",
+      "js/templates/store_delivery.js",
       "js/templates/outsource_outbound_slip_shared.js",
       "js/templates/outsource_outbound_slip.js",
       "js/templates/overseas_order.js",

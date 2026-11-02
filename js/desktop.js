@@ -42,9 +42,9 @@
 
 
 
-    const PLUGIN_VERSION = '144';
+    const PLUGIN_VERSION = '145';
 
-
+    const STORE_CUSTOMER_CODE = 'A550';
 
     const BUTTON_ID = 'ayanas-print-button';
 
@@ -56,11 +56,38 @@
 
     const MATSUBA_DELIVERY_BUTTON_LABEL = '松葉店用 納品書';
 
+    const STORE_DELIVERY_BUTTON_ID = 'ayanas-print-button-delivery-store';
+
+    const STORE_DELIVERY_BUTTON_LABEL = '店舗納品書';
+
+    const STORE_ORDER_BUTTON_ID = 'ayanas-print-button-store-order';
+
+    const STORE_ORDER_BUTTON_LABEL = '店舗受注表';
+
     const GENERAL_INVOICE_BUTTON_ID = 'ayanas-print-button-invoice-general';
 
     const GENERAL_INVOICE_BUTTON_LABEL = '一般客 請求書';
 
     const BUTTON_CLASS = 'ayanas-print-button';
+
+    const readRecordField = (record, code) => {
+        const field = record && record[code];
+        if (!field || field.value === null || field.value === undefined) {
+            return '';
+        }
+        return String(field.value).trim();
+    };
+
+    const getCurrentCustomerCode = () => {
+        try {
+            const record = kintone.app.record.get()?.record;
+            return readRecordField(record, 'customer_code');
+        } catch (error) {
+            return '';
+        }
+    };
+
+    const isStoreCustomerRecord = () => getCurrentCustomerCode() === STORE_CUSTOMER_CODE;
 
 
 
@@ -325,9 +352,20 @@
 
 
 
+        const reportType = resolvePrintReportType(printOptions);
         const data = await Record.get();
+        const currentRecord = kintone.app.record.get()?.record;
 
-
+        // 店舗帳票: 印刷直前に App96/App97 を参照（更新しない）
+        if (reportType === 'store_order' || reportType === 'store_delivery') {
+            if (typeof StorePrintPayment === 'undefined') {
+                throw new Error('StorePrintPayment が未読込です。');
+            }
+            if (reportType === 'store_order') {
+                return StorePrintPayment.enrichStoreOrderData(data, currentRecord);
+            }
+            return StorePrintPayment.enrichStoreDeliveryData(data);
+        }
 
         if (printOptions.recipientMode !== 'general') {
 
@@ -644,6 +682,22 @@
             }));
         }
 
+        // A550 のみ店舗受注表（法人用ボタンは変更しない）
+        const storeBtn = document.getElementById(STORE_ORDER_BUTTON_ID);
+        if (isStoreCustomerRecord()) {
+            if (!storeBtn) {
+                space.appendChild(createPrintButton({
+                    id: STORE_ORDER_BUTTON_ID,
+                    label: STORE_ORDER_BUTTON_LABEL,
+                    printOptions: {
+                        reportType: 'store_order',
+                    },
+                }));
+            }
+        } else if (storeBtn) {
+            storeBtn.remove();
+        }
+
     };
 
     const appendDeliveryPrintButtons = (space) => {
@@ -690,6 +744,21 @@
                     reportType: 'delivery_matsuba',
                 },
             }));
+        }
+
+        const storeDeliveryBtn = document.getElementById(STORE_DELIVERY_BUTTON_ID);
+        if (isStoreCustomerRecord()) {
+            if (!storeDeliveryBtn) {
+                space.appendChild(createPrintButton({
+                    id: STORE_DELIVERY_BUTTON_ID,
+                    label: STORE_DELIVERY_BUTTON_LABEL,
+                    printOptions: {
+                        reportType: 'store_delivery',
+                    },
+                }));
+            }
+        } else if (storeDeliveryBtn) {
+            storeDeliveryBtn.remove();
         }
 
     };

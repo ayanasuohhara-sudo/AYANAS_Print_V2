@@ -78,6 +78,9 @@
         'js/templates/order.js',
         'js/templates/order_detail_shared.js',
         'js/templates/order_detail.js',
+        'js/store_print_payment.js',
+        'js/templates/store_order.js',
+        'js/templates/store_delivery.js',
         'js/templates/outsource_outbound_slip_shared.js',
         'js/templates/outsource_outbound_slip.js',
         'js/templates/overseas_order.js',
@@ -416,7 +419,8 @@
         if (layout.reportType === 'order_detail'
             || layout.reportType === 'overseas_order'
             || layout.reportType === 'outsource_outbound_slip'
-            || layout.reportType === 'wasai_outbound_slip') {
+            || layout.reportType === 'wasai_outbound_slip'
+            || layout.reportType === 'store_order') {
             return {
                 barcode_type: barcodeType,
                 format: barcodeType,
@@ -551,10 +555,17 @@ ${buildButtonScriptBody()}
 
         if (layout.reportType === 'delivery'
             || layout.reportType === 'delivery_matsuba'
+            || layout.reportType === 'store_delivery'
+            || layout.reportType === 'store_order'
             || layout.reportType === 'invoice'
             || layout.reportType === 'matsuba_summary_invoice') {
             previewConfig.print_orientation = 'portrait';
             previewConfig.paper_size = 'A4';
+        }
+
+        if (layout.reportType === 'store_order') {
+            previewConfig.barcode_visible = '1';
+            previewConfig.page_margin = '0';
         }
 
         if (layout.reportType === 'order_detail'
@@ -594,6 +605,8 @@ ${buildButtonScriptBody()}
 
         if (layout.reportType === 'delivery'
             || layout.reportType === 'delivery_matsuba'
+            || layout.reportType === 'store_delivery'
+            || layout.reportType === 'store_order'
             || layout.reportType === 'invoice'
             || layout.reportType === 'matsuba_summary_invoice') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');

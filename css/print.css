@@ -3575,3 +3575,210 @@ body {
     text-align: left;
     width: 9em;
 }
+
+/* ===== 店舗受注表 / 店舗納品書 (A550) ===== */
+.report-store-order .page,
+.report-store-delivery .page {
+    box-sizing: border-box;
+    padding: 12mm 12mm 10mm;
+    color: #111;
+    font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+}
+
+.store-order-eyebrow,
+.store-delivery-eyebrow {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #475569;
+}
+
+.store-order-title,
+.store-delivery-title {
+    margin: 4px 0 8px;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.store-order-header,
+.store-delivery-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+    border-bottom: 2px solid #111;
+    padding-bottom: 10px;
+}
+
+.store-order-manage {
+    margin: 0;
+    font-size: 16px;
+}
+
+.store-order-barcode__value,
+.store-delivery-page {
+    margin: 4px 0 0;
+    font-size: 12px;
+    text-align: center;
+}
+
+.store-order-section {
+    margin-bottom: 14px;
+}
+
+.store-order-section__title {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 800;
+    border-left: 4px solid #111;
+    padding-left: 8px;
+}
+
+.store-order-dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 16px;
+    margin: 0;
+}
+
+.store-order-dl > div {
+    display: grid;
+    grid-template-columns: 6em 1fr;
+    gap: 6px;
+}
+
+.store-order-dl dt {
+    margin: 0;
+    font-weight: 700;
+    color: #334155;
+}
+
+.store-order-dl dd {
+    margin: 0;
+}
+
+.store-order-processing {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.store-order-processing li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.store-order-payment-state {
+    display: inline-block;
+    margin: 0 0 8px;
+    padding: 4px 10px;
+    font-size: 18px;
+    font-weight: 800;
+    border: 2px solid #111;
+}
+
+.store-order-payment-state.is-paid,
+.store-delivery-pay.is-paid,
+.store-delivery-summary .is-paid {
+    color: #166534;
+    border-color: #166534;
+}
+
+.store-order-payment-state.is-partial,
+.store-delivery-pay.is-partial,
+.store-delivery-summary .is-partial {
+    color: #9a3412;
+    border-color: #9a3412;
+}
+
+.store-order-payment-state.is-unpaid,
+.store-delivery-pay.is-unpaid,
+.store-delivery-summary .is-unpaid {
+    color: #9f1239;
+    border-color: #9f1239;
+}
+
+.store-order-payment-table,
+.store-delivery-table,
+.store-delivery-summary {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.store-order-payment-table th,
+.store-order-payment-table td,
+.store-delivery-table th,
+.store-delivery-table td,
+.store-delivery-summary th,
+.store-delivery-summary td {
+    border: 1px solid #334155;
+    padding: 6px 8px;
+    vertical-align: top;
+}
+
+.store-order-payment-table th,
+.store-delivery-table th,
+.store-delivery-summary th {
+    background: #e2e8f0;
+    font-weight: 700;
+}
+
+.store-order-note,
+.store-delivery-note {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: #475569;
+}
+
+.store-order-footer {
+    margin-top: 18px;
+    border-top: 1px solid #94a3b8;
+    padding-top: 10px;
+    font-size: 12px;
+}
+
+.store-order-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.store-delivery-customer {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.store-delivery-pcm {
+    margin: 4px 0 0;
+    font-size: 13px;
+}
+
+.store-delivery-sub {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.store-delivery-table .num,
+.store-delivery-summary .num,
+.store-order-payment-table td {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.store-delivery-footer {
+    margin-top: 12px;
+}
+
+.store-delivery-pay {
+    font-weight: 800;
+    text-align: center;
+}
