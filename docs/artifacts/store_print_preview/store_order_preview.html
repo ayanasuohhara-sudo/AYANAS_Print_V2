@@ -1,78 +1,123 @@
 <!DOCTYPE html><html><head><title>店舗受注表</title></head><body class="report-store_order">
-<div class="page store-order-page">
-  <section class="store-order-upper">
-    <header class="store-order-header">
-      <div class="store-order-header__left">
-        <p class="store-order-eyebrow">A550 店舗</p>
-        <h1 class="store-order-title">店舗受注表</h1>
-        <p class="store-order-manage">管理番号：<strong>PKTEST1</strong></p>
-      </div>
-      <div class="store-order-header__right">
-        <div class="store-order-barcode store-order-barcode--upper"><svg class="barcode store-order-barcode__svg" data-barcode-value="PKTEST1"></svg><p class="store-order-barcode__value">PKTEST1</p></div>
-      </div>
-    </header>
+<div class="order-detail-page store-order-page">
+    
+<div class="order-detail-sheet order-detail-sheet--left store-order-sheet">
+    <h1 class="order-detail-title">店舗受注表</h1>
+    
+<table class="order-detail-table">
+    <colgroup>
+        <col class="order-detail-table__col-label-single">
+        <col class="order-detail-table__col-value-single">
+        <col class="order-detail-table__col-label-pair">
+        <col class="order-detail-table__col-value-pair">
+    </colgroup>
+    <tbody>
+        <tr class="order-detail-table__row order-detail-table__row--pair"><th class="order-detail-table__label order-detail-table__label--pair">管理番号</th><td class="order-detail-table__value order-detail-table__value--pair">PKTEST1</td><th class="order-detail-table__label order-detail-table__label--pair">受注日</th><td class="order-detail-table__value order-detail-table__value--pair">2026-11-01</td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--pair"><th class="order-detail-table__label order-detail-table__label--pair">顧客コード</th><td class="order-detail-table__value order-detail-table__value--pair">A550</td><th class="order-detail-table__label order-detail-table__label--pair">納期</th><td class="order-detail-table__value order-detail-table__value--pair">2026-11-10</td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--single"><th class="order-detail-table__label order-detail-table__label--single">顧客名</th><td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap" colspan="3">山田花子 様</td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--single"><th class="order-detail-table__label order-detail-table__label--single">お客様名</th><td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap" colspan="3">山田花子 様</td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--single"><th class="order-detail-table__label order-detail-table__label--single">得意先伝票番号</th><td class="order-detail-table__value order-detail-table__value--single" colspan="3"></td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--single"><th class="order-detail-table__label order-detail-table__label--single">得意先担当・係</th><td class="order-detail-table__value order-detail-table__value--single" colspan="3"></td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--pair"><th class="order-detail-table__label order-detail-table__label--pair">着物種類名</th><td class="order-detail-table__value order-detail-table__value--pair order-detail-table__value--wrap">小紋</td><th class="order-detail-table__label order-detail-table__label--pair">着物仕様</th><td class="order-detail-table__value order-detail-table__value--pair order-detail-table__value--wrap">袷</td></tr>
+        
 
-    <section class="store-order-section store-order-section--compact">
-      <h2 class="store-order-section__title">作業指示・現物管理</h2>
-      <dl class="store-order-dl">
-        <div><dt>お客様氏名</dt><dd>山田花子 様</dd></div>
-        <div><dt>商品名</dt><dd>丸洗い / しみぬき</dd></div>
-        <div><dt>着物種類名</dt><dd>小紋</dd></div>
-        <div><dt>着物仕様</dt><dd>袷</dd></div>
-        <div><dt>受注日</dt><dd>2026-11-01</dd></div>
-        <div><dt>納期</dt><dd>2026-11-10</dd></div>
-      </dl>
-    </section>
+        <tr class="order-detail-table__row order-detail-table__row--single">
+            <th class="order-detail-table__label order-detail-table__label--single">加工内容</th>
+            <td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap order-detail-table__value--multiline" colspan="3"><div class="order-detail-processing-line"><span class="order-detail-processing-line__name">丸洗い</span><span class="order-detail-processing-line__price">3,000</span></div><div class="order-detail-processing-line"><span class="order-detail-processing-line__name">しみぬき</span><span class="order-detail-processing-line__price">2,000</span></div></td>
+        </tr>
+        
+    </tbody>
+</table>
+    <div class="store-order-payment"><div class="store-order-payment__head"><span class="store-order-payment__label">入金状態</span><span class="store-order-payment__state is-paid">入金済</span></div><table class="store-order-payment-table"><thead><tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr></thead><tbody><tr><td>5,000</td><td>500</td><td>5,500</td><td>5,500</td><td>0</td></tr></tbody></table></div>
+    <div class="store-order-checks"><p class="store-order-checks__label">作業チェック</p><div class="store-order-checks__items"><span>□ 下洗い済み</span><span>□ しみ抜き済み</span><span>□ 修理済み</span></div></div>
+    
+<div class="order-detail-barcode">
+    <svg id="barcode-left" class="order-detail-barcode__svg" data-barcode-value="PKTEST1" aria-hidden="true"></svg>
+    <p class="order-detail-barcode__value">PKTEST1</p>
+</div>
+    
+<table class="order-sleeve-tag-table">
+    <colgroup>
+        <col class="order-sleeve-tag-table__col-label">
+        <col class="order-sleeve-tag-table__col-value-wide">
+        <col class="order-sleeve-tag-table__col-value-wide">
+        <col class="order-sleeve-tag-table__col-label-sub">
+        <col class="order-sleeve-tag-table__col-value-sub">
+    </colgroup>
+    <tbody>
+        <tr class="order-sleeve-tag-table__row">
+            <th class="order-sleeve-tag-table__label">お得意様コード</th>
+            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--wide" colspan="4">A550</td>
+        </tr>
+        <tr class="order-sleeve-tag-table__row">
+            <th class="order-sleeve-tag-table__label">お客様名</th>
+            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--wide" colspan="4">山田花子 様</td>
+        </tr>
+        <tr class="order-sleeve-tag-table__row">
+            <th class="order-sleeve-tag-table__label">商品名</th>
+            <td class="order-sleeve-tag-table__value" colspan="2">小紋　袷</td>
+            <th class="order-sleeve-tag-table__label order-sleeve-tag-table__label--sub">管理番号</th>
+            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--sub">PKTEST1</td>
+        </tr>
+        <tr class="order-sleeve-tag-table__row">
+            <th class="order-sleeve-tag-table__label">伝票番号</th>
+            <td class="order-sleeve-tag-table__value" colspan="2"></td>
+            <th class="order-sleeve-tag-table__label order-sleeve-tag-table__label--sub">係様名</th>
+            <td class="order-sleeve-tag-table__value order-sleeve-tag-table__value--sub"></td>
+        </tr>
+    </tbody>
+</table>
+    
 
-    <section class="store-order-section store-order-section--compact">
-      <h2 class="store-order-section__title">加工内容</h2>
-      <ul class="store-order-processing"><li><span class="store-order-processing__name">丸洗い</span><span class="store-order-processing__amount">3,000</span></li><li><span class="store-order-processing__name">しみぬき</span><span class="store-order-processing__amount">2,000</span></li></ul>
-    </section>
+<div class="order-detail-left-bottom">
+    
+<div class="order-detail-barcode order-detail-barcode--bottom">
+    <svg id="barcode-left-bottom" class="order-detail-barcode__svg" data-barcode-value="PKTEST1" aria-hidden="true"></svg>
+    <p class="order-detail-barcode__value">PKTEST1</p>
+</div>
+    
+<div class="order-detail-bottom-info">
+    <p class="order-detail-bottom-info__line"><span class="order-detail-bottom-info__value">A550</span><span class="order-detail-bottom-info__gap">　</span><span class="order-detail-bottom-info__value">山田花子 様</span><span class="order-detail-bottom-info__gap">　</span><span class="order-detail-bottom-info__value">山田花子 様</span></p>
+    <p class="order-detail-bottom-info__line"><span class="order-detail-bottom-info__value">袷</span><span class="order-detail-bottom-info__gap">　</span><span class="order-detail-bottom-info__value">小紋</span></p>
+</div>
+</div>
+</div>
+    
+<div class="order-detail-sheet order-detail-sheet--right store-order-sheet">
+    <h1 class="order-detail-title">店舗受注表</h1>
+    
+<table class="order-detail-table">
+    <colgroup>
+        <col class="order-detail-table__col-label-single">
+        <col class="order-detail-table__col-value-single">
+        <col class="order-detail-table__col-label-pair">
+        <col class="order-detail-table__col-value-pair">
+    </colgroup>
+    <tbody>
+        <tr class="order-detail-table__row order-detail-table__row--pair"><th class="order-detail-table__label order-detail-table__label--pair">管理番号</th><td class="order-detail-table__value order-detail-table__value--pair">PKTEST1</td><th class="order-detail-table__label order-detail-table__label--pair">受注日</th><td class="order-detail-table__value order-detail-table__value--pair">2026-11-01</td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--pair"><th class="order-detail-table__label order-detail-table__label--pair">顧客コード</th><td class="order-detail-table__value order-detail-table__value--pair">A550</td><th class="order-detail-table__label order-detail-table__label--pair">納期</th><td class="order-detail-table__value order-detail-table__value--pair">2026-11-10</td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--single"><th class="order-detail-table__label order-detail-table__label--single">顧客名</th><td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap" colspan="3">山田花子 様</td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--single"><th class="order-detail-table__label order-detail-table__label--single">お客様名</th><td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap" colspan="3">山田花子 様</td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--single"><th class="order-detail-table__label order-detail-table__label--single">得意先伝票番号</th><td class="order-detail-table__value order-detail-table__value--single" colspan="3"></td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--single"><th class="order-detail-table__label order-detail-table__label--single">得意先担当・係</th><td class="order-detail-table__value order-detail-table__value--single" colspan="3"></td></tr>
+        <tr class="order-detail-table__row order-detail-table__row--pair"><th class="order-detail-table__label order-detail-table__label--pair">着物種類名</th><td class="order-detail-table__value order-detail-table__value--pair order-detail-table__value--wrap">小紋</td><th class="order-detail-table__label order-detail-table__label--pair">着物仕様</th><td class="order-detail-table__value order-detail-table__value--pair order-detail-table__value--wrap">袷</td></tr>
+        
 
-    <section class="store-order-section store-order-section--payment store-order-section--compact">
-      <h2 class="store-order-section__title">金額・入金（App97・印刷時点）</h2>
-      <p class="store-order-payment-state is-paid">入金済</p>
-      <table class="store-order-payment-table">
-        <thead>
-          <tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>5,000</td>
-            <td>500</td>
-            <td>5,500</td>
-            <td>5,500</td>
-            <td>0</td>
-          </tr>
-        </tbody>
-      </table>
-      
-    </section>
-
-    <div class="store-order-work-checks">
-      <p class="store-order-work-checks__label">作業チェック</p>
-      <div class="store-order-checks"><span>□ 下洗い済み</span><span>□ しみ抜き済み</span><span>□ 修理済み</span></div>
-    </div>
-  </section>
-
-  <div class="store-order-cut" aria-hidden="true">
-    <span class="store-order-cut__label">✂ ここから下を切り取り（仕上げ完了登録票）</span>
-  </div>
-
-  <section class="store-order-lower">
-    <header class="store-order-lower__header">
-      <div class="store-order-lower__titles">
-        <h2 class="store-order-lower__title">仕上げ完了登録票</h2>
-        <p class="store-order-manage">管理番号：<strong>PKTEST1</strong></p>
-        <p class="store-order-lower__hint">切り取って App30 完了登録で連続読取</p>
-      </div>
-      <div class="store-order-barcode store-order-barcode--lower"><svg class="barcode store-order-barcode__svg" data-barcode-value="PKTEST1"></svg><p class="store-order-barcode__value">PKTEST1</p></div>
-    </header>
-    <dl class="store-order-dl store-order-dl--ticket">
-      <div><dt>お客様氏名</dt><dd>山田花子 様</dd></div>
-      <div><dt>商品名</dt><dd>丸洗い / しみぬき</dd></div>
-      <div><dt>着物種類名</dt><dd>小紋</dd></div>
-    </dl>
-    <div class="store-order-checks"><span>□ 下洗い済み</span><span>□ しみ抜き済み</span><span>□ 修理済み</span></div>
-  </section>
+        <tr class="order-detail-table__row order-detail-table__row--single">
+            <th class="order-detail-table__label order-detail-table__label--single">加工内容</th>
+            <td class="order-detail-table__value order-detail-table__value--single order-detail-table__value--wrap order-detail-table__value--multiline" colspan="3"><div class="order-detail-processing-line"><span class="order-detail-processing-line__name">丸洗い</span><span class="order-detail-processing-line__price">3,000</span></div><div class="order-detail-processing-line"><span class="order-detail-processing-line__name">しみぬき</span><span class="order-detail-processing-line__price">2,000</span></div></td>
+        </tr>
+        
+    </tbody>
+</table>
+    <div class="store-order-payment"><div class="store-order-payment__head"><span class="store-order-payment__label">入金状態</span><span class="store-order-payment__state is-paid">入金済</span></div><table class="store-order-payment-table"><thead><tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr></thead><tbody><tr><td>5,000</td><td>500</td><td>5,500</td><td>5,500</td><td>0</td></tr></tbody></table></div>
+    <div class="store-order-checks"><p class="store-order-checks__label">作業チェック</p><div class="store-order-checks__items"><span>□ 下洗い済み</span><span>□ しみ抜き済み</span><span>□ 修理済み</span></div></div>
+    
+<div class="order-detail-barcode">
+    <svg id="barcode-right" class="order-detail-barcode__svg" data-barcode-value="PKTEST1" aria-hidden="true"></svg>
+    <p class="order-detail-barcode__value">PKTEST1</p>
+</div>
+    
+    
+</div>
 </div></body></html>

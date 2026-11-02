@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 146,
+  "version": 147,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 146（店舗受注表・切り取り完了票）",
-    "en": "AYANAS Print Plugin V146 (store order cut ticket)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 147（店舗受注表＝受注明細表構成＋入金／作業チェック）",
+    "en": "AYANAS Print Plugin V147 (store order matches order_detail + payment/checks)"
   },
   "desktop": {
     "js": [

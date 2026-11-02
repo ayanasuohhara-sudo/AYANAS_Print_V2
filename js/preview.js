@@ -555,21 +555,16 @@ ${buildButtonScriptBody()}
         if (layout.reportType === 'delivery'
             || layout.reportType === 'delivery_matsuba'
             || layout.reportType === 'store_delivery'
-            || layout.reportType === 'store_order'
             || layout.reportType === 'invoice'
             || layout.reportType === 'matsuba_summary_invoice') {
             previewConfig.print_orientation = 'portrait';
             previewConfig.paper_size = 'A4';
         }
 
-        if (layout.reportType === 'store_order') {
-            previewConfig.barcode_visible = '1';
-            previewConfig.page_margin = '0';
-        }
-
         if (layout.reportType === 'order_detail'
             || layout.reportType === 'overseas_order'
-            || layout.reportType === 'outsource_outbound_slip') {
+            || layout.reportType === 'outsource_outbound_slip'
+            || layout.reportType === 'store_order') {
             previewConfig.print_orientation = 'landscape';
             previewConfig.paper_size = 'A4';
             previewConfig.page_margin = '0';
@@ -605,7 +600,6 @@ ${buildButtonScriptBody()}
         if (layout.reportType === 'delivery'
             || layout.reportType === 'delivery_matsuba'
             || layout.reportType === 'store_delivery'
-            || layout.reportType === 'store_order'
             || layout.reportType === 'invoice'
             || layout.reportType === 'matsuba_summary_invoice') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
@@ -615,7 +609,8 @@ ${buildButtonScriptBody()}
             || layout.reportType === 'overseas_order'
             || layout.reportType === 'outsource_outbound_slip'
             || layout.reportType === 'overseas_outbound_detail'
-            || layout.reportType === 'overseas_outbound_sheet') {
+            || layout.reportType === 'overseas_outbound_sheet'
+            || layout.reportType === 'store_order') {
             html = html.replace(/<title>[^<]*<\/title>/i, '<title> </title>');
         }
 

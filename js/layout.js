@@ -228,14 +228,14 @@
         pageClass: 'report-store-order',
         barcodeField: 'manage_no',
         paperSize: 'A4',
-        orientation: 'portrait',
+        orientation: 'landscape',
         buttonLabel: '店舗受注表',
         // appIds は付けない（App16 既定帳票を上書きしない。ボタンから reportType 指定）
         configDefaults: {
             barcode_type: 'CODE39',
             barcode_visible: '1',
             page_margin: '0',
-            print_orientation: 'portrait',
+            print_orientation: 'landscape',
         },
         definition: {},
     });

@@ -3576,8 +3576,281 @@ body {
     width: 9em;
 }
 
-/* ===== 店舗受注表 / 店舗納品書 (A550) ===== */
-.report-store-order .page,
+/* ===== 店舗受注表 (A550) — 受注明細表と同構成（A4横・左右）＋入金／作業チェック ===== */
+.report-store-order .page {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    width: 297mm;
+    min-height: 210mm;
+    max-height: 210mm;
+    height: 210mm;
+    margin: 0 auto 10px;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", "MS Gothic", sans-serif;
+    font-size: 14pt;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #000000;
+    background: #ffffff;
+}
+
+.report-store-order .order-detail-page,
+.report-store-order .store-order-page {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.report-store-order .order-detail-page::after,
+.report-store-order .store-order-page::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    border-left: 1px dashed #999999;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.report-store-order .order-detail-sheet {
+    flex: 0 0 50%;
+    width: 50%;
+    max-width: 50%;
+    min-height: 210mm;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.report-store-order .order-detail-sheet--left {
+    display: flex;
+    flex-direction: column;
+    padding: 3mm 2mm 2mm 4mm;
+}
+
+.report-store-order .order-detail-sheet--right {
+    padding: 3mm 4mm 2mm 2mm;
+}
+
+.report-store-order .order-detail-title {
+    margin: 0 0 1.5mm;
+    padding: 0;
+    font-size: 13pt;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.08em;
+    line-height: 1.15;
+}
+
+.report-store-order .order-detail-table {
+    width: 100%;
+    max-width: 136mm;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0 auto 1.5mm;
+    box-sizing: border-box;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
+
+.report-store-order .order-detail-table th,
+.report-store-order .order-detail-table td {
+    border: 1px solid #000000;
+    padding: 0.8mm 1.5mm;
+    vertical-align: middle;
+    line-height: 1.25;
+    color: #000000;
+    font-size: 10pt;
+}
+
+.report-store-order .order-detail-table th.order-detail-table__label,
+.report-store-order .order-detail-table th.order-detail-table__label--single,
+.report-store-order .order-detail-table th.order-detail-table__label--pair {
+    background: #f3f3f3;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.report-store-order .order-detail-table td.order-detail-table__value,
+.report-store-order .order-detail-table td.order-detail-table__value--single,
+.report-store-order .order-detail-table td.order-detail-table__value--pair {
+    font-weight: 700;
+}
+
+.report-store-order .order-detail-table__value--wrap {
+    word-break: break-word;
+}
+
+.report-store-order .order-detail-table__value--multiline {
+    line-height: 1.35;
+}
+
+.report-store-order .order-detail-processing-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.report-store-order .order-detail-processing-line + .order-detail-processing-line {
+    margin-top: 1mm;
+}
+
+.report-store-order .order-detail-barcode {
+    text-align: center;
+    margin: 1mm auto 1mm;
+}
+
+.report-store-order .order-detail-barcode__svg {
+    display: block;
+    width: 52mm;
+    height: 8mm;
+    margin: 0 auto;
+}
+
+.report-store-order .order-detail-barcode__value {
+    margin: 0.5mm 0 0;
+    font-size: 9pt;
+    text-align: center;
+    letter-spacing: 0.04em;
+}
+
+.report-store-order .order-sleeve-tag-table {
+    width: 100%;
+    max-width: 136mm;
+    margin: 0 auto 1mm;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 9pt;
+}
+
+.report-store-order .order-sleeve-tag-table th,
+.report-store-order .order-sleeve-tag-table td {
+    border: 1px solid #000000;
+    padding: 0.6mm 1.2mm;
+    vertical-align: middle;
+}
+
+.report-store-order .order-sleeve-tag-table th {
+    background: #f3f3f3;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.report-store-order .order-detail-left-bottom {
+    margin-top: auto;
+}
+
+.report-store-order .order-detail-barcode--bottom .order-detail-barcode__svg {
+    width: 48mm;
+    height: 7mm;
+}
+
+.report-store-order .order-detail-bottom-info {
+    margin-top: 0.5mm;
+    font-size: 9pt;
+    line-height: 1.25;
+}
+
+.report-store-order .store-order-payment {
+    width: 100%;
+    max-width: 136mm;
+    margin: 0 auto 1mm;
+    box-sizing: border-box;
+}
+
+.report-store-order .store-order-payment__head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0.8mm;
+}
+
+.report-store-order .store-order-payment__label {
+    font-size: 10pt;
+    font-weight: 700;
+}
+
+.report-store-order .store-order-payment__state {
+    display: inline-block;
+    padding: 0 8px;
+    font-size: 12pt;
+    font-weight: 800;
+    border: 2px solid #000000;
+    line-height: 1.15;
+}
+
+.report-store-order .store-order-payment__state.is-paid {
+    color: #166534;
+    border-color: #166534;
+}
+
+.report-store-order .store-order-payment__state.is-unpaid {
+    color: #9f1239;
+    border-color: #9f1239;
+}
+
+.report-store-order .store-order-payment-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.5pt;
+}
+
+.report-store-order .store-order-payment-table th,
+.report-store-order .store-order-payment-table td {
+    border: 1px solid #000000;
+    padding: 0.5mm 1mm;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.report-store-order .store-order-payment-table th {
+    background: #f3f3f3;
+    font-weight: 700;
+    text-align: center;
+}
+
+.report-store-order .store-order-note {
+    margin: 0.5mm 0 0;
+    font-size: 8pt;
+    font-weight: 700;
+    color: #333333;
+}
+
+.report-store-order .store-order-checks {
+    width: 100%;
+    max-width: 136mm;
+    margin: 0 auto 1mm;
+    border: 1px solid #000000;
+    padding: 0.8mm 2mm;
+    box-sizing: border-box;
+}
+
+.report-store-order .store-order-checks__label {
+    margin: 0 0 0.5mm;
+    font-size: 9pt;
+    font-weight: 800;
+}
+
+.report-store-order .store-order-checks__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: 10pt;
+    font-weight: 700;
+}
+
+/* ===== 店舗納品書 (A550) ===== */
 .report-store-delivery .page {
     box-sizing: border-box;
     padding: 8mm 10mm 7mm;
@@ -3585,18 +3858,6 @@ body {
     font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
 }
 
-.report-store-order .store-order-page {
-    display: flex;
-    flex-direction: column;
-    min-height: 277mm;
-    height: 277mm;
-}
-
-.store-order-upper {
-    flex: 0 0 auto;
-}
-
-.store-order-eyebrow,
 .store-delivery-eyebrow {
     margin: 0;
     font-size: 11px;
@@ -3605,14 +3866,12 @@ body {
     color: #475569;
 }
 
-.store-order-title,
 .store-delivery-title {
     margin: 2px 0 4px;
     font-size: 24px;
     font-weight: 800;
 }
 
-.store-order-header,
 .store-delivery-header {
     display: flex;
     justify-content: space-between;
@@ -3623,28 +3882,6 @@ body {
     padding-bottom: 6px;
 }
 
-.store-order-manage {
-    margin: 0;
-    font-size: 15px;
-}
-
-.store-order-barcode {
-    text-align: center;
-}
-
-.store-order-barcode__svg {
-    display: block;
-    width: 52mm;
-    height: 12mm;
-    margin: 0 auto;
-}
-
-.store-order-barcode--lower .store-order-barcode__svg {
-    width: 58mm;
-    height: 14mm;
-}
-
-.store-order-barcode__value,
 .store-delivery-page {
     margin: 2px 0 0;
     font-size: 12px;
@@ -3652,92 +3889,24 @@ body {
     letter-spacing: 0.04em;
 }
 
-.store-order-section {
-    margin-bottom: 8px;
-}
-
-.store-order-section--compact {
-    margin-bottom: 6px;
-}
-
-.store-order-section__title {
-    margin: 0 0 4px;
-    font-size: 13px;
-    font-weight: 800;
-    border-left: 4px solid #111;
-    padding-left: 8px;
-}
-
-.store-order-dl {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3px 14px;
-    margin: 0;
-    font-size: 13px;
-}
-
-.store-order-dl > div {
-    display: grid;
-    grid-template-columns: 7em 1fr;
-    gap: 6px;
-}
-
-.store-order-dl dt {
-    margin: 0;
-    font-weight: 700;
-    color: #334155;
-}
-
-.store-order-dl dd {
-    margin: 0;
-}
-
-.store-order-processing {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.store-order-processing li {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 2px 0;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 13px;
-}
-
-.store-order-payment-state {
-    display: inline-block;
-    margin: 0 0 6px;
-    padding: 3px 10px;
-    font-size: 16px;
-    font-weight: 800;
-    border: 2px solid #111;
-}
-
-.store-order-payment-state.is-paid,
 .store-delivery-pay.is-paid,
 .store-delivery-summary .is-paid {
     color: #166534;
     border-color: #166534;
 }
 
-.store-order-payment-state.is-partial,
 .store-delivery-pay.is-partial,
 .store-delivery-summary .is-partial {
     color: #9a3412;
     border-color: #9a3412;
 }
 
-.store-order-payment-state.is-unpaid,
 .store-delivery-pay.is-unpaid,
 .store-delivery-summary .is-unpaid {
     color: #9f1239;
     border-color: #9f1239;
 }
 
-.store-order-payment-table,
 .store-delivery-table,
 .store-delivery-summary {
     width: 100%;
@@ -3745,8 +3914,6 @@ body {
     font-size: 12px;
 }
 
-.store-order-payment-table th,
-.store-order-payment-table td,
 .store-delivery-table th,
 .store-delivery-table td,
 .store-delivery-summary th,
@@ -3756,98 +3923,16 @@ body {
     vertical-align: top;
 }
 
-.store-order-payment-table th,
 .store-delivery-table th,
 .store-delivery-summary th {
     background: #e2e8f0;
     font-weight: 700;
 }
 
-.store-order-note,
 .store-delivery-note {
     margin: 4px 0 0;
     font-size: 11px;
     color: #475569;
-}
-
-.store-order-work-checks {
-    margin-top: 8px;
-    border: 1px solid #94a3b8;
-    padding: 6px 10px;
-}
-
-.store-order-work-checks__label {
-    margin: 0 0 4px;
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.store-order-checks {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    margin-top: 4px;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.store-order-cut {
-    flex: 0 0 auto;
-    margin: auto 0 4mm;
-    border-top: 2px dashed #111;
-    position: relative;
-    height: 0;
-}
-
-.store-order-cut__label {
-    position: absolute;
-    left: 50%;
-    top: -0.7em;
-    transform: translateX(-50%);
-    background: #fff;
-    padding: 0 8px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #334155;
-    white-space: nowrap;
-}
-
-.store-order-lower {
-    flex: 0 0 auto;
-    min-height: 72mm;
-    padding: 4mm 2mm 3mm;
-    border: 1.5px solid #111;
-    box-sizing: border-box;
-}
-
-.store-order-lower__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 6px;
-}
-
-.store-order-lower__title {
-    margin: 0 0 4px;
-    font-size: 20px;
-    font-weight: 800;
-}
-
-.store-order-lower__hint {
-    margin: 2px 0 0;
-    font-size: 11px;
-    color: #64748b;
-}
-
-.store-order-dl--ticket {
-    margin-bottom: 8px;
-}
-
-.store-order-empty {
-    margin: 0;
-    font-size: 12px;
-    color: #64748b;
 }
 
 .store-delivery-customer {
@@ -3867,8 +3952,7 @@ body {
 }
 
 .store-delivery-table .num,
-.store-delivery-summary .num,
-.store-order-payment-table td {
+.store-delivery-summary .num {
     text-align: right;
     white-space: nowrap;
 }
@@ -3880,18 +3964,4 @@ body {
 .store-delivery-pay {
     font-weight: 800;
     text-align: center;
-}
-
-@media print {
-    .report-store-order .store-order-page {
-        height: auto;
-        min-height: 0;
-        page-break-after: always;
-        break-after: page;
-    }
-
-    .report-store-order .store-order-lower {
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
 }

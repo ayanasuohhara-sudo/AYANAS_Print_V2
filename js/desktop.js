@@ -42,7 +42,7 @@
 
 
 
-    const PLUGIN_VERSION = '146';
+    const PLUGIN_VERSION = '147';
 
     const STORE_CUSTOMER_CODE = 'A550';
 

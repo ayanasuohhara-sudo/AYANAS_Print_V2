@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * 店舗受注表（切り取り式）ローカルプレビュー HTML を生成する。
+ * 店舗受注表（受注明細表構成）ローカルプレビュー HTML を生成する。
  * node scripts/build_store_order_preview.js
  */
 
@@ -47,6 +47,7 @@ global.TemplateInterface = {
   create: (name, fn) => ({ name: name, render: fn }),
 };
 
+vm.runInThisContext(fs.readFileSync(path.join(root, 'js/templates/order_detail_shared.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'js/templates/store_order.js'), 'utf8'));
 
 const css = fs.readFileSync(path.join(root, 'css/print.css'), 'utf8');
@@ -83,37 +84,39 @@ const html = `<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>店舗受注表プレビュー（切り取り式 v146）</title>
+<title>店舗受注表プレビュー（受注明細表構成 v147）</title>
 <style>
 ${css}
-@page { size: A4 portrait; margin: 0; }
+@page { size: A4 landscape; margin: 0; }
 body { margin: 0; background: #cbd5e1; }
-.preview-shell { max-width: 210mm; margin: 12px auto; background: #fff; box-shadow: 0 8px 24px rgba(15,23,42,.25); }
+.preview-shell { max-width: 297mm; margin: 12px auto; background: #fff; box-shadow: 0 8px 24px rgba(15,23,42,.25); }
 .preview-toolbar { padding: 10px 14px; background: #0f172a; color: #fff; font: 13px/1.4 sans-serif; }
 .preview-toolbar button { margin-left: 8px; }
 </style>
-<script src="/lib/JsBarcode.all.min.js"></script>
+<script src="../lib/JsBarcode.all.min.js"></script>
 </head>
 <body class="report-store-order">
 <div class="preview-toolbar">
-  店舗受注表・切り取り式プレビュー（印刷倍率 100% / A4縦）
+  店舗受注表プレビュー（受注明細表と同じ左右構成 + 入金済/未入金 + 作業チェック / A4横）
   <button type="button" onclick="window.print()">印刷</button>
 </div>
 <div class="preview-shell">
+<div class="page">
 ${inner}
+</div>
 </div>
 <script>
 (function () {
   if (typeof JsBarcode !== 'function') return;
-  document.querySelectorAll('.store-order-barcode__svg').forEach(function (svg) {
+  document.querySelectorAll('.order-detail-barcode__svg').forEach(function (svg) {
     var value = svg.getAttribute('data-barcode-value') || '';
     if (!value) return;
     JsBarcode(svg, value, {
       format: 'CODE39',
       displayValue: false,
-      height: 42,
-      width: 1.4,
-      margin: 4,
+      height: 32,
+      width: 1.3,
+      margin: 6,
       background: '#ffffff',
       lineColor: '#000000'
     });
@@ -126,6 +129,6 @@ ${inner}
 
 const outDir = path.join(root, 'docs/artifacts/store_print_preview');
 fs.mkdirSync(outDir, { recursive: true });
-const outPath = path.join(outDir, 'store_order_cut_ticket_preview.html');
+const outPath = path.join(outDir, 'store_order_order_detail_layout_preview.html');
 fs.writeFileSync(outPath, html);
 console.log('Wrote', outPath);
