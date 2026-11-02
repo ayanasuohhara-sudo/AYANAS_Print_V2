@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "revision": "15",
+  "everyoneViewable": true,
+  "everyoneAddable": true,
+  "everyoneEditable": true,
+  "everyoneDeletable": false,
+  "rightsSummary": [
+    {
+      "type": "USER",
+      "code": "info@ayanas.co.jp",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "Administrators",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": true,
+      "appEdit": true
+    },
+    {
+      "type": "CREATOR",
+      "code": null,
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "everyone",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": false
+    }
+  ]
+}

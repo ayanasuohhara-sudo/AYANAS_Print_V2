@@ -33,7 +33,11 @@
   );
 
   const isPickupAllowedUser = () => {
-    const allowed = (cfg() && cfg().PICKUP_ALLOWED_LOGIN_CODES) || [];
+    const allowed = cfg() && cfg().PICKUP_ALLOWED_LOGIN_CODES;
+    // null/undefined = 一般公開（全ユーザー許可）
+    if (allowed == null) {
+      return true;
+    }
     if (!Array.isArray(allowed) || allowed.length === 0) {
       return false;
     }
