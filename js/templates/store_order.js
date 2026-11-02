@@ -6,10 +6,10 @@
      * 構成は受注明細表（order_detail）と同じ A4横・左右2面。
      * 追加: 作業チェック3項目、入金状態（入金済／未入金）。
      * 主表から顧客名／得意先伝票番号／得意先担当・係を除外。
-     * 左下: バーコード → 袖タグ表 → バーコード → 袖タグ表。
+     * 左右とも下部はバーコードのみ（袖タグ表なし）。
      */
 
-    const STORE_ORDER_TEMPLATE_VERSION = '148';
+    const STORE_ORDER_TEMPLATE_VERSION = '149';
 
     const esc = (value) => Format.escapeHtml(value);
 
@@ -182,39 +182,14 @@
         + '</div>'
     );
 
-    /** 左下: バーコード → 表 → バーコード → 表 */
-    const buildLeftLowerBlockHtml = (header, manageNo) => {
-        const sleeve = OrderDetailShared.buildSleeveTagTableHtml(header);
-        return `
-<div class="store-order-left-lower">
-    ${OrderDetailShared.buildBarcodeHtml(manageNo, 'left', {
-        idSuffix: 'tag1',
-        extraClass: 'order-detail-barcode--tag',
-    })}
-    ${sleeve}
-    ${OrderDetailShared.buildBarcodeHtml(manageNo, 'left', {
-        idSuffix: 'tag2',
-        extraClass: 'order-detail-barcode--tag',
-    })}
-    ${sleeve}
-</div>`;
-    };
-
-    const buildStoreSheetHtml = (header, details, manageNo, side, paymentState) => {
-        const isLeft = side === 'left';
-        const lowerHtml = isLeft
-            ? buildLeftLowerBlockHtml(header, manageNo)
-            : OrderDetailShared.buildBarcodeHtml(manageNo, side);
-
-        return `
+    const buildStoreSheetHtml = (header, details, manageNo, side, paymentState) => `
 <div class="order-detail-sheet order-detail-sheet--${esc(side)} store-order-sheet">
     <h1 class="order-detail-title">店舗受注表</h1>
     ${buildStoreMainTableHtml(header, details)}
     ${buildPaymentBlockHtml(header, paymentState)}
     ${buildWorkChecksHtml()}
-    ${lowerHtml}
+    ${OrderDetailShared.buildBarcodeHtml(manageNo, side)}
 </div>`;
-    };
 
     const StoreOrderTemplate = TemplateInterface.create('StoreOrderTemplate', (data, config = {}, layout = {}) => {
         void config;

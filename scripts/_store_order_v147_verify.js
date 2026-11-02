@@ -8,13 +8,13 @@ const path = require('path');
 const SUB = 'o5nppg7kb4ly';
 const MANAGE_NO = 'TSP815835U';
 const CORP_MANAGE = '110226491';
-const WORK_DIR = process.env.V148_WORK
+const WORK_DIR = process.env.V149_WORK
   || fs.readdirSync('/workspace/customize/backups')
-    .filter((d) => d.startsWith('store_order_v148_'))
+    .filter((d) => d.startsWith('store_order_v149_'))
     .map((d) => path.join('/workspace/customize/backups', d))
     .sort()
     .slice(-1)[0];
-const ART_DIR = '/opt/cursor/artifacts/store_order_v148';
+const ART_DIR = '/opt/cursor/artifacts/store_order_v149';
 
 const httpJson = (p, method = 'GET') =>
   new Promise((resolve, reject) => {
@@ -202,9 +202,9 @@ function analyzeStoreHtml(html) {
     removedFields: !/>顧客名</.test(html)
       && html.indexOf('得意先伝票番号') === -1
       && html.indexOf('得意先担当・係') === -1,
-    leftLower: /store-order-left-lower/.test(html)
-      && (html.match(/order-sleeve-tag-table/g) || []).length >= 2
-      && (html.match(/data-barcode-value="/g) || []).length >= 3,
+    barcodesOnly: (html.match(/data-barcode-value="/g) || []).length >= 2
+      && html.indexOf('order-sleeve-tag-table') === -1
+      && html.indexOf('store-order-left-lower') === -1,
     noBottomInfo: !/order-detail-bottom-info/.test(html)
       && !/order-detail-left-bottom/.test(html),
   };

@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 148,
+  "version": 149,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 148（店舗受注表・左下バーコード／表×2）",
-    "en": "AYANAS Print Plugin V148 (store order barcode/table x2 on left)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 149（店舗受注表・左右ともバーコードのみ）",
+    "en": "AYANAS Print Plugin V149 (store order barcode only both sides)"
   },
   "desktop": {
     "js": [
