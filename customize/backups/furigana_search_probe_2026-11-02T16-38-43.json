@@ -1,0 +1,192 @@
+{
+  "apps": {
+    "8": {
+      "relevant": {
+        "customer_code": {
+          "label": "顧客コード",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "customer_name": {
+          "label": "顧客名",
+          "type": "SINGLE_LINE_TEXT"
+        }
+      },
+      "kanaish": [],
+      "fieldCount": 23
+    },
+    "16": {
+      "relevant": {
+        "customer_code": {
+          "label": "顧客コード",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "customer_name": {
+          "label": "顧客名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "client_name": {
+          "label": "お客様名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "personal_customer_id": {
+          "label": "個人顧客ID",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "kimono_type": {
+          "label": "着物種類名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "kimono_type_code": {
+          "label": "着物種類コード",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "manage_no": {
+          "label": "管理番号",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "order_date": {
+          "label": "受注日",
+          "type": "DATE"
+        },
+        "delivery_status": {
+          "label": "納品状態",
+          "type": "DROP_DOWN"
+        },
+        "process_status": {
+          "label": "工程ステータス",
+          "type": "DROP_DOWN"
+        },
+        "work_status": {
+          "label": "作業ステータス",
+          "type": "DROP_DOWN"
+        },
+        "location_status": {
+          "label": "保管場所ステータス",
+          "type": "DROP_DOWN"
+        }
+      },
+      "kanaish": [],
+      "fieldCount": 37
+    },
+    "88": {
+      "js": [
+        "app_nav_banner_config.js",
+        "app_nav_banner.js",
+        "order_search_config.js",
+        "order_search_engine.js",
+        "order_search_desktop.js"
+      ]
+    },
+    "96": {
+      "relevant": {
+        "personal_customer_id": {
+          "label": "個人顧客ID",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "customer_name": {
+          "label": "氏名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "customer_kana": {
+          "label": "ふりがな",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "phone": {
+          "label": "電話番号",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "mobile_phone": {
+          "label": "携帯電話",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        "member_no": {
+          "label": "会員番号",
+          "type": "SINGLE_LINE_TEXT"
+        }
+      },
+      "kanaish": [
+        {
+          "code": "customer_kana",
+          "label": "ふりがな",
+          "type": "SINGLE_LINE_TEXT"
+        }
+      ],
+      "fieldCount": 39
+    }
+  },
+  "counts": {
+    "app16_total": 3294,
+    "app16_with_client_name": 3293,
+    "app16_a550": 88,
+    "app16_non_a550": 3206,
+    "app16_with_personal_customer_id": 11,
+    "app8_total": 78,
+    "app96_total": 42,
+    "app96_with_kana": 42,
+    "app96_without_kana": 0,
+    "app16_non_a550_empty_client": 1
+  },
+  "samples": {
+    "corp_orders": [
+      {
+        "manage_no": "110226491",
+        "customer_code": "M032",
+        "customer_name": "大進ホンダ株式会社",
+        "client_name": "坂口菜穂子",
+        "kimono_type": "羽織",
+        "order_date": "2026-11-02",
+        "process_status": "外注中",
+        "delivery_status": "未納品",
+        "personal_customer_id": ""
+      },
+      {
+        "manage_no": "110226490",
+        "customer_code": "M032",
+        "customer_name": "大進ホンダ株式会社",
+        "client_name": "宮田節子",
+        "kimono_type": "羽織",
+        "order_date": "2026-11-02",
+        "process_status": "外注中",
+        "delivery_status": "未納品",
+        "personal_customer_id": ""
+      },
+      {
+        "manage_no": "110226489",
+        "customer_code": "M032",
+        "customer_name": "大進ホンダ株式会社",
+        "client_name": "福野明美",
+        "kimono_type": "小紋",
+        "order_date": "2026-11-02",
+        "process_status": "外注中",
+        "delivery_status": "未納品",
+        "personal_customer_id": ""
+      },
+      {
+        "manage_no": "110226488",
+        "customer_code": "M032",
+        "customer_name": "大進ホンダ株式会社",
+        "client_name": "荒井直美",
+        "kimono_type": "小紋",
+        "order_date": "2026-11-02",
+        "process_status": "外注中",
+        "delivery_status": "未納品",
+        "personal_customer_id": ""
+      },
+      {
+        "manage_no": "110226487",
+        "customer_code": "A913",
+        "customer_name": "豊屋",
+        "client_name": "加賀谷",
+        "kimono_type": "長襦袢",
+        "order_date": "2026-11-02",
+        "process_status": "受注",
+        "delivery_status": "未納品",
+        "personal_customer_id": ""
+      }
+    ],
+    "app96": {
+      "error": "Specified field (更新日時) not found."
+    }
+  },
+  "notes": []
+}
