@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>App88 ふりがな予測検索 — ローカル画面確認</title>
+  <link rel="stylesheet" href="../../customize/order_search.css" />
+  <link rel="stylesheet" href="../../customize/order_client_kana.css" />
+  <style>
+    body { margin: 0; background: #e2e8f0; }
+    .demo-banner {
+      padding: 10px 16px; background: #0f172a; color: #fff; font: 14px/1.4 sans-serif;
+    }
+    .demo-grid { display: grid; grid-template-columns: 1fr; gap: 16px; padding: 16px; }
+    @media (min-width: 1100px) { .demo-grid { grid-template-columns: 1.4fr 0.8fr; } }
+  </style>
+</head>
+<body class="ayanas-order-search-active">
+  <div class="demo-banner">
+    ローカル画面確認（kintone未接続）。本番JS/フィールド反映は別承認。サンプルデータで予測候補と検索結果を確認します。
+  </div>
+  <div class="demo-grid">
+    <div id="ayanas-order-search-root" class="cayan-os-root"></div>
+    <div id="order-client-kana-panel" class="ock-panel"></div>
+  </div>
+
+  <script src="../../customize/kana_normalize.js"></script>
+  <script src="../../customize/order_search_config.js"></script>
+  <script src="../../customize/order_search_engine.js"></script>
+  <script src="../../customize/order_client_kana_config.js"></script>
+  <script src="../../customize/order_client_kana_engine.js"></script>
+  <script>
+    (function () {
+      const E = window.CAYANAS_OrderSearchEngine;
+      const CK = window.CAYANAS_OrderClientKanaEngine;
+      const cfg = window.CAYANAS_ORDER_SEARCH;
+
+      const sample = [
+        { $id:{value:'101'}, manage_no:{value:'110226491'}, order_date:{value:'2026-11-02'}, deadline:{value:'2026-12-10'},
+          customer_code:{value:'M032'}, customer_name:{value:'大進ホンダ株式会社'}, client_name:{value:'山本清子'},
+          client_name_kana:{value:'やまもときよこ'}, client_name_kana_status:{value:'確認済'},
+          slip_no:{value:'001'}, kimono_type:{value:'訪問着'}, kimono_spec:{value:'袷'},
+          process_status:{value:'外注中'}, work_status:{value:'未着'}, location_status:{value:'外注先'},
+          delivery_status:{value:'未納品'}, aggregation_status:{value:'有効'}, detail_table:{value:[]} },
+        { $id:{value:'102'}, manage_no:{value:'110226490'}, order_date:{value:'2026-10-20'}, deadline:{value:'2026-11-30'},
+          customer_code:{value:'M032'}, customer_name:{value:'大進ホンダ株式会社'}, client_name:{value:'山本きよこ'},
+          client_name_kana:{value:'ヤマモトキヨコ'}, client_name_kana_status:{value:'未確認'},
+          slip_no:{value:'002'}, kimono_type:{value:'訪問着'}, kimono_spec:{value:'袷'},
+          process_status:{value:'受注'}, work_status:{value:'未着'}, location_status:{value:'本社'},
+          delivery_status:{value:'未納品'}, aggregation_status:{value:'有効'}, detail_table:{value:[]} },
+        { $id:{value:'103'}, manage_no:{value:'110226480'}, order_date:{value:'2026-09-01'}, deadline:{value:'2026-10-01'},
+          customer_code:{value:'M032'}, customer_name:{value:'大進ホンダ株式会社'}, client_name:{value:'坂口菜穂子'},
+          client_name_kana:{value:''}, client_name_kana_status:{value:''},
+          slip_no:{value:'003'}, kimono_type:{value:'羽織'}, kimono_spec:{value:''},
+          process_status:{value:'外注中'}, work_status:{value:'未着'}, location_status:{value:'外注先'},
+          delivery_status:{value:'未納品'}, aggregation_status:{value:'有効'}, detail_table:{value:[]} },
+        { $id:{value:'201'}, manage_no:{value:'A550-1'}, order_date:{value:'2026-11-01'}, deadline:{value:'2026-11-15'},
+          customer_code:{value:'A550'}, customer_name:{value:'ayanasu'}, client_name:{value:'山本'},
+          client_name_kana:{value:'やまもと'}, client_name_kana_status:{value:'未確認'},
+          slip_no:{value:''}, kimono_type:{value:'小紋'}, kimono_spec:{value:''},
+          process_status:{value:'店舗作業中'}, work_status:{value:'しみ抜き中'}, location_status:{value:'店舗'},
+          delivery_status:{value:'未納品'}, aggregation_status:{value:'有効'}, detail_table:{value:[]} },
+      ];
+
+      const root = document.getElementById('ayanas-order-search-root');
+      root.innerHTML = `
+        <header class="cayan-os-header">
+          <h1 class="cayan-os-title">受注検索（ローカルデモ）</h1>
+          <p class="cayan-os-lead">試し入力: やまもときよこ / ヤマモトキヨコ / やまもと きよこ / 漢字・法人コード M032</p>
+        </header>
+        <form class="cayan-os-form" id="cayan-os-form" autocomplete="off">
+          <label class="cayan-os-field"><span>顧客コード</span><input id="cayan-os-customer-code" type="text" value="M032"></label>
+          <label class="cayan-os-field"><span>顧客名</span><input id="cayan-os-customer-name" type="text"></label>
+          <label class="cayan-os-field cayan-os-field--suggest"><span>お客様名ふりがな</span>
+            <input id="cayan-os-client-kana" type="text" placeholder="やまもときよこ">
+            <div class="cayan-os-suggest" id="cayan-os-suggest" hidden></div>
+          </label>
+          <label class="cayan-os-field"><span>お客様名（漢字）</span><input id="cayan-os-client-name" type="text"></label>
+          <label class="cayan-os-field"><span>着物種類</span><input id="cayan-os-kimono-type" type="text" value="訪問着"></label>
+          <label class="cayan-os-field"><span>管理番号</span><input id="cayan-os-manage-no" type="text"></label>
+          <label class="cayan-os-check"><input id="cayan-os-exclude-a550" type="checkbox" checked><span>店舗(A550)を除外</span></label>
+          <label class="cayan-os-check"><input id="cayan-os-include-delivered" type="checkbox"><span>納品済を含む</span></label>
+          <div class="cayan-os-actions">
+            <button type="button" class="cayan-os-btn is-primary" id="cayan-os-search">検索</button>
+            <button type="button" class="cayan-os-btn" id="cayan-os-clear">クリア</button>
+          </div>
+        </form>
+        <p class="cayan-os-count" id="cayan-os-count"></p>
+        <p class="cayan-os-message" id="cayan-os-message"></p>
+        <div class="cayan-os-table-wrap">
+          <table class="cayan-os-table" id="cayan-os-table">
+            <thead><tr>
+              <th>管理番号</th><th>顧客コード</th><th>お客様名</th><th>ふりがな</th><th>着物種類</th><th>工程</th>
+            </tr></thead>
+            <tbody id="cayan-os-body"></tbody>
+          </table>
+        </div>`;
+
+      const readForm = () => ({
+        customerCode: document.getElementById('cayan-os-customer-code').value,
+        customerName: document.getElementById('cayan-os-customer-name').value,
+        clientName: document.getElementById('cayan-os-client-name').value,
+        clientNameKana: document.getElementById('cayan-os-client-kana').value,
+        kimonoType: document.getElementById('cayan-os-kimono-type').value,
+        manageNo: document.getElementById('cayan-os-manage-no').value,
+        includeDelivered: document.getElementById('cayan-os-include-delivered').checked,
+        excludeA550: document.getElementById('cayan-os-exclude-a550').checked,
+      });
+
+      const matchLocal = (rec, criteria) => {
+        const kn = window.CAYANAS_KanaNormalize;
+        const v = (code) => (rec[code] && rec[code].value) || '';
+        if (criteria.customerCode && v('customer_code') !== criteria.customerCode) return false;
+        if (criteria.excludeA550 && v('customer_code') === 'A550') return false;
+        if (criteria.kimonoType && !String(v('kimono_type')).includes(criteria.kimonoType)) return false;
+        if (criteria.clientName && !String(v('client_name')).includes(criteria.clientName)) return false;
+        if (criteria.manageNo && v('manage_no') !== criteria.manageNo) return false;
+        if (criteria.clientNameKana) {
+          const kana = v('client_name_kana');
+          if (!kana) return false; // 空欄はかな検索ではヒットしないが、かな無し条件なら残る
+          if (!kn.matchesKana(kana, criteria.clientNameKana, 'partial')) return false;
+        }
+        return true;
+      };
+
+      const render = (rows) => {
+        document.getElementById('cayan-os-count').textContent = E.resultCountText(rows.length);
+        document.getElementById('cayan-os-body').innerHTML = rows.map((r) => (
+          '<tr><td>' + r.manageNo + '</td><td>' + r.customerCode + '</td><td>' + r.clientName
+          + '</td><td>' + (r.clientNameKana || '（未登録）') + ' / ' + (r.clientNameKanaStatus || '-')
+          + '</td><td>' + r.kimonoType + '</td><td>' + r.processStatus + '</td></tr>'
+        )).join('');
+      };
+
+      const runSearch = () => {
+        const form = readForm();
+        const plan = E.buildSearchRequest(form);
+        if (!plan.ok) {
+          document.getElementById('cayan-os-message').textContent = plan.message;
+          render([]);
+          return;
+        }
+        // かな条件だけのとき空欄除外。かなが空なら全条件で空欄も残す
+        let list = sample.filter((rec) => matchLocal(rec, plan.criteria));
+        if (!form.clientNameKana) {
+          // ふりがな未登録も対象（かな条件なし）
+          list = sample.filter((rec) => matchLocal(rec, Object.assign({}, plan.criteria, { clientNameKana: '' }))
+            || matchLocal(rec, plan.criteria));
+          // simplify: re-filter without kana requirement
+          list = sample.filter((rec) => {
+            const c = Object.assign({}, plan.criteria, { clientNameKana: '' });
+            return matchLocal(rec, c);
+          });
+        }
+        const rows = E.filterRowsByKana(E.buildRows(list), plan.criteria);
+        document.getElementById('cayan-os-message').textContent = plan.query;
+        render(rows);
+      };
+
+      let timer = null;
+      document.getElementById('cayan-os-client-kana').addEventListener('input', () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          const form = readForm();
+          const plan = E.buildSuggestRequest(form);
+          const box = document.getElementById('cayan-os-suggest');
+          if (!plan.ok) { box.hidden = true; box.innerHTML = ''; return; }
+          const items = E.buildSuggestItems(sample.filter((r) => matchLocal(r, {
+            customerCode: form.customerCode,
+            excludeA550: form.excludeA550,
+            clientNameKana: form.clientNameKana,
+            kimonoType: '', clientName: '', manageNo: ''
+          })), form.clientNameKana);
+          box.hidden = !items.length;
+          box.innerHTML = items.map((item, i) => (
+            '<button type="button" class="cayan-os-suggest-item" data-i="' + i + '">'
+            + '<span class="cayan-os-suggest-main">' + item.clientNameKana + ' / ' + item.clientName + '</span>'
+            + '<span class="cayan-os-suggest-meta">' + item.customerCode + ' ' + (item.unconfirmed ? '未確認含む' : '確認済') + '</span>'
+            + '</button>'
+          )).join('');
+          box._items = items;
+        }, cfg.SUGGEST_DEBOUNCE_MS);
+      });
+
+      document.getElementById('cayan-os-suggest').addEventListener('click', (ev) => {
+        const btn = ev.target.closest('.cayan-os-suggest-item');
+        const box = document.getElementById('cayan-os-suggest');
+        if (!btn || !box._items) return;
+        const item = box._items[Number(btn.getAttribute('data-i'))];
+        document.getElementById('cayan-os-client-kana').value = item.clientNameKana;
+        document.getElementById('cayan-os-client-name').value = item.clientName;
+        box.hidden = true;
+        runSearch();
+      });
+
+      document.getElementById('cayan-os-search').addEventListener('click', runSearch);
+      document.getElementById('cayan-os-clear').addEventListener('click', () => {
+        document.getElementById('cayan-os-client-kana').value = '';
+        document.getElementById('cayan-os-client-name').value = '';
+        document.getElementById('cayan-os-kimono-type').value = '';
+        render([]);
+      });
+
+      // App16 panel demo
+      const panel = document.getElementById('order-client-kana-panel');
+      panel.innerHTML = '<div class="ock-inner"><h3 class="ock-title">お客様名ふりがな（App16デモ）</h3>'
+        + '<p class="ock-note">読み候補はスタッフ確認後に確定。漢字からの自動推測はしません。</p>'
+        + '<div class="ock-row"><label class="ock-field"><span>ふりがな</span>'
+        + '<input id="ock-kana" value="ヤマモト キヨコ"></label>'
+        + '<button type="button" class="ock-btn" id="ock-normalize">ひらがなに整える</button></div>'
+        + '<p id="ock-out"></p></div>';
+      document.getElementById('ock-normalize').onclick = () => {
+        const v = CK.normalizeForSave(document.getElementById('ock-kana').value);
+        document.getElementById('ock-kana').value = v;
+        document.getElementById('ock-out').textContent = '保存値: ' + v + ' / 状態: 未確認（確定はスタッフ）';
+      };
+
+      runSearch();
+    })();
+  </script>
+</body>
+</html>

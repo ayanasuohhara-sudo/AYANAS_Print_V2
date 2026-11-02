@@ -2,8 +2,8 @@
     'use strict';
 
     /**
-     * 受注検索 — クエリ生成、取消除外、加工内容連結、並び順。
-     * App16 は更新しない。
+     * 受注検索 — クエリ生成、取消除外、加工内容連結、並び順、ふりがな候補。
+     * App16 は更新しない（検索画面）。正本更新は order_client_kana_*。
      */
 
     const cfg = () => {
@@ -13,6 +13,16 @@
         }
 
         return CAYANAS_ORDER_SEARCH;
+
+    };
+
+    const kana = () => {
+
+        if (typeof CAYANAS_KanaNormalize === 'undefined') {
+            return null;
+        }
+
+        return CAYANAS_KanaNormalize;
 
     };
 
@@ -35,14 +45,23 @@
     const normalizeInput = (input) => {
 
         const source = input || {};
+        const kn = kana();
 
         return {
             customerCode: String(source.customerCode ?? '').trim(),
             customerName: String(source.customerName ?? '').trim(),
             clientName: String(source.clientName ?? '').trim(),
+            clientNameKana: String(source.clientNameKana ?? '').trim(),
+            clientNameKanaKey: kn
+                ? kn.normalizeKanaKey(source.clientNameKana)
+                : String(source.clientNameKana ?? '').trim(),
             slipNo: String(source.slipNo ?? '').trim(),
             manageNo: String(source.manageNo ?? '').trim(),
+            kimonoType: String(source.kimonoType ?? '').trim(),
+            orderDateFrom: String(source.orderDateFrom ?? '').trim(),
+            orderDateTo: String(source.orderDateTo ?? '').trim(),
             includeDelivered: source.includeDelivered === true,
+            excludeA550: source.excludeA550 === true,
         };
 
     };
@@ -51,12 +70,21 @@
         criteria.customerCode
         || criteria.customerName
         || criteria.clientName
+        || criteria.clientNameKana
         || criteria.slipNo
         || criteria.manageNo
+        || criteria.kimonoType
+        || criteria.orderDateFrom
+        || criteria.orderDateTo
     );
 
     const quote = (value) => '"' + escapeQueryValue(value) + '"';
 
+    /**
+     * kintone サーバ側クエリ。
+     * ふりがな未登録を除外しない: kana 条件は OR で漢字氏名にも当てる場合のみ追加。
+     * かなのみのとき client_name_kana like。空欄レコードは漢字・他条件で拾う。
+     */
     const buildSearchRequest = (input) => {
 
         const criteria = normalizeInput(input);
@@ -67,14 +95,20 @@
                 ok: false,
                 message: messages.needCondition,
                 query: '',
+                criteria,
             };
         }
 
         const F = cfg().FIELDS;
         const parts = [];
+        const kn = kana();
 
         if (criteria.customerCode) {
             parts.push(F.customerCode + ' = ' + quote(criteria.customerCode));
+        }
+
+        if (criteria.excludeA550) {
+            parts.push(F.customerCode + ' != ' + quote(cfg().STORE_CUSTOMER_CODE));
         }
 
         if (criteria.customerName) {
@@ -85,6 +119,14 @@
             parts.push(F.clientName + ' like ' + quote(criteria.clientName));
         }
 
+        if (criteria.clientNameKana) {
+            const kanaToken = kn
+                ? kn.toHiragana(toHalfSafe(criteria.clientNameKana)).replace(/\s+/g, '')
+                : criteria.clientNameKana.replace(/\s+/g, '');
+            // 登録済みかなに部分一致。未登録は他条件で残すため、ここだけで除外しない。
+            parts.push(F.clientNameKana + ' like ' + quote(kanaToken));
+        }
+
         if (criteria.slipNo) {
             parts.push(F.slipNo + ' like ' + quote(criteria.slipNo));
         }
@@ -93,8 +135,19 @@
             parts.push(F.manageNo + ' = ' + quote(criteria.manageNo));
         }
 
+        if (criteria.kimonoType) {
+            parts.push(F.kimonoType + ' like ' + quote(criteria.kimonoType));
+        }
+
+        if (criteria.orderDateFrom) {
+            parts.push(F.orderDate + ' >= ' + quote(criteria.orderDateFrom));
+        }
+
+        if (criteria.orderDateTo) {
+            parts.push(F.orderDate + ' <= ' + quote(criteria.orderDateTo));
+        }
+
         if (!criteria.includeDelivered) {
-            // ドロップダウンは != が使えず 400 になる。未選択は not in に含まれないので空欄も残す。
             parts.push(
                 '(' + F.deliveryStatus + ' not in (' + quote(cfg().DELIVERY_DONE) + ')'
                 + ' or ' + F.deliveryStatus + ' in (""))'
@@ -105,7 +158,37 @@
             ok: true,
             message: '',
             query: parts.join(' and '),
+            criteria,
         };
+
+    };
+
+    const toHalfSafe = (value) => {
+
+        const kn = kana();
+
+        if (!kn) {
+            return String(value ?? '');
+        }
+
+        return kn.toHalfWidthAscii(value);
+
+    };
+
+    /**
+     * サーバクエリ後のクライアント側ふりがな再フィルタ（正規化ゆれ吸収）。
+     * kana 条件が無いときは全件通過。空かなは kana 条件時のみ除外（サーバで既に like 済み）。
+     */
+    const filterRowsByKana = (rows, criteria) => {
+
+        const kn = kana();
+        const list = Array.isArray(rows) ? rows : [];
+
+        if (!criteria || !criteria.clientNameKana || !kn) {
+            return list;
+        }
+
+        return list.filter((row) => kn.matchesKana(row.clientNameKana, criteria.clientNameKana, 'partial'));
 
     };
 
@@ -189,6 +272,8 @@
             customerCode: readValue(record, F.customerCode),
             customerName: readValue(record, F.customerName),
             clientName: readValue(record, F.clientName),
+            clientNameKana: readValue(record, F.clientNameKana),
+            clientNameKanaStatus: readValue(record, F.clientNameKanaStatus),
             slipNo: readValue(record, F.slipNo),
             kimonoType: readValue(record, F.kimonoType),
             kimonoSpec: readValue(record, F.kimonoSpec),
@@ -233,6 +318,11 @@
         '/k/' + cfg().ORDER_APP_ID + '/show#record=' + encodeURIComponent(String(recordId ?? ''))
     );
 
+    const orderEditPath = (recordId) => (
+        '/k/' + cfg().ORDER_APP_ID + '/show#record=' + encodeURIComponent(String(recordId ?? ''))
+        + '&mode=edit'
+    );
+
     const fetchFields = () => {
 
         const F = cfg().FIELDS;
@@ -245,6 +335,8 @@
             F.customerCode,
             F.customerName,
             F.clientName,
+            F.clientNameKana,
+            F.clientNameKanaStatus,
             F.slipNo,
             F.kimonoType,
             F.kimonoSpec,
@@ -264,6 +356,7 @@
         const maxOffset = cfg().MAX_OFFSET;
         const all = [];
         let offset = 0;
+        let truncated = false;
 
         while (true) {
 
@@ -278,6 +371,7 @@
             }
 
             if (offset >= maxOffset) {
+                truncated = true;
                 break;
             }
 
@@ -285,7 +379,7 @@
 
         }
 
-        return all;
+        return { records: all, truncated, fetched: all.length };
 
     };
 
@@ -293,9 +387,14 @@
         customerCode: '',
         customerName: '',
         clientName: '',
+        clientNameKana: '',
         slipNo: '',
         manageNo: '',
+        kimonoType: '',
+        orderDateFrom: '',
+        orderDateTo: '',
         includeDelivered: false,
+        excludeA550: false,
     });
 
     const isSearchEnterKey = (event) => {
@@ -312,11 +411,150 @@
 
     };
 
-    const resultCountText = (count) => {
+    const resultCountText = (count, meta) => {
 
         const messages = cfg().MESSAGES;
+        let text = messages.resultPrefix + count + messages.resultSuffix;
 
-        return messages.resultPrefix + count + messages.resultSuffix;
+        if (meta && meta.truncated) {
+            text += '（'
+                + messages.truncatedPrefix
+                + cfg().DISPLAY_LIMIT
+                + messages.truncatedMid
+                + cfg().MAX_OFFSET
+                + messages.truncatedSuffix
+                + '）';
+        }
+
+        return text;
+
+    };
+
+    /**
+     * 予測候補用クエリ（法人コード任意＋かな like）。debounce 側で呼ぶ。
+     */
+    const buildSuggestRequest = (input) => {
+
+        const criteria = normalizeInput(input);
+        const kn = kana();
+        const key = criteria.clientNameKanaKey || (kn ? kn.normalizeKanaKey(criteria.clientNameKana) : '');
+
+        if (!key || key.length < cfg().SUGGEST_MIN_CHARS) {
+            return { ok: false, query: '', key: '' };
+        }
+
+        const F = cfg().FIELDS;
+        const parts = [];
+
+        if (criteria.customerCode) {
+            parts.push(F.customerCode + ' = ' + quote(criteria.customerCode));
+        }
+
+        if (criteria.excludeA550) {
+            parts.push(F.customerCode + ' != ' + quote(cfg().STORE_CUSTOMER_CODE));
+        }
+
+        const kanaToken = kn
+            ? kn.toHiragana(toHalfSafe(criteria.clientNameKana)).replace(/\s+/g, '')
+            : criteria.clientNameKana.replace(/\s+/g, '');
+
+        parts.push(F.clientNameKana + ' like ' + quote(kanaToken));
+
+        return {
+            ok: true,
+            query: parts.join(' and ') + ' order by order_date desc limit ' + cfg().SUGGEST_FETCH_LIMIT,
+            key,
+            criteria,
+        };
+
+    };
+
+    /**
+     * 同音異字を氏名単位でまとめた候補。
+     */
+    const buildSuggestItems = (records, queryKana) => {
+
+        const kn = kana();
+        const rows = buildRows(records);
+        const filtered = rows.filter((row) => {
+
+            if (!row.clientNameKana) {
+                return false;
+            }
+
+            return !kn || kn.matchesKana(row.clientNameKana, queryKana, 'partial');
+
+        });
+
+        const map = new Map();
+
+        filtered.forEach((row) => {
+
+            const status = row.clientNameKanaStatus || '';
+            const key = [
+                row.customerCode,
+                row.clientName,
+                kn ? kn.normalizeKanaKey(row.clientNameKana) : row.clientNameKana,
+            ].join('\u0001');
+
+            if (!map.has(key)) {
+                map.set(key, {
+                    customerCode: row.customerCode,
+                    customerName: row.customerName,
+                    clientName: row.clientName,
+                    clientNameKana: row.clientNameKana,
+                    clientNameKanaStatus: status,
+                    unconfirmed: status !== cfg().KANA_STATUS.confirmed,
+                    kimonoTypes: new Set(),
+                    count: 0,
+                    latestOrderDate: row.orderDate,
+                    sampleRecordId: row.recordId,
+                });
+            }
+
+            const item = map.get(key);
+
+            item.count += 1;
+
+            if (row.kimonoType) {
+                item.kimonoTypes.add(row.kimonoType);
+            }
+
+            if (row.orderDate && row.orderDate > item.latestOrderDate) {
+                item.latestOrderDate = row.orderDate;
+                item.sampleRecordId = row.recordId;
+            }
+
+        });
+
+        return Array.from(map.values())
+            .map((item) => ({
+                customerCode: item.customerCode,
+                customerName: item.customerName,
+                clientName: item.clientName,
+                clientNameKana: item.clientNameKana,
+                clientNameKanaStatus: item.clientNameKanaStatus,
+                unconfirmed: item.unconfirmed,
+                kimonoTypes: Array.from(item.kimonoTypes),
+                count: item.count,
+                latestOrderDate: item.latestOrderDate,
+                sampleRecordId: item.sampleRecordId,
+            }))
+            .sort((a, b) => String(b.latestOrderDate).localeCompare(String(a.latestOrderDate)))
+            .slice(0, cfg().SUGGEST_DISPLAY_LIMIT);
+
+    };
+
+    const applyDisplayLimit = (rows) => {
+
+        const list = Array.isArray(rows) ? rows : [];
+        const limit = cfg().DISPLAY_LIMIT;
+
+        if (list.length <= limit) {
+            return { rows: list, truncated: false };
+        }
+
+        return { rows: list.slice(0, limit), truncated: true };
 
     };
 
@@ -325,16 +563,21 @@
         normalizeInput,
         hasTextCondition,
         buildSearchRequest,
+        filterRowsByKana,
         isCancelled,
         joinProcessing,
         compareRows,
         buildRows,
         orderDetailPath,
+        orderEditPath,
         fetchFields,
         fetchAllPages,
         clearedInput,
         isSearchEnterKey,
         resultCountText,
+        buildSuggestRequest,
+        buildSuggestItems,
+        applyDisplayLimit,
     };
 
 }());

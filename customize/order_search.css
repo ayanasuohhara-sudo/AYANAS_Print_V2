@@ -44,6 +44,84 @@ body.ayanas-order-search-active .gaia-argoui-app-index-pager {
   border-radius: 8px;
 }
 
+.cayan-os-field--suggest {
+  position: relative;
+}
+
+.cayan-os-hint {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.cayan-os-suggest {
+  position: absolute;
+  z-index: 40;
+  left: 0;
+  right: 0;
+  top: calc(100% - 4px);
+  max-height: 280px;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+.cayan-os-suggest-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.cayan-os-suggest-item:hover,
+.cayan-os-suggest-item:focus {
+  background: #f8fafc;
+}
+
+.cayan-os-suggest-main {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cayan-os-suggest-meta {
+  font-size: 12px;
+  color: #475569;
+}
+
+.cayan-os-badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.cayan-os-badge.is-ok { background: #dcfce7; color: #166534; }
+.cayan-os-badge.is-pending { background: #ffedd5; color: #9a3412; }
+.cayan-os-badge.is-unknown { background: #e2e8f0; color: #334155; }
+.cayan-os-badge.is-empty { background: #fee2e2; color: #991b1b; }
+
+.cayan-os-limit {
+  margin: 0 0 10px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.cayan-os-edit {
+  white-space: nowrap;
+}
+
 .cayan-os-field {
   display: flex;
   flex-direction: column;
