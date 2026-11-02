@@ -20,7 +20,7 @@
 
     let mode = '';
     let stock = null;
-    let storeSummary = null;
+    let dailySummary = null;
     let workId = '';
     let deadlineId = '';
     let query = '';
@@ -102,15 +102,23 @@
             + '</section>';
     };
 
+    const summaryTitleForMode = () => {
+        const ui = cfg().UI;
+        if (mode === cfg().MODE.factory) {
+            return ui.factorySummaryTitle || '本日の工場状況';
+        }
+        return ui.storeSummaryTitle || ui.summaryTitle || '本日の店舗状況';
+    };
+
     const renderSummaryHtml = () => {
-        if (mode !== cfg().MODE.store) {
+        if (mode !== cfg().MODE.store && mode !== cfg().MODE.factory) {
             return '';
         }
 
-        const ui = cfg().UI;
+        const title = summaryTitleForMode();
         return ''
-            + '<section class="cayan-fp-summary" aria-label="' + escapeHtml(ui.summaryTitle || '本日の店舗状況') + '">'
-            + '<h2 class="cayan-fp-summary__title">' + escapeHtml(ui.summaryTitle || '本日の店舗状況') + '</h2>'
+            + '<section class="cayan-fp-summary" aria-label="' + escapeHtml(title) + '">'
+            + '<h2 class="cayan-fp-summary__title">' + escapeHtml(title) + '</h2>'
             + '<div class="cayan-fp-summary__cards" id="cayan-fp-summary-cards"></div>'
             + '</section>';
     };
@@ -124,17 +132,44 @@
 
     const paintSummary = () => {
         const el = document.getElementById('cayan-fp-summary-cards');
-        if (!el || mode !== cfg().MODE.store) {
+        if (!el || (mode !== cfg().MODE.store && mode !== cfg().MODE.factory)) {
             return;
         }
 
         const ui = cfg().UI;
-        if (loading && !storeSummary) {
-            el.innerHTML = summaryCardHtml(ui.summaryTitle || '状況', ui.loading, true);
+        if (loading && !dailySummary) {
+            el.innerHTML = summaryCardHtml(summaryTitleForMode(), ui.loading, true);
             return;
         }
 
-        const s = storeSummary || Engine.buildStoreDailySummary({});
+        if (mode === cfg().MODE.factory) {
+            const s = dailySummary || Engine.buildFactoryDailySummary({});
+            el.innerHTML = [
+                summaryCardHtml(
+                    ui.factorySummaryTodayOrders || '本日の工場受注',
+                    Engine.formatSummaryMetric(s.todayOrderCount),
+                    s.todayOrderCount.status !== 'ok'
+                ),
+                summaryCardHtml(
+                    ui.summaryDueToday,
+                    Engine.formatSummaryMetric(s.dueTodayCount),
+                    s.dueTodayCount.status !== 'ok'
+                ),
+                summaryCardHtml(
+                    ui.factorySummaryDeliveryWaiting || ui.deliveryWaiting,
+                    Engine.formatSummaryMetric(s.deliveryWaitingCount),
+                    s.deliveryWaitingCount.status !== 'ok'
+                ),
+                summaryCardHtml(
+                    ui.summaryOverdue,
+                    Engine.formatSummaryMetric(s.overdueCount),
+                    s.overdueCount.status !== 'ok'
+                ),
+            ].join('');
+            return;
+        }
+
+        const s = dailySummary || Engine.buildStoreDailySummary({});
         el.innerHTML = [
             summaryCardHtml(
                 ui.summaryTodayOrders,
@@ -278,15 +313,34 @@
                     return;
                 }
 
-                storeSummary = Engine.buildStoreDailySummary({
+                dailySummary = Engine.buildStoreDailySummary({
                     todayOrderRecords,
                     stock,
                     stockFetched: true,
                     paymentAmount,
                     paymentFetched,
                 });
+            } else if (mode === cfg().MODE.factory) {
+                let todayOrderRecords = null;
+
+                try {
+                    todayOrderRecords = await fetchAll(Engine.buildTodayFactoryOrderQuery(today));
+                } catch (orderError) {
+                    console.error('[floor_portal] factory today orders', orderError && orderError.message, orderError);
+                    todayOrderRecords = null;
+                }
+
+                if (serial !== requestSerial) {
+                    return;
+                }
+
+                dailySummary = Engine.buildFactoryDailySummary({
+                    todayOrderRecords,
+                    stock,
+                    stockFetched: true,
+                });
             } else {
-                storeSummary = null;
+                dailySummary = null;
             }
 
             loading = false;
@@ -300,9 +354,13 @@
             loading = false;
             loadError = error && error.message ? error.message : String(error);
             if (mode === cfg().MODE.store) {
-                storeSummary = Engine.buildStoreDailySummary({
+                dailySummary = Engine.buildStoreDailySummary({
                     stockFetched: false,
                     paymentFetched: false,
+                });
+            } else if (mode === cfg().MODE.factory) {
+                dailySummary = Engine.buildFactoryDailySummary({
+                    stockFetched: false,
                 });
             }
             console.error('[floor_portal]', error && error.code, error && error.message, error);
@@ -382,14 +440,12 @@
             workHtml += cardButton('work:' + name, name, work[name] || 0, workId === name);
         });
 
-        if (mode === cfg().MODE.store) {
-            workHtml += cardButton(
-                'work:deliveryWaiting',
-                ui.deliveryWaiting,
-                kpis ? kpis.deliveryWaiting : 0,
-                workId === 'deliveryWaiting'
-            );
-        }
+        workHtml += cardButton(
+            'work:deliveryWaiting',
+            ui.deliveryWaiting,
+            kpis ? (kpis.deliveryWaiting || 0) : 0,
+            workId === 'deliveryWaiting'
+        );
 
         if (cfg().SHOW_OTHER_CARD[mode]) {
             workHtml += cardButton('work:other', ui.other, other, workId === 'other');

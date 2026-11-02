@@ -3,8 +3,8 @@
 - **作成**: 2026-11-02（Asia/Tokyo）／実装報告: 2026-11-03
 - **対象アプリ**: App87「店舗作業状況ポータル」
 - **方針**: App85 は追加しない。App84 を作業メニューに配置。既存アプリの処理ロジックは変更しない
-- **実装版**: floor_portal **v1.3.1**（本番反映済・文字サイズ拡大）
-- **本番反映・ACL 変更**: **公開済**（App87 デプロイ SUCCESS／ACL は既存のまま）
+- **実装版**: floor_portal **v1.4.0**（本番反映済・工場と同サイズ／工場にも日次サマリ）
+- **本番反映・ACL 変更**: **公開済**（App86/App87 デプロイ SUCCESS／ACL は既存のまま）
 - **実装報告**: `docs/STORE_PORTAL_IMPLEMENTATION_REPORT.md`
 - **本番反映報告**: `docs/STORE_PORTAL_PROD_RELEASE_REPORT.md`
 
@@ -83,7 +83,7 @@
 
 | ファイル | 内容 | 本番 |
 |----------|------|------|
-| `customize/floor_portal_config.js` | v1.3.0・`STORE_MENU_GROUPS`・A550・KPI 文言・App85 除外 | **App87 本番済** |
+| `customize/floor_portal_config.js` | v1.3.1・`STORE_MENU_GROUPS`・A550・KPI 文言・App85 除外 | **App87 本番済** |
 | `customize/floor_portal_desktop.js` | 店舗メニュー／日次サマリ描画 | **App87 本番済** |
 | `customize/floor_portal_engine.js` | A550 クエリ・サマリ集計・未取得 | **App87 本番済** |
 | `customize/floor_portal.css` | メニュー／サマリ／iPad 向けスタイル | **App87 本番済** |

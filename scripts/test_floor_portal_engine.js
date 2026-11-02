@@ -265,6 +265,35 @@ const run = () => {
     assert('工場モード分離', E.resolveMode(86) === 'factory' && E.resolveMode(87) === 'store');
     assert('本日受注クエリ', E.buildTodayStoreOrderQuery(TODAY)
         === 'customer_code = "A550" and order_date = "2026-10-05" order by レコード番号 asc');
+    assert('工場本日受注クエリ', E.buildTodayFactoryOrderQuery(TODAY)
+        === 'location_status in ("工場") and order_date = "2026-10-05" order by レコード番号 asc');
+
+    const factorySummaryOk = E.buildFactoryDailySummary({
+        todayOrderRecords: [
+            rec('FT-1', '工場', '未着', { orderDate: TODAY, id: 'ft1' }),
+            rec('FT-1', '工場', '仕上げ中', { orderDate: TODAY, id: 'ft1b' }),
+            rec('FT-2', '工場', '未着', { orderDate: TODAY, id: 'ft2' }),
+            rec('ST-1', '店舗', '未着', { orderDate: TODAY, id: 'st1' }),
+            rec('FT-CANCEL', '工場', '未着', { orderDate: TODAY, aggregation: '取消', id: 'ft4' }),
+        ],
+        stock: factory,
+        stockFetched: true,
+    });
+    assert('工場本日受注は管理番号ユニーク', factorySummaryOk.todayOrderCount.status === 'ok'
+        && factorySummaryOk.todayOrderCount.value === 2);
+    assert('工場本日納期', factorySummaryOk.dueTodayCount.status === 'ok'
+        && factorySummaryOk.dueTodayCount.value === factory.kpis.deadline.today);
+    assert('工場納品待ち', factorySummaryOk.deliveryWaitingCount.status === 'ok'
+        && typeof factorySummaryOk.deliveryWaitingCount.value === 'number');
+    assert('工場納期超過', factorySummaryOk.overdueCount.status === 'ok'
+        && factorySummaryOk.overdueCount.value === factory.kpis.deadline.overdue);
+    assert('工場在庫の納品待ちKPI', typeof factory.kpis.deliveryWaiting === 'number');
+
+    const factorySummaryFail = E.buildFactoryDailySummary({ stockFetched: false, todayOrderRecords: null });
+    assert('工場失敗時は未取得', factorySummaryFail.todayOrderCount.status === 'unavailable'
+        && factorySummaryFail.dueTodayCount.status === 'unavailable'
+        && factorySummaryFail.deliveryWaitingCount.status === 'unavailable'
+        && factorySummaryFail.overdueCount.status === 'unavailable');
 };
 
 run();

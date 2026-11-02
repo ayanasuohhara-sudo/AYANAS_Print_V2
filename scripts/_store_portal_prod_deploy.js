@@ -1,10 +1,11 @@
 'use strict';
 
 /**
- * 店舗ポータル App87 本番反映（v1.3.1・文字サイズ拡大）
+ * 工場・店舗ポータル App86/App87 本番反映（v1.4.0）
  *   node scripts/_store_portal_prod_deploy.js
  *
- * App86（工場）は変更しない。ACL は変更しない。
+ * 両アプリに同一バンドル（work_status_labels 含む）を載せる。
+ * ACL は変更しない。
  */
 
 const http = require('http');
@@ -16,16 +17,17 @@ const ROOT = '/workspace';
 const SUB = 'o5nppg7kb4ly';
 const APP87 = 87;
 const APP86 = 86;
+const EXPECT_VER = '1.4.0';
 const STAMP = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 const WORK_DIR = path.join(ROOT, 'customize/backups', 'store_portal_prod_' + STAMP);
 
-const APP87_JS = [
+const PORTAL_JS = [
   'work_status_labels.js',
   'floor_portal_config.js',
   'floor_portal_engine.js',
   'floor_portal_desktop.js',
 ];
-const APP87_CSS = ['floor_portal.css'];
+const PORTAL_CSS = ['floor_portal.css'];
 
 const httpJson = (p, method = 'GET') =>
   new Promise((resolve, reject) => {
@@ -141,19 +143,19 @@ async function backupCustomize(appId) {
   return result.result.value;
 }
 
-async function deployApp87() {
+async function deployApp(appId) {
   const filesMap = {};
-  for (const n of APP87_JS.concat(APP87_CSS)) filesMap[n] = readLocal(n);
-  const page = await openPage(`https://${SUB}.cybozu.com/k/${APP87}/`);
+  for (const n of PORTAL_JS.concat(PORTAL_CSS)) filesMap[n] = readLocal(n);
+  const page = await openPage(`https://${SUB}.cybozu.com/k/${appId}/`);
   await pushFilesToPage(page.send, filesMap);
   const result = await page.send('Runtime.evaluate', {
     awaitPromise: true,
     returnByValue: true,
     expression: `(async()=>{
       try{
-        const APP=${APP87};
-        const jsOrder=${JSON.stringify(APP87_JS)};
-        const cssOrder=${JSON.stringify(APP87_CSS)};
+        const APP=${appId};
+        const jsOrder=${JSON.stringify(PORTAL_JS)};
+        const cssOrder=${JSON.stringify(PORTAL_CSS)};
         const files=window.__SP_FILES;
         const api=(p,m,b)=>kintone.api(kintone.api.url(p,true),m,b);
         const token=kintone.getRequestToken();
@@ -215,33 +217,43 @@ async function deployApp87() {
   return value;
 }
 
-async function verifyStoreUi() {
-  const page = await openPage(`https://${SUB}.cybozu.com/k/${APP87}/`);
-  await new Promise((r) => setTimeout(r, 5000));
+async function verifyPortalUi(appId) {
+  const page = await openPage(`https://${SUB}.cybozu.com/k/${appId}/`);
+  await new Promise((r) => setTimeout(r, 5500));
   const result = await page.send('Runtime.evaluate', {
     returnByValue: true,
     expression: `(()=>{
       const C=window.CAYANAS_FLOOR_PORTAL;
+      const root=document.querySelector('.cayan-fp-root');
       const links=[...document.querySelectorAll('a.cayan-fp-btn')].map(a=>({
         text:(a.querySelector('.cayan-fp-menu__label')||a).textContent.trim(),
         href:a.getAttribute('href')||'',
-        note:((a.querySelector('.cayan-fp-menu__note')||{}).textContent||'').trim()
+        note:((a.querySelector('.cayan-fp-menu__note')||{}).textContent||'').trim(),
+        fontSize: getComputedStyle(a).fontSize
       }));
       const summary=[...document.querySelectorAll('.cayan-fp-summary-card')].map(card=>({
         label:((card.querySelector('.cayan-fp-summary-card__label')||{}).textContent||'').trim(),
         value:((card.querySelector('.cayan-fp-summary-card__value')||{}).textContent||'').trim(),
         unavailable: card.classList.contains('is-unavailable')
       }));
+      const workLabels=[...document.querySelectorAll('#cayan-fp-work-cards .cayan-fp-card__label')]
+        .map(el=>el.textContent.trim());
       return {
+        app: ${appId},
         ver: C && C.VERSION,
-        storeCustomer: C && C.STORE_CUSTOMER_CODE,
         title: (document.querySelector('.cayan-fp-title')||{}).textContent||'',
+        rootFontSize: root ? getComputedStyle(root).fontSize : null,
+        titleFontSize: ((document.querySelector('.cayan-fp-title')||{}).style)
+          ? getComputedStyle(document.querySelector('.cayan-fp-title')).fontSize : null,
         hasMenu: !!document.querySelector('.cayan-fp-menu'),
         hasSummary: !!document.querySelector('.cayan-fp-summary'),
+        summaryTitle: ((document.querySelector('.cayan-fp-summary__title')||{}).textContent||'').trim(),
         has85: links.some(l=>/\\/k\\/85\\//.test(l.href) || /App85|しみ抜き作業/.test(l.text)),
         hasLocationMove: links.some(l=>l.text==='保管場所移動' && /\\/k\\/34\\//.test(l.href)),
         hasInternalWork: links.some(l=>l.text==='社内作業登録' && /\\/k\\/84\\//.test(l.href)),
-        permissionNote: ((document.querySelector('.cayan-fp-note--warn')||{}).textContent||'').trim(),
+        flatLinks: [...document.querySelectorAll('nav.cayan-fp-links a')].map(a=>a.textContent.trim()),
+        workLabels,
+        hasDeliveryWaitingCard: workLabels.indexOf('納品待ち') >= 0,
         links,
         summary
       };
@@ -255,81 +267,76 @@ async function verifyStoreUi() {
   };
 }
 
-async function verifyFactoryUntouched() {
-  const page = await openPage(`https://${SUB}.cybozu.com/k/${APP86}/`);
-  const result = await page.send('Runtime.evaluate', {
-    awaitPromise: true,
-    returnByValue: true,
-    expression: `(async()=>{
-      const api=(p,m,b)=>kintone.api(kintone.api.url(p,true),m,b);
-      const c=await api('/k/v1/app/customize.json','GET',{app:${APP86}});
-      await new Promise(r=>setTimeout(r,3500));
-      const C=window.CAYANAS_FLOOR_PORTAL;
-      return {
-        js:((c.desktop||{}).js||[]).map(x=>x.file&&x.file.name),
-        css:((c.desktop||{}).css||[]).map(x=>x.file&&x.file.name),
-        ver: C && C.VERSION,
-        title:(document.querySelector('.cayan-fp-title')||{}).textContent||'',
-        hasStoreMenu: !!document.querySelector('.cayan-fp-menu'),
-        hasSummary: !!document.querySelector('.cayan-fp-summary'),
-        flatLinks: [...document.querySelectorAll('nav.cayan-fp-links a, a.cayan-fp-btn')].map(a=>a.textContent.trim())
-      };
-    })()`,
-  });
-  await page.close();
-  return result.result.value;
-}
-
 async function main() {
   fs.mkdirSync(WORK_DIR, { recursive: true });
   fs.writeFileSync('/tmp/store_portal_prod_dir.txt', WORK_DIR);
 
-  console.error('=== backup App87 ===');
-  const before = await backupCustomize(APP87);
-  fs.writeFileSync(path.join(WORK_DIR, 'app87_before.json'), JSON.stringify(before, null, 2));
+  console.error('=== backup App87 / App86 ===');
+  const before87 = await backupCustomize(APP87);
+  const before86 = await backupCustomize(APP86);
+  fs.writeFileSync(path.join(WORK_DIR, 'app87_before.json'), JSON.stringify(before87, null, 2));
+  fs.writeFileSync(path.join(WORK_DIR, 'app86_before.json'), JSON.stringify(before86, null, 2));
 
   console.error('=== deploy App87 ===');
-  const deploy = await deployApp87();
-  fs.writeFileSync(path.join(WORK_DIR, 'deploy.json'), JSON.stringify(deploy, null, 2));
-  console.log(JSON.stringify(deploy, null, 2));
-  if (!deploy.ok) throw new Error('App87 deploy failed');
-  if (JSON.stringify(deploy.desktopJs) !== JSON.stringify(APP87_JS)) {
-    throw new Error('JS order mismatch');
+  const deploy87 = await deployApp(APP87);
+  fs.writeFileSync(path.join(WORK_DIR, 'deploy87.json'), JSON.stringify(deploy87, null, 2));
+  console.log(JSON.stringify({ app87: deploy87 }, null, 2));
+  if (!deploy87.ok) throw new Error('App87 deploy failed');
+  if (JSON.stringify(deploy87.desktopJs) !== JSON.stringify(PORTAL_JS)) {
+    throw new Error('App87 JS order mismatch');
   }
-  if (JSON.stringify(deploy.desktopCss) !== JSON.stringify(APP87_CSS)) {
-    throw new Error('CSS order mismatch');
+
+  console.error('=== deploy App86 ===');
+  const deploy86 = await deployApp(APP86);
+  fs.writeFileSync(path.join(WORK_DIR, 'deploy86.json'), JSON.stringify(deploy86, null, 2));
+  console.log(JSON.stringify({ app86: deploy86 }, null, 2));
+  if (!deploy86.ok) throw new Error('App86 deploy failed');
+  if (JSON.stringify(deploy86.desktopJs) !== JSON.stringify(PORTAL_JS)) {
+    throw new Error('App86 JS order mismatch');
   }
 
   console.error('=== verify store UI ===');
-  const store = await verifyStoreUi();
+  const store = await verifyPortalUi(APP87);
   fs.writeFileSync(path.join(WORK_DIR, 'store_ui.json'), JSON.stringify(store.ui, null, 2));
   fs.writeFileSync(path.join(WORK_DIR, 'store_ui.png'), Buffer.from(store.screenshot, 'base64'));
   fs.mkdirSync('/opt/cursor/artifacts/screenshots', { recursive: true });
-  fs.writeFileSync('/opt/cursor/artifacts/screenshots/store_portal_prod_live.png', Buffer.from(store.screenshot, 'base64'));
+  fs.writeFileSync('/opt/cursor/artifacts/screenshots/store_portal_v140.png', Buffer.from(store.screenshot, 'base64'));
   console.log(JSON.stringify(store.ui, null, 2));
-  if (!store.ui || store.ui.ver !== '1.3.1') throw new Error('version not 1.3.1');
-  if (!store.ui.hasMenu || !store.ui.hasSummary) throw new Error('menu/summary missing');
+  if (!store.ui || store.ui.ver !== EXPECT_VER) throw new Error('store version not ' + EXPECT_VER);
+  if (store.ui.rootFontSize !== '15px') throw new Error('store root font not 15px: ' + store.ui.rootFontSize);
+  if (!store.ui.hasMenu || !store.ui.hasSummary) throw new Error('store menu/summary missing');
   if (store.ui.has85) throw new Error('App85 link present');
   if (!store.ui.hasLocationMove || !store.ui.hasInternalWork) throw new Error('required work links missing');
+  if (!store.ui.hasDeliveryWaitingCard) throw new Error('store delivery waiting card missing');
 
-  console.error('=== verify factory App86 not overwritten ===');
-  const factory = await verifyFactoryUntouched();
-  fs.writeFileSync(path.join(WORK_DIR, 'factory_ui.json'), JSON.stringify(factory, null, 2));
-  console.log(JSON.stringify(factory, null, 2));
-  // Factory may still be on older portal JS; must not have store-only menu injected as App87-only content unless same bundle.
-  // We did not deploy App86, so customize list should be unchanged from before this script.
-  if (!Array.isArray(factory.js) || factory.js.length === 0) {
-    throw new Error('factory customize empty unexpectedly');
+  console.error('=== verify factory UI ===');
+  const factory = await verifyPortalUi(APP86);
+  fs.writeFileSync(path.join(WORK_DIR, 'factory_ui.json'), JSON.stringify(factory.ui, null, 2));
+  fs.writeFileSync(path.join(WORK_DIR, 'factory_ui.png'), Buffer.from(factory.screenshot, 'base64'));
+  fs.writeFileSync('/opt/cursor/artifacts/screenshots/factory_portal_v140.png', Buffer.from(factory.screenshot, 'base64'));
+  console.log(JSON.stringify(factory.ui, null, 2));
+  if (!factory.ui || factory.ui.ver !== EXPECT_VER) throw new Error('factory version not ' + EXPECT_VER);
+  if (factory.ui.rootFontSize !== '15px') throw new Error('factory root font not 15px');
+  if (factory.ui.hasMenu) throw new Error('factory should keep flat shortcuts (no store menu)');
+  if (!factory.ui.hasSummary) throw new Error('factory summary missing');
+  if (factory.ui.summaryTitle !== '本日の工場状況') throw new Error('factory summary title mismatch');
+  if (!factory.ui.hasDeliveryWaitingCard) throw new Error('factory delivery waiting card missing');
+  if (!Array.isArray(factory.ui.flatLinks) || factory.ui.flatLinks.length < 3) {
+    throw new Error('factory flat links missing');
+  }
+  const factorySummaryLabels = (factory.ui.summary || []).map((s) => s.label);
+  if (factorySummaryLabels.indexOf('本日の工場受注') < 0 || factorySummaryLabels.indexOf('納品待ち') < 0) {
+    throw new Error('factory summary cards incomplete: ' + factorySummaryLabels.join(','));
   }
 
   const rollback = [
-    '# 店舗ポータル本番反映 — 復旧',
+    '# 工場・店舗ポータル本番反映 — 復旧',
     '',
     '- バックアップ: `' + WORK_DIR + '`',
     '- 作成: ' + new Date().toISOString() + ' (UTC)',
     '',
-    '1. App87: `app87_before.json` の desktop js/css 順に旧ファイルを再アップロードしてデプロイ',
-    '2. App86 は本作業で未変更',
+    '1. App87: `app87_before.json` の desktop js/css を再アップロードしてデプロイ',
+    '2. App86: `app86_before.json` の desktop js/css を再アップロードしてデプロイ',
     '3. ACL は変更していない',
     '',
   ].join('\n');
@@ -339,15 +346,17 @@ async function main() {
     at: new Date().toISOString(),
     ok: true,
     dir: WORK_DIR,
-    deploy,
+    expectVer: EXPECT_VER,
+    deploy87,
+    deploy86,
     store: store.ui,
-    factory,
+    factory: factory.ui,
     published: true,
     aclChanged: false,
   };
   fs.writeFileSync(path.join(WORK_DIR, 'PROD_OK.json'), JSON.stringify(summary, null, 2));
-  console.error('STORE PORTAL PROD OK');
-  console.log(JSON.stringify({ ok: true, ver: store.ui.ver, dir: WORK_DIR }, null, 2));
+  console.error('FLOOR PORTAL PROD OK');
+  console.log(JSON.stringify({ ok: true, ver: EXPECT_VER, dir: WORK_DIR }, null, 2));
 }
 
 main().catch((err) => {

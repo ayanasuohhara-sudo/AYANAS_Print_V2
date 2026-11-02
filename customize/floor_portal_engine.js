@@ -246,6 +246,48 @@
         return summary;
     };
 
+    /**
+     * 工場サマリ。店舗と同型の日次状況（入金は対象外）。失敗時は未取得。
+     */
+    const buildFactoryDailySummary = (options) => {
+        const opts = options || {};
+        const stock = opts.stock || null;
+        const todayOrderRecords = Array.isArray(opts.todayOrderRecords) ? opts.todayOrderRecords : null;
+        const stockFetched = opts.stockFetched === true && !!stock;
+
+        const summary = {
+            todayOrderCount: metricUnavailable(),
+            dueTodayCount: metricUnavailable(),
+            deliveryWaitingCount: metricUnavailable(),
+            overdueCount: metricUnavailable(),
+        };
+
+        if (todayOrderRecords) {
+            const active = todayOrderRecords.filter((record) => (
+                readValue(record, cfg().FIELDS.locationStatus) === cfg().LOCATION.factory
+                && isAggregationActive(record)
+            ));
+            const set = new Set();
+            active.forEach((record) => {
+                const manageNo = readValue(record, cfg().FIELDS.manageNo);
+                if (manageNo) {
+                    set.add(manageNo);
+                }
+            });
+            summary.todayOrderCount = metricOk(set.size);
+        }
+
+        if (stockFetched) {
+            summary.dueTodayCount = metricOk(stock.kpis.deadline.today);
+            summary.overdueCount = metricOk(stock.kpis.deadline.overdue);
+            summary.deliveryWaitingCount = metricOk(
+                typeof stock.kpis.deliveryWaiting === 'number' ? stock.kpis.deliveryWaiting : 0
+            );
+        }
+
+        return summary;
+    };
+
     const deadlineFlags = (deadline, today) => {
 
         const d = normalizeYmd(deadline);
@@ -441,9 +483,10 @@
             total: countDistinct(rows, () => true),
             work,
             other: countDistinct(rows, (row) => cards.indexOf(normalizeWork(row.workStatus)) === -1),
-            deliveryWaiting: mode === cfg().MODE.store
-                ? countDistinct(rows, (row) => row.deliveryStatus === cfg().DELIVERY.waiting)
-                : null,
+            deliveryWaiting: countDistinct(
+                rows,
+                (row) => row.deliveryStatus === cfg().DELIVERY.waiting
+            ),
             deadline: {
                 overdue: countDistinct(rows, (row) => row.deadlineFlags.overdue),
                 today: countDistinct(rows, (row) => row.deadlineFlags.today),
@@ -620,6 +663,15 @@
             + ' order by レコード番号 asc';
     };
 
+    const buildTodayFactoryOrderQuery = (today) => {
+        const F = cfg().FIELDS;
+        const day = normalizeYmd(today) || todayYmdJst();
+
+        return F.locationStatus + ' in ("' + escapeQueryValue(cfg().LOCATION.factory) + '")'
+            + ' and ' + F.orderDate + ' = "' + escapeQueryValue(day) + '"'
+            + ' order by レコード番号 asc';
+    };
+
     const buildTodayPaymentQuery = (today) => {
         const P = cfg().PAYMENT || {};
         const day = normalizeYmd(today) || todayYmdJst();
@@ -669,6 +721,7 @@
         compareRows,
         buildStock,
         buildStoreDailySummary,
+        buildFactoryDailySummary,
         formatSummaryMetric,
         filterRows,
         describeLookup,
@@ -678,6 +731,7 @@
         orderFetchFields,
         buildLocationQuery,
         buildTodayStoreOrderQuery,
+        buildTodayFactoryOrderQuery,
         buildTodayPaymentQuery,
         sumPaymentAmount,
         buildManageNoQuery,

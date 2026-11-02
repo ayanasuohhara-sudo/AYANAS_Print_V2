@@ -3,19 +3,21 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.3.1
+     * FLOOR_PORTAL_VERSION: 1.4.0
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
      * 0 のままでは画面は出ません。
      *
      * 店舗ポータル（App87）は A550 業務メニュー＋日次サマリ。
+     * 工場ポータル（App86）も日次サマリ／現在状況／納期を同型で表示。
      * App85（旧店舗しみ抜き）は削除済のためメニューに含めない。
      * 作業ステータスは App84（work_status のみ）、場所移動は App34、完了は App30。
      * メニュー表示は権限を付与しない（ACL は各アプリ側）。
+     * 文字サイズは工場／店舗で共通（工場相当）。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.3.1';
+    const FLOOR_PORTAL_VERSION = '1.4.0';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
@@ -219,12 +221,16 @@
             storeMenuTitle: '店舗メニュー',
             storeMenuLead: 'A550 専用。保管場所移動＝App34、社内作業登録＝work_status のみ、仕上げ完了＝工程完了。メニューはショートカットであり権限付与ではありません。',
             storePermissionNote: 'App92／App97 など権限制限のあるアプリは、権限のあるユーザーのみ利用できます。',
-            factoryOtherNote: '上の作業カード以外、旧値、空欄は「その他」です。移行中の旧ラベルは正本カードに合算します。',
+            factoryOtherNote: '工場現物のみ。上の作業カード以外、旧値、空欄は「その他」です。納品待ちカードは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',
             storeWaitingNote: 'A550・店舗現物のみ。納品待ちカードは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',
+            storeSummaryTitle: '本日の店舗状況',
+            factorySummaryTitle: '本日の工場状況',
             summaryTitle: '本日の店舗状況',
             summaryTodayOrders: '本日の店舗受注',
+            factorySummaryTodayOrders: '本日の工場受注',
             summaryDueToday: '本日納期',
             summaryPickupWaiting: '引き取り待ち',
+            factorySummaryDeliveryWaiting: '納品待ち',
             summaryPaymentAmount: '本日入金金額',
             summaryOverdue: '納期超過',
             summaryUnavailable: '未取得',
