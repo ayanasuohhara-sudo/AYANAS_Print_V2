@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * 工場・店舗ポータル App86/App87 本番反映（v1.4.0）
+ * 工場・店舗ポータル App86/App87 本番反映（v1.4.1）
  *   node scripts/_store_portal_prod_deploy.js
  *
  * 両アプリに同一バンドル（work_status_labels 含む）を載せる。
@@ -17,7 +17,7 @@ const ROOT = '/workspace';
 const SUB = 'o5nppg7kb4ly';
 const APP87 = 87;
 const APP86 = 86;
-const EXPECT_VER = '1.4.0';
+const EXPECT_VER = '1.4.1';
 const STAMP = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 const WORK_DIR = path.join(ROOT, 'customize/backups', 'store_portal_prod_' + STAMP);
 

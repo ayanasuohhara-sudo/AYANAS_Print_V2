@@ -18,7 +18,7 @@
 |---|------|------|
 | 1 | App85 削除済・未使用 | メニューに **載せない** |
 | 2 | App84「08_社内作業登録」 | **作業**グループに配置 |
-| 3 | App84 は `work_status` のみ | 既存仕様維持（ロジック非変更） |
+| 3 | App84 は作業登録（＋任意で保管場所） | App30 同型の場所同時更新可。process/delivery は非変更 |
 | 4 | 場所移動 | **App34** |
 | 5 | 工程完了 | **App30** |
 | 6 | 既存処理ロジック | **非変更**（ポータルはリンク＋状況表示のみ） |
@@ -68,7 +68,7 @@
 | 受付 | 個人顧客マスタ | 96 | PCM 検索・登録 |
 | 受付 | 受注登録 | 16 | A550 受注 |
 | 作業 | **保管場所移動** | **34** | **場所移動** |
-| 作業 | **社内作業登録** | **84** | **work_status のみ** |
+| 作業 | **社内作業登録** | **84** | 作業（＋任意で保管場所） |
 | 作業 | 検品・仕上げ完了 | **30** | **工程完了**（＋納品待ち等・既存仕様） |
 | 納品・在庫 | 納品書作成 | 19 | 納品書 |
 | 納品・在庫 | 納期・引き取り在庫 | 92 | 納期 KPI・バーコード引き取り |
@@ -83,10 +83,10 @@
 
 | ファイル | 内容 | 本番 |
 |----------|------|------|
-| `customize/floor_portal_config.js` | v1.3.1・`STORE_MENU_GROUPS`・A550・KPI 文言・App85 除外 | **App87 本番済** |
-| `customize/floor_portal_desktop.js` | 店舗メニュー／日次サマリ描画 | **App87 本番済** |
-| `customize/floor_portal_engine.js` | A550 クエリ・サマリ集計・未取得 | **App87 本番済** |
-| `customize/floor_portal.css` | メニュー／サマリ／iPad 向けスタイル | **App87 本番済** |
+| `customize/floor_portal_config.js` | v1.4.0・店舗メニュー／工場・店舗サマリ文言・App85 除外 | **App86/87 本番済** |
+| `customize/floor_portal_desktop.js` | 店舗メニュー／両モード日次サマリ／納品待ちカード | **App86/87 本番済** |
+| `customize/floor_portal_engine.js` | A550／工場クエリ・サマリ集計・未取得 | **App86/87 本番済** |
+| `customize/floor_portal.css` | 工場相当の文字サイズ・メニュー／サマリ | **App86/87 本番済** |
 | `scripts/test_floor_portal_engine.js` | メニューに 84 あり・85 なしのアサーション | CI／ローカル |
 | `docs/STORE_PORTAL_COMPOSITION.md` | 本構成案 | — |
 

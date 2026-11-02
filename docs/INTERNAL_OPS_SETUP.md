@@ -64,6 +64,16 @@ App16 正式 9 値（表示順）:
 
 スペース: **`internal_work_space`**
 
+処理内容（App30 と同型）:
+
+| モード | PUT |
+|--------|-----|
+| 作業登録のみ（初期） | `work_status` のみ |
+| 作業登録＋保管場所変更 | `work_status` + `location_status`（工場／本社／店舗） |
+| 保管場所変更のみ | `location_status` のみ |
+
+`process` / `delivery` / `completion_date` は変更しない。納品済は更新不可。App34 の工程連動（工場作業中／店舗作業中）は行わない。
+
 ### App30
 
 1. `work_status_labels.js`（任意・推奨）

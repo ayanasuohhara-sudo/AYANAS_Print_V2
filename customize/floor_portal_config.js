@@ -3,7 +3,7 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.4.0
+     * FLOOR_PORTAL_VERSION: 1.4.1
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
@@ -17,7 +17,7 @@
      * 文字サイズは工場／店舗で共通（工場相当）。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.4.0';
+    const FLOOR_PORTAL_VERSION = '1.4.1';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
@@ -153,7 +153,7 @@
                 label: '作業',
                 links: [
                     { appKey: 'locationInbound', label: '保管場所移動', note: 'App34' },
-                    { appKey: 'internalWork', label: '社内作業登録', note: 'work_status のみ' },
+                    { appKey: 'internalWork', label: '社内作業登録', note: '作業＋場所可' },
                     { appKey: 'completeRegister', label: '検品・仕上げ完了', note: '工程完了' },
                 ],
             },
@@ -219,7 +219,7 @@
             shortcutWork: '社内作業登録',
             shortcutComplete: '検品・仕上げ完了',
             storeMenuTitle: '店舗メニュー',
-            storeMenuLead: 'A550 専用。保管場所移動＝App34、社内作業登録＝work_status のみ、仕上げ完了＝工程完了。メニューはショートカットであり権限付与ではありません。',
+            storeMenuLead: 'A550 専用。保管場所移動＝App34、社内作業登録＝作業（＋任意で保管場所）、仕上げ完了＝工程完了。メニューはショートカットであり権限付与ではありません。',
             storePermissionNote: 'App92／App97 など権限制限のあるアプリは、権限のあるユーザーのみ利用できます。',
             factoryOtherNote: '工場現物のみ。上の作業カード以外、旧値、空欄は「その他」です。納品待ちカードは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',
             storeWaitingNote: 'A550・店舗現物のみ。納品待ちカードは納品状態です。作業カードと重なるため、合計は在庫総数になりません。',

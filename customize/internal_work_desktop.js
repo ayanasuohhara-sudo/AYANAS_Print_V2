@@ -17,9 +17,21 @@
 
     const PANEL_ID = 'cayan-internal-work-panel';
     const INPUT_ID = 'cayan-internal-work-barcode';
+    const MODE_ID = 'cayan-internal-work-mode';
+    const LOC_ID = 'cayan-internal-work-location';
     const WORK_SELECT_ID = 'cayan-internal-work-status';
+    const SUMMARY_ID = 'cayan-internal-work-summary';
+    const SUBMIT_ID = 'cayan-internal-work-submit';
     const TABLE_BODY_ID = 'cayan-internal-work-tbody';
     const STATUS_ID = 'cayan-internal-work-msg';
+
+    const MODE = Engine.BULK_MODE;
+
+    const MODE_LABELS = {
+        [MODE.work]: '作業登録のみ',
+        [MODE.workWithLocation]: '作業登録＋保管場所変更',
+        [MODE.locationOnly]: '保管場所変更のみ',
+    };
 
     let list = Batch.createEmptyList();
     let isSubmitting = false;
@@ -42,17 +54,7 @@
             {
                 app: C.APP.order,
                 query: F.manageNo + ' = "' + escapeQueryValue(manageNo) + '" limit 1',
-                fields: [
-                    '$id',
-                    F.manageNo,
-                    F.customerName,
-                    F.clientName,
-                    F.kimonoType,
-                    F.locationStatus,
-                    F.processStatus,
-                    F.workStatus,
-                    F.deliveryStatus,
-                ],
+                fields: Engine.orderFetchFields(),
             }
         );
 
@@ -73,13 +75,75 @@
 
     };
 
+    const getSelectedMode = () => (
+        document.getElementById(MODE_ID)?.value || MODE.work
+    );
+
+    const getSelectedLocation = () => (
+        document.getElementById(LOC_ID)?.value || ''
+    );
+
     const selectedWork = () => document.getElementById(WORK_SELECT_ID)?.value ?? '';
+
+    const locationLabel = (value) => {
+        const loc = String(value || '').trim();
+        return loc || '変更しない';
+    };
+
+    const updateSummary = () => {
+
+        const el = document.getElementById(SUMMARY_ID);
+
+        if (!el) {
+            return;
+        }
+
+        const mode = getSelectedMode();
+        const loc = getSelectedLocation();
+        const work = selectedWork();
+        const modeText = MODE_LABELS[mode] || mode;
+        const locText = mode === MODE.work ? '変更しない' : locationLabel(loc);
+        const workText = mode === MODE.locationOnly
+            ? '変更しない'
+            : (work || '未選択');
+
+        el.textContent = '現在: ' + modeText
+            + ' / 作業: ' + workText
+            + ' / 保管場所: ' + locText;
+
+    };
+
+    const setSubmitEnabled = (enabled) => {
+
+        const btn = document.getElementById(SUBMIT_ID);
+
+        if (btn) {
+            btn.disabled = !enabled;
+        }
+
+    };
+
+    const formatError = (error) => {
+
+        if (!error) {
+            return '不明なエラー';
+        }
+
+        if (typeof error === 'string') {
+            return error;
+        }
+
+        return error.message || error.errorCode || error.code || String(error);
+
+    };
 
     const renderTable = () => {
 
         const tbody = document.getElementById(TABLE_BODY_ID);
         const countEl = document.getElementById(PANEL_ID + '-count');
-        const targetWork = selectedWork();
+        const mode = getSelectedMode();
+        const targetWork = mode === MODE.locationOnly ? '（変更しない）' : selectedWork();
+        const targetLoc = mode === MODE.work ? '（変更しない）' : (getSelectedLocation() || '未選択');
 
         if (countEl) {
             countEl.textContent = String(list.items.length);
@@ -90,7 +154,7 @@
         }
 
         if (list.items.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="10">（未読取）</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="11">（未読取）</td></tr>';
             return;
         }
 
@@ -104,6 +168,7 @@
             + '<td>' + Ui.escapeHtml(item.processStatus) + '</td>'
             + '<td>' + Ui.escapeHtml(item.workStatus) + '</td>'
             + '<td>' + Ui.escapeHtml(targetWork) + '</td>'
+            + '<td>' + Ui.escapeHtml(targetLoc) + '</td>'
             + '<td class="cayan-batch-err">' + Ui.escapeHtml(item.errorMessage) + '</td>'
             + '<td><button type="button" class="cayan-batch-btn cayan-batch-btn--danger cayan-batch-row-remove" data-row-id="'
             + Ui.escapeHtml(item.rowId) + '">削除</button></td>'
@@ -122,9 +187,10 @@
     const onScan = async (raw) => {
 
         const manageNo = Batch.norm(raw);
+        const mode = getSelectedMode();
         const work = selectedWork();
 
-        if (!work) {
+        if (mode !== MODE.locationOnly && !work) {
             setStatus('先に作業ステータスを選択してください。', true);
             return;
         }
@@ -171,69 +237,164 @@
 
     };
 
-    const onBulkSubmit = async () => {
+    const buildConfirmMessage = (mode, work, location, count) => {
 
-        const work = selectedWork();
+        const modeText = MODE_LABELS[mode] || mode;
+        const lines = [
+            count + ' 件を一括更新します。',
+            '処理内容: ' + modeText,
+        ];
 
-        if (!work || !Engine.isAllowedWorkSelection(work)) {
-            setStatus('作業ステータスを選択してください。', true);
-            return;
+        if (mode === MODE.work) {
+            lines.push('work=' + work);
+            lines.push('location / process / delivery は変更しません。同一作業はスキップします。');
+        } else if (mode === MODE.workWithLocation) {
+            lines.push('work=' + work);
+            lines.push('location=' + location);
+            lines.push('すでに同一作業の商品は保管場所のみ更新します（同一ならスキップ）。');
+            lines.push('process / delivery は変更しません。');
+        } else {
+            lines.push('location=' + location + ' のみ更新（作業・工程・納品は変更しません）');
         }
+
+        lines.push('納品済の商品は更新しません。');
+
+        return lines.join('\n');
+
+    };
+
+    const onBulkSubmit = async () => {
 
         if (isSubmitting || list.items.length === 0) {
             return;
         }
 
-        if (!window.confirm('作業ステータス: ' + work + '\n' + list.items.length + ' 件を一括登録します。')) {
+        const mode = getSelectedMode();
+        const location = getSelectedLocation();
+        const work = selectedWork();
+        const validation = Engine.validateBulkSelection(mode, work, location);
+
+        if (!validation.ok) {
+            setStatus(Ui.escapeHtml(validation.reason), true);
+            return;
+        }
+
+        if (!window.confirm(buildConfirmMessage(mode, work, location, list.items.length))) {
             return;
         }
 
         isSubmitting = true;
+        setSubmitEnabled(false);
 
         let okCount = 0;
+        let skipCount = 0;
         let failCount = 0;
         const remain = [];
-        const putRecord = Engine.buildWorkPutRecord(work);
 
-        for (const item of list.items) {
-            item.errorMessage = '';
+        try {
+            for (const item of list.items) {
+                item.errorMessage = '';
 
-            try {
-                const fresh = await fetchOrder(item.manageNo);
+                try {
+                    const fresh = await fetchOrder(item.manageNo);
 
-                if (!fresh) {
-                    item.errorMessage = '再取得失敗';
+                    if (!fresh) {
+                        item.errorMessage = '再取得失敗';
+                        failCount += 1;
+                        remain.push(item);
+                        continue;
+                    }
+
+                    const plan = Engine.planBulkItemAction({
+                        mode,
+                        workStatus: work,
+                        location,
+                        snapshot: Engine.toOrderSnapshot(fresh),
+                    });
+
+                    if (plan.action === 'skip') {
+                        skipCount += 1;
+                        continue;
+                    }
+
+                    if (plan.action === 'fail') {
+                        item.errorMessage = plan.reason || '更新不可';
+                        failCount += 1;
+                        remain.push(item);
+                        continue;
+                    }
+
+                    const prePut = await fetchOrder(item.manageNo);
+
+                    if (!prePut) {
+                        item.errorMessage = 'PUT直前の再取得失敗';
+                        failCount += 1;
+                        remain.push(item);
+                        continue;
+                    }
+
+                    const prePlan = Engine.planBulkItemAction({
+                        mode,
+                        workStatus: work,
+                        location,
+                        snapshot: Engine.toOrderSnapshot(prePut),
+                    });
+
+                    if (prePlan.action === 'skip') {
+                        skipCount += 1;
+                        continue;
+                    }
+
+                    if (prePlan.action === 'fail') {
+                        item.errorMessage = prePlan.reason || '更新不可';
+                        failCount += 1;
+                        remain.push(item);
+                        continue;
+                    }
+
+                    const putRecord = prePlan.putRecord;
+
+                    await kintoneApi(
+                        kintone.api.url('/k/v1/record.json', true),
+                        'PUT',
+                        {
+                            app: C.APP.order,
+                            id: prePut.$id.value,
+                            record: putRecord,
+                        }
+                    );
+
+                    const after = await fetchOrder(item.manageNo);
+
+                    if (!Engine.isPutApplied(after, putRecord)) {
+                        item.errorMessage = '更新内容を確認できません';
+                        failCount += 1;
+                        remain.push(item);
+                        continue;
+                    }
+
+                    okCount += 1;
+
+                } catch (error) {
+                    item.errorMessage = formatError(error);
                     failCount += 1;
                     remain.push(item);
-                    continue;
                 }
 
-                await kintoneApi(
-                    kintone.api.url('/k/v1/record.json', true),
-                    'PUT',
-                    {
-                        app: C.APP.order,
-                        id: fresh.$id.value,
-                        record: putRecord,
-                    }
-                );
-
-                okCount += 1;
-
-            } catch (error) {
-                item.errorMessage = error.message || String(error);
-                failCount += 1;
-                remain.push(item);
             }
-
+        } finally {
+            list.items = remain;
+            renderTable();
+            isSubmitting = false;
+            setSubmitEnabled(true);
         }
 
-        list.items = remain;
-        renderTable();
-        isSubmitting = false;
+        const modeText = MODE_LABELS[mode] || mode;
 
         setStatus(
-            '<strong>一括登録完了</strong><br>成功: ' + okCount + ' / 残: ' + failCount,
+            '<strong>' + Ui.escapeHtml(modeText) + '</strong> 成功: ' + okCount
+            + ' / スキップ: ' + skipCount
+            + ' / 残: ' + failCount,
             failCount > 0
         );
 
@@ -257,24 +418,47 @@
         space.innerHTML = (
             '<div id="' + PANEL_ID + '" class="cayan-batch-panel">'
             + '<h2 class="cayan-batch-title">社内作業ステータス管理</h2>'
-            + '<p class="cayan-batch-hint">工場・店舗の作業を手動選択し、バーコード連続読取→一括登録。location / process / delivery は変更しません。</p>'
-            + '<label class="cayan-batch-label" for="' + WORK_SELECT_ID + '">作業ステータス（先に選択）</label>'
+            + '<p class="cayan-batch-hint">工場・店舗の作業を手動選択し、バーコード連続読取→一括更新。'
+            + '初期は「作業登録のみ」。保管場所は必要なときだけ変更します（完了登録と同型）。'
+            + ' process / delivery は変更しません。</p>'
+            + '<label class="cayan-batch-label" for="' + MODE_ID + '">処理内容</label>'
+            + '<select id="' + MODE_ID + '" class="cayan-batch-select">'
+            + '<option value="' + MODE.work + '" selected>作業登録のみ</option>'
+            + '<option value="' + MODE.workWithLocation + '">作業登録＋保管場所変更</option>'
+            + '<option value="' + MODE.locationOnly + '">保管場所変更のみ</option>'
+            + '</select>'
+            + '<label class="cayan-batch-label" for="' + WORK_SELECT_ID + '">作業ステータス</label>'
             + '<select id="' + WORK_SELECT_ID + '" class="cayan-batch-select">'
             + '<option value="">— 選択 —</option>' + workOptions
+            + '</select>'
+            + '<label class="cayan-batch-label" for="' + LOC_ID + '">保管場所</label>'
+            + '<select id="' + LOC_ID + '" class="cayan-batch-select">'
+            + '<option value="" selected>変更しない</option>'
+            + '<option value="' + C.LOCATION.factory + '">' + C.LOCATION.factory + '</option>'
+            + '<option value="' + C.LOCATION.hq + '">' + C.LOCATION.hq + '</option>'
+            + '<option value="' + C.LOCATION.store + '">' + C.LOCATION.store + '</option>'
             + '</select>'
             + '<label class="cayan-batch-label" for="' + INPUT_ID + '">管理番号（連続読取）</label>'
             + '<input type="text" id="' + INPUT_ID + '" class="cayan-batch-input" autocomplete="off">'
             + '<p class="cayan-batch-meta">読取件数: <span id="' + PANEL_ID + '-count">0</span> 件</p>'
             + '<table class="cayan-batch-table"><thead><tr>'
             + '<th>管理番号</th><th>顧客名</th><th>お客様名</th><th>着物種類</th>'
-            + '<th>現在地</th><th>工程</th><th>現在作業</th><th>変更後</th><th>結果</th><th></th>'
+            + '<th>現在地</th><th>工程</th><th>現在作業</th><th>変更後作業</th><th>変更後場所</th><th>結果</th><th></th>'
             + '</tr></thead><tbody id="' + TABLE_BODY_ID + '"></tbody></table>'
-            + '<button type="button" id="' + PANEL_ID + '-submit" class="cayan-batch-btn cayan-batch-btn--primary">一括登録</button>'
+            + '<p id="' + SUMMARY_ID + '" class="cayan-batch-meta"></p>'
+            + '<button type="button" id="' + SUBMIT_ID + '" class="cayan-batch-btn cayan-batch-btn--primary">一括更新</button>'
             + '<div id="' + STATUS_ID + '" class="cayan-batch-status"></div>'
             + '</div>'
         );
 
-        document.getElementById(WORK_SELECT_ID).addEventListener('change', () => renderTable());
+        const refreshUi = () => {
+            updateSummary();
+            renderTable();
+        };
+
+        document.getElementById(MODE_ID).addEventListener('change', refreshUi);
+        document.getElementById(LOC_ID).addEventListener('change', refreshUi);
+        document.getElementById(WORK_SELECT_ID).addEventListener('change', refreshUi);
 
         document.getElementById(INPUT_ID).addEventListener('keydown', (event) => {
 
@@ -285,9 +469,9 @@
 
         });
 
-        document.getElementById(PANEL_ID + '-submit').addEventListener('click', () => onBulkSubmit());
+        document.getElementById(SUBMIT_ID).addEventListener('click', () => onBulkSubmit());
 
-        renderTable();
+        refreshUi();
 
         window.setTimeout(() => document.getElementById(INPUT_ID)?.focus(), 200);
 
