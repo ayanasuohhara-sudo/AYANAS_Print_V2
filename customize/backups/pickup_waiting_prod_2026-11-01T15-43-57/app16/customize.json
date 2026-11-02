@@ -1,0 +1,149 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101125421BA780E5CBAAF41DDB5C5C0E80A923392080",
+          "name": "saiban.js",
+          "contentType": "text/javascript",
+          "size": "1158"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011254210AEC7AD82CFC49778239AFF8A75A57F5282",
+          "name": "saiban1.js",
+          "contentType": "text/javascript",
+          "size": "201"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011254229E50EC5800544F0DB5774646AB7A19A6320",
+          "name": "price_master_search11.js",
+          "contentType": "text/javascript",
+          "size": "2927"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110112542207CF73E204E243FCB12962255BF28C86124",
+          "name": "category.js",
+          "contentType": "text/javascript",
+          "size": "1205"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101125422E8359CD6F6754E73B9B12E936146A7A7331",
+          "name": "order_customer_search.js",
+          "contentType": "text/javascript",
+          "size": "12403"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101125422D6CD5FFD2356489D8AA17800F4037DFE324",
+          "name": "price_master_register.js",
+          "contentType": "text/javascript",
+          "size": "13465"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110112542243F63304849F421081BBED910B32DDE7359",
+          "name": "order_record_form.js",
+          "contentType": "text/javascript",
+          "size": "3169"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101125422D6A4CAD62EDC4948A0DF82FB10503692138",
+          "name": "additional_item_engine.js",
+          "contentType": "text/javascript",
+          "size": "25384"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110112542355161D757F984DE787E1DFB0FB1D6286050",
+          "name": "order_price_unconfirmed_clear.js",
+          "contentType": "text/javascript",
+          "size": "5545"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101125423A8DE0E3E702C4BABBFE56E8C0C3AD455349",
+          "name": "schedule_customer.js",
+          "contentType": "text/javascript",
+          "size": "7562"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101125423893B7265299F4AC09D2D9F14A6D5B35F139",
+          "name": "order_pcm_config.js",
+          "contentType": "text/javascript",
+          "size": "1595"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101125423E0542B77D72844C4801BAF7F518332DA101",
+          "name": "order_pcm_engine.js",
+          "contentType": "text/javascript",
+          "size": "8075"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011254239BA9F42ED11A4629ABA01B2C7E497079016",
+          "name": "order_pcm_desktop.js",
+          "contentType": "text/javascript",
+          "size": "17749"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101125421715857E09772428B891585E7D526A67A174",
+          "name": "order_record_form.css",
+          "contentType": "text/css",
+          "size": "4918"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101125422BD2BECA46B0442B39625E1268603CB20155",
+          "name": "order_pcm.css",
+          "contentType": "text/css",
+          "size": "2600"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "497"
+}

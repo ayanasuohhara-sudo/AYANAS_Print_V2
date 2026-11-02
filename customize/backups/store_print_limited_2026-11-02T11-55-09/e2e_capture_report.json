@@ -1,0 +1,597 @@
+{
+  "checks": [
+    {
+      "name": "TEST orders listed",
+      "ok": true,
+      "detail": {
+        "count": 5,
+        "orders": [
+          {
+            "id": "3496",
+            "manage_no": "TSP815835U",
+            "client": "[TEST]山田花子",
+            "kimono": "",
+            "deadline": "2026-11-02",
+            "delivery_status": "納品待ち",
+            "remark": "[TEST] store print e2e"
+          },
+          {
+            "id": "3495",
+            "manage_no": "TSP801856X",
+            "client": "[TEST]山田花子",
+            "kimono": "",
+            "deadline": "2026-11-05",
+            "delivery_status": "納品待ち",
+            "remark": "[TEST] store print e2e delivery-extra"
+          },
+          {
+            "id": "3494",
+            "manage_no": "TSP801856F",
+            "client": "[TEST]山田花子",
+            "kimono": "",
+            "deadline": "2026-11-05",
+            "delivery_status": "納品待ち",
+            "remark": "[TEST] store print e2e paid"
+          },
+          {
+            "id": "3493",
+            "manage_no": "TSP801856P",
+            "client": "[TEST]山田花子",
+            "kimono": "",
+            "deadline": "2026-11-05",
+            "delivery_status": "納品待ち",
+            "remark": "[TEST] store print e2e partial"
+          },
+          {
+            "id": "3492",
+            "manage_no": "TSP801856U",
+            "client": "[TEST]山田花子",
+            "kimono": "",
+            "deadline": "2026-11-05",
+            "delivery_status": "納品待ち",
+            "remark": "[TEST] store print e2e unpaid"
+          }
+        ]
+      }
+    },
+    {
+      "name": "store button on TSP815835U",
+      "ok": true,
+      "detail": {
+        "texts": [
+          "店舗受注表",
+          "受注明細表",
+          "海外用受注表",
+          "Cancel",
+          "Post",
+          "More",
+          "More",
+          "More"
+        ]
+      }
+    },
+    {
+      "name": "click 店舗受注表 (store_order_TSP815835U)",
+      "ok": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "captured HTML store_order_TSP815835U",
+      "ok": true,
+      "detail": {
+        "text": "@page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP815835U TSP815835U お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 — 納期 2026/11/02 受注日 2026/11/02 加工内容 身揚げ 3,000 入金状況（App97・印刷時点） 未入金 税抜 税 税込 入金額 残額 3,000 300 3,300 0 3,300 作業・保管・引き取り管理用（印刷のみ・状態は更新しません） □ 受付 ",
+        "htmlLen": 5892
+      }
+    },
+    {
+      "name": "manage_no in print TSP815835U",
+      "ok": true,
+      "detail": "@page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP815835U TSP815835U お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 — 納期 2026/11/02 受注日 2026/11/02 加工内容 身揚げ 3"
+    },
+    {
+      "name": "payment state in print TSP815835U",
+      "ok": true,
+      "detail": [
+        "未入金"
+      ]
+    },
+    {
+      "name": "customer in print TSP815835U",
+      "ok": true,
+      "detail": "@page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP815835U TSP815835U お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 — 納期 2026/11/02 受注日 2026/11/02 加工内容 身揚げ 3"
+    },
+    {
+      "name": "barcode present TSP815835U",
+      "ok": true,
+      "detail": {
+        "hasSvg": true
+      }
+    },
+    {
+      "name": "store button on TSP801856P",
+      "ok": true,
+      "detail": {
+        "texts": [
+          "店舗受注表",
+          "受注明細表",
+          "海外用受注表",
+          "Cancel",
+          "Post",
+          "More",
+          "More",
+          "More"
+        ]
+      }
+    },
+    {
+      "name": "click 店舗受注表 (store_order_TSP801856P)",
+      "ok": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "captured HTML store_order_TSP801856P",
+      "ok": true,
+      "detail": {
+        "text": "@page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP801856P TSP801856P お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 単衣 納期 2026/11/05 受注日 2026/11/02 加工内容 身揚げ 5,000 入金状況（App97・印刷時点） 未入金 税抜 税 税込 入金額 残額 5,000 500 5,500 0 5,500 作業・保管・引き取り管理用（印刷のみ・状態は更新しません） □ 受付",
+        "htmlLen": 5893
+      }
+    },
+    {
+      "name": "manage_no in print TSP801856P",
+      "ok": true,
+      "detail": "@page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP801856P TSP801856P お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 単衣 納期 2026/11/05 受注日 2026/11/02 加工内容 身揚げ "
+    },
+    {
+      "name": "payment state in print TSP801856P",
+      "ok": true,
+      "detail": [
+        "未入金"
+      ]
+    },
+    {
+      "name": "customer in print TSP801856P",
+      "ok": true,
+      "detail": "@page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP801856P TSP801856P お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 単衣 納期 2026/11/05 受注日 2026/11/02 加工内容 身揚げ "
+    },
+    {
+      "name": "barcode present TSP801856P",
+      "ok": true,
+      "detail": {
+        "hasSvg": true
+      }
+    },
+    {
+      "name": "store button on TSP801856F",
+      "ok": true,
+      "detail": {
+        "texts": [
+          "店舗受注表",
+          "受注明細表",
+          "海外用受注表",
+          "Cancel",
+          "Post",
+          "More",
+          "More",
+          "More"
+        ]
+      }
+    },
+    {
+      "name": "click 店舗受注表 (store_order_TSP801856F)",
+      "ok": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "captured HTML store_order_TSP801856F",
+      "ok": true,
+      "detail": {
+        "text": "@page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP801856F TSP801856F お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 単衣 納期 2026/11/05 受注日 2026/11/02 加工内容 身揚げ 2,000 入金状況（App97・印刷時点） 未入金 税抜 税 税込 入金額 残額 2,000 200 2,200 0 2,200 作業・保管・引き取り管理用（印刷のみ・状態は更新しません） □ 受付",
+        "htmlLen": 5893
+      }
+    },
+    {
+      "name": "manage_no in print TSP801856F",
+      "ok": true,
+      "detail": "@page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP801856F TSP801856F お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 単衣 納期 2026/11/05 受注日 2026/11/02 加工内容 身揚げ "
+    },
+    {
+      "name": "payment state in print TSP801856F",
+      "ok": true,
+      "detail": [
+        "未入金"
+      ]
+    },
+    {
+      "name": "customer in print TSP801856F",
+      "ok": true,
+      "detail": "@page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP801856F TSP801856F お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 単衣 納期 2026/11/05 受注日 2026/11/02 加工内容 身揚げ "
+    },
+    {
+      "name": "barcode present TSP801856F",
+      "ok": true,
+      "detail": {
+        "hasSvg": true
+      }
+    },
+    {
+      "name": "corp sample",
+      "ok": true,
+      "detail": {
+        "id": "3491",
+        "customer_code": "M032",
+        "manage_no": "110226491"
+      }
+    },
+    {
+      "name": "corp hides store order",
+      "ok": true,
+      "detail": {
+        "hasStore": false,
+        "hasCorp": true,
+        "texts": [
+          "受注明細表",
+          "海外用受注表",
+          "Cancel",
+          "Post",
+          "More",
+          "More",
+          "More"
+        ]
+      }
+    },
+    {
+      "name": "corp keeps corporate print",
+      "ok": true,
+      "detail": {
+        "hasStore": false,
+        "hasCorp": true,
+        "texts": [
+          "受注明細表",
+          "海外用受注表",
+          "Cancel",
+          "Post",
+          "More",
+          "More",
+          "More"
+        ]
+      }
+    },
+    {
+      "name": "click 受注明細表 (corp_order_110226491)",
+      "ok": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "captured HTML corp_order_110226491",
+      "ok": true,
+      "detail": {
+        "text": "@page { size: A4 landscape; margin: 0; } 受注明細表 管理番号 110226491 受注日 2026/11/02 顧客コード M032 納期 2026/12/14 顧客名 大進ホンダ株式会社 様 お客様名 坂口菜穂子 様 得意先伝票番号 001425 得意先担当・係 本店 着物種類名 羽織 着物仕様 単衣 加工内容 仕立 12,000 ゆのし 800 110226491 お得意様コード M032 お客様名 坂口菜穂子 様 商品名 羽織 単衣 管理番号 110226491 伝票番号 001425 係様名 本店 110226491 M032 大進ホンダ株式会",
+        "htmlLen": 13942
+      }
+    },
+    {
+      "name": "corp print has manage/layout",
+      "ok": true,
+      "detail": "@page { size: A4 landscape; margin: 0; } 受注明細表 管理番号 110226491 受注日 2026/11/02 顧客コード M032 納期 2026/12/14 顧客名 大進ホンダ株式会社 様 お客様名 坂口菜穂子 様 得意先伝票番号 001425 得意先担当・係 本店 着物種類名 羽織 着物仕様 単衣 加工内容 仕立 12,000 ゆのし 800 110"
+    },
+    {
+      "name": "App19 has pcm script",
+      "ok": false,
+      "detail": {
+        "hasPcm": false,
+        "hasBar": false,
+        "pcmBeforeBar": false,
+        "gate": {
+          "first": {
+            "ok": true,
+            "setContext": false
+          },
+          "second": {
+            "ok": true,
+            "setContext": false
+          },
+          "mixed": {
+            "ok": true,
+            "setContext": false
+          },
+          "sameOk": true,
+          "rejected": false
+        },
+        "deliveryId": "655",
+        "deliveryErr": null,
+        "tableCode": "delivery_detail",
+        "tableFields": [
+          "amount",
+          "slip_no",
+          "qty",
+          "in_charge",
+          "manage_no",
+          "kimono_spec",
+          "item_name",
+          "kimono_type",
+          "unit_price",
+          "client_name"
+        ],
+        "same": [
+          "TSP815835U",
+          "TSP801856X"
+        ]
+      }
+    },
+    {
+      "name": "PCM same ok / mix rejected",
+      "ok": false,
+      "detail": {
+        "first": {
+          "ok": true,
+          "setContext": false
+        },
+        "second": {
+          "ok": true,
+          "setContext": false
+        },
+        "mixed": {
+          "ok": true,
+          "setContext": false
+        },
+        "sameOk": true,
+        "rejected": false
+      }
+    },
+    {
+      "name": "delivery shows 店舗納品書",
+      "ok": true,
+      "detail": {
+        "hasStore": true,
+        "hasCorp": true,
+        "texts": [
+          "一般客 請求書発行",
+          "納品書印刷",
+          "一般客 納品書",
+          "松葉店用 納品書",
+          "店舗納品書",
+          "Cancel",
+          "Post",
+          "More",
+          "More",
+          "More"
+        ]
+      }
+    },
+    {
+      "name": "delivery keeps corp buttons",
+      "ok": true,
+      "detail": {
+        "hasStore": true,
+        "hasCorp": true,
+        "texts": [
+          "一般客 請求書発行",
+          "納品書印刷",
+          "一般客 納品書",
+          "松葉店用 納品書",
+          "店舗納品書",
+          "Cancel",
+          "Post",
+          "More",
+          "More",
+          "More"
+        ]
+      }
+    },
+    {
+      "name": "click 店舗納品書 (store_delivery)",
+      "ok": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "captured HTML store_delivery",
+      "ok": true,
+      "detail": {
+        "text": "@page { size: A4 portrait; margin: 0; } A550 店舗 納 品 書 [TEST]山田花子 様 PCM：P000002 納品番号：— 納品日：2026/11/02 1 / 1 管理番号 商品 加工内容 金額 入金状態 残額 TSP815835U [TEST] 3,000 未入金 3,300 TSP801856X [TEST] 3,000 未入金 1,650 点数 税抜合計 税 税込合計 入金額 未入金残 状態 2 4,500 450 4,950 0 4,950 未入金 本紙に含まれない商品の納品状態は変更していません。印刷のみでは App16 を更新しませ",
+        "htmlLen": 3713
+      }
+    },
+    {
+      "name": "delivery totals visible",
+      "ok": true,
+      "detail": "@page { size: A4 portrait; margin: 0; } A550 店舗 納 品 書 [TEST]山田花子 様 PCM：P000002 納品番号：— 納品日：2026/11/02 1 / 1 管理番号 商品 加工内容 金額 入金状態 残額 TSP815835U [TEST] 3,000 未入金 3,300 TSP801856X [TEST] 3,000 未入金 1,650 点数 税抜合計 税 税込合計 入金額 未入金残 状態 2 4,500 450 4,950 0 4,950 未入金 本紙に含まれない商品の納品状態は変更していません。印刷のみでは App16 を更新しませ"
+    },
+    {
+      "name": "delivery multi lines",
+      "ok": true,
+      "detail": {
+        "same": [
+          "TSP815835U",
+          "TSP801856X"
+        ],
+        "sample": "@page { size: A4 portrait; margin: 0; } A550 店舗 納 品 書 [TEST]山田花子 様 PCM：P000002 納品番号：— 納品日：2026/11/02 1 / 1 管理番号 商品 加工内容 金額 入金状態 残額 TSP815835U [TEST] 3,000 未入金 3,300 TSP801856X [TEST] 3,000 未入金 1,650 点数 税抜合計 税 税込合計 入金額 未入金残 状態 2 4,500 450 4,950 0 4,950 未入金 本紙に含まれない商品の納品状態は変更していません。印刷のみでは App16 を更新しませ"
+      }
+    },
+    {
+      "name": "no bulk status wipe on TEST set",
+      "ok": true,
+      "detail": [
+        {
+          "manage_no": "TSP815835U",
+          "delivery_status": "納品待ち",
+          "delivery_no": ""
+        },
+        {
+          "manage_no": "TSP801856X",
+          "delivery_status": "納品待ち",
+          "delivery_no": ""
+        },
+        {
+          "manage_no": "TSP801856F",
+          "delivery_status": "納品待ち",
+          "delivery_no": ""
+        },
+        {
+          "manage_no": "TSP801856P",
+          "delivery_status": "納品待ち",
+          "delivery_no": ""
+        },
+        {
+          "manage_no": "TSP801856U",
+          "delivery_status": "納品待ち",
+          "delivery_no": ""
+        }
+      ]
+    },
+    {
+      "name": "plugin list v145",
+      "ok": true,
+      "detail": {
+        "has145": true,
+        "sample": [
+          "AYANAS Print",
+          "AYANAS Print Plugin V145 (store order / store delivery)"
+        ]
+      }
+    }
+  ],
+  "orders": [
+    {
+      "id": "3496",
+      "manage_no": "TSP815835U",
+      "client": "[TEST]山田花子",
+      "kimono": "",
+      "deadline": "2026-11-02",
+      "delivery_status": "納品待ち",
+      "remark": "[TEST] store print e2e"
+    },
+    {
+      "id": "3495",
+      "manage_no": "TSP801856X",
+      "client": "[TEST]山田花子",
+      "kimono": "",
+      "deadline": "2026-11-05",
+      "delivery_status": "納品待ち",
+      "remark": "[TEST] store print e2e delivery-extra"
+    },
+    {
+      "id": "3494",
+      "manage_no": "TSP801856F",
+      "client": "[TEST]山田花子",
+      "kimono": "",
+      "deadline": "2026-11-05",
+      "delivery_status": "納品待ち",
+      "remark": "[TEST] store print e2e paid"
+    },
+    {
+      "id": "3493",
+      "manage_no": "TSP801856P",
+      "client": "[TEST]山田花子",
+      "kimono": "",
+      "deadline": "2026-11-05",
+      "delivery_status": "納品待ち",
+      "remark": "[TEST] store print e2e partial"
+    },
+    {
+      "id": "3492",
+      "manage_no": "TSP801856U",
+      "client": "[TEST]山田花子",
+      "kimono": "",
+      "deadline": "2026-11-05",
+      "delivery_status": "納品待ち",
+      "remark": "[TEST] store print e2e unpaid"
+    }
+  ],
+  "orderPrints": [
+    {
+      "manage_no": "TSP815835U",
+      "ok": true
+    },
+    {
+      "manage_no": "TSP801856P",
+      "ok": true
+    },
+    {
+      "manage_no": "TSP801856F",
+      "ok": true
+    }
+  ],
+  "deliveryPrep": {
+    "hasPcm": false,
+    "hasBar": false,
+    "pcmBeforeBar": false,
+    "gate": {
+      "first": {
+        "ok": true,
+        "setContext": false
+      },
+      "second": {
+        "ok": true,
+        "setContext": false
+      },
+      "mixed": {
+        "ok": true,
+        "setContext": false
+      },
+      "sameOk": true,
+      "rejected": false
+    },
+    "deliveryId": "655",
+    "deliveryErr": null,
+    "tableCode": "delivery_detail",
+    "tableFields": [
+      "amount",
+      "slip_no",
+      "qty",
+      "in_charge",
+      "manage_no",
+      "kimono_spec",
+      "item_name",
+      "kimono_type",
+      "unit_price",
+      "client_name"
+    ],
+    "same": [
+      "TSP815835U",
+      "TSP801856X"
+    ]
+  },
+  "statuses": [
+    {
+      "manage_no": "TSP815835U",
+      "delivery_status": "納品待ち",
+      "delivery_no": ""
+    },
+    {
+      "manage_no": "TSP801856X",
+      "delivery_status": "納品待ち",
+      "delivery_no": ""
+    },
+    {
+      "manage_no": "TSP801856F",
+      "delivery_status": "納品待ち",
+      "delivery_no": ""
+    },
+    {
+      "manage_no": "TSP801856P",
+      "delivery_status": "納品待ち",
+      "delivery_no": ""
+    },
+    {
+      "manage_no": "TSP801856U",
+      "delivery_status": "納品待ち",
+      "delivery_no": ""
+    }
+  ],
+  "summary": {
+    "passed": 36,
+    "failed": 2,
+    "total": 38
+  },
+  "generalRelease": false
+}

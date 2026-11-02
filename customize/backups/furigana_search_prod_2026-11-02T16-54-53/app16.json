@@ -1,0 +1,36 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "16",
+    "status": "SUCCESS"
+  },
+  "insertedAfter": "order_customer_search.js",
+  "inserted": true,
+  "desktopJs": [
+    "app_nav_banner_config.js",
+    "app_nav_banner.js",
+    "saiban.js",
+    "saiban1.js",
+    "price_master_search11.js",
+    "category.js",
+    "order_customer_search.js",
+    "kana_normalize.js",
+    "order_client_kana_config.js",
+    "order_client_kana_engine.js",
+    "order_client_kana_desktop.js",
+    "price_master_register.js",
+    "order_record_form.js",
+    "additional_item_engine.js",
+    "order_price_unconfirmed_clear.js",
+    "schedule_customer.js",
+    "order_pcm_config.js",
+    "order_pcm_engine.js",
+    "order_pcm_desktop.js"
+  ],
+  "desktopCss": [
+    "app_nav_banner.css",
+    "order_record_form.css",
+    "order_pcm.css",
+    "order_client_kana.css"
+  ]
+}

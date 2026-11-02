@@ -1,0 +1,63 @@
+{
+  "steps": [
+    "field",
+    "deploy16",
+    "deploy96"
+  ],
+  "field": {
+    "ok": true,
+    "deploy": {
+      "app": "16",
+      "status": "SUCCESS"
+    },
+    "field": {
+      "type": "SINGLE_LINE_TEXT",
+      "unique": false,
+      "required": false,
+      "label": "個人顧客ID"
+    }
+  },
+  "deploy16": {
+    "ok": true,
+    "deploy": {
+      "app": "16",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "saiban.js",
+      "saiban1.js",
+      "price_master_search11.js",
+      "category.js",
+      "order_customer_search.js",
+      "price_master_register.js",
+      "order_record_form.js",
+      "additional_item_engine.js",
+      "order_price_unconfirmed_clear.js",
+      "schedule_customer.js",
+      "order_pcm_config.js",
+      "order_pcm_engine.js",
+      "order_pcm_desktop.js"
+    ],
+    "css": [
+      "order_record_form.css",
+      "order_pcm.css"
+    ]
+  },
+  "deploy96": {
+    "ok": true,
+    "deploy": {
+      "app": "96",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "pcm_config.js",
+      "pcm_numbering.js",
+      "pcm_engine.js",
+      "pcm_desktop.js",
+      "pcm_order_history.js"
+    ],
+    "css": [
+      "pcm.css"
+    ]
+  }
+}

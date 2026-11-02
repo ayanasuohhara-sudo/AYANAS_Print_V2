@@ -1,0 +1,62 @@
+(function() {
+  'use strict';
+
+  kintone.events.on(
+    'app.record.create.submit.success',
+    async function(event) {
+
+      try {
+
+        const recordId = Number(event.recordId);
+
+        const now = new Date();
+
+        const mm =
+          ('0' + (now.getMonth() + 1)).slice(-2);
+
+        const dd =
+          ('0' + now.getDate()).slice(-2);
+
+        const yy =
+          now.getFullYear().toString().slice(-2);
+
+        const prefix =
+          mm + dd + yy;
+
+        const suffix =
+          ('000' + (recordId % 1000)).slice(-3);
+
+        const manageNo =
+          prefix + suffix;
+
+        await kintone.api(
+          kintone.api.url('/k/v1/record.json', true),
+          'PUT',
+          {
+            app: kintone.app.getId(),
+            id: event.recordId,
+            record: {
+              manage_no: {
+                value: manageNo
+              }
+            }
+          }
+        );
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          '管理番号採番エラー\n\n' +
+          e.message
+        );
+
+      }
+
+      return event;
+
+    }
+  );
+
+})();

@@ -1,0 +1,65 @@
+{
+  "ver": "1.1.1",
+  "items": [
+    {
+      "no": "01",
+      "label": "受注登録・検索",
+      "hub": false,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=order"
+    },
+    {
+      "no": "02",
+      "label": "出庫・入庫",
+      "hub": false,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=logistics"
+    },
+    {
+      "no": "03",
+      "label": "納品書・請求書・入金",
+      "hub": false,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=billing"
+    },
+    {
+      "no": "04",
+      "label": "作業進捗・完了登録",
+      "hub": false,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=work"
+    },
+    {
+      "no": "05",
+      "label": "納期・作業負荷状況",
+      "hub": false,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/89/"
+    },
+    {
+      "no": "06",
+      "label": "納期・納品スケジュール管理",
+      "hub": false,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/94/"
+    },
+    {
+      "no": "07",
+      "label": "各種データ・集計",
+      "hub": false,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=analytics"
+    },
+    {
+      "no": "08",
+      "label": "マスタ登録",
+      "hub": false,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=masters"
+    },
+    {
+      "no": "09",
+      "label": "工場ポータル（業務）",
+      "hub": true,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+    },
+    {
+      "no": "10",
+      "label": "店舗ポータル（業務）",
+      "hub": true,
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+    }
+  ]
+}

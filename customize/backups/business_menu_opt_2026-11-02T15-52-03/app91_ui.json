@@ -1,0 +1,44 @@
+{
+  "work": {
+    "ver": "1.1.0",
+    "title": "AYANAS 業務メニュー",
+    "labels": [
+      "工場作業状況ポータル",
+      "店舗ポータル（A550）",
+      "社内作業登録",
+      "検品・仕上げ完了"
+    ],
+    "hasFactoryPortal": true,
+    "hasStorePortal": true,
+    "hasInternalWork": true,
+    "hasComplete": true,
+    "noOldWorkLabel": true,
+    "noApp85": true
+  },
+  "logistics": {
+    "labels": [
+      "保管場所移動",
+      "外注出庫",
+      "海外外注出庫",
+      "和裁士出庫",
+      "外注入庫"
+    ],
+    "first": "保管場所移動",
+    "hasLocationMove": true,
+    "noOldInbound": true
+  },
+  "masters": {
+    "labels": [
+      "顧客マスタ",
+      "個人顧客マスタ",
+      "着物種類マスタ",
+      "商品マスタ",
+      "価格マスタ",
+      "外注加工マスタ",
+      "外注先マスタ",
+      "和裁士マスタ"
+    ],
+    "hasPcm": true,
+    "hasPcmLink": true
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261026113424D85AF4B81FA44849903E179F91D2003B206",
+          "name": "internal_ops_config.js",
+          "contentType": "text/javascript",
+          "size": "2533"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202610261134249DBE99EA9D2F470BA13A30C732A5526D276",
+          "name": "complete_register_engine.js",
+          "contentType": "text/javascript",
+          "size": "12361"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261026113425FB7FB0B371534FF4995BF12377B4CE48038",
+          "name": "delivery_completion_guard.js",
+          "contentType": "text/javascript",
+          "size": "6129"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202610261134254A78C6FDA1D441DBA5904915C7C01553142",
+          "name": "barcode_delivery.js",
+          "contentType": "text/javascript",
+          "size": "7674"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261026113425CC531A1AF85540E48DE11D65F6908396110",
+          "name": "delivery_complete_sync.js",
+          "contentType": "text/javascript",
+          "size": "9660"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261026113425634EF96865BB4D84BC31E59635E4A697002",
+          "name": "price_master_register.js",
+          "contentType": "text/javascript",
+          "size": "13465"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202610261134254C4459AB15A9490A951A0073969829E4022",
+          "name": "delivery_additional_item_guard.js",
+          "contentType": "text/javascript",
+          "size": "1917"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202610261134259DF11607C9574AAFA70E43FDC9BF4D5E135",
+          "name": "additional_item_engine.js",
+          "contentType": "text/javascript",
+          "size": "25384"
+        }
+      }
+    ],
+    "css": []
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "277"
+}

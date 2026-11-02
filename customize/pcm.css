@@ -1,0 +1,192 @@
+/* 個人顧客マスタ PCM — 一覧検索・詳細の可読性（標準を壊さない範囲） */
+
+.pcm-search-panel {
+  margin: 12px 16px 16px;
+  padding: 14px 16px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  background: #f6f8fa;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.pcm-search-panel__title {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1f2328;
+}
+
+.pcm-search-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px 12px;
+  align-items: end;
+}
+
+.pcm-search-panel label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+.pcm-search-panel input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  font-size: 16px;
+  border: 1px solid #c9d1d9;
+  border-radius: 6px;
+}
+
+.pcm-search-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pcm-search-panel button {
+  min-height: 40px;
+  padding: 8px 16px;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pcm-search-panel__btn-primary {
+  background: #1f6feb;
+  color: #fff;
+  border: 1px solid #1f6feb;
+}
+
+.pcm-search-panel__btn-secondary {
+  background: #fff;
+  color: #1f2328;
+  border: 1px solid #c9d1d9;
+}
+
+.pcm-search-results {
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+.pcm-search-results table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #fff;
+}
+
+.pcm-search-results th,
+.pcm-search-results td {
+  border: 1px solid #d0d7de;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.pcm-search-results th {
+  background: #eef2f6;
+  font-weight: 700;
+}
+
+.pcm-search-results a {
+  color: #0969da;
+  font-weight: 600;
+}
+
+.pcm-search-empty,
+.pcm-search-error {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.pcm-search-error {
+  color: #cf222e;
+}
+
+.pcm-banner {
+  margin: 8px 16px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.pcm-banner--info {
+  background: #ddf4ff;
+  border: 1px solid #54aeff66;
+  color: #0550ae;
+}
+
+.pcm-banner--warn {
+  background: #fff8c5;
+  border: 1px solid #d4a72c66;
+  color: #7d4e00;
+}
+
+.pcm-order-history {
+  margin: 16px;
+  padding: 12px 14px;
+  border: 1px solid #c5d4e8;
+  border-radius: 6px;
+  background: #f7fafc;
+}
+
+.pcm-order-history__title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f3a5f;
+}
+
+.pcm-order-history__note {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #556;
+}
+
+.pcm-order-history__status {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #444;
+}
+
+.pcm-order-history__status--error {
+  color: #b00020;
+}
+
+.pcm-order-history__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+}
+
+.pcm-order-history__table th,
+.pcm-order-history__table td {
+  padding: 6px 8px;
+  border: 1px solid #d5dde8;
+  text-align: left;
+}
+
+.pcm-order-history__table th {
+  background: #e8eef7;
+}
+
+@media (max-width: 900px) {
+  .pcm-search-panel {
+    margin: 8px;
+    padding: 12px;
+  }
+
+  .pcm-search-panel input,
+  .pcm-search-panel button {
+    min-height: 44px;
+    font-size: 16px;
+  }
+}

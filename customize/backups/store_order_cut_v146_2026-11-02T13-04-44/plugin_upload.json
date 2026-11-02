@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "verify": {
+    "has146": true,
+    "hasSuccess": true,
+    "sample": [
+      "AYANAS Print",
+      "AYANAS Print Plugin V146 (store order cut ticket)"
+    ],
+    "url": "https://o5nppg7kb4ly.cybozu.com/k/admin/system/plugin/"
+  },
+  "zip": "/tmp/ayanas-print-v146.zip",
+  "at": "2026-11-02T13:04:55.298Z"
+}

@@ -5,6 +5,7 @@
 | ファイル | 種別 | 登録先 | 役割 |
 |---------|------|--------|------|
 | `overseas_outbound_register.js` | kintone JS | App 28 レコード追加 | 連続バーコード出庫登録 |
+| `overseas_outbound_list.js` | kintone JS | App 28 一覧 | サブテーブル明細の一覧表示 |
 | `overseas_outbound_index.js` | Print プラグイン | App 28 一覧 | 出庫表印刷（3種） |
 
 **混在させないこと。** register は登録専用、index は印刷専用。
@@ -65,6 +66,31 @@
 1. セッション内 Set（同一画面での連続読取）
 2. App 28 未入庫レコード（`overseas_in_date` 空）
 3. App 16 が既に 海外外注中 + 海外
+
+## 一覧に明細を表示する
+
+kintone 標準の一覧は **トップレベルフィールドのみ** 列にできます。サブテーブルだけに入っている明細は、そのままでは空欄になります。
+
+### 手順
+
+1. **App 28 フォーム** にトップレベル明細フィールドを追加（未追加の場合）
+   - `manage_no`（管理番号）
+   - `customer_code`（顧客コード）
+   - `client_name`（お客様名）
+   - `kimono_type`（着物種類）
+2. **一覧の設定** → 表示フィールドに上記を追加
+3. **JavaScript** に `overseas_outbound_list.js` を追加登録
+4. `overseas_outbound_register.js` を最新版に更新
+
+### 動作
+
+| 登録方式 | 一覧表示 |
+|---------|---------|
+| トップレベルフィールドあり | 登録時に自動保存 → 一覧に表示 |
+| サブテーブルのみ（旧 syuko） | `overseas_outbound_list.js` がサブテーブルから読み取り一覧列を補完 |
+| 両方あり | 登録時に両方へ保存 + 一覧 JS で補完 |
+
+> 既存レコード（サブテーブルのみ）も、`overseas_outbound_list.js` により一覧上は表示できます。レコードを開くとサブテーブルにデータがあります。
 
 ## AYANAS Print プラグイン（overseas_outbound_index.js）
 

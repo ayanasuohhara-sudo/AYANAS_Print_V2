@@ -18,9 +18,18 @@
     const CUSTOMER_APP_ID = 8;
 
     const CUSTOMER_CODES = ['M070', 'M074', 'M078', 'M079'];
+    const ADDRESS_CUSTOMER_CODE = 'M070';
     const ADDRESSEE = '株式会社松葉　御中';
     const CANCELLED_STATUS = '取消';
     const TAX_RATE = 0.10;
+
+    const CUSTOMER_ADDRESS_FIELDS = [
+        'post_no',
+        'prefecture',
+        'city',
+        'address',
+        'building',
+    ];
 
     const FIELDS = {
         customerCode: 'customer_code',
@@ -178,9 +187,36 @@
 
     };
 
-    const fetchCustomerNamesFromMaster = async () => {
+    const buildAddressFromMaster = (record) => {
+
+        if (!record) {
+            return {
+                postal_code: '',
+                address: '',
+            };
+        }
+
+        const postalCode = String(getFieldValue(record, 'post_no') ?? '').trim();
+        const address = CUSTOMER_ADDRESS_FIELDS
+            .filter((fieldCode) => fieldCode !== 'post_no')
+            .map((fieldCode) => String(getFieldValue(record, fieldCode) ?? '').trim())
+            .filter((part) => part !== '')
+            .join('');
+
+        return {
+            postal_code: postalCode,
+            address,
+        };
+
+    };
+
+    const fetchCustomerMaster = async () => {
 
         const names = new Map();
+        let address = {
+            postal_code: '',
+            address: '',
+        };
         const codes = buildCustomerInQuery();
         const query = `${FIELDS.customerCode} in (${codes})`;
 
@@ -189,7 +225,7 @@
             const records = await fetchAllRecords(
                 CUSTOMER_APP_ID,
                 query,
-                [FIELDS.customerCode, FIELDS.customerName]
+                [FIELDS.customerCode, FIELDS.customerName, ...CUSTOMER_ADDRESS_FIELDS]
             );
 
             records.forEach((record) => {
@@ -201,15 +237,23 @@
                     names.set(code, name);
                 }
 
+                if (code === ADDRESS_CUSTOMER_CODE && !address.postal_code && !address.address) {
+                    address = buildAddressFromMaster(record);
+                }
+
             });
+
+            if (!address.postal_code && !address.address) {
+                console.warn(`[AYANAS Print V3] 松葉合計請求書: 顧客マスタに ${ADDRESS_CUSTOMER_CODE} の住所がありません。`);
+            }
 
         } catch (error) {
 
-            console.warn('[AYANAS Print V3] 松葉合計請求書: 顧客マスタからの顧客名取得に失敗しました。', error);
+            console.warn('[AYANAS Print V3] 松葉合計請求書: 顧客マスタからの顧客情報取得に失敗しました。', error);
 
         }
 
-        return names;
+        return { names, address };
 
     };
 
@@ -294,6 +338,7 @@
     };
 
     MatsubaSummaryInvoice.CUSTOMER_CODES = CUSTOMER_CODES;
+    MatsubaSummaryInvoice.ADDRESS_CUSTOMER_CODE = ADDRESS_CUSTOMER_CODE;
     MatsubaSummaryInvoice.ADDRESSEE = ADDRESSEE;
     MatsubaSummaryInvoice.APP_ID = INVOICE_APP_ID;
     MatsubaSummaryInvoice.REPORT_TYPE = 'matsuba_summary_invoice';
@@ -323,22 +368,42 @@
 
     };
 
-    MatsubaSummaryInvoice.fetchReportData = async ({ billingFrom, billingTo } = {}) => {
+    MatsubaSummaryInvoice.validateInvoiceDate = (invoiceDate) => {
+
+        const date = normalizeDateValue(invoiceDate);
+
+        if (!date) {
+            throw new Error('請求日を入力してください。');
+        }
+
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+            throw new Error('請求日を YYYY-MM-DD 形式で入力してください。');
+        }
+
+        return date;
+
+    };
+
+    MatsubaSummaryInvoice.fetchReportData = async ({ billingFrom, billingTo, invoiceDate } = {}) => {
 
         const period = MatsubaSummaryInvoice.validatePeriod(billingFrom, billingTo);
-        const [invoiceRecords, masterNames] = await Promise.all([
+        const invoiceDateValue = MatsubaSummaryInvoice.validateInvoiceDate(invoiceDate);
+        const [invoiceRecords, master] = await Promise.all([
             fetchInvoicesForPeriod(period.billingFrom, period.billingTo),
-            fetchCustomerNamesFromMaster(),
+            fetchCustomerMaster(),
         ]);
 
-        const details = aggregateByCustomer(invoiceRecords, masterNames);
+        const details = aggregateByCustomer(invoiceRecords, master.names);
         const summary = buildSummary(details);
 
         return {
             header: {
                 addressee: ADDRESSEE,
+                customer_postal_code: master.address.postal_code,
+                customer_address: master.address.address,
                 billing_from: period.billingFrom,
                 billing_to: period.billingTo,
+                invoice_date: invoiceDateValue,
                 document_title: '合計請求書',
             },
             details,

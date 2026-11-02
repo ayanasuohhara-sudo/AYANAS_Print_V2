@@ -1,0 +1,34 @@
+[
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 0,
+    "name": "store_deadline_config.js",
+    "file": "desktop_js1_store_deadline_config.js",
+    "size": 4870
+  },
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 1,
+    "name": "store_deadline_engine.js",
+    "file": "desktop_js2_store_deadline_engine.js",
+    "size": 24215
+  },
+  {
+    "scope": "desktop",
+    "kind": "js",
+    "index": 2,
+    "name": "store_deadline_desktop.js",
+    "file": "desktop_js3_store_deadline_desktop.js",
+    "size": 21968
+  },
+  {
+    "scope": "desktop",
+    "kind": "css",
+    "index": 0,
+    "name": "store_deadline.css",
+    "file": "desktop_css1_store_deadline.css",
+    "size": 5820
+  }
+]

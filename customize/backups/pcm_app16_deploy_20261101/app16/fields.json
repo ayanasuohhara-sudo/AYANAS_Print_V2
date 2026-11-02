@@ -1,0 +1,672 @@
+{
+  "revision": "490",
+  "properties": {
+    "closing_date": {
+      "type": "DROP_DOWN",
+      "code": "closing_date",
+      "label": "締日",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "３０日": {
+          "label": "３０日",
+          "index": "2"
+        },
+        "10.20.31締め": {
+          "label": "10.20.31締め",
+          "index": "5"
+        },
+        "１０日": {
+          "label": "１０日",
+          "index": "0"
+        },
+        "２０日": {
+          "label": "２０日",
+          "index": "1"
+        },
+        "３１日": {
+          "label": "３１日",
+          "index": "3"
+        },
+        "都度払い": {
+          "label": "都度払い",
+          "index": "4"
+        }
+      },
+      "defaultValue": ""
+    },
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "code": "レコード番号",
+      "label": "レコード番号",
+      "noLabel": false
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "code": "更新者",
+      "label": "更新者",
+      "noLabel": false
+    },
+    "outsource_in_date": {
+      "type": "DATE",
+      "code": "outsource_in_date",
+      "label": "外注入庫日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "ステータス": {
+      "type": "STATUS",
+      "code": "ステータス",
+      "label": "ステータス",
+      "enabled": false
+    },
+    "remark": {
+      "type": "MULTI_LINE_TEXT",
+      "code": "remark",
+      "label": "備考",
+      "noLabel": false,
+      "required": false,
+      "defaultValue": ""
+    },
+    "overseas_in_date": {
+      "type": "DATE",
+      "code": "overseas_in_date",
+      "label": "海外入庫日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "カテゴリー": {
+      "type": "CATEGORY",
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "enabled": false
+    },
+    "slip_no": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "slip_no",
+      "label": "得意先伝票番号",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "in_charge": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "in_charge",
+      "label": "得意先担当・係",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "aggregation_status": {
+      "type": "DROP_DOWN",
+      "code": "aggregation_status",
+      "label": "集計状態",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "取消": {
+          "label": "取消",
+          "index": "1"
+        },
+        "有効": {
+          "label": "有効",
+          "index": "0"
+        }
+      },
+      "defaultValue": ""
+    },
+    "manage_no": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "manage_no",
+      "label": "管理番号",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "64",
+      "expression": "",
+      "hideExpression": false,
+      "unique": true,
+      "defaultValue": ""
+    },
+    "deadline": {
+      "type": "DATE",
+      "code": "deadline",
+      "label": "納期",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "work_status": {
+      "type": "DROP_DOWN",
+      "code": "work_status",
+      "label": "作業ステータス",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "仕上げ中": {
+          "label": "仕上げ中",
+          "index": "7"
+        },
+        "しみ抜き中": {
+          "label": "しみ抜き中",
+          "index": "4"
+        },
+        "未着手": {
+          "label": "未着手",
+          "index": "0"
+        },
+        "丸洗い待ち": {
+          "label": "丸洗い待ち",
+          "index": "1"
+        },
+        "しみ抜き待ち": {
+          "label": "しみ抜き待ち",
+          "index": "3"
+        },
+        "仕上げ完了": {
+          "label": "仕上げ完了",
+          "index": "8"
+        },
+        "再直し中": {
+          "label": "再直し中",
+          "index": "6"
+        },
+        "丸洗い中・乾燥": {
+          "label": "丸洗い中・乾燥",
+          "index": "2"
+        },
+        "修理中": {
+          "label": "修理中",
+          "index": "5"
+        }
+      },
+      "defaultValue": "未着手"
+    },
+    "client_name": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "client_name",
+      "label": "お客様名",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "customer_code": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "customer_code",
+      "label": "顧客コード",
+      "noLabel": false,
+      "required": false,
+      "lookup": {
+        "relatedApp": {
+          "app": "8",
+          "code": ""
+        },
+        "relatedKeyField": "customer_code",
+        "fieldMappings": [
+          {
+            "field": "customer_name",
+            "relatedField": "customer_name"
+          },
+          {
+            "field": "closing_date",
+            "relatedField": "closing_date"
+          }
+        ],
+        "lookupPickerFields": [
+          "customer_code",
+          "customer_name"
+        ],
+        "filterCond": "",
+        "sort": "レコード番号 desc"
+      }
+    },
+    "detail_table": {
+      "type": "SUBTABLE",
+      "code": "detail_table",
+      "noLabel": false,
+      "label": "加工内容",
+      "fields": {
+        "item_code": {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "item_code",
+          "label": "商品コード",
+          "noLabel": false,
+          "required": false,
+          "lookup": {
+            "relatedApp": {
+              "app": "13",
+              "code": ""
+            },
+            "relatedKeyField": "item_code",
+            "fieldMappings": [
+              {
+                "field": "item_name",
+                "relatedField": "item_name"
+              }
+            ],
+            "lookupPickerFields": [
+              "item_code",
+              "item_name"
+            ],
+            "filterCond": "",
+            "sort": "レコード番号 desc"
+          }
+        },
+        "amount": {
+          "type": "CALC",
+          "code": "amount",
+          "label": "金額",
+          "noLabel": false,
+          "required": false,
+          "expression": "unit_price*qty",
+          "format": "NUMBER_DIGIT",
+          "displayScale": "",
+          "hideExpression": false,
+          "unit": "",
+          "unitPosition": "BEFORE"
+        },
+        "qty": {
+          "type": "NUMBER",
+          "code": "qty",
+          "label": "数量",
+          "noLabel": false,
+          "required": false,
+          "minValue": "",
+          "maxValue": "",
+          "digit": false,
+          "unique": false,
+          "defaultValue": "1",
+          "displayScale": "",
+          "unit": "",
+          "unitPosition": "BEFORE"
+        },
+        "item_name": {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "item_name",
+          "label": "商品名",
+          "noLabel": false,
+          "required": false,
+          "minLength": "",
+          "maxLength": "",
+          "expression": "",
+          "hideExpression": false,
+          "unique": false,
+          "defaultValue": ""
+        },
+        "unit_price": {
+          "type": "NUMBER",
+          "code": "unit_price",
+          "label": "単価",
+          "noLabel": false,
+          "required": false,
+          "minValue": "",
+          "maxValue": "",
+          "digit": true,
+          "unique": false,
+          "defaultValue": "",
+          "displayScale": "",
+          "unit": "",
+          "unitPosition": "BEFORE"
+        },
+        "price_unconfirmed": {
+          "type": "CHECK_BOX",
+          "code": "price_unconfirmed",
+          "label": "価格未定",
+          "noLabel": false,
+          "required": false,
+          "options": {
+            "価格未定": {
+              "label": "価格未定",
+              "index": "0"
+            }
+          },
+          "defaultValue": [],
+          "align": "HORIZONTAL"
+        }
+      }
+    },
+    "location_status": {
+      "type": "DROP_DOWN",
+      "code": "location_status",
+      "label": "保管場所ステータス",
+      "noLabel": false,
+      "required": true,
+      "options": {
+        "海外": {
+          "label": "海外",
+          "index": "5"
+        },
+        "工場": {
+          "label": "工場",
+          "index": "1"
+        },
+        "納品済": {
+          "label": "納品済",
+          "index": "6"
+        },
+        "和裁士": {
+          "label": "和裁士",
+          "index": "4"
+        },
+        "店舗": {
+          "label": "店舗",
+          "index": "2"
+        },
+        "外注先": {
+          "label": "外注先",
+          "index": "3"
+        },
+        "本社": {
+          "label": "本社",
+          "index": "0"
+        }
+      },
+      "defaultValue": "本社"
+    },
+    "作業者": {
+      "type": "STATUS_ASSIGNEE",
+      "code": "作業者",
+      "label": "作業者",
+      "enabled": false
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "code": "作成者",
+      "label": "作成者",
+      "noLabel": false
+    },
+    "invoice_no": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "invoice_no",
+      "label": "請求番号",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "64",
+      "expression": "",
+      "hideExpression": false,
+      "unique": true,
+      "defaultValue": ""
+    },
+    "wasai_in_date": {
+      "type": "DATE",
+      "code": "wasai_in_date",
+      "label": "和裁士入庫日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "delivery_no": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "delivery_no",
+      "label": "納品番号",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "64",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "code": "更新日時",
+      "label": "更新日時",
+      "noLabel": false
+    },
+    "order_date": {
+      "type": "DATE",
+      "code": "order_date",
+      "label": "受注日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": true
+    },
+    "delivery_date": {
+      "type": "DATE",
+      "code": "delivery_date",
+      "label": "納品日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "kimono_type_code": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "kimono_type_code",
+      "label": "着物種類コード",
+      "noLabel": false,
+      "required": false,
+      "lookup": {
+        "relatedApp": {
+          "app": "11",
+          "code": ""
+        },
+        "relatedKeyField": "kimono_type_code",
+        "fieldMappings": [
+          {
+            "field": "kimono_type",
+            "relatedField": "kimono_type"
+          }
+        ],
+        "lookupPickerFields": [
+          "kimono_type",
+          "kimono_type_code"
+        ],
+        "filterCond": "",
+        "sort": "レコード番号 desc"
+      }
+    },
+    "process_status": {
+      "type": "DROP_DOWN",
+      "code": "process_status",
+      "label": "工程ステータス",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "外注中": {
+          "label": "外注中",
+          "index": "2"
+        },
+        "完了": {
+          "label": "完了",
+          "index": "11"
+        },
+        "外注戻り": {
+          "label": "外注戻り",
+          "index": "3"
+        },
+        "海外戻り": {
+          "label": "海外戻り",
+          "index": "5"
+        },
+        "検品仕上中": {
+          "label": "検品仕上中",
+          "index": "10"
+        },
+        "海外外注中": {
+          "label": "海外外注中",
+          "index": "4"
+        },
+        "店舗作業中": {
+          "label": "店舗作業中",
+          "index": "9"
+        },
+        "工場作業中": {
+          "label": "工場作業中",
+          "index": "8"
+        },
+        "和裁士戻り": {
+          "label": "和裁士戻り",
+          "index": "7"
+        },
+        "受注": {
+          "label": "受注",
+          "index": "0"
+        },
+        "問合中": {
+          "label": "問合中",
+          "index": "1"
+        },
+        "和裁士作業中": {
+          "label": "和裁士作業中",
+          "index": "6"
+        }
+      },
+      "defaultValue": "受注"
+    },
+    "kimono_spec": {
+      "type": "DROP_DOWN",
+      "code": "kimono_spec",
+      "label": "着物仕様",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "単衣": {
+          "label": "単衣",
+          "index": "1"
+        },
+        "胴抜き": {
+          "label": "胴抜き",
+          "index": "5"
+        },
+        "袷": {
+          "label": "袷",
+          "index": "0"
+        },
+        "紗": {
+          "label": "紗",
+          "index": "3"
+        },
+        "絽": {
+          "label": "絽",
+          "index": "2"
+        },
+        "袖無双": {
+          "label": "袖無双",
+          "index": "4"
+        }
+      },
+      "defaultValue": ""
+    },
+    "completion_date": {
+      "type": "DATE",
+      "code": "completion_date",
+      "label": "完了日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "customer_name": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "customer_name",
+      "label": "顧客名",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "64",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "kimono_type": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "kimono_type",
+      "label": "着物種類名",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "category": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "category",
+      "label": "大分類",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "subcategory": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "subcategory",
+      "label": "中分類",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "code": "作成日時",
+      "label": "作成日時",
+      "noLabel": false
+    },
+    "delivery_status": {
+      "type": "DROP_DOWN",
+      "code": "delivery_status",
+      "label": "納品状態",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "納品待ち": {
+          "label": "納品待ち",
+          "index": "1"
+        },
+        "納品済": {
+          "label": "納品済",
+          "index": "2"
+        },
+        "未納品": {
+          "label": "未納品",
+          "index": "0"
+        }
+      },
+      "defaultValue": "未納品"
+    }
+  }
+}

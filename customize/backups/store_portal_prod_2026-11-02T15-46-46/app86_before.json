@@ -1,0 +1,78 @@
+{
+  "name": "工場作業状況ポータル",
+  "customize": {
+    "scope": "ALL",
+    "desktop": {
+      "js": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021546325F3899FF6B304B288ABDD92F14A75386222",
+            "name": "work_status_labels.js",
+            "contentType": "text/javascript",
+            "size": "2771"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102154632AE29799337534753B017FF1FD1A2EEE0119",
+            "name": "floor_portal_config.js",
+            "contentType": "text/javascript",
+            "size": "9957"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102154632F46116DFF48C47B9AC50FD7194E449E6147",
+            "name": "floor_portal_engine.js",
+            "contentType": "text/javascript",
+            "size": "21194"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021546325D35331D67C747B281BB04670593B1BB319",
+            "name": "floor_portal_desktop.js",
+            "contentType": "text/javascript",
+            "size": "26329"
+          }
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021546322174B6A5E4F04EC5BA4EF9A039FE2EFF069",
+            "name": "floor_portal.css",
+            "contentType": "text/css",
+            "size": "6316"
+          }
+        }
+      ]
+    },
+    "mobile": {
+      "js": [],
+      "css": []
+    },
+    "revision": "12"
+  },
+  "aclSummary": [
+    {
+      "type": "CREATOR",
+      "code": null,
+      "view": true,
+      "add": true,
+      "edit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "everyone",
+      "view": true,
+      "add": true,
+      "edit": true
+    }
+  ]
+}

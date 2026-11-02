@@ -1,0 +1,56 @@
+{
+  "at": "2026-11-02T13:22:45.571Z",
+  "work": "/workspace/customize/backups/store_order_v147_2026-11-02T13-21-57",
+  "artifacts": "/opt/cursor/artifacts/store_order_v147",
+  "store": {
+    "manage_no": "TSP815835U",
+    "record": {
+      "id": "3496",
+      "manage_no": "TSP815835U",
+      "customer_code": "A550",
+      "url": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3496"
+    },
+    "ok": true,
+    "clicked": "店舗受注表",
+    "customer_code": "A550",
+    "htmlLength": 15345,
+    "buttons": [
+      "店舗受注表",
+      "受注明細表",
+      "海外用受注表",
+      "Cancel",
+      "Post",
+      "More",
+      "More",
+      "More"
+    ],
+    "pluginHint": null
+  },
+  "storeChecks": {
+    "title": true,
+    "orderDetailLayout": true,
+    "workChecks": true,
+    "paymentBinary": true,
+    "noPartial": true,
+    "noOldCut": true,
+    "barcodes": true,
+    "ok": true
+  },
+  "corp": {
+    "ok": true,
+    "clicked": "受注明細表",
+    "customer_code": "M032",
+    "buttons": [
+      "受注明細表",
+      "海外用受注表",
+      "Cancel",
+      "Post",
+      "More",
+      "More",
+      "More"
+    ],
+    "htmlLength": 14001,
+    "hidesStoreButton": true,
+    "hasOrderDetail": true
+  }
+}

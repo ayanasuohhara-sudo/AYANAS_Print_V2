@@ -1,0 +1,410 @@
+{
+  "url": "https://o5nppg7kb4ly.cybozu.com/k/#/portal",
+  "portalVer": "1.0.1",
+  "portalTitle": "AYANAS 業務メニュー",
+  "portalLead": "業務内容を選んでください",
+  "portalCats": [
+    {
+      "no": "01",
+      "label": "受注登録・検索",
+      "hub": false,
+      "mode": "menu",
+      "appId": null,
+      "cat": "order"
+    },
+    {
+      "no": "02",
+      "label": "出庫・入庫",
+      "hub": false,
+      "mode": "menu",
+      "appId": null,
+      "cat": "logistics"
+    },
+    {
+      "no": "03",
+      "label": "納品書・請求書・入金",
+      "hub": false,
+      "mode": "menu",
+      "appId": null,
+      "cat": "billing"
+    },
+    {
+      "no": "04",
+      "label": "作業進捗・完了登録",
+      "hub": false,
+      "mode": "menu",
+      "appId": null,
+      "cat": "work"
+    },
+    {
+      "no": "05",
+      "label": "納期・作業負荷状況",
+      "hub": false,
+      "mode": "direct",
+      "appId": 89,
+      "cat": null
+    },
+    {
+      "no": "06",
+      "label": "納期・納品スケジュール管理",
+      "hub": false,
+      "mode": "direct",
+      "appId": 94,
+      "cat": null
+    },
+    {
+      "no": "07",
+      "label": "各種データ・集計",
+      "hub": false,
+      "mode": "menu",
+      "appId": null,
+      "cat": "analytics"
+    },
+    {
+      "no": "08",
+      "label": "マスタ登録",
+      "hub": false,
+      "mode": "menu",
+      "appId": null,
+      "cat": "masters"
+    }
+  ],
+  "portalLabels": [
+    "受注登録・検索",
+    "出庫・入庫",
+    "納品書・請求書・入金",
+    "作業進捗・完了登録",
+    "納期・作業負荷状況",
+    "納期・納品スケジュール管理",
+    "各種データ・集計",
+    "マスタ登録"
+  ],
+  "systemTries": [
+    {
+      "path": "/k/api/js/getSystemSetting.json",
+      "status": 200,
+      "ok": true,
+      "sample": "{\"result\":{\"executable\":true,\"configurable\":true,\"scripts\":[{\"id\":\"44\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"12866\",\"hash\":\"efb5330ffd9d2c8c018752fd5960f4868d1a61df\",\"name\":\"portal_business_banners_config.js\",\"size\":2795,\"contentUrl\":null,\"sortOrder\":0},{\"id\":\"45\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"12867\",\"hash\":\"95b02afad6e68f02e71ffaa8dd3eaa92ddffb7e2\",\"name\":\"portal_business_banners.js\",\"size\":8804,\"contentUrl\":null,\"sortOrder\":1},{\"id\":\"46\",\"type\":\"DESKTOP_CSS\",\"locationType\":\"BLOB\",\"contentId\":\"12429\",\"hash\":\"66e6470ddd5f1d2c2b550763c36437c27e905eb8\",\"name\":\"portal_business_banners.css\",\"size\":2855,\"contentUrl\":null,\"sortOrder\":0}],\"scope\":\"ALL\",\"active\":true},\"success\":true}",
+      "keys": [
+        "result",
+        "success"
+      ],
+      "jsonPreview": {
+        "result": {
+          "executable": true,
+          "configurable": true,
+          "scripts": [
+            {
+              "id": "44",
+              "type": "DESKTOP",
+              "locationType": "BLOB",
+              "contentId": "12866",
+              "hash": "efb5330ffd9d2c8c018752fd5960f4868d1a61df",
+              "name": "portal_business_banners_config.js",
+              "size": 2795,
+              "contentUrl": null,
+              "sortOrder": 0
+            },
+            {
+              "id": "45",
+              "type": "DESKTOP",
+              "locationType": "BLOB",
+              "contentId": "12867",
+              "hash": "95b02afad6e68f02e71ffaa8dd3eaa92ddffb7e2",
+              "name": "portal_business_banners.js",
+              "size": 8804,
+              "contentUrl": null,
+              "sortOrder": 1
+            },
+            {
+              "id": "46",
+              "type": "DESKTOP_CSS",
+              "locationType": "BLOB",
+              "contentId": "12429",
+              "hash": "66e6470ddd5f1d2c2b550763c36437c27e905eb8",
+              "name": "portal_business_banners.css",
+              "size": 2855,
+              "contentUrl": null,
+              "sortOrder": 0
+            }
+          ],
+          "scope": "ALL",
+          "active": true
+        },
+        "success": true
+      }
+    },
+    {
+      "path": "/k/api/js/getSystemSetting.json",
+      "status": 200,
+      "ok": true,
+      "sample": "{\"result\":{\"executable\":true,\"configurable\":true,\"scripts\":[{\"id\":\"44\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"12866\",\"hash\":\"efb5330ffd9d2c8c018752fd5960f4868d1a61df\",\"name\":\"portal_business_banners_config.js\",\"size\":2795,\"contentUrl\":null,\"sortOrder\":0},{\"id\":\"45\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"12867\",\"hash\":\"95b02afad6e68f02e71ffaa8dd3eaa92ddffb7e2\",\"name\":\"portal_business_banners.js\",\"size\":8804,\"contentUrl\":null,\"sortOrder\":1},{\"id\":\"46\",\"type\":\"DESKTOP_CSS\",\"locationType\":\"BLOB\",\"contentId\":\"12429\",\"hash\":\"66e6470ddd5f1d2c2b550763c36437c27e905eb8\",\"name\":\"portal_business_banners.css\",\"size\":2855,\"contentUrl\":null,\"sortOrder\":0}],\"scope\":\"ALL\",\"active\":true},\"success\":true}",
+      "keys": [
+        "result",
+        "success"
+      ],
+      "jsonPreview": {
+        "result": {
+          "executable": true,
+          "configurable": true,
+          "scripts": [
+            {
+              "id": "44",
+              "type": "DESKTOP",
+              "locationType": "BLOB",
+              "contentId": "12866",
+              "hash": "efb5330ffd9d2c8c018752fd5960f4868d1a61df",
+              "name": "portal_business_banners_config.js",
+              "size": 2795,
+              "contentUrl": null,
+              "sortOrder": 0
+            },
+            {
+              "id": "45",
+              "type": "DESKTOP",
+              "locationType": "BLOB",
+              "contentId": "12867",
+              "hash": "95b02afad6e68f02e71ffaa8dd3eaa92ddffb7e2",
+              "name": "portal_business_banners.js",
+              "size": 8804,
+              "contentUrl": null,
+              "sortOrder": 1
+            },
+            {
+              "id": "46",
+              "type": "DESKTOP_CSS",
+              "locationType": "BLOB",
+              "contentId": "12429",
+              "hash": "66e6470ddd5f1d2c2b550763c36437c27e905eb8",
+              "name": "portal_business_banners.css",
+              "size": 2855,
+              "contentUrl": null,
+              "sortOrder": 0
+            }
+          ],
+          "scope": "ALL",
+          "active": true
+        },
+        "success": true
+      }
+    },
+    {
+      "path": "form-urlencoded getSystemSetting",
+      "status": 415,
+      "sample": "{\"code\":\"GAIA_HM01\",\"messageType\":\"text\",\"success\":false,\"id\":\"S0aCubJNkuLoG8Mmfh9t\",\"message\":\"Content-Type is null or invalid.\"}",
+      "keys": [
+        "code",
+        "messageType",
+        "success",
+        "id",
+        "message"
+      ],
+      "json": {
+        "code": "GAIA_HM01",
+        "messageType": "text",
+        "success": false,
+        "id": "S0aCubJNkuLoG8Mmfh9t",
+        "message": "Content-Type is null or invalid."
+      }
+    }
+  ],
+  "apps": {
+    "16": {
+      "scope": "ALL",
+      "js": [
+        "saiban.js",
+        "saiban1.js",
+        "price_master_search11.js",
+        "category.js",
+        "order_customer_search.js",
+        "price_master_register.js",
+        "order_record_form.js",
+        "additional_item_engine.js",
+        "order_price_unconfirmed_clear.js",
+        "schedule_customer.js",
+        "order_pcm_config.js",
+        "order_pcm_engine.js",
+        "order_pcm_desktop.js"
+      ],
+      "css": [
+        "order_record_form.css",
+        "order_pcm.css"
+      ],
+      "hasNav": false,
+      "versionsHint": []
+    },
+    "19": {
+      "scope": "ALL",
+      "js": [
+        "internal_ops_config.js",
+        "complete_register_engine.js",
+        "delivery_completion_guard.js",
+        "store_delivery_pcm.js",
+        "barcode_delivery.js",
+        "store_pickup_shared.js",
+        "delivery_complete_sync.js",
+        "delivery_a550_edit_guard.js",
+        "price_master_register.js",
+        "delivery_additional_item_guard.js",
+        "additional_item_engine.js"
+      ],
+      "css": [],
+      "hasNav": false,
+      "versionsHint": []
+    },
+    "27": {
+      "scope": "ALL",
+      "js": [
+        "gaityuusyuko.js",
+        "additional_item_engine.js",
+        "outsource_additional_item_sync.js"
+      ],
+      "css": [],
+      "hasNav": false,
+      "versionsHint": []
+    },
+    "30": {
+      "scope": "ALL",
+      "js": [
+        "work_status_labels.js",
+        "internal_ops_config.js",
+        "barcode_batch_core.js",
+        "barcode_batch_ui.js",
+        "complete_register_engine.js",
+        "complete_register_desktop.js"
+      ],
+      "css": [],
+      "hasNav": false,
+      "versionsHint": []
+    },
+    "34": {
+      "scope": "ALL",
+      "js": [
+        "internal_ops_config.js",
+        "store_pickup_shared.js",
+        "barcode_batch_core.js",
+        "barcode_batch_ui.js",
+        "location_inbound_engine.js",
+        "location_inbound_desktop.js"
+      ],
+      "css": [],
+      "hasNav": false,
+      "versionsHint": []
+    },
+    "35": {
+      "scope": "ALL",
+      "js": [
+        "payment_create.js",
+        "invoice_balance_desktop.js"
+      ],
+      "css": [],
+      "hasNav": false,
+      "versionsHint": []
+    },
+    "78": {
+      "scope": "ALL",
+      "js": [
+        "wasai_config.js",
+        "inbound_unified_config.js",
+        "inbound_unified_engine.js",
+        "inbound_unified_desktop.js"
+      ],
+      "css": [],
+      "hasNav": false,
+      "versionsHint": []
+    },
+    "84": {
+      "scope": "ALL",
+      "js": [
+        "work_status_labels.js",
+        "internal_ops_config.js",
+        "barcode_batch_core.js",
+        "barcode_batch_ui.js",
+        "internal_work_engine.js",
+        "internal_work_desktop.js"
+      ],
+      "css": [],
+      "hasNav": false,
+      "versionsHint": []
+    },
+    "86": {
+      "scope": "ALL",
+      "js": [
+        "work_status_labels.js",
+        "floor_portal_config.js",
+        "floor_portal_engine.js",
+        "floor_portal_desktop.js"
+      ],
+      "css": [
+        "floor_portal.css"
+      ],
+      "hasNav": false,
+      "versionsHint": [
+        "floor_portal_config.js",
+        "floor_portal_engine.js",
+        "floor_portal_desktop.js"
+      ]
+    },
+    "87": {
+      "scope": "ALL",
+      "js": [
+        "work_status_labels.js",
+        "floor_portal_config.js",
+        "floor_portal_engine.js",
+        "floor_portal_desktop.js"
+      ],
+      "css": [
+        "floor_portal.css"
+      ],
+      "hasNav": false,
+      "versionsHint": [
+        "floor_portal_config.js",
+        "floor_portal_engine.js",
+        "floor_portal_desktop.js"
+      ]
+    },
+    "88": {
+      "scope": "ALL",
+      "js": [
+        "order_search_config.js",
+        "order_search_engine.js",
+        "order_search_desktop.js"
+      ],
+      "css": [
+        "order_search.css"
+      ],
+      "hasNav": false,
+      "versionsHint": []
+    },
+    "90": {
+      "scope": "ALL",
+      "js": [
+        "factory_menu_config.js",
+        "factory_menu_desktop.js"
+      ],
+      "css": [
+        "factory_menu.css"
+      ],
+      "hasNav": false,
+      "versionsHint": [
+        "factory_menu_config.js",
+        "factory_menu_desktop.js"
+      ]
+    },
+    "91": {
+      "scope": "ALL",
+      "js": [
+        "business_menu_config.js",
+        "business_menu_desktop.js"
+      ],
+      "css": [
+        "business_menu.css"
+      ],
+      "hasNav": false,
+      "versionsHint": [
+        "business_menu_config.js",
+        "business_menu_desktop.js"
+      ]
+    }
+  }
+}

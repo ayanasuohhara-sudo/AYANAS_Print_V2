@@ -1,0 +1,19 @@
+{
+  "outDir": "/workspace/customize/backups/app16_work_status_migrate_2026-11-01",
+  "execute": true,
+  "ok": true,
+  "before": {
+    "from": 403,
+    "to": 0,
+    "empty": 2059
+  },
+  "after": {
+    "from": 0,
+    "to": 403,
+    "empty": 2059
+  },
+  "planned": 403,
+  "successCount": 403,
+  "failureCount": 0,
+  "note": "EXECUTED work_status-only updates"
+}

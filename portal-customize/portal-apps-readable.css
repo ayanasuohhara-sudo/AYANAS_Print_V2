@@ -1,0 +1,116 @@
+/**
+ * kintone トップポータル（PC）
+ * - 左を広く、右は補助エリア
+ * - 左側は縦スクロールで全体を閲覧
+ * - アプリ名などの文字を大きく
+ *
+ * 適用: kintoneシステム管理 → JavaScript / CSSでカスタマイズ → kintone全体（PC用CSS）
+ * 注意: クラス名は kintone の更新で変わることがあります。更新後に表示を確認してください。
+ */
+
+/* 左右比率（左: 通知・お知らせ・アプリ / 右: 未処理・スペース等） */
+.ocean-portal-body-left {
+    width: 72% !important;
+    box-sizing: border-box;
+}
+
+.ocean-portal-body-right {
+    width: 28% !important;
+    box-sizing: border-box;
+}
+
+/* 左列: 下までスクロールしてアプリ一覧を見られるようにする */
+.ocean-portal-body-left {
+    max-height: calc(100vh - 112px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 右列も縦に長い場合はスクロール */
+.ocean-portal-body-right {
+    max-height: calc(100vh - 112px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* アプリウィジェット: 文字サイズ・行間・クリックしやすい余白 */
+.ocean-portal-app,
+.ocean-portal-app a {
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+}
+
+.ocean-portal-app .gaia-argoui-appscrollinglist-item,
+.ocean-portal-app .gaia-argoui-appscrollinglist-item-name,
+.ocean-portal-app li,
+.ocean-portal-app span {
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+}
+
+.ocean-portal-app .gaia-argoui-appscrollinglist-item {
+    min-height: 2.75em;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+/* 左に移したアプリブロック全体の見出し */
+.ocean-portal-app h2,
+.ocean-portal-app .ocean-portal-widget-header,
+.ocean-portal-app [class*="widget-header"] {
+    font-size: 18px !important;
+    font-weight: 700;
+}
+
+/* カスタム一覧（portal-apps-readable.js） */
+.ayanas-portal-apps {
+    margin: 12px 16px 20px;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.ayanas-portal-apps__title {
+    margin: 0 0 10px;
+    padding: 0 0 6px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    border-bottom: 1px solid #d4d7d7;
+}
+
+.ayanas-portal-apps__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: min(520px, calc(100vh - 320px));
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #e3e7e8;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.ayanas-portal-apps__item {
+    margin: 0;
+    border-bottom: 1px solid #e3e7e8;
+}
+
+.ayanas-portal-apps__item:last-child {
+    border-bottom: none;
+}
+
+.ayanas-portal-apps__link {
+    display: block;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.ayanas-portal-apps__link:hover {
+    background: #f7f9fa;
+    text-decoration: underline;
+}

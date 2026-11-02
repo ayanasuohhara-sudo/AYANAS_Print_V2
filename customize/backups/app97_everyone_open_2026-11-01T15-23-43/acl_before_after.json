@@ -1,0 +1,101 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "97",
+    "status": "SUCCESS"
+  },
+  "before": [
+    {
+      "type": "USER",
+      "code": "info@ayanas.co.jp",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": true
+    },
+    {
+      "type": "USER",
+      "code": "matsuura@ayanas.co.jp",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": false
+    },
+    {
+      "type": "USER",
+      "code": "ayanas20126@gmail.com",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": false
+    },
+    {
+      "type": "GROUP",
+      "code": "Administrators",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": true,
+      "appEdit": true
+    },
+    {
+      "type": "CREATOR",
+      "code": null,
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "everyone",
+      "view": false,
+      "add": false,
+      "edit": false,
+      "del": false,
+      "appEdit": false
+    }
+  ],
+  "after": [
+    {
+      "type": "USER",
+      "code": "info@ayanas.co.jp",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "Administrators",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": true,
+      "appEdit": true
+    },
+    {
+      "type": "CREATOR",
+      "code": null,
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "everyone",
+      "view": true,
+      "add": true,
+      "edit": true,
+      "del": false,
+      "appEdit": false
+    }
+  ]
+}

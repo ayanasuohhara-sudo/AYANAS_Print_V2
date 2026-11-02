@@ -1,0 +1,26 @@
+{
+  "schedule_hub.css": {
+    "len": 9432,
+    "start": 0,
+    "end": 9,
+    "parts": 10
+  },
+  "schedule_hub_config.js": {
+    "len": 6036,
+    "start": 10,
+    "end": 16,
+    "parts": 7
+  },
+  "schedule_hub_engine.js": {
+    "len": 35140,
+    "start": 17,
+    "end": 52,
+    "parts": 36
+  },
+  "schedule_hub_desktop.js": {
+    "len": 36084,
+    "start": 53,
+    "end": 89,
+    "parts": 37
+  }
+}

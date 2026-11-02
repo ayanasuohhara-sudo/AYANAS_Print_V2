@@ -1,0 +1,159 @@
+<!--
+  AYANAS 全社共通ポータル — 8分類バナー HTML 原稿
+
+  【使い方】
+  1. アプリID 91（AYANAS 業務メニュー）向けにリンクを設定済み
+  2. kintone ポータル編集で配置する（貼付方法は下記「貼り付け注意」を参照）
+  3. PC・iPad で横スクロールが出ないことを確認する
+
+  【リンク方針】
+  ①②③④⑦⑧ → /k/91/?cat=...
+  ⑤ → /k/89/ （直接）
+  ⑥ → App94 納期・納品スケジュール管理
+
+  【貼り付け注意】
+  - ポータルの「お知らせ」等のリッチテキストは、<style> や class 付き HTML が
+    サニタイズで消える／崩れることがある
+  - 推奨: スペースの HTML パーツ、または portal.show 用 JS（別提案）
+  - リッチテキストに貼る場合は、最低限 <a href="..."> のリンク一覧でも可
+
+  本番反映は承認後に実施すること。
+-->
+<style>
+  .ayanas-portal-banners {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 8px 4px 16px;
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif;
+    color: #1a1a1a;
+  }
+  .ayanas-portal-banners *,
+  .ayanas-portal-banners *::before,
+  .ayanas-portal-banners *::after {
+    box-sizing: border-box;
+  }
+  .ayanas-portal-banners__title {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .ayanas-portal-banners__lead {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: #555;
+  }
+  .ayanas-portal-banners__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .ayanas-portal-banner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    min-height: 96px;
+    padding: 16px 14px;
+    border: 1px solid #c5ced9;
+    border-radius: 10px;
+    background: #f5f7fa;
+    color: #111;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .ayanas-portal-banner:hover {
+    background: #ffffff;
+    border-color: #2f5f8a;
+  }
+  .ayanas-portal-banner__no {
+    font-size: 12px;
+    font-weight: 700;
+    color: #2f5f8a;
+    letter-spacing: 0.06em;
+  }
+  .ayanas-portal-banner__label {
+    font-size: 16px;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+  .ayanas-portal-banner.is-disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    background: #f0f0f0;
+    border-color: #d0d0d0;
+    pointer-events: none;
+  }
+  .ayanas-portal-banner__badge {
+    display: inline-block;
+    margin-top: 2px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #e4e4e4;
+    color: #555;
+    font-size: 12px;
+    font-weight: 700;
+    width: fit-content;
+  }
+  @media (max-width: 900px) {
+    .ayanas-portal-banners__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ayanas-portal-banner {
+      min-height: 84px;
+    }
+    .ayanas-portal-banner__label {
+      font-size: 15px;
+    }
+  }
+</style>
+
+<div class="ayanas-portal-banners">
+  <h2 class="ayanas-portal-banners__title">AYANAS 業務メニュー</h2>
+  <p class="ayanas-portal-banners__lead">業務内容を選んでください</p>
+
+  <div class="ayanas-portal-banners__grid">
+    <!-- 91 を実アプリIDに置換 -->
+    <a class="ayanas-portal-banner" href="/k/91/?cat=order">
+      <span class="ayanas-portal-banner__no">01</span>
+      <span class="ayanas-portal-banner__label">受注登録・検索</span>
+    </a>
+
+    <a class="ayanas-portal-banner" href="/k/91/?cat=logistics">
+      <span class="ayanas-portal-banner__no">02</span>
+      <span class="ayanas-portal-banner__label">出庫・入庫</span>
+    </a>
+
+    <a class="ayanas-portal-banner" href="/k/91/?cat=billing">
+      <span class="ayanas-portal-banner__no">03</span>
+      <span class="ayanas-portal-banner__label">納品書・請求書・入金</span>
+    </a>
+
+    <a class="ayanas-portal-banner" href="/k/91/?cat=work">
+      <span class="ayanas-portal-banner__no">04</span>
+      <span class="ayanas-portal-banner__label">作業進捗・完了登録</span>
+    </a>
+
+    <a class="ayanas-portal-banner" href="/k/89/">
+      <span class="ayanas-portal-banner__no">05</span>
+      <span class="ayanas-portal-banner__label">納期・作業負荷状況</span>
+    </a>
+
+    <a class="ayanas-portal-banner" href="/k/94/">
+      <span class="ayanas-portal-banner__no">06</span>
+      <span class="ayanas-portal-banner__label">納期・納品スケジュール管理</span>
+    </a>
+
+    <a class="ayanas-portal-banner" href="/k/91/?cat=analytics">
+      <span class="ayanas-portal-banner__no">07</span>
+      <span class="ayanas-portal-banner__label">各種データ・集計</span>
+    </a>
+
+    <a class="ayanas-portal-banner" href="/k/91/?cat=masters">
+      <span class="ayanas-portal-banner__no">08</span>
+      <span class="ayanas-portal-banner__label">マスタ登録</span>
+    </a>
+  </div>
+</div>

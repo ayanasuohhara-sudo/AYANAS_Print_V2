@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "92",
+    "status": "SUCCESS"
+  },
+  "desktopJs": [
+    "store_deadline_config.js",
+    "store_deadline_engine.js",
+    "store_payment_config.js",
+    "store_payment_engine.js",
+    "store_pickup_shared.js",
+    "store_pickup_api.js",
+    "store_deadline_desktop.js",
+    "store_deadline_pickup.js"
+  ],
+  "desktopCss": [
+    "store_deadline.css"
+  ]
+}

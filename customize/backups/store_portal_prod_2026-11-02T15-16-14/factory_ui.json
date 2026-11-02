@@ -1,0 +1,19 @@
+{
+  "js": [
+    "floor_portal_config.js",
+    "floor_portal_engine.js",
+    "floor_portal_desktop.js"
+  ],
+  "css": [
+    "floor_portal.css"
+  ],
+  "ver": "1.0.2",
+  "title": "工場 作業状況",
+  "hasStoreMenu": false,
+  "hasSummary": false,
+  "flatLinks": [
+    "社内入庫登録",
+    "社内作業登録",
+    "検品・仕上げ完了"
+  ]
+}

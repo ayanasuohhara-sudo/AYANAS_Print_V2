@@ -1,0 +1,15 @@
+(function() {
+  'use strict';
+
+  kintone.events.on(
+    'app.record.create.submit',
+    function(event) {
+
+      event.record.manage_no.value = '';
+
+      return event;
+
+    }
+  );
+
+})();

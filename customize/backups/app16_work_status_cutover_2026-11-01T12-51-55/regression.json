@@ -1,0 +1,551 @@
+{
+  "at": "2026-11-01T12:56:16.220Z",
+  "checks": [
+    {
+      "name": "unit all pass",
+      "ok": true,
+      "detail": [
+        {
+          "name": "test_work_status_labels.js",
+          "ok": true,
+          "status": 0
+        },
+        {
+          "name": "test_internal_work_engine.js",
+          "ok": true,
+          "status": 0
+        },
+        {
+          "name": "test_factory_inbound_engine.js",
+          "ok": true,
+          "status": 0
+        },
+        {
+          "name": "test_factory_sorting_engine.js",
+          "ok": true,
+          "status": 0
+        },
+        {
+          "name": "test_factory_work_engine.js",
+          "ok": true,
+          "status": 0
+        },
+        {
+          "name": "test_store_work_engine.js",
+          "ok": true,
+          "status": 0
+        },
+        {
+          "name": "test_floor_portal_engine.js",
+          "ok": true,
+          "status": 0
+        },
+        {
+          "name": "test_complete_register_engine.js",
+          "ok": true,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "name": "App16 final 9 options",
+      "ok": true,
+      "detail": [
+        "未着",
+        "問合せ・見積り",
+        "丸洗い待ち",
+        "丸洗い中・乾燥",
+        "しみ抜き中",
+        "修理中",
+        "再直し中",
+        "仕上げ中",
+        "仕上げ完了"
+      ]
+    },
+    {
+      "name": "App16 default 未着",
+      "ok": true,
+      "detail": "未着"
+    },
+    {
+      "name": "App16 未着=403",
+      "ok": true,
+      "detail": 403
+    },
+    {
+      "name": "App16 empty=2059",
+      "ok": true,
+      "detail": 2059
+    },
+    {
+      "name": "App16 total=3214",
+      "ok": true,
+      "detail": 3214
+    },
+    {
+      "name": "旧未着手は0件",
+      "ok": true,
+      "detail": {
+        "exists": true,
+        "count": 0
+      }
+    },
+    {
+      "name": "旧しみ抜き待ちは0件",
+      "ok": true,
+      "detail": {
+        "exists": true,
+        "count": 0
+      }
+    },
+    {
+      "name": "フォームに未着手なし",
+      "ok": true,
+      "detail": [
+        "未着",
+        "問合せ・見積り",
+        "丸洗い待ち",
+        "丸洗い中・乾燥",
+        "しみ抜き中",
+        "修理中",
+        "再直し中",
+        "仕上げ中",
+        "仕上げ完了"
+      ]
+    },
+    {
+      "name": "フォームにしみ抜き待ちなし",
+      "ok": true,
+      "detail": [
+        "未着",
+        "問合せ・見積り",
+        "丸洗い待ち",
+        "丸洗い中・乾燥",
+        "しみ抜き中",
+        "修理中",
+        "再直し中",
+        "仕上げ中",
+        "仕上げ完了"
+      ]
+    },
+    {
+      "name": "A550 未着 sample",
+      "ok": true,
+      "detail": [
+        {
+          "id": "3379",
+          "manage_no": "103126379",
+          "work": "未着",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3371",
+          "manage_no": "103126371",
+          "work": "未着",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3370",
+          "manage_no": "103126370",
+          "work": "未着",
+          "delivery": "未納品"
+        }
+      ]
+    },
+    {
+      "name": "法人 未着 sample",
+      "ok": true,
+      "detail": [
+        {
+          "id": "3382",
+          "manage_no": "103126382",
+          "work": "未着",
+          "code": "A545",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3381",
+          "manage_no": "103126381",
+          "work": "未着",
+          "code": "A622",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3380",
+          "manage_no": "103126380",
+          "work": "未着",
+          "code": "A623",
+          "delivery": "未納品"
+        }
+      ]
+    },
+    {
+      "name": "App84 sortPending 未着",
+      "ok": true,
+      "detail": {
+        "sortPending": "未着",
+        "options": [
+          "未着",
+          "問合せ・見積り",
+          "丸洗い待ち",
+          "丸洗い中・乾燥",
+          "しみ抜き中",
+          "修理中",
+          "再直し中",
+          "仕上げ中"
+        ],
+        "has未着手": false,
+        "has仕上げ待ち": false,
+        "hasしみ抜き待ち": false,
+        "labelsFirst": true,
+        "engine": true
+      }
+    },
+    {
+      "name": "App84 no old labels in select",
+      "ok": true,
+      "detail": {
+        "sortPending": "未着",
+        "options": [
+          "未着",
+          "問合せ・見積り",
+          "丸洗い待ち",
+          "丸洗い中・乾燥",
+          "しみ抜き中",
+          "修理中",
+          "再直し中",
+          "仕上げ中"
+        ],
+        "has未着手": false,
+        "has仕上げ待ち": false,
+        "hasしみ抜き待ち": false,
+        "labelsFirst": true,
+        "engine": true
+      }
+    },
+    {
+      "name": "App84 engine present",
+      "ok": true,
+      "detail": {
+        "sortPending": "未着",
+        "options": [
+          "未着",
+          "問合せ・見積り",
+          "丸洗い待ち",
+          "丸洗い中・乾燥",
+          "しみ抜き中",
+          "修理中",
+          "再直し中",
+          "仕上げ中"
+        ],
+        "has未着手": false,
+        "has仕上げ待ち": false,
+        "hasしみ抜き待ち": false,
+        "labelsFirst": true,
+        "engine": true
+      }
+    },
+    {
+      "name": "App87 cards new labels",
+      "ok": true,
+      "detail": {
+        "pending": "未着",
+        "cards": [
+          "未着",
+          "問合せ・見積り",
+          "しみ抜き中",
+          "修理中",
+          "再直し中",
+          "仕上げ中"
+        ],
+        "has未着手": false,
+        "hasしみ抜き待ち": false,
+        "has未着": true,
+        "hasしみ抜き中": true,
+        "engine": true
+      }
+    },
+    {
+      "name": "App30 finishDone 仕上げ完了",
+      "ok": true,
+      "detail": {
+        "finishDone": "仕上げ完了",
+        "sortPending": "未着",
+        "engine": true,
+        "hasLabels": true
+      }
+    },
+    {
+      "name": "App30 sortPending 未着",
+      "ok": true,
+      "detail": {
+        "finishDone": "仕上げ完了",
+        "sortPending": "未着",
+        "engine": true,
+        "hasLabels": true
+      }
+    },
+    {
+      "name": "App92 loads",
+      "ok": true,
+      "detail": {
+        "url": "https://o5nppg7kb4ly.cybozu.com/k/92/",
+        "title": "店舗納期カレンダー - View",
+        "hasK": true,
+        "bodyLen": 384
+      }
+    },
+    {
+      "name": "App97 loads",
+      "ok": true,
+      "detail": {
+        "url": "https://o5nppg7kb4ly.cybozu.com/k/97/",
+        "title": "店舗入金管理 - View",
+        "hasK": true,
+        "bodyLen": 1365
+      }
+    },
+    {
+      "name": "入庫 丸洗いなし→仕上げ中",
+      "ok": true,
+      "detail": {
+        "action": "put",
+        "workStatus": "仕上げ中",
+        "maruaraiNote": "丸洗いなし"
+      }
+    },
+    {
+      "name": "振り分け 仕上げ→仕上げ中",
+      "ok": true,
+      "detail": {
+        "locationStatus": "工場",
+        "workStatus": "仕上げ中",
+        "actionLabel": "仕上げへ"
+      }
+    },
+    {
+      "name": "振り分け しみ→しみ抜き中",
+      "ok": true,
+      "detail": {
+        "locationStatus": "店舗",
+        "workStatus": "しみ抜き中",
+        "actionLabel": "店舗しみ抜きへ"
+      }
+    },
+    {
+      "name": "丸洗い完了→仕上げ中",
+      "ok": true,
+      "detail": "仕上げ中"
+    },
+    {
+      "name": "店舗しみ完了→工場/仕上げ中",
+      "ok": true,
+      "detail": {
+        "locationStatus": "工場",
+        "workStatus": "仕上げ中"
+      }
+    },
+    {
+      "name": "振り分け 未着 eligible",
+      "ok": true,
+      "detail": {
+        "neu": true
+      }
+    },
+    {
+      "name": "dual-read 未着手 still maps eligible",
+      "ok": true,
+      "detail": {
+        "legacy": true
+      }
+    },
+    {
+      "name": "App84 allows 未着",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "bad": false,
+        "putKeys": [
+          "work_status"
+        ],
+        "putWork": "仕上げ中"
+      }
+    },
+    {
+      "name": "App84 put work only",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "bad": false,
+        "putKeys": [
+          "work_status"
+        ],
+        "putWork": "仕上げ中"
+      }
+    }
+  ],
+  "unit": [
+    {
+      "name": "test_work_status_labels.js",
+      "ok": true,
+      "status": 0
+    },
+    {
+      "name": "test_internal_work_engine.js",
+      "ok": true,
+      "status": 0
+    },
+    {
+      "name": "test_factory_inbound_engine.js",
+      "ok": true,
+      "status": 0
+    },
+    {
+      "name": "test_factory_sorting_engine.js",
+      "ok": true,
+      "status": 0
+    },
+    {
+      "name": "test_factory_work_engine.js",
+      "ok": true,
+      "status": 0
+    },
+    {
+      "name": "test_store_work_engine.js",
+      "ok": true,
+      "status": 0
+    },
+    {
+      "name": "test_floor_portal_engine.js",
+      "ok": true,
+      "status": 0
+    },
+    {
+      "name": "test_complete_register_engine.js",
+      "ok": true,
+      "status": 0
+    }
+  ],
+  "app16": {
+    "defaultValue": "未着",
+    "labels": [
+      "未着",
+      "問合せ・見積り",
+      "丸洗い待ち",
+      "丸洗い中・乾燥",
+      "しみ抜き中",
+      "修理中",
+      "再直し中",
+      "仕上げ中",
+      "仕上げ完了"
+    ],
+    "labelsOk": true,
+    "notArrived": 403,
+    "empty": 2059,
+    "total": 3214,
+    "mishishuQuery": {
+      "exists": true,
+      "count": 0
+    },
+    "shimiWaitQuery": {
+      "exists": true,
+      "count": 0
+    },
+    "a550": [
+      {
+        "id": "3379",
+        "manage_no": "103126379",
+        "work": "未着",
+        "delivery": "未納品"
+      },
+      {
+        "id": "3371",
+        "manage_no": "103126371",
+        "work": "未着",
+        "delivery": "未納品"
+      },
+      {
+        "id": "3370",
+        "manage_no": "103126370",
+        "work": "未着",
+        "delivery": "未納品"
+      }
+    ],
+    "corp": [
+      {
+        "id": "3382",
+        "manage_no": "103126382",
+        "work": "未着",
+        "code": "A545",
+        "delivery": "未納品"
+      },
+      {
+        "id": "3381",
+        "manage_no": "103126381",
+        "work": "未着",
+        "code": "A622",
+        "delivery": "未納品"
+      },
+      {
+        "id": "3380",
+        "manage_no": "103126380",
+        "work": "未着",
+        "code": "A623",
+        "delivery": "未納品"
+      }
+    ]
+  },
+  "app84": {
+    "sortPending": "未着",
+    "options": [
+      "未着",
+      "問合せ・見積り",
+      "丸洗い待ち",
+      "丸洗い中・乾燥",
+      "しみ抜き中",
+      "修理中",
+      "再直し中",
+      "仕上げ中"
+    ],
+    "has未着手": false,
+    "has仕上げ待ち": false,
+    "hasしみ抜き待ち": false,
+    "labelsFirst": true,
+    "engine": true
+  },
+  "app87": {
+    "pending": "未着",
+    "cards": [
+      "未着",
+      "問合せ・見積り",
+      "しみ抜き中",
+      "修理中",
+      "再直し中",
+      "仕上げ中"
+    ],
+    "has未着手": false,
+    "hasしみ抜き待ち": false,
+    "has未着": true,
+    "hasしみ抜き中": true,
+    "engine": true
+  },
+  "app30": {
+    "finishDone": "仕上げ完了",
+    "sortPending": "未着",
+    "engine": true,
+    "hasLabels": true
+  },
+  "app92": {
+    "url": "https://o5nppg7kb4ly.cybozu.com/k/92/",
+    "title": "店舗納期カレンダー - View",
+    "hasK": true,
+    "bodyLen": 384
+  },
+  "app97": {
+    "url": "https://o5nppg7kb4ly.cybozu.com/k/97/",
+    "title": "店舗入金管理 - View",
+    "hasK": true,
+    "bodyLen": 1365
+  },
+  "ok": true
+}

@@ -40,11 +40,39 @@
   let sessionShipDate = '';
   let isProcessing = false;
   let debounceTimer = null;
-  let app28FieldCodes = null;
+  let app28TopLevelFieldCodes = null;
+  let app28SubtableFieldCodes = null;
 
   const escapeQueryValue = (value) => String(value ?? '')
     .replace(/\\/g, '\\\\')
     .replace(/"/g, '\\"');
+
+  const expandManageNoCandidates = (manageNo) => {
+
+    const normalized = String(manageNo ?? '').trim();
+
+    if (normalized === '') {
+      return [];
+    }
+
+    const candidates = [normalized];
+    const withoutLeadingZeros = normalized.replace(/^0+(?=\d)/, '');
+
+    if (withoutLeadingZeros !== '' && withoutLeadingZeros !== normalized) {
+      candidates.push(withoutLeadingZeros);
+    }
+
+    if (/^\d+$/.test(normalized)) {
+      const padded9 = normalized.padStart(9, '0');
+
+      if (padded9 !== normalized && !candidates.includes(padded9)) {
+        candidates.push(padded9);
+      }
+    }
+
+    return candidates;
+
+  };
 
   const isOutboundApp = () => kintone.app.getId() === OVERSEAS_APP_ID;
 
@@ -261,8 +289,11 @@
 
   const loadApp28FieldCodes = () => {
 
-    if (app28FieldCodes) {
-      return Promise.resolve(app28FieldCodes);
+    if (app28TopLevelFieldCodes && app28SubtableFieldCodes) {
+      return Promise.resolve({
+        topLevel: app28TopLevelFieldCodes,
+        subtable: app28SubtableFieldCodes,
+      });
     }
 
     return kintone.api(
@@ -273,29 +304,33 @@
       }
     ).then(function(response) {
 
-      app28FieldCodes = new Set();
+      app28TopLevelFieldCodes = new Set();
+      app28SubtableFieldCodes = new Set();
       const properties = response.properties || {};
 
       Object.keys(properties).forEach(function(fieldCode) {
-        app28FieldCodes.add(fieldCode);
+        app28TopLevelFieldCodes.add(fieldCode);
 
         const field = properties[fieldCode];
 
         if (field && field.type === 'SUBTABLE' && field.fields) {
           Object.keys(field.fields).forEach(function(subFieldCode) {
-            app28FieldCodes.add(subFieldCode);
+            app28SubtableFieldCodes.add(subFieldCode);
           });
         }
 
       });
 
-      return app28FieldCodes;
+      return {
+        topLevel: app28TopLevelFieldCodes,
+        subtable: app28SubtableFieldCodes,
+      };
 
     }).catch(function(error) {
 
       console.warn('[海外外注出庫] App28フィールド定義取得失敗。既定フィールドを使用します。', error);
 
-      app28FieldCodes = new Set([
+      app28TopLevelFieldCodes = new Set([
         FIELDS.shipDate,
         FIELDS.scheduledArrivalDate,
         FIELDS.cartonNo,
@@ -310,20 +345,30 @@
         FIELDS.overseasStatus,
         'overseas_details',
       ]);
+      app28SubtableFieldCodes = new Set();
 
-      return app28FieldCodes;
+      return {
+        topLevel: app28TopLevelFieldCodes,
+        subtable: app28SubtableFieldCodes,
+      };
 
     });
 
   };
 
-  const hasApp28Field = (fieldCode) => (
-    app28FieldCodes !== null && app28FieldCodes.has(fieldCode)
+  const hasTopLevelField = (fieldCode) => (
+    app28TopLevelFieldCodes !== null && app28TopLevelFieldCodes.has(fieldCode)
   );
+
+  const hasSubtableField = (fieldCode) => (
+    app28SubtableFieldCodes !== null && app28SubtableFieldCodes.has(fieldCode)
+  );
+
+  const hasSubtable = () => hasTopLevelField('overseas_details');
 
   const setPayloadField = (payload, fieldCode, value) => {
 
-    if (!hasApp28Field(fieldCode)) {
+    if (!hasTopLevelField(fieldCode)) {
       return;
     }
 
@@ -335,12 +380,12 @@
 
   const setPayloadManageNo = (payload, manageNo) => {
 
-    if (hasApp28Field(FIELDS.manageNo)) {
+    if (hasTopLevelField(FIELDS.manageNo)) {
       setPayloadField(payload, FIELDS.manageNo, manageNo);
       return;
     }
 
-    if (hasApp28Field(FIELDS.overseasManageNo)) {
+    if (hasTopLevelField(FIELDS.overseasManageNo)) {
       setPayloadField(payload, FIELDS.overseasManageNo, manageNo);
     }
 
@@ -348,7 +393,7 @@
 
   const setPayloadClientName = (payload, clientName) => {
 
-    if (hasApp28Field(FIELDS.clientName)) {
+    if (hasTopLevelField(FIELDS.clientName)) {
       setPayloadField(payload, FIELDS.clientName, clientName);
     }
 
@@ -358,15 +403,9 @@
     getOrderFieldValue(orderRecord, FIELDS.clientName)
   );
 
-  const getSubtableClientNameFieldCode = () => {
-
-    if (hasApp28Field(FIELDS.clientName)) {
-      return FIELDS.clientName;
-    }
-
-    return null;
-
-  };
+  const getOrderCustomerName = (orderRecord) => (
+    getOrderFieldValue(orderRecord, FIELDS.customerName)
+  );
 
   const getOrderFieldValue = (orderRecord, fieldCodes) => {
 
@@ -387,25 +426,27 @@
 
   const buildOverseasDetailsValue = (orderRecord, manageNo) => {
 
-    const clientName = getOrderClientName(orderRecord);
-    const clientNameFieldCode = getSubtableClientNameFieldCode();
-
     const rowValue = {};
-
-    const subtableFields = {
+    const candidateFields = {
       manage_no: manageNo,
       customer_code: getOrderFieldValue(orderRecord, FIELDS.customerCode),
+      customer_name: getOrderCustomerName(orderRecord),
+      client_name: getOrderClientName(orderRecord),
       kimono_type: getOrderFieldValue(orderRecord, FIELDS.kimonoType),
+      kimono_spec: getOrderFieldValue(orderRecord, FIELDS.kimonoSpec),
+      deadline: getOrderFieldValue(orderRecord, FIELDS.deadline),
     };
 
-    if (clientNameFieldCode) {
-      subtableFields[clientNameFieldCode] = clientName;
-    }
+    Object.keys(candidateFields).forEach(function(fieldCode) {
 
-    Object.keys(subtableFields).forEach(function(fieldCode) {
+      if (!hasSubtableField(fieldCode)) {
+        return;
+      }
+
       rowValue[fieldCode] = {
-        value: subtableFields[fieldCode] ?? '',
+        value: candidateFields[fieldCode] ?? '',
       };
+
     });
 
     return [{
@@ -416,12 +457,21 @@
 
   const fetchOrderRecord = async (manageNo) => {
 
-    const response = await fetchRecords(
-      ORDER_APP_ID,
-      FIELDS.manageNo + ' = "' + escapeQueryValue(manageNo) + '" limit 1'
-    );
+    const candidates = expandManageNoCandidates(manageNo);
 
-    return response.records?.[0] ?? null;
+    for (let index = 0; index < candidates.length; index += 1) {
+      const response = await fetchRecords(
+        ORDER_APP_ID,
+        FIELDS.manageNo + ' = "' + escapeQueryValue(candidates[index]) + '" limit 1'
+      );
+
+      if (response.records?.[0]) {
+        return response.records[0];
+      }
+
+    }
+
+    return null;
 
   };
 
@@ -429,21 +479,86 @@
     String(getFieldValue(record, FIELDS.overseasInDate) ?? '').trim() === ''
   );
 
-  const findActiveOutboundRecord = async (manageNo) => {
+  const recordMatchesManageNo = (record, manageNo) => {
 
-    const escapedManageNo = escapeQueryValue(manageNo);
-    const queries = [
-      FIELDS.manageNo + ' = "' + escapedManageNo + '" order by $id desc limit 10',
-      FIELDS.overseasManageNo + ' = "' + escapedManageNo + '" order by $id desc limit 10',
-      'overseas_manage_no = "' + escapedManageNo + '" order by $id desc limit 10',
+    const candidates = new Set(expandManageNoCandidates(manageNo));
+    const topLevelValues = [
+      String(getFieldValue(record, FIELDS.manageNo) ?? '').trim(),
+      String(getFieldValue(record, FIELDS.overseasManageNo) ?? '').trim(),
     ];
 
-    for (let index = 0; index < queries.length; index += 1) {
+    if (topLevelValues.some(function(value) {
+      return value !== '' && candidates.has(value);
+    })) {
+      return true;
+    }
+
+    const subtableRows = record?.overseas_details?.value;
+
+    if (!Array.isArray(subtableRows)) {
+      return false;
+    }
+
+    return subtableRows.some(function(subtableRow) {
+      const subtableManageNo = String(subtableRow?.value?.manage_no?.value ?? '').trim();
+      return subtableManageNo !== '' && candidates.has(subtableManageNo);
+    });
+
+  };
+
+  const findActiveOutboundRecord = async (manageNo) => {
+
+    const candidates = expandManageNoCandidates(manageNo);
+
+    for (let candidateIndex = 0; candidateIndex < candidates.length; candidateIndex += 1) {
+      const escapedManageNo = escapeQueryValue(candidates[candidateIndex]);
+      const queries = [];
+
+      // manage_no がサブテーブル内にある場合、App 28 では = クエリ不可（GAIA_IQ07）
+      if (hasTopLevelField(FIELDS.manageNo) && !hasSubtableField(FIELDS.manageNo)) {
+        queries.push(
+          FIELDS.manageNo + ' = "' + escapedManageNo + '" order by $id desc limit 10'
+        );
+      }
+
+      if (hasTopLevelField(FIELDS.overseasManageNo)) {
+        queries.push(
+          FIELDS.overseasManageNo + ' = "' + escapedManageNo + '" order by $id desc limit 10'
+        );
+      }
+
+      for (let index = 0; index < queries.length; index += 1) {
+
+        try {
+
+          const response = await fetchRecords(OVERSEAS_APP_ID, queries[index]);
+          const activeRecord = (response.records ?? []).find(isUnreceivedOutboundRecord);
+
+          if (activeRecord) {
+            return activeRecord;
+          }
+
+        } catch (error) {
+
+          console.warn('[海外外注出庫] 出庫中レコード検索:', queries[index], error);
+
+        }
+
+      }
+
+    }
+
+    if (hasSubtable()) {
 
       try {
 
-        const response = await fetchRecords(OVERSEAS_APP_ID, queries[index]);
-        const activeRecord = (response.records ?? []).find(isUnreceivedOutboundRecord);
+        const response = await fetchRecords(
+          OVERSEAS_APP_ID,
+          FIELDS.overseasInDate + ' = "" order by $id desc limit 500'
+        );
+        const activeRecord = (response.records ?? []).find(function(record) {
+          return isUnreceivedOutboundRecord(record) && recordMatchesManageNo(record, manageNo);
+        });
 
         if (activeRecord) {
           return activeRecord;
@@ -451,7 +566,7 @@
 
       } catch (error) {
 
-        console.warn('[海外外注出庫] 出庫中レコード検索:', queries[index], error);
+        console.warn('[海外外注出庫] サブテーブル走査検索失敗', error);
 
       }
 
@@ -474,8 +589,6 @@
   const buildOutboundRecordPayload = (formRecord, orderRecord, manageNo) => {
 
     const payload = {};
-    const clientName = getOrderClientName(orderRecord);
-
     setPayloadField(
       payload,
       FIELDS.shipDate,
@@ -497,7 +610,12 @@
       FIELDS.customerCode,
       getOrderFieldValue(orderRecord, FIELDS.customerCode)
     );
-    setPayloadClientName(payload, clientName);
+    setPayloadField(
+      payload,
+      FIELDS.customerName,
+      getOrderCustomerName(orderRecord)
+    );
+    setPayloadClientName(payload, getOrderClientName(orderRecord));
     setPayloadField(
       payload,
       FIELDS.kimonoType,
@@ -515,12 +633,23 @@
     );
     setPayloadField(payload, FIELDS.overseasStatus, OVERSEAS_OUTBOUND_STATUS);
 
-    const hasTopLevelDetailFields = hasApp28Field(FIELDS.customerCode)
-      || hasApp28Field(FIELDS.customerName)
-      || hasApp28Field(FIELDS.clientName)
-      || hasApp28Field(FIELDS.kimonoType);
+    const hasTopLevelDetailFields = hasTopLevelField(FIELDS.customerCode)
+      || hasTopLevelField(FIELDS.customerName)
+      || hasTopLevelField(FIELDS.clientName)
+      || hasTopLevelField(FIELDS.kimonoType)
+      || hasTopLevelField(FIELDS.manageNo)
+      || hasTopLevelField(FIELDS.overseasManageNo);
 
-    if (hasApp28Field('overseas_details') && !hasTopLevelDetailFields) {
+    // サブテーブル専用フォーム: 明細は overseas_details へ
+    // トップレベルフィールドあり: 一覧表示用にトップレベルへ書き込み（上の setPayloadField）
+    if (hasSubtable() && !hasTopLevelDetailFields) {
+      payload.overseas_details = {
+        value: buildOverseasDetailsValue(orderRecord, manageNo),
+      };
+    }
+
+    // トップレベルとサブテーブル両方あるフォーム: 一覧・印刷両対応のため両方に書く
+    if (hasSubtable() && hasTopLevelDetailFields) {
       payload.overseas_details = {
         value: buildOverseasDetailsValue(orderRecord, manageNo),
       };

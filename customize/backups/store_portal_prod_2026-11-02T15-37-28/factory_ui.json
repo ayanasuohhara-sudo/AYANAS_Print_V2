@@ -1,0 +1,74 @@
+{
+  "app": 86,
+  "ver": "1.4.0",
+  "title": "工場 作業状況",
+  "rootFontSize": "15px",
+  "titleFontSize": "24px",
+  "hasMenu": false,
+  "hasSummary": true,
+  "summaryTitle": "本日の工場状況",
+  "has85": false,
+  "hasLocationMove": false,
+  "hasInternalWork": true,
+  "flatLinks": [
+    "社内入庫登録",
+    "社内作業登録",
+    "検品・仕上げ完了"
+  ],
+  "workLabels": [
+    "在庫総数",
+    "未着",
+    "問合せ・見積り",
+    "丸洗い待ち",
+    "丸洗い中・乾燥",
+    "しみ抜き中",
+    "修理中",
+    "再直し中",
+    "仕上げ中",
+    "納品待ち",
+    "その他"
+  ],
+  "hasDeliveryWaitingCard": true,
+  "links": [
+    {
+      "text": "社内入庫登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/34/",
+      "note": "",
+      "fontSize": "15px"
+    },
+    {
+      "text": "社内作業登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/84/",
+      "note": "",
+      "fontSize": "15px"
+    },
+    {
+      "text": "検品・仕上げ完了",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/30/",
+      "note": "",
+      "fontSize": "15px"
+    }
+  ],
+  "summary": [
+    {
+      "label": "本日の工場受注",
+      "value": "0件",
+      "unavailable": false
+    },
+    {
+      "label": "本日納期",
+      "value": "13件",
+      "unavailable": false
+    },
+    {
+      "label": "納品待ち",
+      "value": "1件",
+      "unavailable": false
+    },
+    {
+      "label": "納期超過",
+      "value": "3件",
+      "unavailable": false
+    }
+  ]
+}

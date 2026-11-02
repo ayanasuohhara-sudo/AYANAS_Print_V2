@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "97",
+    "status": "SUCCESS"
+  },
+  "beforeRevision": "13",
+  "afterRevision": "14",
+  "everyoneViewable": false,
+  "rightsSummary": [
+    {
+      "type": "USER",
+      "code": "info@ayanas.co.jp",
+      "view": true,
+      "add": true,
+      "edit": true
+    },
+    {
+      "type": "USER",
+      "code": "matsuura@ayanas.co.jp",
+      "view": true,
+      "add": true,
+      "edit": true
+    },
+    {
+      "type": "USER",
+      "code": "ayanas20126@gmail.com",
+      "view": true,
+      "add": true,
+      "edit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "Administrators",
+      "view": true,
+      "add": true,
+      "edit": true
+    },
+    {
+      "type": "CREATOR",
+      "code": null,
+      "view": true,
+      "add": true,
+      "edit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "everyone",
+      "view": false,
+      "add": false,
+      "edit": false
+    }
+  ]
+}

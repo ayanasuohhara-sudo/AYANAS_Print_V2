@@ -1,0 +1,72 @@
+[
+  {
+    "kind": "js",
+    "index": 0,
+    "name": "internal_ops_config.js",
+    "fileKey": "202611011544195AA9EABF1B214D27BC7C2CD3A4A05796007",
+    "file": "desktop_js1_internal_ops_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 1,
+    "name": "complete_register_engine.js",
+    "fileKey": "202611011544190EE8D1055B954CB78C17B7E3F20DF15C209",
+    "file": "desktop_js2_complete_register_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 2,
+    "name": "delivery_completion_guard.js",
+    "fileKey": "2026110115442038A04E7D784243EE8FABD4273437CF65040",
+    "file": "desktop_js3_delivery_completion_guard.js"
+  },
+  {
+    "kind": "js",
+    "index": 3,
+    "name": "barcode_delivery.js",
+    "fileKey": "202611011544206DEC58F98A794733A12C22CF61F37B30302",
+    "file": "desktop_js4_barcode_delivery.js"
+  },
+  {
+    "kind": "js",
+    "index": 4,
+    "name": "store_pickup_shared.js",
+    "fileKey": "202611011544200ADDC79C00994D56A5F6D6F4223F9587204",
+    "file": "desktop_js5_store_pickup_shared.js"
+  },
+  {
+    "kind": "js",
+    "index": 5,
+    "name": "delivery_complete_sync.js",
+    "fileKey": "2026110115442017206F98E3EC4713ACB5E1DE0836F8ED100",
+    "file": "desktop_js6_delivery_complete_sync.js"
+  },
+  {
+    "kind": "js",
+    "index": 6,
+    "name": "delivery_a550_edit_guard.js",
+    "fileKey": "20261101154420A32931FFD463446E92E9F7CCE52E26B3086",
+    "file": "desktop_js7_delivery_a550_edit_guard.js"
+  },
+  {
+    "kind": "js",
+    "index": 7,
+    "name": "price_master_register.js",
+    "fileKey": "2026110115442027489AA5FAD14816B9BB686E34A9B087123",
+    "file": "desktop_js8_price_master_register.js"
+  },
+  {
+    "kind": "js",
+    "index": 8,
+    "name": "delivery_additional_item_guard.js",
+    "fileKey": "202611011544205DDDE2F0D6AE461A95985E47A0A93773078",
+    "file": "desktop_js9_delivery_additional_item_guard.js"
+  },
+  {
+    "kind": "js",
+    "index": 9,
+    "name": "additional_item_engine.js",
+    "fileKey": "20261101154420611AA98537054DA2A913C863C48A2090255",
+    "file": "desktop_js10_additional_item_engine.js"
+  }
+]

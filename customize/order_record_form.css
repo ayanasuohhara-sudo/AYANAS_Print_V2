@@ -1,0 +1,154 @@
+/**
+ * 受注明細 App 16 — 1行5項目・左寄せ・横幅いっぱい
+ * 文字は kintone 標準（14px）より 1px 大きい 15px
+ */
+
+body.ayanas-order-record-ui .contents-gaia,
+body.ayanas-order-record-ui .form-gaia,
+body.ayanas-order-record-ui #record-gaia,
+body.ayanas-order-record-ui .record-gaia {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box;
+}
+
+body.ayanas-order-record-ui .layout-gaia {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 6px 12px 24px 4px;
+}
+
+body.ayanas-order-record-ui .layout-gaia > .row-gaia:not(:has(.subtable-gaia)) {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(12rem, 1fr));
+  column-gap: 14px;
+  row-gap: 14px;
+  align-items: start;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+body.ayanas-order-record-ui .layout-gaia > .row-gaia:not(:has(.subtable-gaia)) > .control-gaia {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  overflow: visible;
+}
+
+body.ayanas-order-record-ui .control-gaia .control-value-gaia,
+body.ayanas-order-record-ui .control-gaia .control-inner-gaia,
+body.ayanas-order-record-ui .control-gaia .input-text-outer-cybozu,
+body.ayanas-order-record-ui .control-gaia .gaia-argoui-datepicker,
+body.ayanas-order-record-ui .control-gaia .input-date-cybozu {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box;
+  overflow: visible !important;
+}
+
+body.ayanas-order-record-ui .control-gaia .control-label-gaia,
+body.ayanas-order-record-ui .control-gaia .label-gaia {
+  font-size: 15px !important;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #1e293b;
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+
+body.ayanas-order-record-ui .control-value-gaia,
+body.ayanas-order-record-ui .input-text-cybozu,
+body.ayanas-order-record-ui .textarea-cybozu,
+body.ayanas-order-record-ui .gaia-argoui-select,
+body.ayanas-order-record-ui .gaia-argoui-select-label,
+body.ayanas-order-record-ui .dropdown-selected,
+body.ayanas-order-record-ui .ocean-ui-plugin-user-select,
+body.ayanas-order-record-ui .control-gaia .number-cybozu,
+body.ayanas-order-record-ui .control-gaia .record-id-gaia,
+body.ayanas-order-record-ui .control-gaia .input-date-text-cybozu {
+  font-size: 15px !important;
+  line-height: 1.35;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: keep-all;
+}
+
+body.ayanas-order-record-ui .input-text-cybozu,
+body.ayanas-order-record-ui .textarea-cybozu,
+body.ayanas-order-record-ui .gaia-argoui-select,
+body.ayanas-order-record-ui .dropdown-selected,
+body.ayanas-order-record-ui .input-date-text-cybozu {
+  box-sizing: border-box;
+}
+
+body.ayanas-order-record-ui .control-value-gaia {
+  min-height: 32px;
+  padding-top: 4px;
+}
+
+/* 長い文字列は列を2つ分 */
+body.ayanas-order-record-ui .ayanas-order-field--manage_no,
+body.ayanas-order-record-ui .ayanas-order-field--customer_name {
+  grid-column: span 2;
+}
+
+body.ayanas-order-record-ui .ayanas-order-field--order_date,
+body.ayanas-order-record-ui .ayanas-order-field--deadline,
+body.ayanas-order-record-ui .ayanas-order-field--delivery_date,
+body.ayanas-order-record-ui .ayanas-order-field--gaityuu_nyuuko_date,
+body.ayanas-order-record-ui .ayanas-order-field--wasai_nyuuko_date,
+body.ayanas-order-record-ui .ayanas-order-field--overseas_nyuuko_date {
+  min-width: 11rem;
+}
+
+body.ayanas-order-record-ui .subtable-gaia {
+  width: 100%;
+}
+
+body.ayanas-order-record-ui .layout-gaia > .row-gaia:has(.subtable-gaia) {
+  display: block !important;
+}
+
+body.ayanas-order-record-ui .subtable-gaia th,
+body.ayanas-order-record-ui .subtable-gaia td,
+body.ayanas-order-record-ui .subtable-gaia .input-text-cybozu,
+body.ayanas-order-record-ui .subtable-gaia .control-value-gaia {
+  font-size: 15px !important;
+  white-space: normal !important;
+}
+
+body.ayanas-order-record-ui .subtable-gaia th {
+  font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  body.ayanas-order-record-ui .layout-gaia > .row-gaia:not(:has(.subtable-gaia)) {
+    grid-template-columns: repeat(4, minmax(11rem, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  body.ayanas-order-record-ui .layout-gaia > .row-gaia:not(:has(.subtable-gaia)) {
+    grid-template-columns: repeat(3, minmax(10rem, 1fr));
+  }
+
+  body.ayanas-order-record-ui .ayanas-order-field--manage_no,
+  body.ayanas-order-record-ui .ayanas-order-field--customer_name {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 620px) {
+  body.ayanas-order-record-ui .layout-gaia > .row-gaia:not(:has(.subtable-gaia)) {
+    grid-template-columns: repeat(2, minmax(9rem, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  body.ayanas-order-record-ui .layout-gaia > .row-gaia:not(:has(.subtable-gaia)) {
+    grid-template-columns: 1fr;
+  }
+}

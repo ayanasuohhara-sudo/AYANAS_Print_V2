@@ -1,0 +1,59 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026103114055347BA337373C947B6BA717026AF334172288",
+          "name": "pcm_config.js",
+          "contentType": "text/javascript",
+          "size": "3261"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261031140554B2B8D1CF419045B2B9518C946646E19E166",
+          "name": "pcm_numbering.js",
+          "contentType": "text/javascript",
+          "size": "3554"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261031140554F1FD409166B04B2DA3D1CBC9EBC9B385102",
+          "name": "pcm_engine.js",
+          "contentType": "text/javascript",
+          "size": "5990"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261031140554AF2801CA64C948FAB143AD18F2944CFD212",
+          "name": "pcm_desktop.js",
+          "contentType": "text/javascript",
+          "size": "13251"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026103114055454CAA45085384873B8A94F7595A15CB2092",
+          "name": "pcm.css",
+          "contentType": "text/css",
+          "size": "2374"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "9"
+}

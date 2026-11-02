@@ -1,0 +1,1 @@
+# App97 everyone open — ACL backup\nCreated: 2026-11-01T15:23:48.411Z (UTC)\n\nTo roll back to stage1 limited ACL, restore rights from\ncustomize/backups/app97_stage1_acl_2026-11-01T15-13-50/acl_before_after.json (after section)\nor re-apply stage1 rights via preview ACL + deploy.

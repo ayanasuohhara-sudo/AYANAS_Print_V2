@@ -1,0 +1,1 @@
+window.__SH_PARTS = {};

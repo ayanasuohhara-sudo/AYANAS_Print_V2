@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "updateSample": "{\"result\":{\"executable\":true,\"configurable\":true,\"scripts\":[{\"id\":\"50\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"14774\",\"hash\":\"f312eb33d50a5e47db0269e3d93ebad94b2a38e4\",\"name\":\"portal_business_banners_config.js\",\"size\":3322,\"contentUrl\":null,\"sortOrder\":0},{\"id\":\"51\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"14775\",\"hash\":\"7cf41906400e283678c0834fbf39b79066210da7\",\"name\":\"port",
+  "after": {
+    "executable": true,
+    "configurable": true,
+    "scripts": [
+      {
+        "id": "50",
+        "type": "DESKTOP",
+        "locationType": "BLOB",
+        "contentId": "14774",
+        "hash": "f312eb33d50a5e47db0269e3d93ebad94b2a38e4",
+        "name": "portal_business_banners_config.js",
+        "size": 3322,
+        "contentUrl": null,
+        "sortOrder": 0
+      },
+      {
+        "id": "51",
+        "type": "DESKTOP",
+        "locationType": "BLOB",
+        "contentId": "14775",
+        "hash": "7cf41906400e283678c0834fbf39b79066210da7",
+        "name": "portal_business_banners.js",
+        "size": 8794,
+        "contentUrl": null,
+        "sortOrder": 1
+      },
+      {
+        "id": "52",
+        "type": "DESKTOP_CSS",
+        "locationType": "BLOB",
+        "contentId": "14776",
+        "hash": "0e712a5b346bfc59b9af299e0f826ad8c6b55293",
+        "name": "portal_business_banners.css",
+        "size": 2844,
+        "contentUrl": null,
+        "sortOrder": 0
+      }
+    ],
+    "scope": "ALL",
+    "active": true
+  },
+  "keys": {
+    "kConfig": "2e1f31e2-e2b7-4c95-8cb2-e632e5fd9dc6",
+    "kJs": "240892c8-4410-4ba4-b02b-5db75c745483",
+    "kCss": "64344229-f2e1-446b-bc0e-3420c8e6761f"
+  }
+}

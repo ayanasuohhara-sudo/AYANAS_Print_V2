@@ -1,0 +1,65 @@
+[
+  {
+    "kind": "js",
+    "index": 0,
+    "name": "store_deadline_config.js",
+    "fileKey": "2026110115443487DDE13BEA4041DC873475E76D6C642D083",
+    "file": "desktop_js1_store_deadline_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 1,
+    "name": "store_deadline_engine.js",
+    "fileKey": "202611011544347761EFD65C884ED6BD8042E2F63D482B147",
+    "file": "desktop_js2_store_deadline_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 2,
+    "name": "store_payment_config.js",
+    "fileKey": "20261101154434DC4B89408021496385736104CB650F39192",
+    "file": "desktop_js3_store_payment_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 3,
+    "name": "store_payment_engine.js",
+    "fileKey": "20261101154435A4A3232346EB4D94AEC4D51A42AF201E311",
+    "file": "desktop_js4_store_payment_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 4,
+    "name": "store_pickup_shared.js",
+    "fileKey": "202611011544355BF0156B2CD945E3B62BF8456F41C88A033",
+    "file": "desktop_js5_store_pickup_shared.js"
+  },
+  {
+    "kind": "js",
+    "index": 5,
+    "name": "store_pickup_api.js",
+    "fileKey": "202611011544358C30227E707A4F7CB60B9620DB1074D0099",
+    "file": "desktop_js6_store_pickup_api.js"
+  },
+  {
+    "kind": "js",
+    "index": 6,
+    "name": "store_deadline_desktop.js",
+    "fileKey": "2026110115443531CEC0FE0B8943BE940CD002CD2DAA70146",
+    "file": "desktop_js7_store_deadline_desktop.js"
+  },
+  {
+    "kind": "js",
+    "index": 7,
+    "name": "store_deadline_pickup.js",
+    "fileKey": "20261101154435E6B9A1D1BBD146D9AE96DFF41ED5D8A6221",
+    "file": "desktop_js8_store_deadline_pickup.js"
+  },
+  {
+    "kind": "css",
+    "index": 0,
+    "name": "store_deadline.css",
+    "fileKey": "2026110115443451EDFC859CFA493EB7637B13EDFB825A256",
+    "file": "desktop_css1_store_deadline.css"
+  }
+]

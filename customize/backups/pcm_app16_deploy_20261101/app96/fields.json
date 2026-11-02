@@ -1,0 +1,726 @@
+{
+  "revision": "9",
+  "properties": {
+    "birthday": {
+      "type": "DATE",
+      "code": "birthday",
+      "label": "生年月日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "member_type": {
+      "type": "DROP_DOWN",
+      "code": "member_type",
+      "label": "会員区分",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "優待": {
+          "label": "優待",
+          "index": "2"
+        },
+        "一般": {
+          "label": "一般",
+          "index": "0"
+        },
+        "店舗会員": {
+          "label": "店舗会員",
+          "index": "1"
+        },
+        "その他": {
+          "label": "その他",
+          "index": "3"
+        }
+      },
+      "defaultValue": "一般"
+    },
+    "gender": {
+      "type": "DROP_DOWN",
+      "code": "gender",
+      "label": "性別",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "回答しない": {
+          "label": "回答しない",
+          "index": "4"
+        },
+        "未設定": {
+          "label": "未設定",
+          "index": "0"
+        },
+        "男性": {
+          "label": "男性",
+          "index": "2"
+        },
+        "その他": {
+          "label": "その他",
+          "index": "3"
+        },
+        "女性": {
+          "label": "女性",
+          "index": "1"
+        }
+      },
+      "defaultValue": "未設定"
+    },
+    "prefecture": {
+      "type": "DROP_DOWN",
+      "code": "prefecture",
+      "label": "都道府県",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "島根県": {
+          "label": "島根県",
+          "index": "31"
+        },
+        "埼玉県": {
+          "label": "埼玉県",
+          "index": "10"
+        },
+        "長崎県": {
+          "label": "長崎県",
+          "index": "41"
+        },
+        "兵庫県": {
+          "label": "兵庫県",
+          "index": "27"
+        },
+        "高知県": {
+          "label": "高知県",
+          "index": "38"
+        },
+        "東京都": {
+          "label": "東京都",
+          "index": "12"
+        },
+        "石川県": {
+          "label": "石川県",
+          "index": "16"
+        },
+        "鳥取県": {
+          "label": "鳥取県",
+          "index": "30"
+        },
+        "福岡県": {
+          "label": "福岡県",
+          "index": "39"
+        },
+        "鹿児島県": {
+          "label": "鹿児島県",
+          "index": "45"
+        },
+        "宮城県": {
+          "label": "宮城県",
+          "index": "3"
+        },
+        "宮崎県": {
+          "label": "宮崎県",
+          "index": "44"
+        },
+        "茨城県": {
+          "label": "茨城県",
+          "index": "7"
+        },
+        "京都府": {
+          "label": "京都府",
+          "index": "25"
+        },
+        "北海道": {
+          "label": "北海道",
+          "index": "0"
+        },
+        "愛知県": {
+          "label": "愛知県",
+          "index": "22"
+        },
+        "奈良県": {
+          "label": "奈良県",
+          "index": "28"
+        },
+        "愛媛県": {
+          "label": "愛媛県",
+          "index": "37"
+        },
+        "熊本県": {
+          "label": "熊本県",
+          "index": "42"
+        },
+        "三重県": {
+          "label": "三重県",
+          "index": "23"
+        },
+        "山口県": {
+          "label": "山口県",
+          "index": "34"
+        },
+        "岩手県": {
+          "label": "岩手県",
+          "index": "2"
+        },
+        "富山県": {
+          "label": "富山県",
+          "index": "15"
+        },
+        "香川県": {
+          "label": "香川県",
+          "index": "36"
+        },
+        "滋賀県": {
+          "label": "滋賀県",
+          "index": "24"
+        },
+        "静岡県": {
+          "label": "静岡県",
+          "index": "21"
+        },
+        "佐賀県": {
+          "label": "佐賀県",
+          "index": "40"
+        },
+        "岐阜県": {
+          "label": "岐阜県",
+          "index": "20"
+        },
+        "千葉県": {
+          "label": "千葉県",
+          "index": "11"
+        },
+        "秋田県": {
+          "label": "秋田県",
+          "index": "4"
+        },
+        "福島県": {
+          "label": "福島県",
+          "index": "6"
+        },
+        "栃木県": {
+          "label": "栃木県",
+          "index": "8"
+        },
+        "福井県": {
+          "label": "福井県",
+          "index": "17"
+        },
+        "大分県": {
+          "label": "大分県",
+          "index": "43"
+        },
+        "青森県": {
+          "label": "青森県",
+          "index": "1"
+        },
+        "群馬県": {
+          "label": "群馬県",
+          "index": "9"
+        },
+        "新潟県": {
+          "label": "新潟県",
+          "index": "14"
+        },
+        "長野県": {
+          "label": "長野県",
+          "index": "19"
+        },
+        "和歌山県": {
+          "label": "和歌山県",
+          "index": "29"
+        },
+        "広島県": {
+          "label": "広島県",
+          "index": "33"
+        },
+        "大阪府": {
+          "label": "大阪府",
+          "index": "26"
+        },
+        "沖縄県": {
+          "label": "沖縄県",
+          "index": "46"
+        },
+        "岡山県": {
+          "label": "岡山県",
+          "index": "32"
+        },
+        "徳島県": {
+          "label": "徳島県",
+          "index": "35"
+        },
+        "山形県": {
+          "label": "山形県",
+          "index": "5"
+        },
+        "山梨県": {
+          "label": "山梨県",
+          "index": "18"
+        },
+        "神奈川県": {
+          "label": "神奈川県",
+          "index": "13"
+        }
+      },
+      "defaultValue": ""
+    },
+    "city": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "city",
+      "label": "市区町村",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "100",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "member_no": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "member_no",
+      "label": "会員番号",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "64",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "first_order_date": {
+      "type": "DATE",
+      "code": "first_order_date",
+      "label": "初回利用日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "member_expiry_date": {
+      "type": "DATE",
+      "code": "member_expiry_date",
+      "label": "有効期限",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "customer_note": {
+      "type": "MULTI_LINE_TEXT",
+      "code": "customer_note",
+      "label": "顧客メモ",
+      "noLabel": false,
+      "required": false,
+      "defaultValue": ""
+    },
+    "Updated_by": {
+      "type": "MODIFIER",
+      "code": "Updated_by",
+      "label": "Updated by",
+      "noLabel": false
+    },
+    "Created_datetime": {
+      "type": "CREATED_TIME",
+      "code": "Created_datetime",
+      "label": "Created datetime",
+      "noLabel": false
+    },
+    "dm_permission": {
+      "type": "DROP_DOWN",
+      "code": "dm_permission",
+      "label": "DM郵送可否",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "未設定": {
+          "label": "未設定",
+          "index": "0"
+        },
+        "不可": {
+          "label": "不可",
+          "index": "2"
+        },
+        "可": {
+          "label": "可",
+          "index": "1"
+        }
+      },
+      "defaultValue": "未設定"
+    },
+    "line_permission": {
+      "type": "DROP_DOWN",
+      "code": "line_permission",
+      "label": "LINE配信同意",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "未設定": {
+          "label": "未設定",
+          "index": "0"
+        },
+        "同意": {
+          "label": "同意",
+          "index": "1"
+        },
+        "不同意": {
+          "label": "不同意",
+          "index": "2"
+        }
+      },
+      "defaultValue": "未設定"
+    },
+    "mobile_phone": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "mobile_phone",
+      "label": "携帯電話",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "32",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "member_status": {
+      "type": "DROP_DOWN",
+      "code": "member_status",
+      "label": "会員状態",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "非会員": {
+          "label": "非会員",
+          "index": "0"
+        },
+        "退会": {
+          "label": "退会",
+          "index": "2"
+        },
+        "停止": {
+          "label": "停止",
+          "index": "3"
+        },
+        "会員": {
+          "label": "会員",
+          "index": "1"
+        }
+      },
+      "defaultValue": "非会員"
+    },
+    "Record_number": {
+      "type": "RECORD_NUMBER",
+      "code": "Record_number",
+      "label": "Record number",
+      "noLabel": false
+    },
+    "Created_by": {
+      "type": "CREATOR",
+      "code": "Created_by",
+      "label": "Created by",
+      "noLabel": false
+    },
+    "email": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "email",
+      "label": "メールアドレス",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "200",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "Status": {
+      "type": "STATUS",
+      "code": "Status",
+      "label": "Status",
+      "enabled": false
+    },
+    "dormant_status": {
+      "type": "DROP_DOWN",
+      "code": "dormant_status",
+      "label": "休眠区分",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "休眠": {
+          "label": "休眠",
+          "index": "2"
+        },
+        "休眠候補": {
+          "label": "休眠候補",
+          "index": "1"
+        },
+        "通常": {
+          "label": "通常",
+          "index": "0"
+        }
+      },
+      "defaultValue": "通常"
+    },
+    "Assignee": {
+      "type": "STATUS_ASSIGNEE",
+      "code": "Assignee",
+      "label": "Assignee",
+      "enabled": false
+    },
+    "building_name": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "building_name",
+      "label": "建物名",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "200",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "registration_source": {
+      "type": "DROP_DOWN",
+      "code": "registration_source",
+      "label": "初回登録経路",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "WEB": {
+          "label": "WEB",
+          "index": "1"
+        },
+        "店舗": {
+          "label": "店舗",
+          "index": "0"
+        },
+        "移行": {
+          "label": "移行",
+          "index": "2"
+        },
+        "その他": {
+          "label": "その他",
+          "index": "3"
+        }
+      },
+      "defaultValue": "店舗"
+    },
+    "address_line": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "address_line",
+      "label": "番地以下",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "200",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "web_verified": {
+      "type": "DROP_DOWN",
+      "code": "web_verified",
+      "label": "WEB本人確認状態",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "未連携": {
+          "label": "未連携",
+          "index": "0"
+        },
+        "本人確認済": {
+          "label": "本人確認済",
+          "index": "1"
+        },
+        "停止": {
+          "label": "停止",
+          "index": "2"
+        }
+      },
+      "defaultValue": "未連携"
+    },
+    "member_start_date": {
+      "type": "DATE",
+      "code": "member_start_date",
+      "label": "入会日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "order_count": {
+      "type": "NUMBER",
+      "code": "order_count",
+      "label": "利用回数(App16未連携)",
+      "noLabel": false,
+      "required": false,
+      "minValue": "",
+      "maxValue": "",
+      "digit": false,
+      "unique": false,
+      "defaultValue": "",
+      "displayScale": "",
+      "unit": "",
+      "unitPosition": "BEFORE"
+    },
+    "Categories": {
+      "type": "CATEGORY",
+      "code": "Categories",
+      "label": "Categories",
+      "enabled": false
+    },
+    "email_permission": {
+      "type": "DROP_DOWN",
+      "code": "email_permission",
+      "label": "メール配信同意",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "未設定": {
+          "label": "未設定",
+          "index": "0"
+        },
+        "同意": {
+          "label": "同意",
+          "index": "1"
+        },
+        "不同意": {
+          "label": "不同意",
+          "index": "2"
+        }
+      },
+      "defaultValue": "未設定"
+    },
+    "last_order_date": {
+      "type": "DATE",
+      "code": "last_order_date",
+      "label": "最終利用日",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": false
+    },
+    "web_account_id": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "web_account_id",
+      "label": "WEBアカウントID",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "128",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "line_account_id": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "line_account_id",
+      "label": "LINE連携ID",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "128",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "Updated_datetime": {
+      "type": "UPDATED_TIME",
+      "code": "Updated_datetime",
+      "label": "Updated datetime",
+      "noLabel": false
+    },
+    "personal_customer_id": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "personal_customer_id",
+      "label": "個人顧客ID",
+      "noLabel": false,
+      "required": false,
+      "minLength": "1",
+      "maxLength": "16",
+      "expression": "",
+      "hideExpression": false,
+      "unique": true,
+      "defaultValue": ""
+    },
+    "phone": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "phone",
+      "label": "電話番号",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "32",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "lifetime_amount": {
+      "type": "NUMBER",
+      "code": "lifetime_amount",
+      "label": "累計利用金額(App16未連携)",
+      "noLabel": false,
+      "required": false,
+      "minValue": "",
+      "maxValue": "",
+      "digit": true,
+      "unique": false,
+      "defaultValue": "",
+      "displayScale": "",
+      "unit": "円",
+      "unitPosition": "AFTER"
+    },
+    "customer_name": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "customer_name",
+      "label": "氏名",
+      "noLabel": false,
+      "required": true,
+      "minLength": "",
+      "maxLength": "100",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "customer_kana": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "customer_kana",
+      "label": "ふりがな",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "100",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "postal_code": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "postal_code",
+      "label": "郵便番号",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "16",
+      "expression": "",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    }
+  }
+}

@@ -1,0 +1,776 @@
+{
+  "at": "2026-11-01T14:08:52.845Z",
+  "backup": "customize/backups/a550_p0_limited_2026-11-01T14-01-52",
+  "e2e": [
+    {
+      "name": "App19 JS includes sync + edit guard in order",
+      "ok": true,
+      "detail": [
+        "internal_ops_config.js",
+        "complete_register_engine.js",
+        "delivery_completion_guard.js",
+        "barcode_delivery.js",
+        "delivery_complete_sync.js",
+        "delivery_a550_edit_guard.js",
+        "price_master_register.js",
+        "delivery_additional_item_guard.js",
+        "additional_item_engine.js"
+      ]
+    },
+    {
+      "name": "App92 JS/CSS v1.1.0 order",
+      "ok": true,
+      "detail": {
+        "app19": [
+          "internal_ops_config.js",
+          "complete_register_engine.js",
+          "delivery_completion_guard.js",
+          "barcode_delivery.js",
+          "delivery_complete_sync.js",
+          "delivery_a550_edit_guard.js",
+          "price_master_register.js",
+          "delivery_additional_item_guard.js",
+          "additional_item_engine.js"
+        ],
+        "app92js": [
+          "store_deadline_config.js",
+          "store_deadline_engine.js",
+          "store_deadline_desktop.js"
+        ],
+        "app92css": [
+          "store_deadline.css"
+        ]
+      }
+    },
+    {
+      "name": "TEST App16 fixtures created",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "stamp": "133786",
+        "today": "2026-11-01",
+        "created": [
+          {
+            "id": "3396",
+            "manageNo": "TP0133786A",
+            "location": "店舗",
+            "note": "store-waiting"
+          },
+          {
+            "id": "3397",
+            "manageNo": "TP0133786B",
+            "location": "工場",
+            "note": "factory-not-arrived"
+          },
+          {
+            "id": "3398",
+            "manageNo": "TP0133786C",
+            "location": "工場",
+            "note": "partial-sibling"
+          }
+        ],
+        "corp": {
+          "id": "3399",
+          "manageNo": "TP0133786X",
+          "code": "Z9P0",
+          "masterId": "81"
+        },
+        "realCorpGuard": {
+          "id": "3382",
+          "code": "A545",
+          "mn": "103126382",
+          "ds": "未納品",
+          "ls": "本社",
+          "rev": "3"
+        }
+      }
+    },
+    {
+      "name": "App92 globals VERSION 1.1.0",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "ver": "1.1.0",
+        "flags": [
+          {
+            "mn": "TP0133786C",
+            "excluded": false,
+            "waiting": false,
+            "slip": false,
+            "dn": "",
+            "loc": "工場",
+            "ds": "納品待ち"
+          },
+          {
+            "mn": "TP0133786B",
+            "excluded": false,
+            "waiting": false,
+            "slip": false,
+            "dn": "",
+            "loc": "工場",
+            "ds": "納品待ち"
+          },
+          {
+            "mn": "TP0133786A",
+            "excluded": false,
+            "waiting": false,
+            "slip": false,
+            "dn": "",
+            "loc": "店舗",
+            "ds": "納品待ち"
+          }
+        ]
+      }
+    },
+    {
+      "name": "E2E#3 納品書前はスケジュール対象（excluded=false）",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "ver": "1.1.0",
+        "flags": [
+          {
+            "mn": "TP0133786C",
+            "excluded": false,
+            "waiting": false,
+            "slip": false,
+            "dn": "",
+            "loc": "工場",
+            "ds": "納品待ち"
+          },
+          {
+            "mn": "TP0133786B",
+            "excluded": false,
+            "waiting": false,
+            "slip": false,
+            "dn": "",
+            "loc": "工場",
+            "ds": "納品待ち"
+          },
+          {
+            "mn": "TP0133786A",
+            "excluded": false,
+            "waiting": false,
+            "slip": false,
+            "dn": "",
+            "loc": "店舗",
+            "ds": "納品待ち"
+          }
+        ]
+      }
+    },
+    {
+      "name": "E2E#4 App19 納品書作成（店舗+工場）",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "mode": "api+deployed-helpers",
+        "recordId": "645",
+        "deliveryNo": "N20261101-645",
+        "results": [
+          {
+            "mn": "TP0133786A",
+            "action": "put",
+            "reason": "apply_waiting",
+            "before": {
+              "ps": "完了",
+              "ls": "店舗",
+              "ws": "仕上げ完了"
+            },
+            "after": {
+              "ds": "納品待ち",
+              "dn": "N20261101-645",
+              "dd": "2026-11-01",
+              "ps": "完了",
+              "ls": "店舗",
+              "ws": "仕上げ完了"
+            }
+          },
+          {
+            "mn": "TP0133786B",
+            "action": "put",
+            "reason": "apply_waiting",
+            "before": {
+              "ps": "完了",
+              "ls": "工場",
+              "ws": "仕上げ完了"
+            },
+            "after": {
+              "ds": "納品待ち",
+              "dn": "N20261101-645",
+              "dd": "2026-11-01",
+              "ps": "完了",
+              "ls": "工場",
+              "ws": "仕上げ完了"
+            }
+          }
+        ],
+        "srcOk": true
+      }
+    },
+    {
+      "name": "本番同期ヘルパー配線",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "mode": "api+deployed-helpers",
+        "recordId": "645",
+        "deliveryNo": "N20261101-645",
+        "results": [
+          {
+            "mn": "TP0133786A",
+            "action": "put",
+            "reason": "apply_waiting",
+            "before": {
+              "ps": "完了",
+              "ls": "店舗",
+              "ws": "仕上げ完了"
+            },
+            "after": {
+              "ds": "納品待ち",
+              "dn": "N20261101-645",
+              "dd": "2026-11-01",
+              "ps": "完了",
+              "ls": "店舗",
+              "ws": "仕上げ完了"
+            }
+          },
+          {
+            "mn": "TP0133786B",
+            "action": "put",
+            "reason": "apply_waiting",
+            "before": {
+              "ps": "完了",
+              "ls": "工場",
+              "ws": "仕上げ完了"
+            },
+            "after": {
+              "ds": "納品待ち",
+              "dn": "N20261101-645",
+              "dd": "2026-11-01",
+              "ps": "完了",
+              "ls": "工場",
+              "ws": "仕上げ完了"
+            }
+          }
+        ],
+        "srcOk": true
+      }
+    },
+    {
+      "name": "E2E#5 App16 delivery_no/date 反映（店舗・工場）",
+      "ok": true,
+      "detail": {
+        "orders": [
+          {
+            "id": "3396",
+            "mn": "TP0133786A",
+            "ds": "納品待ち",
+            "dn": "N20261101-645",
+            "dd": "2026-11-01",
+            "ps": "完了",
+            "ls": "店舗",
+            "ws": "仕上げ完了"
+          },
+          {
+            "id": "3397",
+            "mn": "TP0133786B",
+            "ds": "納品待ち",
+            "dn": "N20261101-645",
+            "dd": "2026-11-01",
+            "ps": "完了",
+            "ls": "工場",
+            "ws": "仕上げ完了"
+          },
+          {
+            "id": "3398",
+            "mn": "TP0133786C",
+            "ds": "納品待ち",
+            "dn": "",
+            "dd": null,
+            "ps": "完了",
+            "ls": "工場",
+            "ws": "仕上げ完了"
+          }
+        ],
+        "slipNo": "N20261101-645",
+        "slipId": "645"
+      }
+    },
+    {
+      "name": "process/location/work 不変",
+      "ok": true,
+      "detail": {
+        "syncedStore": {
+          "id": "3396",
+          "mn": "TP0133786A",
+          "ds": "納品待ち",
+          "dn": "N20261101-645",
+          "dd": "2026-11-01",
+          "ps": "完了",
+          "ls": "店舗",
+          "ws": "仕上げ完了"
+        },
+        "syncedFactory": {
+          "id": "3397",
+          "mn": "TP0133786B",
+          "ds": "納品待ち",
+          "dn": "N20261101-645",
+          "dd": "2026-11-01",
+          "ps": "完了",
+          "ls": "工場",
+          "ws": "仕上げ完了"
+        }
+      }
+    },
+    {
+      "name": "未明細の C は未同期",
+      "ok": true,
+      "detail": {
+        "id": "3398",
+        "mn": "TP0133786C",
+        "ds": "納品待ち",
+        "dn": "",
+        "dd": null,
+        "ps": "完了",
+        "ls": "工場",
+        "ws": "仕上げ完了"
+      }
+    },
+    {
+      "name": "同期再実行は skip（安全）",
+      "ok": true,
+      "detail": {
+        "action": "skip",
+        "reason": "already_applied"
+      }
+    },
+    {
+      "name": "E2E#6 納品書後スケジュール除外",
+      "ok": true,
+      "detail": {
+        "storeExcluded": true,
+        "factoryExcluded": true,
+        "partialExcluded": false,
+        "storeWaiting": true,
+        "factoryWaiting": false,
+        "factorySlip": true,
+        "storeSlip": false,
+        "storeDn": "N20261101-645",
+        "factoryDn": "N20261101-645",
+        "partialDn": ""
+      }
+    },
+    {
+      "name": "未納品書の C は従来どおり表示（excluded=false）",
+      "ok": true,
+      "detail": {
+        "storeExcluded": true,
+        "factoryExcluded": true,
+        "partialExcluded": false,
+        "storeWaiting": true,
+        "factoryWaiting": false,
+        "factorySlip": true,
+        "storeSlip": false,
+        "storeDn": "N20261101-645",
+        "factoryDn": "N20261101-645",
+        "partialDn": ""
+      }
+    },
+    {
+      "name": "E2E#7 店舗は納品待ち在庫",
+      "ok": true,
+      "detail": {
+        "storeExcluded": true,
+        "factoryExcluded": true,
+        "partialExcluded": false,
+        "storeWaiting": true,
+        "factoryWaiting": false,
+        "factorySlip": true,
+        "storeSlip": false,
+        "storeDn": "N20261101-645",
+        "factoryDn": "N20261101-645",
+        "partialDn": ""
+      }
+    },
+    {
+      "name": "E2E#8 工場は店舗未到着",
+      "ok": true,
+      "detail": {
+        "storeExcluded": true,
+        "factoryExcluded": true,
+        "partialExcluded": false,
+        "storeWaiting": true,
+        "factoryWaiting": false,
+        "factorySlip": true,
+        "storeSlip": false,
+        "storeDn": "N20261101-645",
+        "factoryDn": "N20261101-645",
+        "partialDn": ""
+      }
+    },
+    {
+      "name": "工場→店舗へ移動",
+      "ok": true,
+      "detail": {
+        "ls": "店舗",
+        "dn": "N20261101-645",
+        "ds": "納品待ち"
+      }
+    },
+    {
+      "name": "E2E#9 店舗移動後は納品待ち在庫",
+      "ok": true,
+      "detail": {
+        "waiting": true,
+        "slip": false,
+        "excluded": true
+      }
+    },
+    {
+      "name": "E2E#11 一部商品のみ納品同期",
+      "ok": true,
+      "detail": {
+        "id": "646",
+        "deliveryNo": "N20261101-646",
+        "plan": "put",
+        "dual": "warn",
+        "again": "skip",
+        "dn": "N20261101-646"
+      }
+    },
+    {
+      "name": "二重同期防止",
+      "ok": true,
+      "detail": {
+        "id": "646",
+        "deliveryNo": "N20261101-646",
+        "plan": "put",
+        "dual": "warn",
+        "again": "skip",
+        "dn": "N20261101-646"
+      }
+    },
+    {
+      "name": "E2E#10 入金・引き渡しで納品済",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "pay": {
+          "ok": true,
+          "recordId": "5",
+          "storePaymentNo": "SP-261101-000005",
+          "transactionId": "STP-1793542165056-pex4dmhu"
+        },
+        "pick": {
+          "ok": true,
+          "balance": {
+            "exclusive": 3000,
+            "tax": 300,
+            "billedInclusive": 3300,
+            "paid": 3300,
+            "balance": 0,
+            "state": "入金済"
+          },
+          "exception": false
+        },
+        "ds": "納品済",
+        "dn": "N20261101-645"
+      }
+    },
+    {
+      "name": "納品済は在庫から除外",
+      "ok": true,
+      "detail": {
+        "waiting": false,
+        "slip": false,
+        "excluded": true,
+        "ds": "納品済"
+      }
+    },
+    {
+      "name": "E2E#12 法人は納品済+location納品済",
+      "ok": true,
+      "detail": {
+        "isCorp": true,
+        "notStore": true,
+        "before": {
+          "ds": "未納品",
+          "ls": "工場"
+        },
+        "after": {
+          "ds": "納品済",
+          "ls": "納品済",
+          "dn": "N20261101-647",
+          "dd": "2026-11-01"
+        },
+        "putKeys": [
+          "delivery_date",
+          "delivery_no",
+          "delivery_status",
+          "location_status"
+        ],
+        "realGuardBefore": {
+          "id": "3382",
+          "code": "A545",
+          "mn": "103126382",
+          "ds": "未納品",
+          "ls": "本社",
+          "rev": "3"
+        },
+        "realGuardAfter": {
+          "ds": "未納品",
+          "ls": "本社",
+          "rev": "3",
+          "mn": "103126382"
+        }
+      }
+    },
+    {
+      "name": "実法人レコード非影響",
+      "ok": true,
+      "detail": {
+        "before": {
+          "id": "3382",
+          "code": "A545",
+          "mn": "103126382",
+          "ds": "未納品",
+          "ls": "本社",
+          "rev": "3"
+        },
+        "after": {
+          "ds": "未納品",
+          "ls": "本社",
+          "rev": "3",
+          "mn": "103126382"
+        }
+      }
+    },
+    {
+      "name": "編集ガード利用可能",
+      "ok": true,
+      "detail": {
+        "guard": true,
+        "sync": true,
+        "a550": true
+      }
+    }
+  ],
+  "fixtures": {
+    "ok": true,
+    "stamp": "133786",
+    "today": "2026-11-01",
+    "created": [
+      {
+        "id": "3396",
+        "manageNo": "TP0133786A",
+        "location": "店舗",
+        "note": "store-waiting"
+      },
+      {
+        "id": "3397",
+        "manageNo": "TP0133786B",
+        "location": "工場",
+        "note": "factory-not-arrived"
+      },
+      {
+        "id": "3398",
+        "manageNo": "TP0133786C",
+        "location": "工場",
+        "note": "partial-sibling"
+      }
+    ],
+    "corp": {
+      "id": "3399",
+      "manageNo": "TP0133786X",
+      "code": "Z9P0",
+      "masterId": "81"
+    },
+    "realCorpGuard": {
+      "id": "3382",
+      "code": "A545",
+      "mn": "103126382",
+      "ds": "未納品",
+      "ls": "本社",
+      "rev": "3"
+    }
+  },
+  "deployVerify": {
+    "app19": [
+      "internal_ops_config.js",
+      "complete_register_engine.js",
+      "delivery_completion_guard.js",
+      "barcode_delivery.js",
+      "delivery_complete_sync.js",
+      "delivery_a550_edit_guard.js",
+      "price_master_register.js",
+      "delivery_additional_item_guard.js",
+      "additional_item_engine.js"
+    ],
+    "app92js": [
+      "store_deadline_config.js",
+      "store_deadline_engine.js",
+      "store_deadline_desktop.js"
+    ],
+    "app92css": [
+      "store_deadline.css"
+    ]
+  },
+  "app16Sync": {
+    "ok": true,
+    "mode": "api+deployed-helpers",
+    "recordId": "645",
+    "deliveryNo": "N20261101-645",
+    "results": [
+      {
+        "mn": "TP0133786A",
+        "action": "put",
+        "reason": "apply_waiting",
+        "before": {
+          "ps": "完了",
+          "ls": "店舗",
+          "ws": "仕上げ完了"
+        },
+        "after": {
+          "ds": "納品待ち",
+          "dn": "N20261101-645",
+          "dd": "2026-11-01",
+          "ps": "完了",
+          "ls": "店舗",
+          "ws": "仕上げ完了"
+        }
+      },
+      {
+        "mn": "TP0133786B",
+        "action": "put",
+        "reason": "apply_waiting",
+        "before": {
+          "ps": "完了",
+          "ls": "工場",
+          "ws": "仕上げ完了"
+        },
+        "after": {
+          "ds": "納品待ち",
+          "dn": "N20261101-645",
+          "dd": "2026-11-01",
+          "ps": "完了",
+          "ls": "工場",
+          "ws": "仕上げ完了"
+        }
+      }
+    ],
+    "srcOk": true,
+    "orders": [
+      {
+        "id": "3396",
+        "mn": "TP0133786A",
+        "ds": "納品待ち",
+        "dn": "N20261101-645",
+        "dd": "2026-11-01",
+        "ps": "完了",
+        "ls": "店舗",
+        "ws": "仕上げ完了"
+      },
+      {
+        "id": "3397",
+        "mn": "TP0133786B",
+        "ds": "納品待ち",
+        "dn": "N20261101-645",
+        "dd": "2026-11-01",
+        "ps": "完了",
+        "ls": "工場",
+        "ws": "仕上げ完了"
+      },
+      {
+        "id": "3398",
+        "mn": "TP0133786C",
+        "ds": "納品待ち",
+        "dn": "",
+        "dd": null,
+        "ps": "完了",
+        "ls": "工場",
+        "ws": "仕上げ完了"
+      }
+    ],
+    "slipNo": "N20261101-645",
+    "slipId": "645"
+  },
+  "app92": {
+    "storeExcluded": true,
+    "factoryExcluded": true,
+    "partialExcluded": false,
+    "storeWaiting": true,
+    "factoryWaiting": false,
+    "factorySlip": true,
+    "storeSlip": false,
+    "storeDn": "N20261101-645",
+    "factoryDn": "N20261101-645",
+    "partialDn": ""
+  },
+  "app97": {
+    "ok": true,
+    "pay": {
+      "ok": true,
+      "recordId": "5",
+      "storePaymentNo": "SP-261101-000005",
+      "transactionId": "STP-1793542165056-pex4dmhu"
+    },
+    "pick": {
+      "ok": true,
+      "balance": {
+        "exclusive": 3000,
+        "tax": 300,
+        "billedInclusive": 3300,
+        "paid": 3300,
+        "balance": 0,
+        "state": "入金済"
+      },
+      "exception": false
+    },
+    "ds": "納品済",
+    "dn": "N20261101-645"
+  },
+  "corporate": {
+    "isCorp": true,
+    "notStore": true,
+    "before": {
+      "ds": "未納品",
+      "ls": "工場"
+    },
+    "after": {
+      "ds": "納品済",
+      "ls": "納品済",
+      "dn": "N20261101-647",
+      "dd": "2026-11-01"
+    },
+    "putKeys": [
+      "delivery_date",
+      "delivery_no",
+      "delivery_status",
+      "location_status"
+    ],
+    "realGuardBefore": {
+      "id": "3382",
+      "code": "A545",
+      "mn": "103126382",
+      "ds": "未納品",
+      "ls": "本社",
+      "rev": "3"
+    },
+    "realGuardAfter": {
+      "ds": "未納品",
+      "ls": "本社",
+      "rev": "3",
+      "mn": "103126382"
+    }
+  },
+  "residual": [
+    "過去 A550 の delivery_no 未連携は遡及していない",
+    "納品書削除の自動巻き戻しなし（runbook 運用）",
+    "App19/92 の ACL は業務継続のため元に戻す（一般公開宣言は別承認）",
+    "UI保存が環境により失敗した場合は API+helper フォールバックで同期検証"
+  ],
+  "generalRelease": "NO — await separate approval",
+  "passed": 24,
+  "failed": 0
+}

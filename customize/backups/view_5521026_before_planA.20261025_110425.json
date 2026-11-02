@@ -1,0 +1,154 @@
+{
+  "capturedAt": "2026-10-25T02:04:15.806Z",
+  "appName": "01_受注明細管理",
+  "view": {
+    "id": "5521026",
+    "name": "顧客別納期スケジュール",
+    "filterQueryInternal": "f5520791 in (\"5520787\", \"5520788\", \"5520792\", \"5520793\")",
+    "sort": [
+      "f5520103",
+      "f5520117"
+    ],
+    "order": [
+      "ASC",
+      "ASC"
+    ],
+    "fields": [
+      {
+        "row": [
+          {
+            "columnWidth": null,
+            "id": "5520116"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520117"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520276"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520103"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520059"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520057"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520086"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520193"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520790"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520791"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520380"
+          },
+          {
+            "columnWidth": null,
+            "id": "5520366"
+          }
+        ]
+      }
+    ]
+  },
+  "delivery_status": {
+    "code": "delivery_status",
+    "id": "5520750",
+    "options": [
+      {
+        "id": "5520749",
+        "label": "未納品",
+        "valid": true
+      },
+      {
+        "id": "5520747",
+        "label": "納品待ち",
+        "valid": true
+      },
+      {
+        "id": "5520748",
+        "label": "納品済",
+        "valid": true
+      }
+    ]
+  },
+  "location_status": {
+    "code": "location_status",
+    "id": "5520791",
+    "options": [
+      {
+        "id": "5520786",
+        "label": "本社",
+        "valid": true
+      },
+      {
+        "id": "5520787",
+        "label": "工場",
+        "valid": true
+      },
+      {
+        "id": "5520788",
+        "label": "店舗",
+        "valid": true
+      },
+      {
+        "id": "5520792",
+        "label": "外注先",
+        "valid": true
+      },
+      {
+        "id": "5520793",
+        "label": "海外",
+        "valid": true
+      },
+      {
+        "id": "5520789",
+        "label": "納品済",
+        "valid": true
+      }
+    ]
+  },
+  "proposedFilter": {
+    "plan": "A",
+    "description": "delivery_status: show 未納品/納品待ち/empty; exclude 納品済; drop location_status filter",
+    "queryLabelForm": "delivery_status in (\"未納品\", \"納品待ち\", \"\")",
+    "queryIdForm": "f5520750 in (\"5520749\", \"5520747\", \"\")",
+    "sortKeep": [
+      "customer_name (f5520103) ASC",
+      "deadline (f5520117) ASC"
+    ]
+  },
+  "jsDeploy": {
+    "update": [
+      "schedule_customer.js"
+    ],
+    "disableOrRemove": [
+      "schedule_customer2.js"
+    ],
+    "doNotTouch": [
+      "saiban.js",
+      "saiban1.js",
+      "price_master_search11.js",
+      "category.js",
+      "order_customer_search.js",
+      "price_master_register.js"
+    ]
+  }
+}

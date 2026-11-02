@@ -1,0 +1,112 @@
+(function() {
+  'use strict';
+
+  const APP_ID = 16;
+  const VIEW_ID = 5521026;
+
+  kintone.events.on('app.record.index.show', async function(event) {
+
+    if (event.viewId !== VIEW_ID) {
+      return event;
+    }
+
+    if (document.getElementById('customer-filter')) {
+      return event;
+    }
+
+    try {
+
+      const resp = await kintone.api(
+        kintone.api.url('/k/v1/records.json', true),
+        'GET',
+        {
+          app: APP_ID,
+          fields: ['customer_code', 'customer_name'],
+          query: 'limit 500'
+        }
+      );
+
+      const customers = {};
+
+      resp.records.forEach(function(rec) {
+
+        const code = rec.customer_code.value || '';
+        const name = rec.customer_name.value || '';
+
+        if (code) {
+          customers[code] = name;
+        }
+
+      });
+
+      const space = kintone.app.getHeaderMenuSpaceElement();
+
+      const label = document.createElement('span');
+      label.innerHTML = '<b>顧客選択：</b>';
+      label.style.marginRight = '10px';
+
+      const select = document.createElement('select');
+      select.id = 'customer-filter';
+      select.style.height = '36px';
+      select.style.fontSize = '14px';
+
+      const allOption = document.createElement('option');
+      allOption.value = '';
+      allOption.text = '全顧客';
+      select.appendChild(allOption);
+
+      Object.keys(customers)
+        .sort()
+        .forEach(function(code) {
+
+          const option = document.createElement('option');
+
+          option.value = code;
+          option.text = code + ' ' + customers[code];
+
+          select.appendChild(option);
+
+        });
+
+      select.onchange = function() {
+
+        if (!select.value) {
+
+          location.href =
+            location.origin +
+            '/k/' +
+            APP_ID +
+            '/?view=' +
+            VIEW_ID;
+
+        } else {
+
+          location.href =
+            location.origin +
+            '/k/' +
+            APP_ID +
+            '/?view=' +
+            VIEW_ID +
+            '&query=' +
+            encodeURIComponent(
+              'customer_code="' + select.value + '"'
+            );
+
+        }
+
+      };
+
+      space.appendChild(label);
+      space.appendChild(select);
+
+    } catch (e) {
+
+      console.error(e);
+
+    }
+
+    return event;
+
+  });
+
+})();

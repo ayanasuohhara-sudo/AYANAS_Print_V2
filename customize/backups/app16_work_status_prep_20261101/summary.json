@@ -1,0 +1,57 @@
+{
+  "outDir": "/workspace/customize/backups/app16_work_status_prep_20261101",
+  "at": "2026-11-01T12:50:23.028Z",
+  "defaultValue": "未着手",
+  "labels": [
+    "未着手",
+    "問合せ・見積り",
+    "丸洗い待ち",
+    "丸洗い中・乾燥",
+    "しみ抜き待ち",
+    "修理中",
+    "再直し中",
+    "仕上げ中",
+    "仕上げ完了"
+  ],
+  "counts": {
+    "未着手": 403,
+    "問合せ・見積り": 0,
+    "丸洗い待ち": 3,
+    "丸洗い中・乾燥": 27,
+    "しみ抜き待ち": 0,
+    "修理中": 0,
+    "再直し中": 0,
+    "仕上げ中": 98,
+    "仕上げ完了": 624,
+    "__empty__": 2059,
+    "__total__": 3214
+  },
+  "extraCounts": {
+    "仕上げ待ち": {
+      "existsInForm": false,
+      "count": null,
+      "note": "option not in form; query skipped"
+    },
+    "しみ抜き待ち": {
+      "existsInForm": true,
+      "count": 0,
+      "note": "from form option counts"
+    },
+    "未着": {
+      "existsInForm": false,
+      "count": null,
+      "note": "option not in form; query skipped"
+    },
+    "しみ抜き中": {
+      "existsInForm": false,
+      "count": null,
+      "note": "option not in form; query skipped"
+    },
+    "未着手": {
+      "existsInForm": true,
+      "count": 403,
+      "note": "from form option counts"
+    }
+  },
+  "target未着手": 403
+}

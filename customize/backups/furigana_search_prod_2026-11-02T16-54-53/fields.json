@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "deployFields": null,
+  "deployLayout": {
+    "app": "16",
+    "status": "SUCCESS"
+  },
+  "layoutAction": "updated",
+  "added": [],
+  "hasKana": true,
+  "hasStatus": true,
+  "layoutHasKana": true,
+  "layoutHasSpace": true,
+  "statusOptions": [
+    "確認済",
+    "不明",
+    "未確認"
+  ]
+}

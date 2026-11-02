@@ -1,0 +1,185 @@
+{
+  "tests": [
+    {
+      "name": "seed A550 exists",
+      "ok": true,
+      "detail": {
+        "id": "3379",
+        "manage_no": "103126379"
+      }
+    },
+    {
+      "name": "seed PCM P000002 exists",
+      "ok": true,
+      "detail": {
+        "id": "1",
+        "name": "[TEST]山田花子"
+      }
+    },
+    {
+      "name": "seed corp exists",
+      "ok": true,
+      "detail": {
+        "id": "3382",
+        "code": "A545",
+        "manage_no": "103126382"
+      }
+    },
+    {
+      "name": "seed legacy empty A550",
+      "ok": true,
+      "detail": {
+        "id": "3379",
+        "manage_no": "103126379",
+        "client": "新谷佳世"
+      }
+    },
+    {
+      "name": "copy form loaded with A550+PCM js",
+      "ok": true,
+      "detail": {
+        "pcm": true,
+        "eng": true,
+        "field": true,
+        "code": "A550"
+      }
+    },
+    {
+      "name": "A550 PCM select on create(copy)",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "personal": "P000002",
+        "client": "[TEST]山田花子",
+        "panelVisible": true,
+        "location": "店舗"
+      }
+    },
+    {
+      "name": "click save A550",
+      "ok": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "saved personal_customer_id remains",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "recordId": "3383",
+        "personal": "P000002",
+        "client": "[TEST]山田花子",
+        "manage_no": "103126383",
+        "code": "A550",
+        "kimono": "[TEST]E2E小紋"
+      }
+    },
+    {
+      "name": "manage_no auto assigned",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "recordId": "3383",
+        "personal": "P000002",
+        "client": "[TEST]山田花子",
+        "manage_no": "103126383",
+        "code": "A550",
+        "kimono": "[TEST]E2E小紋"
+      }
+    },
+    {
+      "name": "copy inherits personal_customer_id",
+      "ok": true,
+      "detail": {
+        "personal": "P000002",
+        "client": "[TEST]山田花子",
+        "manage_no": "103126383"
+      }
+    },
+    {
+      "name": "copy keeps personal id after save",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "recordId": "3384",
+        "personal": "P000002",
+        "client": "[TEST]山田花子",
+        "manage_no": "103126384",
+        "code": "A550",
+        "kimono": "[TEST]E2E複製"
+      }
+    },
+    {
+      "name": "copy gets new manage_no",
+      "ok": true,
+      "detail": {
+        "first": "103126383",
+        "second": "103126384",
+        "id": "3384"
+      }
+    },
+    {
+      "name": "App96 order history shows linked orders",
+      "ok": true,
+      "detail": {
+        "panel": true,
+        "hasTable": true,
+        "hasManage": true,
+        "text": "受注履歴（App16）\n\n同一 personal_customer_id の店舗受注です。読取のみ。\n\n2 件（最大50件）。PCM氏名変更は過去受注のお客様名へ自動反映しません。\n受注日\t管理番号\t着物種類\t加工内容\t納期\t工程\t現物場所\t納品状況\n2026-10-31\t103126384\t[TEST]E2E複製\t変色直し\t2026-12-26\t受注\t店舗\t未納品\n2026-10-31\t103126383\t[TEST]E2E小紋\t変色直し\t2026-12-26\t受注\t店舗\t未納品"
+      }
+    },
+    {
+      "name": "legacy A550 edit empty is warn-only",
+      "ok": true,
+      "detail": {
+        "result": {
+          "ok": true,
+          "warnEmptyOnEdit": true
+        },
+        "code": "A550"
+      }
+    },
+    {
+      "name": "corporate skips PCM validation",
+      "ok": true,
+      "detail": {
+        "code": "A545",
+        "validateOk": true,
+        "panelHidden": true
+      }
+    },
+    {
+      "name": "corporate save empty personal id + manage_no",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "recordId": "3385",
+        "personal": "",
+        "client": "[TEST]法人E2Eお客様",
+        "manage_no": "103126385",
+        "code": "A545",
+        "kimono": "振袖"
+      }
+    },
+    {
+      "name": "name mismatch warning",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "warnMismatch": {
+          "personalCustomerId": "P000002",
+          "clientName": "[TEST]不一致な名前",
+          "pcmName": "[TEST]山田花子"
+        }
+      }
+    }
+  ],
+  "createdRecordIds": [
+    "3383",
+    "3384",
+    "3385"
+  ],
+  "ok": true,
+  "note": "Test App16 records created with [TEST] markers; legacy empty A550 was not modified."
+}

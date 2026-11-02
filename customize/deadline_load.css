@@ -1,0 +1,254 @@
+body.ayanas-deadline-load-active .recordlist-gaia,
+body.ayanas-deadline-load-active .recordlist-header-gaia,
+body.ayanas-deadline-load-active .gaia-argoui-app-index-pager {
+  display: none !important;
+}
+
+.cayan-dl-root {
+  box-sizing: border-box;
+  padding: 12px 16px 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.cayan-dl-root * {
+  box-sizing: border-box;
+}
+
+.cayan-dl-header {
+  margin-bottom: 12px;
+}
+
+.cayan-dl-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.cayan-dl-lead {
+  margin: 4px 0 0;
+  color: #475569;
+}
+
+.cayan-dl-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cayan-dl-month {
+  margin: 0;
+  min-width: 8em;
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.cayan-dl-btn {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.cayan-dl-btn.is-primary {
+  background: #1e293b;
+  border-color: #1e293b;
+  color: #fff;
+}
+
+.cayan-dl-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.cayan-dl-btn:focus,
+.cayan-dl-cell:focus {
+  outline: 2px solid #334155;
+  outline-offset: 1px;
+}
+
+.cayan-dl-message {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.cayan-dl-message.is-info {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+}
+
+.cayan-dl-message.is-warn {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+}
+
+.cayan-dl-message.is-error {
+  background: #fff1f2;
+  border: 1px solid #fda4af;
+}
+
+.cayan-dl-cal-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.cayan-dl-grid,
+.cayan-dl-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(132px, 1fr));
+  min-width: 980px;
+}
+
+.cayan-dl-dow {
+  padding: 8px;
+  background: #e2e8f0;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cayan-dl-dow.is-sat,
+.cayan-dl-cell.is-sat .cayan-dl-day {
+  color: #1d4ed8;
+}
+
+.cayan-dl-dow.is-sun,
+.cayan-dl-cell.is-sun .cayan-dl-day {
+  color: #be123c;
+}
+
+.cayan-dl-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  min-height: 112px;
+  padding: 8px;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cayan-dl-cell.is-blank {
+  background: #f8fafc;
+  cursor: default;
+}
+
+.cayan-dl-cell.is-today {
+  background: #e2e8f0;
+  box-shadow: inset 0 0 0 2px #334155;
+}
+
+.cayan-dl-cell.is-selected {
+  background: #dbeafe;
+}
+
+.cayan-dl-day {
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cayan-dl-count {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cayan-dl-detail-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.cayan-dl-detail-count {
+  margin: 4px 0 8px;
+  font-weight: 700;
+}
+
+.cayan-dl-group {
+  margin: 0 0 20px;
+}
+
+.cayan-dl-group-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cayan-dl-empty {
+  margin: 0;
+  color: #475569;
+}
+
+.cayan-dl-table-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.cayan-dl-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.cayan-dl-table th,
+.cayan-dl-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.cayan-dl-table th {
+  background: #e2e8f0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cayan-dl-key {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cayan-dl-link {
+  color: #1d4ed8;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.cayan-dl-dup {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #ffedd5;
+  color: #9a3412;
+  font-size: 12px;
+  font-weight: 700;
+  vertical-align: middle;
+}
