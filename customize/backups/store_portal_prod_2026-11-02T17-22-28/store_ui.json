@@ -1,0 +1,132 @@
+{
+  "app": 87,
+  "ver": "1.6.0",
+  "title": "店舗ポータル（A550）",
+  "modeBadge": "店舗 A550",
+  "rootModeClass": "store",
+  "rootFontSize": "15px",
+  "titleFontSize": "24px",
+  "hasMenu": true,
+  "hasSummary": true,
+  "summaryTitle": "本日の店舗状況（A550）",
+  "has85": false,
+  "hasLocationMove": true,
+  "hasInternalWork": true,
+  "hasOrderSearch": true,
+  "hasOrderCreate": true,
+  "hasPickup": true,
+  "hasPayment": true,
+  "featured": [
+    {
+      "text": "受注登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/"
+    },
+    {
+      "text": "受注検索",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/88/"
+    },
+    {
+      "text": "納期・引き取り待ち管理",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/92/"
+    },
+    {
+      "text": "入金登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/97/"
+    }
+  ],
+  "flatLinks": [],
+  "workLabels": [
+    "在庫総数",
+    "未着",
+    "問合せ・見積り",
+    "しみ抜き中",
+    "修理中",
+    "再直し中",
+    "仕上げ中",
+    "納品待ち"
+  ],
+  "hasDeliveryWaitingCard": true,
+  "links": [
+    {
+      "text": "個人顧客管理",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/96/",
+      "note": "",
+      "fontSize": "16px"
+    },
+    {
+      "text": "受注登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/",
+      "note": "",
+      "fontSize": "16px"
+    },
+    {
+      "text": "受注検索",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/88/",
+      "note": "",
+      "fontSize": "16px"
+    },
+    {
+      "text": "保管場所移動",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/34/",
+      "note": "App34",
+      "fontSize": "16px"
+    },
+    {
+      "text": "社内作業登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/84/",
+      "note": "作業＋場所可",
+      "fontSize": "16px"
+    },
+    {
+      "text": "仕上げ完了",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/30/",
+      "note": "App30",
+      "fontSize": "16px"
+    },
+    {
+      "text": "納品書作成",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/19/",
+      "note": "",
+      "fontSize": "16px"
+    },
+    {
+      "text": "納期・引き取り待ち管理",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/92/",
+      "note": "",
+      "fontSize": "16px"
+    },
+    {
+      "text": "入金登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/97/",
+      "note": "",
+      "fontSize": "16px"
+    }
+  ],
+  "summary": [
+    {
+      "label": "本日のA550受注件数",
+      "value": "0件",
+      "unavailable": false
+    },
+    {
+      "label": "本日納期件数",
+      "value": "0件",
+      "unavailable": false
+    },
+    {
+      "label": "引き取り待ち件数",
+      "value": "1件",
+      "unavailable": false
+    },
+    {
+      "label": "本日の店舗入金額",
+      "value": "—",
+      "unavailable": true
+    },
+    {
+      "label": "納期超過件数",
+      "value": "1件",
+      "unavailable": false
+    }
+  ]
+}

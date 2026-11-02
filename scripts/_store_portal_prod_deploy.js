@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * 工場・店舗ポータル App86/App87 本番反映（v1.4.2）
+ * 工場・店舗ポータル App86/App87 本番反映（v1.6.0）
  *   node scripts/_store_portal_prod_deploy.js
  *
  * 両アプリに同一バンドル（work_status_labels 含む）を載せる。
@@ -17,7 +17,7 @@ const ROOT = '/workspace';
 const SUB = 'o5nppg7kb4ly';
 const APP87 = 87;
 const APP86 = 86;
-const EXPECT_VER = '1.4.2';
+const EXPECT_VER = '1.6.0';
 const STAMP = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 const WORK_DIR = path.join(ROOT, 'customize/backups', 'store_portal_prod_' + STAMP);
 
@@ -238,10 +238,16 @@ async function verifyPortalUi(appId) {
       }));
       const workLabels=[...document.querySelectorAll('#cayan-fp-work-cards .cayan-fp-card__label')]
         .map(el=>el.textContent.trim());
+      const featured = [...document.querySelectorAll('a.cayan-fp-btn--menu.is-featured')].map(a=>({
+        text:((a.querySelector('.cayan-fp-menu__label')||a).textContent||'').trim(),
+        href:a.getAttribute('href')||''
+      }));
       return {
         app: ${appId},
         ver: C && C.VERSION,
         title: (document.querySelector('.cayan-fp-title')||{}).textContent||'',
+        modeBadge: ((document.querySelector('.cayan-fp-mode-badge')||{}).textContent||'').trim(),
+        rootModeClass: root ? (root.classList.contains('cayan-fp-root--store') ? 'store' : (root.classList.contains('cayan-fp-root--factory') ? 'factory' : '')) : '',
         rootFontSize: root ? getComputedStyle(root).fontSize : null,
         titleFontSize: ((document.querySelector('.cayan-fp-title')||{}).style)
           ? getComputedStyle(document.querySelector('.cayan-fp-title')).fontSize : null,
@@ -251,6 +257,11 @@ async function verifyPortalUi(appId) {
         has85: links.some(l=>/\\/k\\/85\\//.test(l.href) || /App85|しみ抜き作業/.test(l.text)),
         hasLocationMove: links.some(l=>l.text==='保管場所移動' && /\\/k\\/34\\//.test(l.href)),
         hasInternalWork: links.some(l=>l.text==='社内作業登録' && /\\/k\\/84\\//.test(l.href)),
+        hasOrderSearch: links.some(l=>l.text==='受注検索' && /\\/k\\/88\\//.test(l.href)),
+        hasOrderCreate: links.some(l=>l.text==='受注登録' && /\\/k\\/16\\//.test(l.href)),
+        hasPickup: links.some(l=>/引き取り/.test(l.text) && /\\/k\\/92\\//.test(l.href)),
+        hasPayment: links.some(l=>/入金/.test(l.text) && /\\/k\\/97\\//.test(l.href)),
+        featured,
         flatLinks: [...document.querySelectorAll('nav.cayan-fp-links a')].map(a=>a.textContent.trim()),
         workLabels,
         hasDeliveryWaitingCard: workLabels.indexOf('納品待ち') >= 0,
@@ -300,26 +311,46 @@ async function main() {
   fs.writeFileSync(path.join(WORK_DIR, 'store_ui.json'), JSON.stringify(store.ui, null, 2));
   fs.writeFileSync(path.join(WORK_DIR, 'store_ui.png'), Buffer.from(store.screenshot, 'base64'));
   fs.mkdirSync('/opt/cursor/artifacts/screenshots', { recursive: true });
-  fs.writeFileSync('/opt/cursor/artifacts/screenshots/store_portal_v140.png', Buffer.from(store.screenshot, 'base64'));
+  fs.mkdirSync('/opt/cursor/artifacts', { recursive: true });
+  fs.writeFileSync('/opt/cursor/artifacts/screenshots/store_portal_v160.png', Buffer.from(store.screenshot, 'base64'));
+  fs.writeFileSync('/opt/cursor/artifacts/store_portal_prod_v160.png', Buffer.from(store.screenshot, 'base64'));
   console.log(JSON.stringify(store.ui, null, 2));
   if (!store.ui || store.ui.ver !== EXPECT_VER) throw new Error('store version not ' + EXPECT_VER);
   if (store.ui.rootFontSize !== '15px') throw new Error('store root font not 15px: ' + store.ui.rootFontSize);
   if (!store.ui.hasMenu || !store.ui.hasSummary) throw new Error('store menu/summary missing');
   if (store.ui.has85) throw new Error('App85 link present');
   if (!store.ui.hasLocationMove || !store.ui.hasInternalWork) throw new Error('required work links missing');
+  if (!store.ui.hasOrderSearch || !store.ui.hasOrderCreate || !store.ui.hasPickup || !store.ui.hasPayment) {
+    throw new Error('store featured links missing');
+  }
+  if (!Array.isArray(store.ui.featured) || store.ui.featured.length < 4) {
+    throw new Error('store featured count < 4');
+  }
+  if (store.ui.rootModeClass !== 'store' || store.ui.modeBadge.indexOf('店舗') < 0) {
+    throw new Error('store mode badge/class missing');
+  }
+  if (store.ui.summaryTitle.indexOf('A550') < 0) throw new Error('store summary title missing A550');
+  const storeSummaryLabels = (store.ui.summary || []).map((s) => s.label);
+  if (storeSummaryLabels.indexOf('本日のA550受注件数') < 0 || storeSummaryLabels.indexOf('本日の店舗入金額') < 0) {
+    throw new Error('store summary cards incomplete: ' + storeSummaryLabels.join(','));
+  }
   if (!store.ui.hasDeliveryWaitingCard) throw new Error('store delivery waiting card missing');
 
   console.error('=== verify factory UI ===');
   const factory = await verifyPortalUi(APP86);
   fs.writeFileSync(path.join(WORK_DIR, 'factory_ui.json'), JSON.stringify(factory.ui, null, 2));
   fs.writeFileSync(path.join(WORK_DIR, 'factory_ui.png'), Buffer.from(factory.screenshot, 'base64'));
-  fs.writeFileSync('/opt/cursor/artifacts/screenshots/factory_portal_v140.png', Buffer.from(factory.screenshot, 'base64'));
+  fs.writeFileSync('/opt/cursor/artifacts/screenshots/factory_portal_v160.png', Buffer.from(factory.screenshot, 'base64'));
+  fs.writeFileSync('/opt/cursor/artifacts/factory_portal_prod_v160.png', Buffer.from(factory.screenshot, 'base64'));
   console.log(JSON.stringify(factory.ui, null, 2));
   if (!factory.ui || factory.ui.ver !== EXPECT_VER) throw new Error('factory version not ' + EXPECT_VER);
   if (factory.ui.rootFontSize !== '15px') throw new Error('factory root font not 15px');
   if (factory.ui.hasMenu) throw new Error('factory should keep flat shortcuts (no store menu)');
   if (!factory.ui.hasSummary) throw new Error('factory summary missing');
   if (factory.ui.summaryTitle !== '本日の工場状況') throw new Error('factory summary title mismatch');
+  if (factory.ui.rootModeClass !== 'factory' || factory.ui.modeBadge !== '工場') {
+    throw new Error('factory mode badge/class missing');
+  }
   if (!factory.ui.hasDeliveryWaitingCard) throw new Error('factory delivery waiting card missing');
   if (!Array.isArray(factory.ui.flatLinks) || factory.ui.flatLinks.length < 3) {
     throw new Error('factory flat links missing');
