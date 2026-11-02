@@ -223,7 +223,7 @@
     registerReport({
         reportType: 'store_order',
         title: '店舗受注表',
-        templatePath: 'js/templates/store_order.js',
+        templatePath: 'js/store_print_bundle.js',
         templateGlobal: 'StoreOrderTemplate',
         pageClass: 'report-store-order',
         barcodeField: 'manage_no',
@@ -298,7 +298,7 @@
     registerReport({
         reportType: 'store_delivery',
         title: '店舗納品書',
-        templatePath: 'js/templates/store_delivery.js',
+        templatePath: 'js/store_print_bundle.js',
         templateGlobal: 'StoreDeliveryTemplate',
         pageClass: 'report-store-delivery',
         barcodeField: 'barcode_manage_no',
@@ -566,7 +566,8 @@
             && InvoiceLayout.isWindowEnvelope(printOptions.invoiceLayout
                 || printOptions.customerInvoiceLayout)) {
 
-            await Preview.loadScript('js/templates/invoice_window.js');
+            // InvoiceWindowTemplate is bundled into js/templates/invoice.js (30-file limit)
+            await Preview.loadScript('js/templates/invoice.js');
 
         }
 

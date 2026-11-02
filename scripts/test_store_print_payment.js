@@ -273,9 +273,9 @@ assert('print does not PUT delivery_status', desktopJs.indexOf('store_order') !=
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
 assert('manifest v145', manifest.version === 145);
-assert('manifest includes store templates',
-  manifest.desktop.js.indexOf('js/templates/store_order.js') !== -1
-  && manifest.desktop.js.indexOf('js/store_print_payment.js') !== -1);
+assert('manifest desktop/js <= 30', Array.isArray(manifest.desktop.js) && manifest.desktop.js.length <= 30);
+assert('manifest includes store print bundle',
+  manifest.desktop.js.indexOf('js/store_print_bundle.js') !== -1);
 
 // Write preview artifacts
 const outDir = path.join(root, 'docs/artifacts/store_print_preview');
