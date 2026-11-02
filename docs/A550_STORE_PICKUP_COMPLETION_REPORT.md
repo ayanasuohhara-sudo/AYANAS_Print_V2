@@ -2,7 +2,7 @@
 
 - **作成**: 2026-11-02（Asia/Tokyo）
 - **範囲**: コード実装・ローカル単体／統合テストまで
-- **本番**: App16 選択肢追加・各アプリ JS/CSS 反映は **本報告では実施しない（要別途承認）**
+- **限定本番反映**: 2026-11-02 承認後に実施済み → 詳細は `docs/A550_STORE_PICKUP_LIMITED_PROD_E2E_REPORT.md`（E2E 29/29・一般公開は未承認）
 
 ---
 
@@ -78,17 +78,14 @@ node scripts/test_store_payment_s1.js         # PASS
 
 ---
 
-## 4. 本番反映手順（承認後）
+## 4. 本番反映手順（承認後）— 実施済み
 
-1. **App16** フォーム: `delivery_status` に「引き取り待ち」を追加（既存: 未納品／納品待ち／納品済は維持。既定=未納品。一括更新しない）
-2. **App19** JS: `store_pickup_shared.js` → `delivery_complete_sync.js` の順で登録／更新
-3. **App34** JS: config → `store_pickup_shared` → barcode_batch → location_inbound_*
-4. **App92** JS/CSS: deadline config/engine → payment config/engine → pickup shared/api → deadline desktop/pickup + CSS
-5. **App97** JS/CSS: payment config/engine/numbering → pickup shared/api → payment api/desktop/ui + CSS
-6. 限定 E2E（`[TEST]` / PCM `P000002` のみ）: 納品書→引き取り待ち、工場→店舗、先払い／当日入金引き取り、未入金拒否、複数・PCM 混入拒否、二重拒否、法人無影響
-7. 実顧客データの一括更新は行わない
+限定本番反映・E2E は `docs/A550_STORE_PICKUP_LIMITED_PROD_E2E_REPORT.md` および
+`customize/backups/pickup_waiting_prod_2026-11-02T14-00-16/` を参照。
 
-バックアップ／過去の本番実施メモ: `docs/APP92_BARCODE_PICKUP_PROD_REPORT.md`（参考。今回は再反映しない）
+実行コマンド: `node scripts/_pickup_waiting_prod.js all`
+
+一般スタッフ公開・実顧客引き取りは **別途承認が必要**。
 
 ---
 

@@ -1,0 +1,79 @@
+[
+  {
+    "kind": "js",
+    "index": 0,
+    "name": "internal_ops_config.js",
+    "fileKey": "20261102115614CC764D1687D244E0AB558C112BEA5868254",
+    "file": "desktop_js1_internal_ops_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 1,
+    "name": "complete_register_engine.js",
+    "fileKey": "20261102115614B05AD98E98B747298242BAC484D92BC1050",
+    "file": "desktop_js2_complete_register_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 2,
+    "name": "delivery_completion_guard.js",
+    "fileKey": "20261102115615D0967B2F341D4D2D806C4882658E7CB9316",
+    "file": "desktop_js3_delivery_completion_guard.js"
+  },
+  {
+    "kind": "js",
+    "index": 3,
+    "name": "store_delivery_pcm.js",
+    "fileKey": "202611021156155124F088480341BEB59C5F4914C559E6104",
+    "file": "desktop_js4_store_delivery_pcm.js"
+  },
+  {
+    "kind": "js",
+    "index": 4,
+    "name": "barcode_delivery.js",
+    "fileKey": "20261102115615CFFB536EABB6435387BA0B463BBDCADD154",
+    "file": "desktop_js5_barcode_delivery.js"
+  },
+  {
+    "kind": "js",
+    "index": 5,
+    "name": "store_pickup_shared.js",
+    "fileKey": "202611021156152500A6C525CB4DFB88DDF3EA6CD99AD5025",
+    "file": "desktop_js6_store_pickup_shared.js"
+  },
+  {
+    "kind": "js",
+    "index": 6,
+    "name": "delivery_complete_sync.js",
+    "fileKey": "2026110211561551E4B23821B04B7F9ACF638C75D08E5E282",
+    "file": "desktop_js7_delivery_complete_sync.js"
+  },
+  {
+    "kind": "js",
+    "index": 7,
+    "name": "delivery_a550_edit_guard.js",
+    "fileKey": "20261102115615603B7B6B3CA74C4CA34DBE2A246ABBBE048",
+    "file": "desktop_js8_delivery_a550_edit_guard.js"
+  },
+  {
+    "kind": "js",
+    "index": 8,
+    "name": "price_master_register.js",
+    "fileKey": "20261102115615FBC11A4006DB4833A6B05D8DCFF624E1266",
+    "file": "desktop_js9_price_master_register.js"
+  },
+  {
+    "kind": "js",
+    "index": 9,
+    "name": "delivery_additional_item_guard.js",
+    "fileKey": "20261102115615862225082FC04E73AF43062591DCE810003",
+    "file": "desktop_js10_delivery_additional_item_guard.js"
+  },
+  {
+    "kind": "js",
+    "index": 10,
+    "name": "additional_item_engine.js",
+    "fileKey": "2026110211561518840478BFFD4933B36122583B631F5F321",
+    "file": "desktop_js11_additional_item_engine.js"
+  }
+]

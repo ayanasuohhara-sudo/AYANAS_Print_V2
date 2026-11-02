@@ -37,6 +37,7 @@ const APP19_JS = [
   'internal_ops_config.js',
   'complete_register_engine.js',
   'delivery_completion_guard.js',
+  'store_delivery_pcm.js',
   'barcode_delivery.js',
   'store_pickup_shared.js',
   'delivery_complete_sync.js',
@@ -44,6 +45,76 @@ const APP19_JS = [
   'price_master_register.js',
   'delivery_additional_item_guard.js',
   'additional_item_engine.js',
+];
+
+/** App97 限定ACL（検証ユーザー）— everyone は拒否 */
+const APP97_LIMITED_RIGHTS = [
+  {
+    entity: { type: 'USER', code: 'info@ayanas.co.jp' },
+    includeSubs: false,
+    appEditable: true,
+    recordViewable: true,
+    recordAddable: true,
+    recordEditable: true,
+    recordDeletable: false,
+    recordImportable: true,
+    recordExportable: true,
+  },
+  {
+    entity: { type: 'USER', code: 'matsuura@ayanas.co.jp' },
+    includeSubs: false,
+    appEditable: false,
+    recordViewable: true,
+    recordAddable: true,
+    recordEditable: true,
+    recordDeletable: false,
+    recordImportable: false,
+    recordExportable: true,
+  },
+  {
+    entity: { type: 'USER', code: 'ayanas20126@gmail.com' },
+    includeSubs: false,
+    appEditable: false,
+    recordViewable: true,
+    recordAddable: true,
+    recordEditable: true,
+    recordDeletable: false,
+    recordImportable: false,
+    recordExportable: true,
+  },
+  {
+    entity: { type: 'GROUP', code: 'Administrators' },
+    includeSubs: false,
+    appEditable: true,
+    recordViewable: true,
+    recordAddable: true,
+    recordEditable: true,
+    recordDeletable: true,
+    recordImportable: true,
+    recordExportable: true,
+  },
+  {
+    entity: { type: 'CREATOR', code: null },
+    includeSubs: false,
+    appEditable: true,
+    recordViewable: true,
+    recordAddable: true,
+    recordEditable: true,
+    recordDeletable: false,
+    recordImportable: false,
+    recordExportable: true,
+  },
+  {
+    entity: { type: 'GROUP', code: 'everyone' },
+    includeSubs: false,
+    appEditable: false,
+    recordViewable: false,
+    recordAddable: false,
+    recordEditable: false,
+    recordDeletable: false,
+    recordImportable: false,
+    recordExportable: false,
+  },
 ];
 
 const APP34_JS = [
@@ -146,37 +217,63 @@ async function openPage(url) {
 
 async function attachPortal() {
   const list = await httpJson('/json/list');
-  const page = (list || []).find(
+  const candidates = (list || []).filter(
     (t) => t.type === 'page'
-      && /cybozu\.com\/k/.test(t.url || '')
+      && /cybozu\.com\/k\/\d+/.test(t.url || '')
       && !/login/.test(t.url || '')
       && !/web-worker/.test(t.url || '')
+      && !/\/k\/admin\//.test(t.url || '')
   );
-  if (!page) throw new Error('no logged-in kintone tab');
-  const ws = new WebSocket(page.webSocketDebuggerUrl);
-  await new Promise((res, rej) => {
-    ws.on('open', res);
-    ws.on('error', rej);
-  });
-  let id = 1;
-  const send = (method, params = {}) =>
-    new Promise((res, rej) => {
-      const i = id++;
-      const t = setTimeout(() => rej(new Error('timeout ' + method)), 600000);
-      const h = (raw) => {
-        const m = JSON.parse(String(raw));
-        if (m.id === i) {
-          clearTimeout(t);
-          ws.off('message', h);
-          if (m.error) rej(new Error(JSON.stringify(m.error)));
-          else res(m.result);
-        }
-      };
-      ws.on('message', h);
-      ws.send(JSON.stringify({ id: i, method, params }));
+  // Prefer App16/92/97 (known to expose kintone), then any app page
+  const preferred = candidates.find((t) => /\/k\/(16|92|97)\b/.test(t.url || ''))
+    || candidates[0];
+  if (!preferred) throw new Error('no logged-in kintone app tab');
+
+  async function connect(page) {
+    const ws = new WebSocket(page.webSocketDebuggerUrl);
+    await new Promise((res, rej) => {
+      ws.on('open', res);
+      ws.on('error', rej);
     });
-  await send('Runtime.enable');
-  return { ws, send, close: () => ws.close() };
+    let id = 1;
+    const send = (method, params = {}) =>
+      new Promise((res, rej) => {
+        const i = id++;
+        const t = setTimeout(() => rej(new Error('timeout ' + method)), 600000);
+        const h = (raw) => {
+          const m = JSON.parse(String(raw));
+          if (m.id === i) {
+            clearTimeout(t);
+            ws.off('message', h);
+            if (m.error) rej(new Error(JSON.stringify(m.error)));
+            else res(m.result);
+          }
+        };
+        ws.on('message', h);
+        ws.send(JSON.stringify({ id: i, method, params }));
+      });
+    await send('Runtime.enable');
+    const probe = await send('Runtime.evaluate', {
+      returnByValue: true,
+      expression: `({hasK:typeof kintone!=='undefined',url:location.href})`,
+    });
+    const ok = !!(probe.result && probe.result.value && probe.result.value.hasK);
+    return { ws, send, close: () => ws.close(), ok, url: page.url };
+  }
+
+  const tried = [];
+  const ordered = [preferred].concat(candidates.filter((c) => c !== preferred));
+  for (const page of ordered) {
+    try {
+      const conn = await connect(page);
+      tried.push({ url: page.url, ok: conn.ok });
+      if (conn.ok) return conn;
+      conn.close();
+    } catch (e) {
+      tried.push({ url: page.url, ok: false, error: String(e.message || e) });
+    }
+  }
+  throw new Error('no kintone-capable tab: ' + JSON.stringify(tried.slice(0, 8)));
 }
 
 function readLocal(name) {
@@ -296,7 +393,10 @@ async function backup() {
     })()`,
   });
   portal.close();
-  const data = meta.result.value;
+  const data = meta && meta.result && meta.result.value;
+  if (!data || !data.fields16) {
+    throw new Error('backup meta missing fields16: ' + JSON.stringify(meta && meta.result));
+  }
   fs.writeFileSync(path.join(WORK_DIR, 'fields16.json'), JSON.stringify(data.fields16, null, 2));
   fs.writeFileSync(path.join(WORK_DIR, 'delivery_status_before.json'), JSON.stringify(data.deliveryStatusBefore, null, 2));
   for (const [appId, customize] of Object.entries(data.apps || {})) {
@@ -407,6 +507,56 @@ async function addOption() {
   return value;
 }
 
+async function applyApp97LimitedAcl() {
+  const page = await openPage(`https://${SUB}.cybozu.com/k/${APP97}/`);
+  const result = await page.send('Runtime.evaluate', {
+    awaitPromise: true,
+    returnByValue: true,
+    expression: `(async()=>{
+      try{
+        const api=(p,m,b)=>kintone.api(kintone.api.url(p,true),m,b);
+        const before=await api('/k/v1/app/acl.json','GET',{app:${APP97}});
+        await api('/k/v1/preview/app/acl.json','PUT',{
+          app:${APP97},
+          rights:${JSON.stringify(APP97_LIMITED_RIGHTS)}
+        });
+        await api('/k/v1/preview/app/deploy.json','POST',{apps:[{app:${APP97}}]});
+        let last=null;
+        for(let i=0;i<120;i++){
+          const st=await api('/k/v1/preview/app/deploy.json','GET',{apps:[${APP97}]});
+          last=(st.apps||[])[0];
+          if(last && (last.status==='SUCCESS'||last.status==='FAIL')) break;
+          await new Promise(r=>setTimeout(r,500));
+        }
+        const after=await api('/k/v1/app/acl.json','GET',{app:${APP97}});
+        const everyone=(after.rights||[]).find(r=>r.entity&&r.entity.code==='everyone');
+        return {
+          ok: !!(last&&last.status==='SUCCESS'),
+          deploy:last,
+          beforeRevision: before.revision,
+          afterRevision: after.revision,
+          everyoneViewable: !!(everyone&&everyone.recordViewable),
+          rightsSummary:(after.rights||[]).map(r=>({
+            type:r.entity&&r.entity.type,
+            code:r.entity&&r.entity.code,
+            view:!!r.recordViewable,
+            add:!!r.recordAddable,
+            edit:!!r.recordEditable
+          }))
+        };
+      }catch(e){ return {ok:false,error:e.message||String(e)}; }
+    })()`,
+  });
+  await page.close();
+  const value = result.result.value;
+  fs.mkdirSync(WORK_DIR, { recursive: true });
+  fs.writeFileSync(path.join(WORK_DIR, 'app97_acl.json'), JSON.stringify(value, null, 2));
+  console.log(JSON.stringify(value, null, 2));
+  if (!value.ok) throw new Error('App97 ACL apply failed');
+  if (value.everyoneViewable) throw new Error('App97 everyone still viewable');
+  return value;
+}
+
 async function deployAll() {
   const mapLocal = (names) => {
     const o = {};
@@ -415,6 +565,17 @@ async function deployAll() {
   };
 
   const report = { at: new Date().toISOString(), apps: {} };
+
+  // Order: shared pickup into 92/97 first, then 19 sync, 34 inbound, 92 UI (already), 97 refs (already)
+  console.error('deploy App92 (shared + UI)');
+  report.apps[92] = await deployCustomize(APP92, APP92_JS, APP92_CSS, mapLocal(APP92_JS.concat(APP92_CSS)));
+  console.error('App92', JSON.stringify(report.apps[92]));
+  if (!report.apps[92].ok) throw new Error('App92 deploy failed');
+
+  console.error('deploy App97 (shared + payment)');
+  report.apps[97] = await deployCustomize(APP97, APP97_JS, APP97_CSS, mapLocal(APP97_JS.concat(APP97_CSS)));
+  console.error('App97', JSON.stringify(report.apps[97]));
+  if (!report.apps[97].ok) throw new Error('App97 deploy failed');
 
   console.error('deploy App19');
   report.apps[19] = await deployCustomize(APP19, APP19_JS, [], mapLocal(APP19_JS));
@@ -425,16 +586,6 @@ async function deployAll() {
   report.apps[34] = await deployCustomize(APP34, APP34_JS, [], mapLocal(APP34_JS));
   console.error('App34', JSON.stringify(report.apps[34]));
   if (!report.apps[34].ok) throw new Error('App34 deploy failed');
-
-  console.error('deploy App92');
-  report.apps[92] = await deployCustomize(APP92, APP92_JS, APP92_CSS, mapLocal(APP92_JS.concat(APP92_CSS)));
-  console.error('App92', JSON.stringify(report.apps[92]));
-  if (!report.apps[92].ok) throw new Error('App92 deploy failed');
-
-  console.error('deploy App97');
-  report.apps[97] = await deployCustomize(APP97, APP97_JS, APP97_CSS, mapLocal(APP97_JS.concat(APP97_CSS)));
-  console.error('App97', JSON.stringify(report.apps[97]));
-  if (!report.apps[97].ok) throw new Error('App97 deploy failed');
 
   // verify order
   const expect = {
@@ -454,6 +605,9 @@ async function deployAll() {
   }
   if (JSON.stringify(report.apps[97].desktopCss) !== JSON.stringify(APP97_CSS)) {
     throw new Error('App97 CSS order mismatch');
+  }
+  if (!(report.apps[19].desktopJs || []).includes('store_delivery_pcm.js')) {
+    throw new Error('App19 missing store_delivery_pcm.js');
   }
 
   fs.mkdirSync(WORK_DIR, { recursive: true });
@@ -815,8 +969,95 @@ async function runE2E() {
     })`,
   });
   await app92.close();
-  assert('App92 v1.2.0 + 引き取りパネル', !!(ui92.result.value && ui92.result.value.ver === '1.2.0'
+  assert('App92 v1.2.1 + 引き取りパネル', !!(ui92.result.value && ui92.result.value.ver === '1.2.1'
     && ui92.result.value.api && ui92.result.value.panel), ui92.result.value);
+  assert('App92 検証ユーザー許可', !!(ui92.result.value && /バーコード引き取り/.test(ui92.result.value.title || '')
+    && !/検証ユーザーのみ/.test(ui92.result.value.title || '')), ui92.result.value);
+
+  // App92 waiting-stock KPI includes 引き取り待ち + excludes 納品済
+  const app92b = await openPage(`https://${SUB}.cybozu.com/k/${APP92}/`);
+  await new Promise((r) => setTimeout(r, 2500));
+  const stock = await app92b.send('Runtime.evaluate', {
+    awaitPromise: true,
+    returnByValue: true,
+    expression: `(async()=>{
+      const Eng=window.CAYANAS_StoreDeadlineEngine;
+      const C=window.CAYANAS_STORE_DEADLINE;
+      const api=(p,m,b)=>kintone.api(kintone.api.url(p,true),m,b);
+      if(!Eng||!C) return {ok:false,error:'globals'};
+      const prepaidMn=${JSON.stringify(byNote['prepaid-app92'].manageNo)};
+      const unpaidMn=${JSON.stringify(byNote['unpaid-block'].manageNo)};
+      const prepaid=(await api('/k/v1/records.json','GET',{app:16,query:'manage_no = \"'+prepaidMn+'\" limit 1'})).records[0];
+      const unpaid=(await api('/k/v1/records.json','GET',{app:16,query:'manage_no = \"'+unpaidMn+'\" limit 1'})).records[0];
+      return {
+        ok:true,
+        ver:C.VERSION,
+        pickupStatuses:[C.DELIVERY_PICKUP_WAITING, C.DELIVERY_WAITING],
+        prepaidDs: prepaid && prepaid.delivery_status.value,
+        unpaidDs: unpaid && unpaid.delivery_status.value,
+        prepaidInStock: prepaid ? Eng.isWaitingStockAtStore(prepaid) : null,
+        unpaidInStock: unpaid ? Eng.isWaitingStockAtStore(unpaid) : null,
+        allowList: C.PICKUP_ALLOWED_LOGIN_CODES || []
+      };
+    })()`,
+  });
+  await app92b.close();
+  const st = stock.result.value;
+  assert('App92 在庫条件に引き取り待ち対応', !!(st && st.ok
+    && (st.pickupStatuses || []).includes('引き取り待ち')
+    && (st.pickupStatuses || []).includes('納品待ち')), st);
+  assert('先払い完了分は在庫から除外', !!(st && st.prepaidDs === '納品済' && st.prepaidInStock === false), st);
+  assert('未入金引き取り待ちは在庫対象', !!(st && st.unpaidDs === '引き取り待ち' && st.unpaidInStock === true), st);
+  assert('App92 引き取り allowlist 設定あり', !!(st && Array.isArray(st.allowList) && st.allowList.length >= 1), st);
+
+  // Partial payment block
+  const app97b = await openPage(`https://${SUB}.cybozu.com/k/${APP97}/`);
+  await new Promise((r) => setTimeout(r, 3000));
+  const partial = await app97b.send('Runtime.evaluate', {
+    awaitPromise: true,
+    returnByValue: true,
+    expression: `(async()=>{
+      const Api=window.CAYANAS_StorePayment_Api;
+      const Eng=window.CAYANAS_StorePayment_Engine;
+      const C=window.CAYANAS_StorePayment;
+      const PickupApi=window.CAYANAS_StorePickup_Api;
+      const api=(p,m,b)=>kintone.api(kintone.api.url(p,true),m,b);
+      if(!Api||!PickupApi) return {ok:false,error:'globals'};
+      const unpaidId=${JSON.stringify(byNote['unpaid-block'].id)};
+      const loaded=await Api.loadByPersonalCustomerId('${TEST_PCM}');
+      const row=loaded.rows.find(r=>String(r.orderRecordId)===String(unpaidId));
+      if(!row) return {ok:false,error:'row missing', rows:(loaded.rows||[]).map(r=>r.orderRecordId)};
+      const partialAmt=Math.max(100, Math.floor(row.balance/2));
+      const built=Eng.buildAllocationLinesFromSelection([
+        Object.assign({},row,{allocateAmount:partialAmt,selectable:true})
+      ],'custom');
+      const pay=await Api.registerPayment({
+        personalCustomerId:'${TEST_PCM}',
+        clientNameSnapshot:'${TEST_PCM_NAME}',
+        transactionId:Eng.createTransactionId(),
+        paymentDate:Eng.todayYmd(),
+        paymentAmount:built.paymentAmount,
+        paymentMethod:C.PAYMENT_METHOD.cash,
+        paymentTiming:C.PAYMENT_TIMING.pickup,
+        paymentChannel:C.PAYMENT_CHANNEL.store,
+        recordKind:C.RECORD_KIND.payment,
+        lines:built.lines
+      });
+      const gate=await PickupApi.completePickup(unpaidId,{unpaidHandoverApproved:false,expectedPersonalCustomerId:'${TEST_PCM}'});
+      const after=(await api('/k/v1/record.json','GET',{app:16,id:unpaidId})).record;
+      return {
+        ok:true,
+        payOk:!!(pay&&pay.ok),
+        partialAmt,
+        gate,
+        ds:after.delivery_status.value,
+        blocked: !gate.ok && (gate.code==='unpaid' || /未入金|一部入金|App97/.test(gate.error||''))
+      };
+    })()`,
+  });
+  await app97b.close();
+  const pv = partial.result.value;
+  assert('一部入金後も引き取り拒否', !!(pv && pv.ok && pv.payOk && pv.blocked && pv.ds === '引き取り待ち'), pv);
 
   // Corporate unaffected
   if (corp) {
@@ -851,21 +1092,50 @@ async function runE2E() {
   return report;
 }
 
+function writeRollbackDoc(dir) {
+  const md = [
+    '# 店舗引き取り管理 — 復旧手順',
+    '',
+    '- バックアップ: `' + dir + '`',
+    '- 作成: ' + new Date().toISOString() + ' (UTC)',
+    '',
+    '## 復旧',
+    '',
+    '1. App16: `fields16.json` / `delivery_status_before.json` を参照し、必要なら選択肢を戻す（通常は「引き取り待ち」残置で可）',
+    '2. App19/34/92/97: 各 `appXX/customize.json` と `desktop_js*` / `desktop_css*` を元の順で再アップロード → アプリを更新',
+    '3. App97 ACL: `app97_acl.json` の before、または `customize/backups/app97_everyone_open_*` / stage1 バックアップから復元',
+    '4. 対象アプリをハードリロード',
+    '',
+    '## 注意',
+    '',
+    '- E2E で作成した `PK******` テスト受注は削除または取消してよい',
+    '- 実顧客データの一括更新は行っていない',
+    '- 一般スタッフへの公開は別承認まで行わない',
+    '',
+  ].join('\n');
+  fs.writeFileSync(path.join(dir, 'ROLLBACK.md'), md);
+}
+
 async function main() {
   fs.mkdirSync(WORK_DIR, { recursive: true });
   if (MODE === 'backup') return backup();
   if (MODE === 'add-option') return addOption();
   if (MODE === 'deploy') return deployAll();
+  if (MODE === 'acl') return applyApp97LimitedAcl();
   if (MODE === 'e2e') return runE2E();
 
   console.error('=== backup ===');
   await backup();
-  console.error('=== add-option ===');
+  writeRollbackDoc(WORK_DIR);
+  console.error('=== add-option (idempotent) ===');
   await addOption();
-  console.error('=== deploy ===');
+  console.error('=== deploy JS/CSS ===');
   await deployAll();
+  console.error('=== App97 limited ACL ===');
+  await applyApp97LimitedAcl();
   console.error('=== e2e ===');
   const e2e = await runE2E();
+  fs.writeFileSync(path.join(WORK_DIR, 'e2e_report.json'), JSON.stringify(e2e, null, 2));
   if (e2e.failed) {
     console.error('E2E failures:', e2e.failed);
     process.exit(1);

@@ -6,7 +6,7 @@
      * 納期表示 + バーコード引き取り。正本は App16。A550 のみ。
      */
 
-    const STORE_DEADLINE_VERSION = '1.2.0';
+    const STORE_DEADLINE_VERSION = '1.2.1';
 
     const CAYANAS_STORE_DEADLINE = {
         VERSION: STORE_DEADLINE_VERSION,
@@ -18,6 +18,15 @@
         MAX_OFFSET: 10000,
         PRODUCT_BATCH: 100,
         STORE_CUSTOMER_CODE: 'A550',
+        /**
+         * 限定公開: バーコード引き取り完了を許可するログインコード。
+         * 空配列にすると全員拒否。一般公開時は別承認のうえで見直す。
+         */
+        PICKUP_ALLOWED_LOGIN_CODES: [
+            'info@ayanas.co.jp',
+            'matsuura@ayanas.co.jp',
+            'ayanas20126@gmail.com',
+        ],
         AGGREGATION_CANCELLED: '取消',
         DELIVERY_DONE: '納品済',
         DELIVERY_WAITING: '納品待ち',
@@ -125,6 +134,7 @@
             pickupUnpaid: '未入金または一部入金です。App97（店舗入金管理）で入金後に再度お試しください。',
             pickupDone: '引き取り完了しました（delivery_status=納品済）。',
             pickupGuideApp97: '入金が必要です → App97 店舗入金管理へ',
+            pickupDenied: 'バーコード引き取りは検証ユーザーのみ利用できます（限定公開中）。',
         },
         FIELDS: {
             id: '$id',

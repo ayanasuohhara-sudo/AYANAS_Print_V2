@@ -1,0 +1,65 @@
+[
+  {
+    "kind": "js",
+    "index": 0,
+    "name": "store_payment_config.js",
+    "fileKey": "20261101154443E795DC75BB764E5696F98B16E13A7519271",
+    "file": "desktop_js1_store_payment_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 1,
+    "name": "store_payment_engine.js",
+    "fileKey": "20261101154443DA58F43F59214CE48FB2824E0074ABD9116",
+    "file": "desktop_js2_store_payment_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 2,
+    "name": "store_payment_numbering.js",
+    "fileKey": "202611011544437A3662F1C41B427FB566F3E82DBCFC3A183",
+    "file": "desktop_js3_store_payment_numbering.js"
+  },
+  {
+    "kind": "js",
+    "index": 3,
+    "name": "store_pickup_shared.js",
+    "fileKey": "2026110115444333CC094CD582467589E8890451AE048C210",
+    "file": "desktop_js4_store_pickup_shared.js"
+  },
+  {
+    "kind": "js",
+    "index": 4,
+    "name": "store_pickup_api.js",
+    "fileKey": "202611011544430D3B81CA50E241159CC2B4D96E1B5B75167",
+    "file": "desktop_js5_store_pickup_api.js"
+  },
+  {
+    "kind": "js",
+    "index": 5,
+    "name": "store_payment_api.js",
+    "fileKey": "2026110115444431518AF20F554F4E8AC28EB3D5351B14351",
+    "file": "desktop_js6_store_payment_api.js"
+  },
+  {
+    "kind": "js",
+    "index": 6,
+    "name": "store_payment_desktop.js",
+    "fileKey": "202611011544440C94F1B4830A427EAADAA5B6FA3734A6134",
+    "file": "desktop_js7_store_payment_desktop.js"
+  },
+  {
+    "kind": "js",
+    "index": 7,
+    "name": "store_payment_ui.js",
+    "fileKey": "20261101154444EFA58D30236646FF9FDC8EBE31DC6323009",
+    "file": "desktop_js8_store_payment_ui.js"
+  },
+  {
+    "kind": "css",
+    "index": 0,
+    "name": "store_payment.css",
+    "fileKey": "2026110115444357990BBBA93A48B1A94C0CADD40D0C4A121",
+    "file": "desktop_css1_store_payment.css"
+  }
+]

@@ -32,6 +32,18 @@
     && window.CAYANAS_StorePayment_Engine
   );
 
+  const isPickupAllowedUser = () => {
+    const allowed = (cfg() && cfg().PICKUP_ALLOWED_LOGIN_CODES) || [];
+    if (!Array.isArray(allowed) || allowed.length === 0) {
+      return false;
+    }
+    const login = (typeof kintone !== 'undefined' && kintone.getLoginUser)
+      ? kintone.getLoginUser()
+      : null;
+    const code = login && login.code ? String(login.code) : '';
+    return allowed.indexOf(code) !== -1;
+  };
+
   const state = {
     cart: { items: [] },
     busy: false,
@@ -58,6 +70,17 @@
         + '<h2 class="cayan-sd-pickup__title">バーコード引き取り</h2>'
         + '<p class="cayan-sd-pickup__warn">'
         + escapeHtml(cfg().MESSAGES.pickupNeedShared)
+        + '</p></div>'
+      );
+      return;
+    }
+
+    if (!isPickupAllowedUser()) {
+      panel.innerHTML = (
+        '<div class="cayan-sd-pickup">'
+        + '<h2 class="cayan-sd-pickup__title">バーコード引き取り</h2>'
+        + '<p class="cayan-sd-pickup__warn">'
+        + escapeHtml(cfg().MESSAGES.pickupDenied || '検証ユーザーのみ利用できます。')
         + '</p></div>'
       );
       return;
