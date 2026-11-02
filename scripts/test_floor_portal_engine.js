@@ -222,7 +222,11 @@ const run = () => {
     const featuredKeys = (C.STORE_MENU_GROUPS || []).flatMap((g) => (g.links || [])
         .filter((l) => l.featured).map((l) => l.appKey));
     assert('強調は受注登録・検索・引き取り・入金', featuredKeys.join(',') === 'order,orderSearch,storeDeadline,storePayment');
-    assert('バージョン 1.6.0', C.VERSION === '1.6.0');
+    assert('バージョン 1.6.1', C.VERSION === '1.6.1');
+    const deliveryGroup = (C.STORE_MENU_GROUPS || []).find((g) => g.id === 'delivery_accounting');
+    const deliveryLabels = (deliveryGroup && deliveryGroup.links || []).map((l) => l.label);
+    assert('App92 表示名は店舗納期カレンダー', deliveryLabels.indexOf('店舗納期カレンダー') >= 0
+        && deliveryLabels.indexOf('納期・引き取り待ち管理') < 0);
     assert('工場クエリは A550 なし', E.buildLocationQuery('factory') === 'location_status in ("工場") order by レコード番号 asc');
     assert('店舗クエリは A550 あり', E.buildLocationQuery('store')
         === 'location_status in ("店舗") and customer_code = "A550" order by レコード番号 asc');

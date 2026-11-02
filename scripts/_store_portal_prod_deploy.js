@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * 工場・店舗ポータル App86/App87 本番反映（v1.6.0）
+ * 工場・店舗ポータル App86/App87 本番反映（v1.6.1）
  *   node scripts/_store_portal_prod_deploy.js
  *
  * 両アプリに同一バンドル（work_status_labels 含む）を載せる。
@@ -17,7 +17,7 @@ const ROOT = '/workspace';
 const SUB = 'o5nppg7kb4ly';
 const APP87 = 87;
 const APP86 = 86;
-const EXPECT_VER = '1.6.0';
+const EXPECT_VER = '1.6.1';
 const STAMP = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 const WORK_DIR = path.join(ROOT, 'customize/backups', 'store_portal_prod_' + STAMP);
 
@@ -259,7 +259,8 @@ async function verifyPortalUi(appId) {
         hasInternalWork: links.some(l=>l.text==='社内作業登録' && /\\/k\\/84\\//.test(l.href)),
         hasOrderSearch: links.some(l=>l.text==='受注検索' && /\\/k\\/88\\//.test(l.href)),
         hasOrderCreate: links.some(l=>l.text==='受注登録' && /\\/k\\/16\\//.test(l.href)),
-        hasPickup: links.some(l=>/引き取り/.test(l.text) && /\\/k\\/92\\//.test(l.href)),
+        hasPickup: links.some(l=>(/店舗納期カレンダー/.test(l.text) || /引き取り/.test(l.text)) && /\\/k\\/92\\//.test(l.href)),
+        hasStoreDeadlineCalendar: links.some(l=>l.text==='店舗納期カレンダー' && /\\/k\\/92\\//.test(l.href)),
         hasPayment: links.some(l=>/入金/.test(l.text) && /\\/k\\/97\\//.test(l.href)),
         featured,
         flatLinks: [...document.querySelectorAll('nav.cayan-fp-links a')].map(a=>a.textContent.trim()),
@@ -322,6 +323,9 @@ async function main() {
   if (!store.ui.hasLocationMove || !store.ui.hasInternalWork) throw new Error('required work links missing');
   if (!store.ui.hasOrderSearch || !store.ui.hasOrderCreate || !store.ui.hasPickup || !store.ui.hasPayment) {
     throw new Error('store featured links missing');
+  }
+  if (!store.ui.hasStoreDeadlineCalendar) {
+    throw new Error('store deadline calendar label missing');
   }
   if (!Array.isArray(store.ui.featured) || store.ui.featured.length < 4) {
     throw new Error('store featured count < 4');

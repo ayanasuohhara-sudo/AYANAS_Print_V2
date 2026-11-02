@@ -3,7 +3,7 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.6.0
+     * FLOOR_PORTAL_VERSION: 1.6.1
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
@@ -18,7 +18,7 @@
      * 文字サイズは工場／店舗で共通（工場相当）。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.6.0';
+    const FLOOR_PORTAL_VERSION = '1.6.1';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
@@ -166,7 +166,7 @@
                 label: '納品・会計',
                 links: [
                     { appKey: 'deliverySlip', label: '納品書作成' },
-                    { appKey: 'storeDeadline', label: '納期・引き取り待ち管理', featured: true },
+                    { appKey: 'storeDeadline', label: '店舗納期カレンダー', note: '引き取り', featured: true },
                     { appKey: 'storePayment', label: '入金登録', featured: true },
                 ],
             },
