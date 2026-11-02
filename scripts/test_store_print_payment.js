@@ -219,8 +219,19 @@ const storeOrderHtml = global.StoreOrderTemplate.render({
 
 assert('store_order has manage_no', storeOrderHtml.indexOf('PKTEST1') !== -1);
 assert('store_order has payment', storeOrderHtml.indexOf('入金済') !== -1);
-assert('store_order has barcode svg', storeOrderHtml.indexOf('class="barcode"') !== -1);
+assert('store_order has barcode svg', /store-order-barcode__svg/.test(storeOrderHtml));
 assert('store_order portrait page', storeOrderHtml.indexOf('store-order-page') !== -1);
+assert('store_order upper title', storeOrderHtml.indexOf('店舗受注表') !== -1);
+assert('store_order lower cut ticket', storeOrderHtml.indexOf('仕上げ完了登録票') !== -1);
+assert('store_order cut line', storeOrderHtml.indexOf('store-order-cut') !== -1);
+assert('store_order dual barcodes', (storeOrderHtml.match(/data-barcode-value="PKTEST1"/g) || []).length >= 2);
+assert('store_order work checks', storeOrderHtml.indexOf('□ 下洗い済み') !== -1
+  && storeOrderHtml.indexOf('□ しみ抜き済み') !== -1
+  && storeOrderHtml.indexOf('□ 修理済み') !== -1);
+assert('store_order old checks removed', storeOrderHtml.indexOf('□ 受付') === -1
+  && storeOrderHtml.indexOf('□ 引取済') === -1);
+assert('store_order item_name', storeOrderHtml.indexOf('丸洗い') !== -1);
+assert('store_order kimono_type', storeOrderHtml.indexOf('小紋') !== -1);
 
 const manyDetails = [];
 for (let i = 0; i < 25; i += 1) {
@@ -272,10 +283,12 @@ assert('print does not PUT delivery_status', desktopJs.indexOf('store_order') !=
   && !/store_order[\s\S]{0,200}delivery_status/.test(desktopJs));
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
-assert('manifest v145', manifest.version === 145);
+assert('manifest v146', manifest.version === 146);
 assert('manifest desktop/js <= 30', Array.isArray(manifest.desktop.js) && manifest.desktop.js.length <= 30);
 assert('manifest includes store print bundle',
   manifest.desktop.js.indexOf('js/store_print_bundle.js') !== -1);
+assert('preview draws store barcodes',
+  fs.readFileSync(path.join(root, 'js/preview.js'), 'utf8').indexOf('store-order-barcode__svg') !== -1);
 
 // Write preview artifacts
 const outDir = path.join(root, 'docs/artifacts/store_print_preview');

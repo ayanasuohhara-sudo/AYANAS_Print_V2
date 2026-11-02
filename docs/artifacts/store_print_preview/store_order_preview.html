@@ -1,68 +1,78 @@
 <!DOCTYPE html><html><head><title>店舗受注表</title></head><body class="report-store_order">
 <div class="page store-order-page">
-  <header class="store-order-header">
-    <div class="store-order-header__left">
-      <p class="store-order-eyebrow">A550 店舗</p>
-      <h1 class="store-order-title">店舗受注表</h1>
-      <p class="store-order-manage">管理番号：<strong>PKTEST1</strong></p>
-    </div>
-    <div class="store-order-header__right">
-      <div class="store-order-barcode">
-        <svg class="barcode"></svg>
-        <p class="store-order-barcode__value">PKTEST1</p>
+  <section class="store-order-upper">
+    <header class="store-order-header">
+      <div class="store-order-header__left">
+        <p class="store-order-eyebrow">A550 店舗</p>
+        <h1 class="store-order-title">店舗受注表</h1>
+        <p class="store-order-manage">管理番号：<strong>PKTEST1</strong></p>
       </div>
+      <div class="store-order-header__right">
+        <div class="store-order-barcode store-order-barcode--upper"><svg class="barcode store-order-barcode__svg" data-barcode-value="PKTEST1"></svg><p class="store-order-barcode__value">PKTEST1</p></div>
+      </div>
+    </header>
+
+    <section class="store-order-section store-order-section--compact">
+      <h2 class="store-order-section__title">作業指示・現物管理</h2>
+      <dl class="store-order-dl">
+        <div><dt>お客様氏名</dt><dd>山田花子 様</dd></div>
+        <div><dt>商品名</dt><dd>丸洗い / しみぬき</dd></div>
+        <div><dt>着物種類名</dt><dd>小紋</dd></div>
+        <div><dt>着物仕様</dt><dd>袷</dd></div>
+        <div><dt>受注日</dt><dd>2026-11-01</dd></div>
+        <div><dt>納期</dt><dd>2026-11-10</dd></div>
+      </dl>
+    </section>
+
+    <section class="store-order-section store-order-section--compact">
+      <h2 class="store-order-section__title">加工内容</h2>
+      <ul class="store-order-processing"><li><span class="store-order-processing__name">丸洗い</span><span class="store-order-processing__amount">3,000</span></li><li><span class="store-order-processing__name">しみぬき</span><span class="store-order-processing__amount">2,000</span></li></ul>
+    </section>
+
+    <section class="store-order-section store-order-section--payment store-order-section--compact">
+      <h2 class="store-order-section__title">金額・入金（App97・印刷時点）</h2>
+      <p class="store-order-payment-state is-paid">入金済</p>
+      <table class="store-order-payment-table">
+        <thead>
+          <tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>5,000</td>
+            <td>500</td>
+            <td>5,500</td>
+            <td>5,500</td>
+            <td>0</td>
+          </tr>
+        </tbody>
+      </table>
+      
+    </section>
+
+    <div class="store-order-work-checks">
+      <p class="store-order-work-checks__label">作業チェック</p>
+      <div class="store-order-checks"><span>□ 下洗い済み</span><span>□ しみ抜き済み</span><span>□ 修理済み</span></div>
     </div>
-  </header>
+  </section>
 
-  <section class="store-order-section">
-    <h2 class="store-order-section__title">お客様</h2>
-    <dl class="store-order-dl">
-      <div><dt>お名前</dt><dd>山田花子 様</dd></div>
-      <div><dt>PCM</dt><dd>P000002</dd></div>
-      <div><dt>電話</dt><dd>—</dd></div>
-      <div><dt>顧客コード</dt><dd>A550</dd></div>
+  <div class="store-order-cut" aria-hidden="true">
+    <span class="store-order-cut__label">✂ ここから下を切り取り（仕上げ完了登録票）</span>
+  </div>
+
+  <section class="store-order-lower">
+    <header class="store-order-lower__header">
+      <div class="store-order-lower__titles">
+        <h2 class="store-order-lower__title">仕上げ完了登録票</h2>
+        <p class="store-order-manage">管理番号：<strong>PKTEST1</strong></p>
+        <p class="store-order-lower__hint">切り取って App30 完了登録で連続読取</p>
+      </div>
+      <div class="store-order-barcode store-order-barcode--lower"><svg class="barcode store-order-barcode__svg" data-barcode-value="PKTEST1"></svg><p class="store-order-barcode__value">PKTEST1</p></div>
+    </header>
+    <dl class="store-order-dl store-order-dl--ticket">
+      <div><dt>お客様氏名</dt><dd>山田花子 様</dd></div>
+      <div><dt>商品名</dt><dd>丸洗い / しみぬき</dd></div>
+      <div><dt>着物種類名</dt><dd>小紋</dd></div>
     </dl>
+    <div class="store-order-checks"><span>□ 下洗い済み</span><span>□ しみ抜き済み</span><span>□ 修理済み</span></div>
   </section>
-
-  <section class="store-order-section">
-    <h2 class="store-order-section__title">商品・納期</h2>
-    <dl class="store-order-dl">
-      <div><dt>着物種類</dt><dd>小紋</dd></div>
-      <div><dt>仕様</dt><dd>袷</dd></div>
-      <div><dt>納期</dt><dd>2026-11-10</dd></div>
-      <div><dt>受注日</dt><dd>2026-11-01</dd></div>
-    </dl>
-  </section>
-
-  <section class="store-order-section">
-    <h2 class="store-order-section__title">加工内容</h2>
-    <ul class="store-order-processing"><li><span class="store-order-processing__name">丸洗い</span><span class="store-order-processing__amount">3,000</span></li><li><span class="store-order-processing__name">しみぬき</span><span class="store-order-processing__amount">2,000</span></li></ul>
-  </section>
-
-  <section class="store-order-section store-order-section--payment">
-    <h2 class="store-order-section__title">入金状況（App97・印刷時点）</h2>
-    <p class="store-order-payment-state is-paid">入金済</p>
-    <table class="store-order-payment-table">
-      <thead>
-        <tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>5,000</td>
-          <td>500</td>
-          <td>5,500</td>
-          <td>5,500</td>
-          <td>0</td>
-        </tr>
-      </tbody>
-    </table>
-    
-  </section>
-
-  <footer class="store-order-footer">
-    <p>作業・保管・引き取り管理用（印刷のみ・状態は更新しません）</p>
-    <div class="store-order-checks">
-      <span>□ 受付</span><span>□ 作業中</span><span>□ 店舗保管</span><span>□ 引取済</span>
-    </div>
-  </footer>
 </div></body></html>

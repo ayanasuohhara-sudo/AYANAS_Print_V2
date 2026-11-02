@@ -485,7 +485,9 @@ ${buildButtonScriptBody()}
             return;
         }
 
-        var svgNodes = document.querySelectorAll('.order-detail-barcode__svg, #barcode');
+        var svgNodes = document.querySelectorAll(
+            '.order-detail-barcode__svg, .store-order-barcode__svg, .barcode, #barcode'
+        );
 
         if (!svgNodes.length) {
             initButtons();

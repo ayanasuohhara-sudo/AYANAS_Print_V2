@@ -2,7 +2,7 @@
     'use strict';
 
     /**
-     * 店舗受注表（A550専用）— A4縦・単票・1レコード1枚
+     * 店舗受注表（A550専用）— A4縦・1点1枚・上下2段（作業指示＋切り取り完了登録票）
      */
 
     const esc = (value) => Format.escapeHtml(value);
@@ -28,6 +28,18 @@
         return 'is-unknown';
     };
 
+    const primaryItemName = (details) => {
+        const rows = Array.isArray(details) ? details : [];
+        const names = [];
+        rows.forEach((detail) => {
+            const name = String(detail && detail.item_name != null ? detail.item_name : '').trim();
+            if (name && names.indexOf(name) === -1) {
+                names.push(name);
+            }
+        });
+        return names.join(' / ');
+    };
+
     const buildProcessingHtml = (details) => {
         const rows = Array.isArray(details) ? details : [];
         if (!rows.length) {
@@ -50,6 +62,27 @@
         );
     };
 
+    const buildWorkChecksHtml = () => (
+        '<div class="store-order-checks">'
+        + '<span>□ 下洗い済み</span>'
+        + '<span>□ しみ抜き済み</span>'
+        + '<span>□ 修理済み</span>'
+        + '</div>'
+    );
+
+    const buildBarcodeHtml = (manageNo, extraClass) => (
+        '<div class="store-order-barcode'
+        + (extraClass ? ' ' + extraClass : '')
+        + '">'
+        + '<svg class="barcode store-order-barcode__svg" data-barcode-value="'
+        + esc(manageNo)
+        + '"></svg>'
+        + '<p class="store-order-barcode__value">'
+        + esc(manageNo)
+        + '</p>'
+        + '</div>'
+    );
+
     const StoreOrderTemplate = TemplateInterface.create('StoreOrderTemplate', (data, config = {}, layout = {}) => {
         void config;
         void layout;
@@ -64,75 +97,88 @@
         const details = data.details || [];
         const manageNo = String(header.manage_no ?? '').trim();
         const clientName = String(header.pcm_customer_name || header.client_name || '').trim();
+        const kimonoType = String(header.kimono_type || '').trim();
+        const kimonoSpec = String(header.kimono_spec || '').trim();
+        const itemName = primaryItemName(details);
         const paymentState = String(header.payment_state || '—');
 
         const content = `
 <div class="page store-order-page">
-  <header class="store-order-header">
-    <div class="store-order-header__left">
-      <p class="store-order-eyebrow">A550 店舗</p>
-      <h1 class="store-order-title">店舗受注表</h1>
-      <p class="store-order-manage">管理番号：<strong>${esc(manageNo)}</strong></p>
-    </div>
-    <div class="store-order-header__right">
-      <div class="store-order-barcode">
-        <svg class="barcode"></svg>
-        <p class="store-order-barcode__value">${esc(manageNo)}</p>
+  <section class="store-order-upper">
+    <header class="store-order-header">
+      <div class="store-order-header__left">
+        <p class="store-order-eyebrow">A550 店舗</p>
+        <h1 class="store-order-title">店舗受注表</h1>
+        <p class="store-order-manage">管理番号：<strong>${esc(manageNo)}</strong></p>
       </div>
+      <div class="store-order-header__right">
+        ${buildBarcodeHtml(manageNo, 'store-order-barcode--upper')}
+      </div>
+    </header>
+
+    <section class="store-order-section store-order-section--compact">
+      <h2 class="store-order-section__title">作業指示・現物管理</h2>
+      <dl class="store-order-dl">
+        <div><dt>お客様氏名</dt><dd>${esc(clientName || '—')} 様</dd></div>
+        <div><dt>商品名</dt><dd>${esc(itemName || '—')}</dd></div>
+        <div><dt>着物種類名</dt><dd>${esc(kimonoType || '—')}</dd></div>
+        <div><dt>着物仕様</dt><dd>${esc(kimonoSpec || '—')}</dd></div>
+        <div><dt>受注日</dt><dd>${esc(Format.formatDate(header.order_date))}</dd></div>
+        <div><dt>納期</dt><dd>${esc(Format.formatDate(header.deadline))}</dd></div>
+      </dl>
+    </section>
+
+    <section class="store-order-section store-order-section--compact">
+      <h2 class="store-order-section__title">加工内容</h2>
+      ${buildProcessingHtml(details)}
+    </section>
+
+    <section class="store-order-section store-order-section--payment store-order-section--compact">
+      <h2 class="store-order-section__title">金額・入金（App97・印刷時点）</h2>
+      <p class="store-order-payment-state ${paymentClass(paymentState)}">${esc(paymentState)}</p>
+      <table class="store-order-payment-table">
+        <thead>
+          <tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${esc(money(header.payment_exclusive))}</td>
+            <td>${esc(money(header.payment_tax))}</td>
+            <td>${esc(money(header.payment_billed_inclusive))}</td>
+            <td>${esc(money(header.payment_paid))}</td>
+            <td>${esc(money(header.payment_balance))}</td>
+          </tr>
+        </tbody>
+      </table>
+      ${header.payment_note ? `<p class="store-order-note">${esc(header.payment_note)}</p>` : ''}
+    </section>
+
+    <div class="store-order-work-checks">
+      <p class="store-order-work-checks__label">作業チェック</p>
+      ${buildWorkChecksHtml()}
     </div>
-  </header>
+  </section>
 
-  <section class="store-order-section">
-    <h2 class="store-order-section__title">お客様</h2>
-    <dl class="store-order-dl">
-      <div><dt>お名前</dt><dd>${esc(clientName || '—')} 様</dd></div>
-      <div><dt>PCM</dt><dd>${esc(header.personal_customer_id || '—')}</dd></div>
-      <div><dt>電話</dt><dd>${esc(header.pcm_phone || '—')}</dd></div>
-      <div><dt>顧客コード</dt><dd>${esc(header.customer_code || 'A550')}</dd></div>
+  <div class="store-order-cut" aria-hidden="true">
+    <span class="store-order-cut__label">✂ ここから下を切り取り（仕上げ完了登録票）</span>
+  </div>
+
+  <section class="store-order-lower">
+    <header class="store-order-lower__header">
+      <div class="store-order-lower__titles">
+        <h2 class="store-order-lower__title">仕上げ完了登録票</h2>
+        <p class="store-order-manage">管理番号：<strong>${esc(manageNo)}</strong></p>
+        <p class="store-order-lower__hint">切り取って App30 完了登録で連続読取</p>
+      </div>
+      ${buildBarcodeHtml(manageNo, 'store-order-barcode--lower')}
+    </header>
+    <dl class="store-order-dl store-order-dl--ticket">
+      <div><dt>お客様氏名</dt><dd>${esc(clientName || '—')} 様</dd></div>
+      <div><dt>商品名</dt><dd>${esc(itemName || '—')}</dd></div>
+      <div><dt>着物種類名</dt><dd>${esc(kimonoType || '—')}</dd></div>
     </dl>
+    ${buildWorkChecksHtml()}
   </section>
-
-  <section class="store-order-section">
-    <h2 class="store-order-section__title">商品・納期</h2>
-    <dl class="store-order-dl">
-      <div><dt>着物種類</dt><dd>${esc(header.kimono_type || '—')}</dd></div>
-      <div><dt>仕様</dt><dd>${esc(header.kimono_spec || '—')}</dd></div>
-      <div><dt>納期</dt><dd>${esc(Format.formatDate(header.deadline))}</dd></div>
-      <div><dt>受注日</dt><dd>${esc(Format.formatDate(header.order_date))}</dd></div>
-    </dl>
-  </section>
-
-  <section class="store-order-section">
-    <h2 class="store-order-section__title">加工内容</h2>
-    ${buildProcessingHtml(details)}
-  </section>
-
-  <section class="store-order-section store-order-section--payment">
-    <h2 class="store-order-section__title">入金状況（App97・印刷時点）</h2>
-    <p class="store-order-payment-state ${paymentClass(paymentState)}">${esc(paymentState)}</p>
-    <table class="store-order-payment-table">
-      <thead>
-        <tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>${esc(money(header.payment_exclusive))}</td>
-          <td>${esc(money(header.payment_tax))}</td>
-          <td>${esc(money(header.payment_billed_inclusive))}</td>
-          <td>${esc(money(header.payment_paid))}</td>
-          <td>${esc(money(header.payment_balance))}</td>
-        </tr>
-      </tbody>
-    </table>
-    ${header.payment_note ? `<p class="store-order-note">${esc(header.payment_note)}</p>` : ''}
-  </section>
-
-  <footer class="store-order-footer">
-    <p>作業・保管・引き取り管理用（印刷のみ・状態は更新しません）</p>
-    <div class="store-order-checks">
-      <span>□ 受付</span><span>□ 作業中</span><span>□ 店舗保管</span><span>□ 引取済</span>
-    </div>
-  </footer>
 </div>`;
 
         return Common.buildDocumentHtml({
