@@ -4,15 +4,16 @@
   /**
    * 店舗引き取り共通（UI / kintone 非依存）
    * - 引き取り待ち遷移判定
-   * - 引き取り完了ゲート（A550 / 完了 / 店舗 / 引き取り待ち(+移行互換) / delivery_no / App16入金済み）
-   * - PUT は delivery_status=納品済 のみ
-   * - 入金判定の正本は App16 store_payment_status（一部入金≠入金済み）
+   * - 引き取り完了ゲート（A550 / 完了 / 店舗 / 引き取り待ち(+移行互換) / delivery_no）
+   * - PUT は delivery_status=納品済 のみ（process/location/work 不変）
+   * - 入金は App16 store_payment_status。App97 残額は使わない。
+   * - 未入金／一部入金はスマレジ確認または管理者例外で完了可（入金状況は自動変更しない）
    */
 
   const STORE_CUSTOMER_CODE = 'A550';
   const PROCESS_DONE = '完了';
   const LOCATION_STORE = '店舗';
-  const PICKUP_VERSION = '1.1.0';
+  const PICKUP_VERSION = '1.2.0';
 
   const DELIVERY = {
     none: '未納品',
@@ -243,29 +244,30 @@
 
     if (opts.requirePaid !== false) {
       const unpaidApproved = !!opts.unpaidHandoverApproved;
+      const smaregiConfirmed = !!opts.smaregiResidualConfirmed;
       const Status = typeof window !== 'undefined' ? window.CAYANAS_StorePaymentStatus : null;
       if (Status && typeof Status.evaluatePaymentForPickup === 'function') {
-        const pay = Status.evaluatePaymentForPickup(storePaymentStatus, unpaidApproved);
+        const pay = Status.evaluatePaymentForPickup(storePaymentStatus, {
+          unpaidHandoverApproved: unpaidApproved,
+          smaregiResidualConfirmed: smaregiConfirmed,
+        });
         if (!pay.ok) {
           return {
             ok: false,
-            code: pay.code || 'unpaid',
+            code: pay.code || 'needs_smaregi_confirm',
             reason: pay.reason,
             paymentStatus: pay.status,
             balance: opts.balanceInfo || null,
           };
         }
       } else {
-        // フォールバック（status モジュール未読込時）: 入金済み / 入金済のみ通過
         const paid = storePaymentStatus === '入金済み' || storePaymentStatus === '入金済';
-        if (!paid && !unpaidApproved) {
+        if (!paid && !unpaidApproved && !smaregiConfirmed) {
           const state = storePaymentStatus || '未入金';
           return {
             ok: false,
-            code: 'unpaid',
-            reason: state === '一部入金'
-              ? '一部入金のため納品・引き取りできません。店舗受注一覧で「入金済み」に更新してください。'
-              : '未入金のため納品・引き取りできません。店舗受注一覧で「入金済み」に更新してください。',
+            code: 'needs_smaregi_confirm',
+            reason: 'スマレジで残金の支払いを確認してください。',
             paymentStatus: state,
             balance: opts.balanceInfo || null,
           };

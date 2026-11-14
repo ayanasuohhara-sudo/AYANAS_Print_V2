@@ -142,16 +142,27 @@
     const F = C.ORDER_FIELDS;
     const Status = window.CAYANAS_StorePaymentStatus;
     const paymentStatus = readStorePaymentStatus(order);
-    const balance = E.getOrderBalance(order, payments || []);
-    const gate = P.evaluatePickupGate(order, {
+    // App97 残高は参考表示のみ（ゲートに使わない）
+    let balance = null;
+    try {
+      balance = E.getOrderBalance(order, payments || []);
+    } catch (err) {
+      balance = null;
+    }
+    // 物流条件のみ（入金は完了時にスマレジ確認／管理者例外で満たす）
+    const logisticsGate = P.evaluatePickupGate(order, {
       paymentStatus: paymentStatus,
       balanceInfo: balance,
-      requirePaid: true,
+      requirePaid: false,
       unpaidHandoverApproved: false,
     });
     const paid = Status && typeof Status.isFullyPaid === 'function'
       ? Status.isFullyPaid(paymentStatus)
       : (paymentStatus === '入金済み' || paymentStatus === '入金済');
+    const needsSmaregiConfirm = Status
+      && typeof Status.needsSmaregiResidualConfirm === 'function'
+      ? Status.needsSmaregiResidualConfirm(paymentStatus)
+      : !paid;
     const kimonoType = E.readValue(order, F.kimonoType);
     const kimonoSpec = F.kimonoSpec ? E.readValue(order, F.kimonoSpec) : '';
     const productName = [kimonoType, kimonoSpec].filter(Boolean).join('　');
@@ -174,10 +185,13 @@
       paymentState: paymentStatus,
       unpaidBalance: paid ? 0 : (balance && balance.balance != null ? balance.balance : null),
       paid: paid,
-      pickupGate: gate,
-      canComplete: !!(gate.ok && !gate.alreadyDone && paid),
+      needsSmaregiConfirm: !!needsSmaregiConfirm,
+      pickupGate: logisticsGate,
+      // 物流OKなら完了ボタン可（未入金は完了時ダイアログ）。入金状況は自動変更しない
+      canComplete: !!(logisticsGate.ok && !logisticsGate.alreadyDone),
       guideToApp97: false,
-      guideToStatusUpdate: !paid,
+      guideToStatusUpdate: false,
+      guideSmaregiConfirm: !!needsSmaregiConfirm,
     };
   };
 
@@ -254,6 +268,7 @@
       balanceInfo: balance,
       requirePaid: opts.requirePaid !== false,
       unpaidHandoverApproved: !!opts.unpaidHandoverApproved,
+      smaregiResidualConfirmed: !!opts.smaregiResidualConfirmed,
       expectedPersonalCustomerId: opts.expectedPersonalCustomerId || '',
       acceptLegacyWaiting: opts.acceptLegacyWaiting,
     });
@@ -272,6 +287,7 @@
       };
     }
 
+    // delivery_status=納品済 のみ。入金状況・他3軸は変更しない
     const putRecord = P.buildPickupPutRecord();
     const revision = order.$revision && order.$revision.value;
 
@@ -300,6 +316,8 @@
       paymentStatus: paymentStatus,
       balance: balance,
       exception: !!opts.unpaidHandoverApproved && !paid,
+      smaregiConfirmed: !!opts.smaregiResidualConfirmed && !paid,
+      paymentStatusUnchanged: true,
     };
   };
 

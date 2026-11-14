@@ -422,6 +422,7 @@
         paymentStatus: paymentStatus,
         balanceInfo: balance,
         unpaidHandoverApproved: !!opts.unpaidHandoverApproved,
+        smaregiResidualConfirmed: !!opts.smaregiResidualConfirmed,
         expectedPersonalCustomerId: opts.expectedPersonalCustomerId || '',
       });
       if (gate.alreadyDone) {
@@ -439,10 +440,10 @@
     } else {
       const Status = window.CAYANAS_StorePaymentStatus;
       if (Status && typeof Status.evaluatePaymentForPickup === 'function') {
-        const gate = Status.evaluatePaymentForPickup(
-          paymentStatus,
-          !!opts.unpaidHandoverApproved
-        );
+        const gate = Status.evaluatePaymentForPickup(paymentStatus, {
+          unpaidHandoverApproved: !!opts.unpaidHandoverApproved,
+          smaregiResidualConfirmed: !!opts.smaregiResidualConfirmed,
+        });
         if (!gate.ok) {
           return {
             ok: false,
@@ -451,12 +452,8 @@
             balance: balance,
           };
         }
-      } else if (balance) {
-        const gate = E.canPickupWithBalance(balance, !!opts.unpaidHandoverApproved);
-        if (!gate.ok) {
-          return { ok: false, error: gate.reason, balance: balance };
-        }
       }
+      // A550 引き取りでは App97 残額判定を使わない（フォールバック禁止）
     }
 
     const putRecord = E.buildPickupPutRecord();

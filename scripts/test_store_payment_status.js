@@ -37,18 +37,36 @@ const assert = (name, cond) => {
   console.error('FAIL ' + name);
 };
 
-assert('status module loaded', !!S && S.VERSION === '1.0.0');
+assert('status module loaded', !!S && S.VERSION === '1.1.0');
 assert('choices', S.ALL.join(',') === '未入金,一部入金,入金済み');
+assert('smaregi message', S.SMAREGI_CONFIRM_MESSAGE === 'スマレジで残金の支払いを確認しましたか？');
 assert('normalize paid alias 入金済', S.normalizeStatus('入金済') === '入金済み');
 assert('normalize empty -> unpaid', S.normalizeStatus('') === '未入金');
 assert('isFullyPaid only 入金済み', S.isFullyPaid('入金済み') && !S.isFullyPaid('一部入金'));
-assert('partial blocked', S.isPickupBlockedStatus('一部入金') === true);
+assert('needs smaregi for partial', S.needsSmaregiResidualConfirm('一部入金') === true);
+assert('needs smaregi for unpaid', S.needsSmaregiResidualConfirm('未入金') === true);
+assert('no smaregi for paid', S.needsSmaregiResidualConfirm('入金済み') === false);
 
 assert('evaluate paid ok', S.evaluatePaymentForPickup('入金済み', false).ok === true);
-assert('evaluate partial ng', S.evaluatePaymentForPickup('一部入金', false).ok === false);
-assert('evaluate unpaid ng', S.evaluatePaymentForPickup('未入金', false).ok === false);
+assert('evaluate partial needs confirm', S.evaluatePaymentForPickup('一部入金', false).ok === false
+  && S.evaluatePaymentForPickup('一部入金', false).code === 'needs_smaregi_confirm');
+assert('evaluate unpaid needs confirm', S.evaluatePaymentForPickup('未入金', false).code
+  === 'needs_smaregi_confirm');
+assert('evaluate smaregi confirm allows partial', S.evaluatePaymentForPickup('一部入金', {
+  smaregiResidualConfirmed: true,
+}).ok === true && S.evaluatePaymentForPickup('一部入金', {
+  smaregiResidualConfirmed: true,
+}).smaregiConfirmed === true);
 assert('evaluate admin exception', S.evaluatePaymentForPickup('一部入金', true).ok === true
   && S.evaluatePaymentForPickup('一部入金', true).exception === true);
+
+const batchMsg = S.buildSmaregiConfirmMessage([
+  { manageNo: 'M1', paymentState: '未入金' },
+  { manageNo: 'M2', paymentState: '一部入金' },
+]);
+assert('batch confirm lists targets', batchMsg.indexOf('M1（未入金）') >= 0
+  && batchMsg.indexOf('M2（一部入金）') >= 0
+  && batchMsg.indexOf('スマレジで残金の支払いを確認しましたか？') >= 0);
 
 assert('suggest paid from balance', S.suggestFromBalanceState('入金済', 0, 11000) === '入金済み');
 assert('suggest partial', S.suggestFromBalanceState('一部入金', 5000, 6000) === '一部入金');
@@ -72,27 +90,22 @@ assert('gate ok when App16 paid', P.evaluatePickupGate(orderBase, {
   requirePaid: true,
 }).ok === true);
 
-assert('gate blocks partial (not paid)', P.evaluatePickupGate({
+assert('gate partial without confirm blocked', P.evaluatePickupGate({
   ...orderBase,
   store_payment_status: { value: '一部入金' },
 }, { requirePaid: true }).ok === false);
 
-assert('gate blocks unpaid', P.evaluatePickupGate({
+assert('gate partial with smaregi confirm ok', P.evaluatePickupGate({
   ...orderBase,
-  store_payment_status: { value: '未入金' },
-}, { requirePaid: true }).code === 'unpaid');
+  store_payment_status: { value: '一部入金' },
+}, { requirePaid: true, smaregiResidualConfirmed: true }).ok === true);
 
-assert('gate empty status = unpaid', P.evaluatePickupGate({
-  ...orderBase,
-  store_payment_status: { value: '' },
-}, { requirePaid: true }).ok === false);
-
-assert('gate admin exception allows unpaid', P.evaluatePickupGate({
+assert('gate unpaid with admin exception ok', P.evaluatePickupGate({
   ...orderBase,
   store_payment_status: { value: '未入金' },
 }, { requirePaid: true, unpaidHandoverApproved: true }).ok === true);
 
-assert('gate ignores legacy App97 balance when App16 unpaid', P.evaluatePickupGate({
+assert('gate ignores App97 balance when unpaid without confirm', P.evaluatePickupGate({
   ...orderBase,
   store_payment_status: { value: '未入金' },
 }, {
@@ -106,23 +119,25 @@ assert('corporate still blocked by customer', P.evaluatePickupGate({
   store_payment_status: { value: '入金済み' },
 }, { requirePaid: true }).ok === false);
 
-const candidate = Api.buildPickupCandidate({
+const partialCand = Api.buildPickupCandidate({
   ...orderBase,
   store_payment_status: { value: '一部入金' },
 }, []);
-assert('candidate partial not completable', candidate.canComplete === false
-  && candidate.guideToStatusUpdate === true
-  && candidate.guideToApp97 === false
-  && candidate.paymentState === '一部入金');
+assert('candidate partial canComplete (confirm later)', partialCand.canComplete === true
+  && partialCand.needsSmaregiConfirm === true
+  && partialCand.guideToApp97 === false
+  && partialCand.paymentState === '一部入金');
 
 const paidCandidate = Api.buildPickupCandidate(orderBase, []);
-assert('candidate paid completable', paidCandidate.canComplete === true
-  && paidCandidate.paid === true);
+assert('candidate paid completable no smaregi', paidCandidate.canComplete === true
+  && paidCandidate.paid === true
+  && paidCandidate.needsSmaregiConfirm === false);
+
+assert('put record delivery only', Object.keys(P.buildPickupPutRecord()).join(',') === 'delivery_status'
+  && P.buildPickupPutRecord().delivery_status.value === '納品済');
 
 assert('config field code', global.CAYANAS_StorePayment.ORDER_FIELDS.storePaymentStatus
   === 'store_payment_status');
-assert('config status paid label', global.CAYANAS_StorePayment.STORE_PAYMENT_STATUS.paid
-  === '入金済み');
 
 if (failed) {
   process.exit(1);

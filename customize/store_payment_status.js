@@ -7,10 +7,13 @@
    * - App21 / App35 / 法人フローは対象外。
    */
 
-  const VERSION = '1.0.0';
+  const VERSION = '1.1.0';
   const FIELD_CODE = 'store_payment_status';
   const FIELD_LABEL = '入金状況';
   const STORE_CUSTOMER_CODE = 'A550';
+
+  /** App92 未入金／一部入金の引き取り確認文（承認確定） */
+  const SMAREGI_CONFIRM_MESSAGE = 'スマレジで残金の支払いを確認しましたか？';
 
   const STATUS = {
     unpaid: '未入金',
@@ -61,7 +64,11 @@
 
   const isFullyPaid = (raw) => normalizeStatus(raw) === STATUS.paid;
 
-  const isPickupBlockedStatus = (raw) => !isFullyPaid(raw);
+  /** 未入金／一部入金（入金済み以外）→ スマレジ確認ダイアログ対象 */
+  const needsSmaregiResidualConfirm = (raw) => !isFullyPaid(raw);
+
+  /** @deprecated 名称互換。未入金／一部入金はハードブロックしない（確認ダイアログへ） */
+  const isPickupBlockedStatus = (raw) => needsSmaregiResidualConfirm(raw);
 
   /**
    * App97 getOrderBalance.state → App16 候補値
@@ -90,27 +97,73 @@
   const unpaidReason = (raw) => {
     const s = normalizeStatus(raw) || STATUS.unpaid;
     if (s === STATUS.partial) {
-      return '一部入金のため納品・引き取りできません。店舗受注一覧で「入金済み」に更新してください。';
+      return '一部入金です。スマレジで残金の支払いを確認してから引き取り完了してください。';
     }
-    return '未入金のため納品・引き取りできません。店舗受注一覧で「入金済み」に更新してください。';
+    return '未入金です。スマレジで残金の支払いを確認してから引き取り完了してください。';
   };
 
   /**
-   * ゲート用: App16 入金状況を優先。空欄は未入金。
-   * unpaidHandoverApproved は既存の管理者例外。
+   * 一括引き取り用: 未入金／一部入金の対象を明示した確認文。
+   * 「確認済み」でも入金状況は自動変更しない（呼び出し側の責務）。
    */
-  const evaluatePaymentForPickup = (paymentStatus, unpaidHandoverApproved) => {
+  const buildSmaregiConfirmMessage = (rows) => {
+    const list = (rows || []).map((row) => {
+      const manageNo = norm(row && (row.manageNo || row.manage_no));
+      const st = normalizeStatus(
+        row && (row.paymentState || row.storePaymentStatus || row.paymentStatus)
+      ) || STATUS.unpaid;
+      return manageNo ? (manageNo + '（' + st + '）') : st;
+    }).filter(Boolean);
+    const header = list.length
+      ? ('以下は未入金または一部入金です。\n' + list.join('\n') + '\n\n')
+      : '';
+    return header + SMAREGI_CONFIRM_MESSAGE;
+  };
+
+  /**
+   * ゲート用: App16 入金状況。App97 残額は見ない。
+   * - 入金済み → OK
+   * - 未入金／一部入金 + スマレジ確認済み → OK（入金状況は変更しない）
+   * - 未入金／一部入金 + 管理者例外 → OK
+   * - それ以外 → needs_smaregi_confirm
+   *
+   * @param {string} paymentStatus
+   * @param {boolean|object} unpaidHandoverApprovedOrOpts
+   * @param {boolean} [smaregiResidualConfirmed]
+   */
+  const evaluatePaymentForPickup = (
+    paymentStatus,
+    unpaidHandoverApprovedOrOpts,
+    smaregiResidualConfirmed
+  ) => {
     const status = normalizeStatus(paymentStatus) || STATUS.unpaid;
+    let unpaidHandoverApproved = false;
+    let smaregiConfirmed = !!smaregiResidualConfirmed;
+    if (
+      unpaidHandoverApprovedOrOpts
+      && typeof unpaidHandoverApprovedOrOpts === 'object'
+    ) {
+      unpaidHandoverApproved = !!unpaidHandoverApprovedOrOpts.unpaidHandoverApproved;
+      if (unpaidHandoverApprovedOrOpts.smaregiResidualConfirmed != null) {
+        smaregiConfirmed = !!unpaidHandoverApprovedOrOpts.smaregiResidualConfirmed;
+      }
+    } else {
+      unpaidHandoverApproved = !!unpaidHandoverApprovedOrOpts;
+    }
+
     if (isFullyPaid(status)) {
       return { ok: true, status: status };
     }
     if (unpaidHandoverApproved) {
       return { ok: true, status: status, exception: true };
     }
+    if (smaregiConfirmed) {
+      return { ok: true, status: status, smaregiConfirmed: true };
+    }
     return {
       ok: false,
       status: status,
-      code: 'unpaid',
+      code: 'needs_smaregi_confirm',
       reason: unpaidReason(status),
     };
   };
@@ -123,15 +176,18 @@
     STATUS: STATUS,
     ALL: ALL,
     PAID_ALIASES: PAID_ALIASES,
+    SMAREGI_CONFIRM_MESSAGE: SMAREGI_CONFIRM_MESSAGE,
     norm: norm,
     readValue: readValue,
     isStoreCustomer: isStoreCustomer,
     normalizeStatus: normalizeStatus,
     isKnownStatus: isKnownStatus,
     isFullyPaid: isFullyPaid,
+    needsSmaregiResidualConfirm: needsSmaregiResidualConfirm,
     isPickupBlockedStatus: isPickupBlockedStatus,
     suggestFromBalanceState: suggestFromBalanceState,
     unpaidReason: unpaidReason,
+    buildSmaregiConfirmMessage: buildSmaregiConfirmMessage,
     evaluatePaymentForPickup: evaluatePaymentForPickup,
   };
 }());

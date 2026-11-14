@@ -133,19 +133,27 @@ assert('gate ok when paid', P.evaluatePickupGate(order, {
   paymentStatus: '入金済み',
 }).ok === true);
 
-assert('gate unpaid', P.evaluatePickupGate({
+assert('gate unpaid needs smaregi', P.evaluatePickupGate({
   ...order,
   store_payment_status: { value: '未入金' },
 }, {
   paymentStatus: '未入金',
 }).ok === false);
 
-assert('gate partial not paid', P.evaluatePickupGate({
+assert('gate partial needs smaregi', P.evaluatePickupGate({
   ...order,
   store_payment_status: { value: '一部入金' },
 }, {
   paymentStatus: '一部入金',
 }).ok === false);
+
+assert('gate partial with smaregi ok', P.evaluatePickupGate({
+  ...order,
+  store_payment_status: { value: '一部入金' },
+}, {
+  paymentStatus: '一部入金',
+  smaregiResidualConfirmed: true,
+}).ok === true);
 
 assert('gate legacy 納品待ち', P.evaluatePickupGate({
   ...order,

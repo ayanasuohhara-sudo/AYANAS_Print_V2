@@ -154,7 +154,7 @@ paymentsByPcm.set('P000002', [paidPayment(100, 3300)]);
     assert('double pickup no put', putLog.length === 0);
   }
 
-  // 3. 未入金防止
+  // 3. 未入金は確認なしだと不可／スマレジ確認で可（入金状況は変わらない）
   reset();
   orders.set('101', makeOrder({
     $id: { value: '101' },
@@ -165,11 +165,26 @@ paymentsByPcm.set('P000002', [paidPayment(100, 3300)]);
   paymentsByPcm.set('P000002', []);
   {
     const r = await Api.completePickup('101', { expectedPersonalCustomerId: 'P000002' });
-    assert('unpaid blocked', r.ok === false && (r.code === 'unpaid' || /入金|未入金|残/.test(r.error || '')));
+    assert('unpaid blocked without confirm', r.ok === false
+      && (r.code === 'needs_smaregi_confirm' || r.code === 'unpaid'
+        || /スマレジ|未入金|残/.test(r.error || '')));
     assert('unpaid no put', putLog.length === 0);
   }
+  {
+    const r = await Api.completePickup('101', {
+      expectedPersonalCustomerId: 'P000002',
+      smaregiResidualConfirmed: true,
+    });
+    assert('unpaid ok with smaregi confirm', r.ok === true && r.smaregiConfirmed === true);
+    assert('unpaid confirm does not change payment status',
+      orders.get('101').store_payment_status.value === '未入金'
+      && r.paymentStatusUnchanged === true);
+    assert('unpaid put delivery only', putLog.length === 1
+      && Object.keys(putLog[0].record).join(',') === 'delivery_status'
+      && putLog[0].record.delivery_status.value === '納品済');
+  }
 
-  // 4. 一部入金防止（App16 状況）
+  // 4. 一部入金も同様（確認なし不可／確認あり可・状況不変）
   reset();
   orders.set('102', makeOrder({
     $id: { value: '102' },
@@ -180,12 +195,18 @@ paymentsByPcm.set('P000002', [paidPayment(100, 3300)]);
   {
     const bal = E.getOrderBalance(orders.get('102'), paymentsByPcm.get('P000002'));
     assert('partial balance positive', bal.balance > 0 && bal.state === '一部入金');
-    const r = await Api.completePickup('102', { expectedPersonalCustomerId: 'P000002' });
-    assert('partial blocked', r.ok === false);
-    assert('partial no put', putLog.length === 0);
+    const blocked = await Api.completePickup('102', { expectedPersonalCustomerId: 'P000002' });
+    assert('partial blocked without confirm', blocked.ok === false);
+    assert('partial no put without confirm', putLog.length === 0);
+    const r = await Api.completePickup('102', {
+      expectedPersonalCustomerId: 'P000002',
+      smaregiResidualConfirmed: true,
+    });
+    assert('partial ok with smaregi confirm', r.ok === true);
+    assert('partial status unchanged', orders.get('102').store_payment_status.value === '一部入金');
   }
 
-  // 5. 当日支払い後 → App16 を入金済みにして完了（App97 新規登録不要）
+  // 5. 入金済みは確認フラグなしで完了可（App97 不要）
   reset();
   orders.set('103', makeOrder({
     $id: { value: '103' },
@@ -261,18 +282,19 @@ paymentsByPcm.set('P000002', [paidPayment(100, 3300)]);
     assert('candidate paymentState', cand.paymentState === '入金済み');
     assert('candidate unpaidBalance 0', cand.unpaidBalance === 0);
     assert('candidate canComplete', cand.canComplete === true);
+    assert('candidate no smaregi needed', cand.needsSmaregiConfirm === false);
   }
 
-  // barcode unpaid guides to App16 status update (not App97)
+  // unpaid can enter cart; needs smaregi confirm later (not App97)
   {
     const unpaidCand = Api.buildPickupCandidate(makeOrder({
       $id: { value: '108' },
       delivery_status: { value: '引き取り待ち' },
       store_payment_status: { value: '未入金' },
     }), []);
-    assert('unpaid guides status update', unpaidCand.guideToStatusUpdate === true
-      && unpaidCand.guideToApp97 === false
-      && unpaidCand.canComplete === false);
+    assert('unpaid candidate canComplete logistics', unpaidCand.canComplete === true
+      && unpaidCand.needsSmaregiConfirm === true
+      && unpaidCand.guideToApp97 === false);
   }
 
   // admin exception still allows partial

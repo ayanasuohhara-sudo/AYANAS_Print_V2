@@ -91,7 +91,7 @@
     }
 
     const items = state.cart.items;
-    const anyUnpaid = items.some((row) => row.guideToStatusUpdate || row.guideToApp97 || !row.paid);
+    const anyUnpaid = items.some((row) => row.needsSmaregiConfirm || row.guideSmaregiConfirm || !row.paid);
     const canComplete = items.length > 0
       && items.every((row) => row.canComplete)
       && !state.busy;
@@ -215,18 +215,18 @@
       state.personalCustomerId = result.personalCustomerId;
       state.clientName = result.clientName || candidate.clientName;
 
-      if (candidate.guideToStatusUpdate || candidate.guideToApp97) {
-        setMessage(
-          candidate.manageNo + ': '
-          + (cfg().MESSAGES.pickupUnpaid
-            || '未入金です。店舗受注一覧で入金状況を更新してください。'),
-          true
-        );
-      } else if (!candidate.canComplete) {
+      if (!candidate.canComplete) {
         setMessage(
           candidate.manageNo + ': '
           + ((candidate.pickupGate && candidate.pickupGate.reason) || '引き取り条件を満たしません。'),
           true
+        );
+      } else if (candidate.needsSmaregiConfirm || candidate.guideSmaregiConfirm) {
+        setMessage(
+          candidate.manageNo + ' を追加しました（'
+          + (candidate.paymentState || '未入金')
+          + '）。完了時にスマレジ残金確認が必要です。',
+          false
         );
       } else {
         setMessage(candidate.manageNo + ' を追加しました。', false);
@@ -262,6 +262,25 @@
     focusInput();
   };
 
+  const buildBatchConfirmMessage = (items) => {
+    const Status = window.CAYANAS_StorePaymentStatus;
+    const unpaidRows = items.filter((row) => row.needsSmaregiConfirm || row.guideSmaregiConfirm
+      || (Status && Status.needsSmaregiResidualConfirm
+        ? Status.needsSmaregiResidualConfirm(row.paymentState || row.storePaymentStatus)
+        : !row.paid));
+    if (unpaidRows.length) {
+      if (Status && typeof Status.buildSmaregiConfirmMessage === 'function') {
+        return Status.buildSmaregiConfirmMessage(unpaidRows);
+      }
+      const list = unpaidRows.map((row) => (
+        row.manageNo + '（' + (row.paymentState || '未入金') + '）'
+      )).join('\n');
+      return '以下は未入金または一部入金です。\n' + list + '\n\n'
+        + (cfg().MESSAGES.pickupSmaregiConfirm || 'スマレジで残金の支払いを確認しましたか？');
+    }
+    return items.length + ' 件を引き取り完了（納品済）にします。よろしいですか？';
+  };
+
   const completePickup = async () => {
     if (!hasDeps() || state.busy) {
       return;
@@ -273,13 +292,27 @@
       return;
     }
     if (items.some((row) => !row.canComplete)) {
-      setMessage(cfg().MESSAGES.pickupUnpaid, true);
+      setMessage(
+        (items.find((row) => !row.canComplete).pickupGate
+          && items.find((row) => !row.canComplete).pickupGate.reason)
+          || cfg().MESSAGES.pickupUnpaid,
+        true
+      );
       paint();
       return;
     }
-    if (!window.confirm(items.length + ' 件を引き取り完了（納品済）にします。よろしいですか？')) {
+
+    // 未入金／一部入金は対象を明示してスマレジ確認。キャンセルなら何も更新しない。
+    // 「確認済み」でも入金状況は自動で入金済みにしない。
+    if (!window.confirm(buildBatchConfirmMessage(items))) {
+      setMessage('引き取り完了をキャンセルしました。', true);
+      paint();
       return;
     }
+
+    const unpaidInBatch = items.some((row) => row.needsSmaregiConfirm || row.guideSmaregiConfirm
+      || !row.paid);
+    const smaregiResidualConfirmed = unpaidInBatch;
 
     state.busy = true;
     setMessage('更新中…', false);
@@ -294,6 +327,7 @@
       try {
         const result = await Api.completePickup(row.orderRecordId, {
           unpaidHandoverApproved: false,
+          smaregiResidualConfirmed: smaregiResidualConfirmed,
           expectedPersonalCustomerId: state.personalCustomerId,
         });
         if (!result.ok) {
