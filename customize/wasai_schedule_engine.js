@@ -154,10 +154,42 @@
     'order by ' + cfg().FIELDS.wasaiCode + ' asc'
   );
 
-  const masterFetchFields = () => {
+  const masterFetchFields = (options) => {
+    const opts = options || {};
     const F = cfg().FIELDS;
-    return [F.id, F.wasaiCode, F.wasaiName, F.tradeName]
+    const fields = [F.id, F.wasaiCode, F.wasaiName, F.tradeName]
       .concat(cfg().REGISTRATION_STATUS_CODES);
+    if (opts.includeCapacity !== false) {
+      fields.push(F.monthlyCapacity);
+    }
+    return fields;
+  };
+
+  /**
+   * monthly_capacity: 空／欠落 → null（未設定）。0 は有効な 0 枚。
+   * 負数・非整数は未設定扱い（表示用。入力制約は App73 側）。
+   */
+  const parseMonthlyCapacity = (record) => {
+    const code = cfg().FIELDS.monthlyCapacity;
+    if (!record || !Object.prototype.hasOwnProperty.call(record, code)) {
+      return null;
+    }
+    const field = record[code];
+    if (!field || field.value === null || field.value === undefined || field.value === '') {
+      return null;
+    }
+    const num = Number(field.value);
+    if (!Number.isFinite(num) || num < 0 || !Number.isInteger(num)) {
+      return null;
+    }
+    return num;
+  };
+
+  const formatMonthlyCapacity = (capacity) => {
+    if (capacity === null || capacity === undefined) {
+      return cfg().MESSAGES.capacityUnset;
+    }
+    return String(capacity) + cfg().MESSAGES.pieceSuffix;
   };
 
   const normalizeMasters = (records) => {
@@ -170,6 +202,8 @@
         wasaiName: readValue(record, cfg().FIELDS.wasaiName),
         tradeName: readValue(record, cfg().FIELDS.tradeName),
         registrationStatus: registrationStatusOf(record),
+        monthlyCapacity: parseMonthlyCapacity(record),
+        monthlyCapacityLabel: formatMonthlyCapacity(parseMonthlyCapacity(record)),
       }))
       .filter((row) => row.wasaiCode)
       .sort((left, right) => (
@@ -566,6 +600,8 @@
     isActiveWasai,
     masterQuery,
     masterFetchFields,
+    parseMonthlyCapacity,
+    formatMonthlyCapacity,
     normalizeMasters,
     buildOutboundMonthQuery,
     outboundFetchFields,

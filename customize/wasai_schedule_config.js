@@ -2,12 +2,13 @@
   'use strict';
 
   /**
-   * 和裁士別仕事予定カレンダー — 定数（第1段階）
+   * 和裁士別仕事予定カレンダー — 定数（第2段階）
    * App73/74/78 は参照のみ。出庫・入庫・受注の処理は変更しない。
+   * App73.monthly_capacity を表示する（変更は App73 画面で行う）。
    * HOST_APP_ID はホスト App 作成後に設定する（未設定のあいだはマウントしない）。
    */
 
-  const WASAI_SCHEDULE_VERSION = '1.0.0';
+  const WASAI_SCHEDULE_VERSION = '1.1.0';
 
   const CAYANAS_WASAI_SCHEDULE = {
     VERSION: WASAI_SCHEDULE_VERSION,
@@ -62,12 +63,17 @@
       detailPrefix: '明細 ',
       detailSuffix: '件',
       pieceSuffix: '枚',
+      capacityLabel: '月間処理可能',
+      capacityUnset: '未設定',
+      capacityEditHint: '変更は和裁士マスタ（App73）で行います',
     },
     FIELDS: {
       id: '$id',
       wasaiCode: 'wasai_code',
       wasaiName: 'wasai_name',
       tradeName: 'trade_name',
+      /** App73 数値。空は未設定（0 とは区別） */
+      monthlyCapacity: 'monthly_capacity',
       shipDate: '日ship_date',
       returnDate: 'return_date',
       outboundStatus: 'outbound_status',

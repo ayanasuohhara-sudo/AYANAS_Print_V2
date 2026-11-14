@@ -2,8 +2,9 @@
   'use strict';
 
   /**
-   * 和裁士別仕事予定カレンダー — 一覧 UI（第1段階）
+   * 和裁士別仕事予定カレンダー — 一覧 UI（第2段階）
    * ホスト App の index をカレンダーに置換。App73/74/78 は GET のみ。
+   * 月間処理可能枚数は App73.monthly_capacity を表示（未設定は「未設定」）。
    */
 
   const ROOT_ID = 'ayanas-wasai-schedule-root';
@@ -57,13 +58,30 @@
     }
   );
 
+  let masterFieldsIncludeCapacity = true;
+
   const fetchMasterPage = async (query) => {
-    const response = await kintoneGet(
-      cfg().WASAI_MASTER_APP_ID,
-      query,
-      Engine.masterFetchFields()
-    );
-    return response.records || [];
+    try {
+      const response = await kintoneGet(
+        cfg().WASAI_MASTER_APP_ID,
+        query,
+        Engine.masterFetchFields({ includeCapacity: masterFieldsIncludeCapacity })
+      );
+      return response.records || [];
+    } catch (error) {
+      // 本番で monthly_capacity 未追加のあいだはフィールド無しで再取得
+      if (masterFieldsIncludeCapacity) {
+        console.warn('[wasai_schedule] monthly_capacity 未取得のためフォールバック', error);
+        masterFieldsIncludeCapacity = false;
+        const response = await kintoneGet(
+          cfg().WASAI_MASTER_APP_ID,
+          query,
+          Engine.masterFetchFields({ includeCapacity: false })
+        );
+        return response.records || [];
+      }
+      throw error;
+    }
   };
 
   const fetchOutboundPage = async (query) => {
@@ -224,15 +242,39 @@
       + '</tbody></table></div>';
   };
 
-  const totalsHtml = () => {
-    if (!model || !selectedWasaiCode) {
+  const capacityHtml = () => {
+    const master = selectedMaster();
+    if (!selectedWasaiCode || !master) {
       return '';
+    }
+    const label = Engine.formatMonthlyCapacity(master.monthlyCapacity);
+    const isUnset = master.monthlyCapacity === null || master.monthlyCapacity === undefined;
+    return '<div class="cayan-ws-capacity" aria-live="polite">'
+      + '<span class="cayan-ws-capacity-main">'
+      + escapeHtml(cfg().MESSAGES.capacityLabel)
+      + ' <strong class="' + (isUnset ? 'is-unset' : '') + '">'
+      + escapeHtml(label)
+      + '</strong></span>'
+      + '<span class="cayan-ws-capacity-hint">'
+      + escapeHtml(cfg().MESSAGES.capacityEditHint)
+      + '</span>'
+      + '</div>';
+  };
+
+  const totalsHtml = () => {
+    if (!selectedWasaiCode) {
+      return '';
+    }
+    const capacity = capacityHtml();
+    if (!model) {
+      return capacity;
     }
     const totals = model.totals || {};
     const visibleReturned = showReturned ? Number(totals.returnedPieces || 0) : 0;
     const outbound = Number(totals.outboundPieces || 0);
     const rework = Number(totals.reworkPieces || 0);
-    return '<div class="cayan-ws-totals" aria-live="polite">'
+    return capacity
+      + '<div class="cayan-ws-totals" aria-live="polite">'
       + '<span>出庫中 <strong>' + escapeHtml(String(outbound)) + '</strong>枚</span>'
       + (showReturned
         ? '<span>返却済 <strong>' + escapeHtml(String(visibleReturned)) + '</strong>枚</span>'
@@ -297,9 +339,13 @@
     });
   };
 
-  const loadMasters = async () => {
-    const fetched = await Engine.fetchAllPages(Engine.masterQuery(), fetchMasterPage);
-    masters = Engine.normalizeMasters(fetched.records);
+  const loadMasters = async (options) => {
+    const opts = options || {};
+    // 月切替・和裁士切替でも最新の月間処理可能枚数を拾う
+    if (opts.force || !masters.length) {
+      const fetched = await Engine.fetchAllPages(Engine.masterQuery(), fetchMasterPage);
+      masters = Engine.normalizeMasters(fetched.records);
+    }
     if (!masters.length) {
       message = cfg().MESSAGES.emptyMaster;
       messageKind = 'warn';
@@ -323,9 +369,7 @@
     paint();
 
     try {
-      if (!masters.length) {
-        await loadMasters();
-      }
+      await loadMasters({ force: true });
 
       if (ticket !== requestSerial) {
         return;

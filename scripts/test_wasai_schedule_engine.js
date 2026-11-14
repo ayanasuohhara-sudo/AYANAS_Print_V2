@@ -66,7 +66,7 @@ const inboundBatch = (opts) => ({
   },
 });
 
-const master = (code, name, status, field) => {
+const master = (code, name, status, field, capacity) => {
   const rec = {
     $id: { value: code },
     wasai_code: { value: code },
@@ -74,15 +74,19 @@ const master = (code, name, status, field) => {
     trade_name: { value: '' },
   };
   rec[field || 'registration_statu'] = { value: status };
+  if (capacity !== undefined) {
+    rec.monthly_capacity = { value: capacity };
+  }
   return rec;
 };
 
 const run = async () => {
-  assert('VERSION', C.VERSION === '1.0.0');
+  assert('VERSION', C.VERSION === '1.1.0');
   assert('HOST_APP_ID は未設定（本番作成待ち）', C.HOST_APP_ID === null);
   assert('参照 App', C.WASAI_MASTER_APP_ID === 73
     && C.WASAI_OUTBOUND_APP_ID === 74
     && C.INBOUND_APP_ID === 78);
+  assert('monthly_capacity フィールドコード', C.FIELDS.monthlyCapacity === 'monthly_capacity');
 
   assert('desktop が PUT/POST しない',
     desktop.indexOf("'PUT'") === -1
@@ -111,14 +115,43 @@ const run = async () => {
     attr && attr.year === 2026 && attr.month === 11);
 
   const masters = E.normalizeMasters([
-    master('002', '西口陽子', '有効'),
+    master('002', '西口陽子', '有効', 'registration_statu', '20'),
     master('009', '休止者', '休止'),
-    master('001', '髙田まや', '有効', 'registration_status'),
+    master('001', '髙田まや', '有効', 'registration_status', ''),
+    master('004', '中田路子', '有効', 'registration_statu', '0'),
   ]);
   assert('有効和裁士のみ・コード昇順',
-    masters.length === 2
+    masters.length === 3
     && masters[0].wasaiCode === '001'
-    && masters[1].wasaiCode === '002');
+    && masters[1].wasaiCode === '002'
+    && masters[2].wasaiCode === '004');
+  assert('空の月間能力は未設定(null)', masters[0].monthlyCapacity === null
+    && masters[0].monthlyCapacityLabel === '未設定');
+  assert('数値20は20枚', masters[1].monthlyCapacity === 20
+    && masters[1].monthlyCapacityLabel === '20枚');
+  assert('0は未設定ではなく0枚', masters[2].monthlyCapacity === 0
+    && masters[2].monthlyCapacityLabel === '0枚');
+
+  assert('parse 欠落フィールドは未設定', E.parseMonthlyCapacity({
+    wasai_code: { value: 'x' },
+  }) === null);
+  assert('parse 負数は未設定', E.parseMonthlyCapacity({
+    monthly_capacity: { value: '-1' },
+  }) === null);
+  assert('parse 小数は未設定', E.parseMonthlyCapacity({
+    monthly_capacity: { value: '1.5' },
+  }) === null);
+  assert('format 未設定文言', E.formatMonthlyCapacity(null) === '未設定');
+
+  // 和裁士切替で表示ラベルが変わること（UI が selectedMaster を参照する前提）
+  const byCode = Object.fromEntries(masters.map((row) => [row.wasaiCode, row]));
+  assert('切替 001→未設定', byCode['001'].monthlyCapacityLabel === '未設定');
+  assert('切替 002→20枚', byCode['002'].monthlyCapacityLabel === '20枚');
+
+  assert('desktop に能力表示がある', desktop.indexOf('capacityLabel') !== -1
+    || desktop.indexOf('formatMonthlyCapacity') !== -1);
+  assert('desktop が能力を PUT しない', desktop.indexOf('monthly_capacity') === -1
+    || (!desktop.includes("'PUT'") && !desktop.includes('"PUT"')));
 
   const openKind = E.classifyLineKind('出庫中', 'M1', new Map());
   const emptyKind = E.classifyLineKind('', 'M2', new Map());

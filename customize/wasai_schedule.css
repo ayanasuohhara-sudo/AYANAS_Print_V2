@@ -111,7 +111,42 @@ body.ayanas-wasai-schedule-active .gaia-argoui-app-index-pager {
 }
 
 .cayan-ws-totals-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 10px;
+}
+
+.cayan-ws-capacity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #d9f99d;
+  border-radius: 8px;
+}
+
+.cayan-ws-capacity-main {
+  font-size: 16px;
+}
+
+.cayan-ws-capacity-main strong {
+  font-variant-numeric: tabular-nums;
+  font-size: 20px;
+  color: #3f6212;
+}
+
+.cayan-ws-capacity-main strong.is-unset {
+  color: #a8a29e;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cayan-ws-capacity-hint {
+  color: #78716c;
+  font-size: 13px;
 }
 
 .cayan-ws-totals {
