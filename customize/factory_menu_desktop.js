@@ -94,34 +94,26 @@
 
     };
 
-    const hubLinksHtml = () => {
-        const hubs = Array.isArray(cfg().HUB_LINKS) ? cfg().HUB_LINKS : [];
-
-        if (!hubs.length) {
+    const hubNavHtml = () => {
+        if (cfg().USE_HUB_NAV === false) {
             return '';
         }
-
-        return '<div class="cayan-fm-hubs" aria-label="業務メニューへ戻る">'
-            + hubs.map((link) => {
-                const appId = Number(link.appId);
-                const href = appId
-                    ? (location.origin + '/k/' + appId + '/')
-                    : (location.origin + '/k/' + String(link.hash || '#/portal'));
-                return '<a class="cayan-fm-hub" href="' + escapeHtml(href) + '">'
-                    + escapeHtml(link.label || '')
-                    + '</a>';
-            }).join('')
-            + '</div>';
+        if (typeof CAYANAS_HubNav === 'undefined' || !CAYANAS_HubNav.renderHtml) {
+            return '';
+        }
+        return CAYANAS_HubNav.renderHtml({
+            activeAppId: Number(cfg().FACTORY_MENU_APP_ID) || 90,
+        });
     };
 
     const shellHtml = () => {
 
         const sections = Array.isArray(cfg().SECTIONS) ? cfg().SECTIONS : [];
 
-        return '<header class="cayan-fm-header">'
+        return hubNavHtml()
+            + '<header class="cayan-fm-header">'
             + '<h1 class="cayan-fm-title">' + escapeHtml(cfg().TITLE) + '</h1>'
             + '<p class="cayan-fm-lead">' + escapeHtml(cfg().LEAD) + '</p>'
-            + hubLinksHtml()
             + '</header>'
             + sections.map(sectionHtml).join('');
 

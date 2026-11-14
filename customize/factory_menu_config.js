@@ -2,27 +2,21 @@
     'use strict';
 
     /**
-     * AYANAS 工場ポータル App90 — メニュー定義。
+     * AYANASU 工場ポータル App90 — メニュー定義。
      * レコードは保存しない。リンク先アプリへ同一タブで遷移するだけ。
-     * FACTORY_MENU_APP_ID が 0 のときは画面を出さない。
+     * 表示名は App91 業務メニューと揃える（正式名称ベース）。
      */
 
-    const FACTORY_MENU_VERSION = '1.2.0';
+    const FACTORY_MENU_VERSION = '2.0.0';
 
     const CAYANAS_FACTORY_MENU = {
         VERSION: FACTORY_MENU_VERSION,
-        /** 工場業務メニューアプリ（App90）。0 のときは起動しない */
         FACTORY_MENU_APP_ID: 90,
-        TITLE: '工場業務メニュー',
-        LEAD: '工場の日常業務で使うアプリへ移動します。AYANAS 業務メニュー／店舗業務メニューへも戻れます。',
-        HUB_LINKS: [
-            { appId: 91, label: 'AYANAS 業務メニュー' },
-            { appId: 87, label: '店舗業務メニュー' },
-            { hash: '#/portal', label: 'ポータルTOP' },
-        ],
+        TITLE: '工場ポータル',
+        LEAD: '工場の日常業務で使うアプリへ移動します。共通ナビから TOP／店舗へも戻れます。',
+        USE_HUB_NAV: true,
         /**
          * メニュー追加・削除・並び替えはこの配列だけ編集する。
-         * appId を画面には出さない。icon は desktop 側の定義キー。
          * path 省略時は一覧（/k/{appId}/）。例: 'edit' → /k/{appId}/edit
          */
         SECTIONS: [
@@ -33,6 +27,7 @@
                 items: [
                     { appId: 86, label: '工場作業状況ポータル', icon: 'status' },
                     { appId: 89, label: '納期負荷カレンダー', icon: 'calendar' },
+                    { appId: 98, label: '和裁士別仕事予定カレンダー', icon: 'wasai' },
                     { appId: 88, label: '受注検索', icon: 'search' },
                 ],
             },
@@ -41,14 +36,14 @@
                 label: '受注・日常業務',
                 size: 'normal',
                 items: [
-                    { appId: 16, label: '受注登録', icon: 'order', path: 'edit' },
-                    { appId: 16, label: '受注明細', icon: 'order' },
-                    { appId: 30, label: '検品・仕上げ完了', icon: 'complete' },
+                    { appId: 16, label: '受注明細管理（登録）', icon: 'order', path: 'edit' },
+                    { appId: 16, label: '受注明細管理', icon: 'order' },
+                    { appId: 30, label: '仕上げ完了登録', icon: 'complete' },
                     { appId: 84, label: '社内作業登録', icon: 'work' },
                     { appId: 78, label: '外注入庫', icon: 'inbound' },
-                    { appId: 27, label: '国内外注出庫', icon: 'outsource' },
-                    { appId: 74, label: '国内和裁士出庫', icon: 'wasai' },
-                    { appId: 34, label: '保管場所移動', icon: 'move' },
+                    { appId: 27, label: '外注出庫', icon: 'outsource' },
+                    { appId: 74, label: '和裁士出庫', icon: 'wasai' },
+                    { appId: 34, label: '社内入庫登録', icon: 'move' },
                 ],
             },
             {

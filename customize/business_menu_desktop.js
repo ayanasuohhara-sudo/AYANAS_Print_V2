@@ -56,13 +56,15 @@
         const key = String(cfg().QUERY_KEY || 'cat');
         const params = new URLSearchParams(location.search || '');
         const raw = String(params.get(key) || '').trim();
-        const fallback = String(cfg().DEFAULT_CATEGORY || 'order');
+        const fallback = String(cfg().DEFAULT_CATEGORY || 'store');
+        const aliases = cfg().CATEGORY_ALIASES || {};
 
         if (!raw) {
             return fallback;
         }
 
-        const found = findCategory(raw);
+        const mapped = aliases[raw] ? String(aliases[raw]) : raw;
+        const found = findCategory(mapped);
 
         if (!found || found.mode === 'direct' || found.mode === 'soon') {
             /* direct / soon / 未知はメニュー初期画面へ（エラーにしない） */
@@ -92,14 +94,12 @@
 
     };
 
-    const topUrl = () => location.origin + '/k/' + String(cfg().TOP_HASH || '#/portal');
-
     const directUrl = (category) => {
 
         const appId = Number(category.directAppId);
 
         if (!appId) {
-            return topUrl();
+            return location.origin + '/k/' + Number(cfg().BUSINESS_MENU_APP_ID || 91) + '/';
         }
 
         return location.origin + '/k/' + appId + '/';
@@ -210,28 +210,24 @@
 
     };
 
+    const hubNavHtml = () => {
+        if (cfg().USE_HUB_NAV === false) {
+            return '';
+        }
+        if (typeof CAYANAS_HubNav === 'undefined' || !CAYANAS_HubNav.renderHtml) {
+            return '';
+        }
+        return CAYANAS_HubNav.renderHtml({
+            activeAppId: Number(cfg().BUSINESS_MENU_APP_ID) || 91,
+        });
+    };
+
     const shellHtml = (activeId) => {
 
         const category = findCategory(activeId) || findCategory(cfg().DEFAULT_CATEGORY);
 
-        const hubs = Array.isArray(cfg().HUB_LINKS) ? cfg().HUB_LINKS : [];
-        const hubsHtml = hubs.map((link) => {
-            const appId = Number(link.appId);
-            if (!appId) {
-                return '';
-            }
-            return '<a class="cayan-bm-hub" href="' + escapeHtml(location.origin + '/k/' + appId + '/') + '">'
-                + escapeHtml(link.label || '')
-                + '</a>';
-        }).join('');
-
         return ''
-            + '<div class="cayan-bm-topbar">'
-            + '<a class="cayan-bm-top-link" href="' + escapeHtml(topUrl()) + '">'
-            + escapeHtml(cfg().TOP_LABEL || 'ポータルTOPへ戻る')
-            + '</a>'
-            + (hubsHtml ? '<div class="cayan-bm-hubs">' + hubsHtml + '</div>' : '')
-            + '</div>'
+            + hubNavHtml()
             + '<header class="cayan-bm-header">'
             + '<h1 class="cayan-bm-title">' + escapeHtml(cfg().TITLE) + '</h1>'
             + '<p class="cayan-bm-lead">' + escapeHtml(cfg().LEAD) + '</p>'

@@ -545,29 +545,21 @@
         root.classList.add(isStore ? 'cayan-fp-root--store' : 'cayan-fp-root--factory');
         root.dataset.mode = mode;
 
-        const hubLinks = [
-            { href: location.origin + '/k/91/', label: ui.hubAyanasMenu || 'AYANAS 業務メニュー' },
-            { href: location.origin + '/k/90/', label: ui.hubFactoryMenu || '工場業務メニュー' },
-            { href: location.origin + '/k/87/', label: ui.hubStoreMenu || '店舗業務メニュー' },
-            { href: location.origin + '/k/#/portal', label: ui.hubPortalTop || 'ポータルTOP' },
-        ];
-        const hubsHtml = '<div class="cayan-fp-hubs" aria-label="業務メニューへ戻る">'
-            + hubLinks.map((link) => (
-                '<a class="cayan-fp-hub" href="' + escapeHtml(link.href) + '">'
-                + escapeHtml(link.label)
-                + '</a>'
-            )).join('')
-            + '</div>';
+        const hubNavHtml = (typeof CAYANAS_HubNav !== 'undefined' && CAYANAS_HubNav.renderHtml)
+            ? CAYANAS_HubNav.renderHtml({
+                activeAppId: Number(kintone.app.getId()),
+            })
+            : '';
 
         root.dataset.shell = '1';
         root.innerHTML = ''
+            + hubNavHtml
             + '<header class="cayan-fp-header">'
             + '<div class="cayan-fp-header__main">'
             + '<div class="cayan-fp-title-row">'
             + '<span class="cayan-fp-mode-badge" aria-label="画面区分">' + escapeHtml(modeBadge) + '</span>'
             + '<h1 class="cayan-fp-title">' + escapeHtml(title) + '</h1>'
             + '</div>'
-            + hubsHtml
             + '</div>'
             + '<div class="cayan-fp-header__side">'
             + '<span class="cayan-fp-updated" id="cayan-fp-updated"></span>'

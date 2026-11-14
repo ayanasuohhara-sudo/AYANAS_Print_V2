@@ -1,0 +1,203 @@
+{
+  "86": {
+    "scope": "ALL",
+    "desktop": {
+      "js": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "2026110217311005C8753CFF03439CA97F22AD25D7AC2E105",
+            "name": "work_status_labels.js",
+            "contentType": "text/javascript",
+            "size": "2771"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021731107FA497079F8B4E9BAEB1D30FA60CF41F357",
+            "name": "floor_portal_config.js",
+            "contentType": "text/javascript",
+            "size": "10716"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021731108B83FE134FA249B78BC1A37827568F8D157",
+            "name": "floor_portal_engine.js",
+            "contentType": "text/javascript",
+            "size": "21194"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021731103638E217719448A095AF50ABBFE1CF4C065",
+            "name": "floor_portal_desktop.js",
+            "contentType": "text/javascript",
+            "size": "28329"
+          }
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021731107E5FF326534C4CBD984EC2C0E65571C5194",
+            "name": "floor_portal.css",
+            "contentType": "text/css",
+            "size": "7976"
+          }
+        }
+      ]
+    },
+    "mobile": {
+      "js": [],
+      "css": []
+    },
+    "revision": "17"
+  },
+  "87": {
+    "scope": "ALL",
+    "desktop": {
+      "js": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102173104F0DCD8D4321E4A5BBC834EDF7674C697265",
+            "name": "work_status_labels.js",
+            "contentType": "text/javascript",
+            "size": "2771"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102173104220413FBC1C74C6095AFA7753C852832151",
+            "name": "floor_portal_config.js",
+            "contentType": "text/javascript",
+            "size": "10716"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021731048E40525F002E4918A479611A6BE8398F133",
+            "name": "floor_portal_engine.js",
+            "contentType": "text/javascript",
+            "size": "21194"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102173104A2D1E84EEDD54BFD9308B521474CFE54111",
+            "name": "floor_portal_desktop.js",
+            "contentType": "text/javascript",
+            "size": "28329"
+          }
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102173104F14DD91D3D82459F97CCFC54ACFB153E215",
+            "name": "floor_portal.css",
+            "contentType": "text/css",
+            "size": "7976"
+          }
+        }
+      ]
+    },
+    "mobile": {
+      "js": [],
+      "css": []
+    },
+    "revision": "21"
+  },
+  "90": {
+    "scope": "ALL",
+    "desktop": {
+      "js": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021608235569835F90114F84BEE1A96A985C32E7080",
+            "name": "factory_menu_config.js",
+            "contentType": "text/javascript",
+            "size": "3168"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "2026110216082363BF90F5DE154A0DACC548F540CE9B20030",
+            "name": "factory_menu_desktop.js",
+            "contentType": "text/javascript",
+            "size": "12259"
+          }
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021608235453031C13EB4A93B2D2ECA50F0478F9128",
+            "name": "factory_menu.css",
+            "contentType": "text/css",
+            "size": "3195"
+          }
+        }
+      ]
+    },
+    "mobile": {
+      "js": [],
+      "css": []
+    },
+    "revision": "8"
+  },
+  "91": {
+    "scope": "ALL",
+    "desktop": {
+      "js": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102160818FC1426BB90E3462B8F38BB6BB62C1AA1188",
+            "name": "business_menu_config.js",
+            "contentType": "text/javascript",
+            "size": "6560"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021608185A7BDDBD891148B0B8F126762D0EE908096",
+            "name": "business_menu_desktop.js",
+            "contentType": "text/javascript",
+            "size": "21502"
+          }
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102160818BD6A6A0BB7A84A68891CAE640340FBBF291",
+            "name": "business_menu.css",
+            "contentType": "text/css",
+            "size": "4777"
+          }
+        }
+      ]
+    },
+    "mobile": {
+      "js": [],
+      "css": []
+    },
+    "revision": "11"
+  },
+  "portalBannersVersion": "1.1.1"
+}

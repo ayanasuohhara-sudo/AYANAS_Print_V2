@@ -214,19 +214,20 @@ const run = () => {
         && storeMenuAppKeys.indexOf('storeWork') < 0);
     const workGroup = (C.STORE_MENU_GROUPS || []).find((g) => g.id === 'work');
     const workLabels = (workGroup && workGroup.links || []).map((l) => l.label);
-    assert('App34 表示名は保管場所移動', workLabels.indexOf('保管場所移動') >= 0
-        && workLabels.indexOf('社内入庫登録') < 0);
+    assert('App34 表示名は社内入庫登録', workLabels.indexOf('社内入庫登録') >= 0);
     assert('App84 表示名は社内作業登録', workLabels.indexOf('社内作業登録') >= 0);
     const groupIds = (C.STORE_MENU_GROUPS || []).map((g) => g.id);
     assert('メニューグループは受付・作業・納品会計', groupIds.join(',') === 'reception,work,delivery_accounting');
     const featuredKeys = (C.STORE_MENU_GROUPS || []).flatMap((g) => (g.links || [])
         .filter((l) => l.featured).map((l) => l.appKey));
-    assert('強調は受注登録・検索・引き取り・入金', featuredKeys.join(',') === 'order,orderSearch,storeDeadline,storePayment');
-    assert('バージョン 1.6.1', C.VERSION === '1.6.1');
+    assert('強調は受注・検索・引き取り（App97なし）', featuredKeys.join(',') === 'order,orderSearch,storeDeadline');
+    assert('バージョン 1.8.0', C.VERSION === '1.8.0');
+    assert('店舗メニューに App97 を出さない', storeMenuAppKeys.indexOf('storePayment') < 0);
     const deliveryGroup = (C.STORE_MENU_GROUPS || []).find((g) => g.id === 'delivery_accounting');
     const deliveryLabels = (deliveryGroup && deliveryGroup.links || []).map((l) => l.label);
     assert('App92 表示名は店舗納期カレンダー', deliveryLabels.indexOf('店舗納期カレンダー') >= 0
         && deliveryLabels.indexOf('納期・引き取り待ち管理') < 0);
+    assert('App97 入金登録ラベルなし', deliveryLabels.indexOf('入金登録') < 0);
     assert('工場クエリは A550 なし', E.buildLocationQuery('factory') === 'location_status in ("工場") order by レコード番号 asc');
     assert('店舗クエリは A550 あり', E.buildLocationQuery('store')
         === 'location_status in ("店舗") and customer_code = "A550" order by レコード番号 asc');

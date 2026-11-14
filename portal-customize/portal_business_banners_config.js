@@ -2,19 +2,19 @@
     'use strict';
 
     /**
-     * AYANAS 標準ポータル — 業務バナー定義。
+     * AYANASU 標準ポータル — 業務バナー定義。
      * 登録先: kintoneシステム管理 → JavaScript / CSSでカスタマイズ（全体・PC用）
      *
-     * 01–08: 従来の8分類（App91 ?cat= または直接アプリ）
-     * 09–10: 工場／店舗の業務ポータル（直接遷移）
+     * 01–02: 店舗／工場ハブ（先頭）
+     * 03–08: App91 の6分類
      */
 
-    const PORTAL_BUSINESS_BANNERS_VERSION = '1.1.1';
+    const PORTAL_BUSINESS_BANNERS_VERSION = '2.0.0';
 
     const CAYANAS_PORTAL_BUSINESS_BANNERS = {
         VERSION: PORTAL_BUSINESS_BANNERS_VERSION,
-        TITLE: 'AYANAS 業務メニュー',
-        LEAD: '業務内容を選んでください',
+        TITLE: 'AYANASU 業務メニュー',
+        LEAD: '業務内容を選んでください（店舗・工場を先頭に配置）',
         ROOT_ID: 'ayanas-portal-business-banners',
         STYLE_ID: 'ayanas-portal-business-banners-style',
         BUSINESS_MENU_APP_ID: 91,
@@ -29,76 +29,62 @@
          */
         CATEGORIES: [
             {
-                id: 'order',
+                id: 'store_portal',
                 no: '01',
-                label: '受注登録・検索',
-                mode: 'menu',
-                cat: 'order',
-            },
-            {
-                id: 'logistics',
-                no: '02',
-                label: '出庫・入庫',
-                mode: 'menu',
-                cat: 'logistics',
-            },
-            {
-                id: 'billing',
-                no: '03',
-                label: '納品書・請求書・入金',
-                mode: 'menu',
-                cat: 'billing',
-            },
-            {
-                id: 'work',
-                no: '04',
-                label: '作業進捗・完了登録',
-                mode: 'menu',
-                cat: 'work',
-            },
-            {
-                id: 'deadline',
-                no: '05',
-                label: '納期・作業負荷状況',
+                label: '店舗ポータル',
                 mode: 'direct',
-                appId: 89,
-            },
-            {
-                id: 'customer_schedule',
-                no: '06',
-                label: '納期・納品スケジュール管理',
-                mode: 'direct',
-                appId: 94,
-            },
-            {
-                id: 'analytics',
-                no: '07',
-                label: '各種データ・集計',
-                mode: 'menu',
-                cat: 'analytics',
-            },
-            {
-                id: 'masters',
-                no: '08',
-                label: 'マスタ登録',
-                mode: 'menu',
-                cat: 'masters',
+                appId: 87,
+                hub: true,
             },
             {
                 id: 'factory_portal',
-                no: '09',
-                label: '工場ポータル（業務）',
+                no: '02',
+                label: '工場ポータル',
                 mode: 'direct',
                 appId: 90,
                 hub: true,
             },
             {
-                id: 'store_portal',
-                no: '10',
-                label: '店舗ポータル（業務）',
-                mode: 'direct',
-                appId: 87,
-                hub: true,
+                id: 'store',
+                no: '03',
+                label: '店舗業務',
+                mode: 'menu',
+                cat: 'store',
+            },
+            {
+                id: 'factory',
+                no: '04',
+                label: '工場業務',
+                mode: 'menu',
+                cat: 'factory',
+            },
+            {
+                id: 'outsourcing',
+                no: '05',
+                label: '外注管理',
+                mode: 'menu',
+                cat: 'outsourcing',
+            },
+            {
+                id: 'finance',
+                no: '06',
+                label: '売上・経理',
+                mode: 'menu',
+                cat: 'finance',
+            },
+            {
+                id: 'schedule',
+                no: '07',
+                label: '予定・納期',
+                mode: 'menu',
+                cat: 'schedule',
+            },
+            {
+                id: 'masters',
+                no: '08',
+                label: 'マスタ・設定',
+                mode: 'menu',
+                cat: 'masters',
             },
         ],
     };
