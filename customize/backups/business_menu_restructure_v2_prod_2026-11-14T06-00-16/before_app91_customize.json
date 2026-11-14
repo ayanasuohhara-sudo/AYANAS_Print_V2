@@ -1,0 +1,41 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102160818FC1426BB90E3462B8F38BB6BB62C1AA1188",
+          "name": "business_menu_config.js",
+          "contentType": "text/javascript",
+          "size": "6560"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021608185A7BDDBD891148B0B8F126762D0EE908096",
+          "name": "business_menu_desktop.js",
+          "contentType": "text/javascript",
+          "size": "21502"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102160818BD6A6A0BB7A84A68891CAE640340FBBF291",
+          "name": "business_menu.css",
+          "contentType": "text/css",
+          "size": "4777"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "11"
+}

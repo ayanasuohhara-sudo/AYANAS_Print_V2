@@ -1,0 +1,257 @@
+{
+  "portal": {
+    "ver": "2.0.0",
+    "labels": [
+      "店舗ポータル",
+      "工場ポータル",
+      "店舗業務",
+      "工場業務",
+      "外注管理",
+      "売上・経理",
+      "予定・納期",
+      "マスタ・設定"
+    ],
+    "hubs": [
+      "店舗ポータル",
+      "工場ポータル"
+    ],
+    "hrefs": [
+      {
+        "label": "店舗ポータル",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+      },
+      {
+        "label": "工場ポータル",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+      },
+      {
+        "label": "店舗業務",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=store"
+      },
+      {
+        "label": "工場業務",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=factory"
+      }
+    ]
+  },
+  "app91": {
+    "appId": 91,
+    "hub": "1.0.0",
+    "bm": "2.0.0",
+    "fm": null,
+    "fp": null,
+    "nav": null,
+    "btns": [
+      {
+        "text": "TOP",
+        "active": true,
+        "href": null,
+        "tag": "SPAN"
+      },
+      {
+        "text": "店舗",
+        "active": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/87/",
+        "tag": "A"
+      },
+      {
+        "text": "工場",
+        "active": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/90/",
+        "tag": "A"
+      }
+    ],
+    "active": "TOP",
+    "activeOk": true,
+    "hrefs": {
+      "店舗": "https://o5nppg7kb4ly.cybozu.com/k/87/",
+      "工場": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+    },
+    "pay97": false,
+    "v17": false,
+    "cats": [
+      "store",
+      "factory",
+      "outsourcing",
+      "finance",
+      "schedule",
+      "masters"
+    ],
+    "has98": false,
+    "storeDeadline": false,
+    "appNavHubs": []
+  },
+  "app87": {
+    "appId": 87,
+    "hub": "1.0.0",
+    "bm": null,
+    "fm": null,
+    "fp": "1.8.0",
+    "nav": null,
+    "btns": [
+      {
+        "text": "TOP",
+        "active": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/",
+        "tag": "A"
+      },
+      {
+        "text": "店舗",
+        "active": true,
+        "href": null,
+        "tag": "SPAN"
+      },
+      {
+        "text": "工場",
+        "active": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/90/",
+        "tag": "A"
+      }
+    ],
+    "active": "店舗",
+    "activeOk": true,
+    "hrefs": {
+      "TOP": "https://o5nppg7kb4ly.cybozu.com/k/91/",
+      "工場": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+    },
+    "pay97": false,
+    "v17": false,
+    "cats": [],
+    "has98": false,
+    "storeDeadline": true,
+    "appNavHubs": []
+  },
+  "app90": {
+    "appId": 90,
+    "hub": "1.0.0",
+    "bm": null,
+    "fm": "2.0.0",
+    "fp": null,
+    "nav": null,
+    "btns": [
+      {
+        "text": "TOP",
+        "active": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/",
+        "tag": "A"
+      },
+      {
+        "text": "店舗",
+        "active": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/87/",
+        "tag": "A"
+      },
+      {
+        "text": "工場",
+        "active": true,
+        "href": null,
+        "tag": "SPAN"
+      }
+    ],
+    "active": "工場",
+    "activeOk": true,
+    "hrefs": {
+      "TOP": "https://o5nppg7kb4ly.cybozu.com/k/91/",
+      "店舗": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+    },
+    "pay97": false,
+    "v17": false,
+    "cats": [],
+    "has98": true,
+    "storeDeadline": false,
+    "appNavHubs": []
+  },
+  "app86": {
+    "appId": 86,
+    "hub": "1.0.0",
+    "bm": null,
+    "fm": null,
+    "fp": "1.8.0",
+    "nav": null,
+    "btns": [
+      {
+        "text": "TOP",
+        "active": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/",
+        "tag": "A"
+      },
+      {
+        "text": "店舗",
+        "active": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/87/",
+        "tag": "A"
+      },
+      {
+        "text": "工場",
+        "active": true,
+        "href": null,
+        "tag": "SPAN"
+      }
+    ],
+    "active": "工場",
+    "activeOk": true,
+    "hrefs": {
+      "TOP": "https://o5nppg7kb4ly.cybozu.com/k/91/",
+      "店舗": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+    },
+    "pay97": false,
+    "v17": false,
+    "cats": [],
+    "has98": false,
+    "storeDeadline": false,
+    "appNavHubs": []
+  },
+  "app16": {
+    "appId": 16,
+    "hub": null,
+    "bm": null,
+    "fm": null,
+    "fp": null,
+    "nav": "1.3.0",
+    "btns": [],
+    "active": null,
+    "activeOk": false,
+    "hrefs": {},
+    "pay97": false,
+    "v17": false,
+    "cats": [],
+    "has98": false,
+    "storeDeadline": false,
+    "appNavHubs": [
+      "TOP",
+      "店舗",
+      "工場"
+    ]
+  },
+  "hops": {
+    "91->87": {
+      "from": 91,
+      "to": 87,
+      "ok": true
+    },
+    "91->90": {
+      "from": 91,
+      "to": 90,
+      "ok": true
+    },
+    "87->TOP": {
+      "ok": true
+    },
+    "87->工場": {
+      "ok": true
+    },
+    "90->TOP": {
+      "ok": true
+    },
+    "90->店舗": {
+      "ok": true
+    },
+    "86->TOP": {
+      "ok": true
+    },
+    "16->TOP": {
+      "ok": true
+    }
+  },
+  "ok": true
+}

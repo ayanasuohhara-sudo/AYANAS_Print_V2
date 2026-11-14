@@ -1,0 +1,194 @@
+{
+  "16": {
+    "ok": true,
+    "deploy": {
+      "app": "16",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "saiban.js",
+      "saiban1.js",
+      "price_master_search11.js",
+      "category.js",
+      "order_customer_search.js",
+      "store_payment_status.js",
+      "store_payment_status_desktop.js",
+      "kana_normalize.js",
+      "order_client_kana_config.js",
+      "order_client_kana_engine.js",
+      "order_client_kana_desktop.js",
+      "price_master_register.js",
+      "order_record_form.js",
+      "additional_item_engine.js",
+      "order_price_unconfirmed_clear.js",
+      "schedule_customer.js",
+      "order_pcm_config.js",
+      "order_pcm_engine.js",
+      "order_pcm_desktop.js"
+    ],
+    "css": [
+      "app_nav_banner.css",
+      "order_record_form.css",
+      "order_pcm.css",
+      "order_client_kana.css",
+      "store_payment_status.css"
+    ]
+  },
+  "19": {
+    "ok": true,
+    "deploy": {
+      "app": "19",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "internal_ops_config.js",
+      "complete_register_engine.js",
+      "delivery_completion_guard.js",
+      "store_delivery_pcm.js",
+      "barcode_delivery.js",
+      "store_pickup_shared.js",
+      "delivery_complete_sync.js",
+      "delivery_a550_edit_guard.js",
+      "price_master_register.js",
+      "delivery_additional_item_guard.js",
+      "additional_item_engine.js"
+    ],
+    "css": [
+      "app_nav_banner.css"
+    ]
+  },
+  "27": {
+    "ok": true,
+    "deploy": {
+      "app": "27",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "gaityuusyuko.js",
+      "additional_item_engine.js",
+      "outsource_additional_item_sync.js"
+    ],
+    "css": [
+      "app_nav_banner.css"
+    ]
+  },
+  "30": {
+    "ok": true,
+    "deploy": {
+      "app": "30",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "work_status_labels.js",
+      "internal_ops_config.js",
+      "barcode_batch_core.js",
+      "barcode_batch_ui.js",
+      "complete_register_engine.js",
+      "complete_register_desktop.js"
+    ],
+    "css": [
+      "app_nav_banner.css"
+    ]
+  },
+  "34": {
+    "ok": true,
+    "deploy": {
+      "app": "34",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "internal_ops_config.js",
+      "store_pickup_shared.js",
+      "barcode_batch_core.js",
+      "barcode_batch_ui.js",
+      "location_inbound_engine.js",
+      "location_inbound_desktop.js"
+    ],
+    "css": [
+      "app_nav_banner.css"
+    ]
+  },
+  "35": {
+    "ok": true,
+    "deploy": {
+      "app": "35",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "payment_create.js",
+      "invoice_balance_desktop.js"
+    ],
+    "css": [
+      "app_nav_banner.css"
+    ]
+  },
+  "78": {
+    "ok": true,
+    "deploy": {
+      "app": "78",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "wasai_config.js",
+      "inbound_unified_config.js",
+      "inbound_unified_engine.js",
+      "inbound_unified_desktop.js"
+    ],
+    "css": [
+      "app_nav_banner.css"
+    ]
+  },
+  "84": {
+    "ok": true,
+    "deploy": {
+      "app": "84",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "work_status_labels.js",
+      "internal_ops_config.js",
+      "barcode_batch_core.js",
+      "barcode_batch_ui.js",
+      "internal_work_engine.js",
+      "internal_work_desktop.js"
+    ],
+    "css": [
+      "app_nav_banner.css"
+    ]
+  },
+  "88": {
+    "ok": true,
+    "deploy": {
+      "app": "88",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "kana_normalize.js",
+      "order_search_config.js",
+      "order_search_engine.js",
+      "order_search_desktop.js"
+    ],
+    "css": [
+      "app_nav_banner.css",
+      "order_search.css"
+    ]
+  }
+}
