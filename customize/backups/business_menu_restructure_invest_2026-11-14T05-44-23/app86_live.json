@@ -1,0 +1,404 @@
+{
+  "appId": 86,
+  "floorVersion": "1.6.1",
+  "storeGroups": [
+    {
+      "id": "reception",
+      "label": "受付・顧客",
+      "links": [
+        {
+          "appKey": "personalCustomer",
+          "label": "個人顧客管理"
+        },
+        {
+          "appKey": "order",
+          "label": "受注登録",
+          "featured": true
+        },
+        {
+          "appKey": "orderSearch",
+          "label": "受注検索",
+          "featured": true
+        }
+      ]
+    },
+    {
+      "id": "work",
+      "label": "作業・移動",
+      "links": [
+        {
+          "appKey": "locationInbound",
+          "label": "保管場所移動",
+          "note": "App34"
+        },
+        {
+          "appKey": "internalWork",
+          "label": "社内作業登録",
+          "note": "作業＋場所可"
+        },
+        {
+          "appKey": "completeRegister",
+          "label": "仕上げ完了",
+          "note": "App30"
+        }
+      ]
+    },
+    {
+      "id": "delivery_accounting",
+      "label": "納品・会計",
+      "links": [
+        {
+          "appKey": "deliverySlip",
+          "label": "納品書作成"
+        },
+        {
+          "appKey": "storeDeadline",
+          "label": "店舗納期カレンダー",
+          "note": "引き取り",
+          "featured": true
+        },
+        {
+          "appKey": "storePayment",
+          "label": "入金登録",
+          "featured": true
+        }
+      ]
+    }
+  ],
+  "appMap": {
+    "factoryPortal": 86,
+    "storePortal": 87,
+    "locationInbound": 34,
+    "internalWork": 84,
+    "completeRegister": 30,
+    "personalCustomer": 96,
+    "order": 16,
+    "orderSearch": 88,
+    "deliverySlip": 19,
+    "storeDeadline": 92,
+    "storePayment": 97
+  },
+  "uiTitle": "kintone",
+  "domLinks": [
+    {
+      "text": "大原健嗣",
+      "href": "/k/#/people/user/info%40ayanas.co.jp"
+    },
+    {
+      "text": "工場作業状況ポータル",
+      "href": "/k/86/"
+    },
+    {
+      "text": "New record",
+      "href": "/k/86/edit"
+    },
+    {
+      "text": "App settings",
+      "href": "/k/admin/app/flow?app=86#section=form"
+    },
+    {
+      "text": "AYANAS 業務メニュー",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/"
+    },
+    {
+      "text": "工場業務メニュー",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+    },
+    {
+      "text": "店舗業務メニュー",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+    },
+    {
+      "text": "ポータルTOP",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/#/portal"
+    },
+    {
+      "text": "保管場所移動",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/34/"
+    },
+    {
+      "text": "社内作業登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/84/"
+    },
+    {
+      "text": "検品・仕上げ完了",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/30/"
+    },
+    {
+      "text": "091826541",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2541"
+    },
+    {
+      "text": "091826542",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2542"
+    },
+    {
+      "text": "091026377",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2377"
+    },
+    {
+      "text": "100326815",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2815"
+    },
+    {
+      "text": "100326816",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2816"
+    },
+    {
+      "text": "100726921",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2921"
+    },
+    {
+      "text": "100726922",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2922"
+    },
+    {
+      "text": "102826326",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3326"
+    },
+    {
+      "text": "100826932",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2932"
+    },
+    {
+      "text": "100826933",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2933"
+    },
+    {
+      "text": "100826934",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2934"
+    },
+    {
+      "text": "100826935",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2935"
+    },
+    {
+      "text": "100826936",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2936"
+    },
+    {
+      "text": "100326804",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2804"
+    },
+    {
+      "text": "100326805",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2805"
+    },
+    {
+      "text": "100826951",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2951"
+    },
+    {
+      "text": "101526072",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3072"
+    },
+    {
+      "text": "102226194",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3194"
+    },
+    {
+      "text": "102226195",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3195"
+    },
+    {
+      "text": "102726273",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3273"
+    },
+    {
+      "text": "102726274",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3274"
+    },
+    {
+      "text": "102726275",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3275"
+    },
+    {
+      "text": "102726281",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3281"
+    },
+    {
+      "text": "102226183",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3183"
+    },
+    {
+      "text": "102226184",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3184"
+    },
+    {
+      "text": "102226185",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3185"
+    },
+    {
+      "text": "102226186",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3186"
+    },
+    {
+      "text": "102726276",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3276"
+    },
+    {
+      "text": "102726277",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3277"
+    },
+    {
+      "text": "102726278",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3278"
+    },
+    {
+      "text": "111226683",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3683"
+    },
+    {
+      "text": "111326699",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3699"
+    },
+    {
+      "text": "110726576",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3576"
+    },
+    {
+      "text": "110726577",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3577"
+    },
+    {
+      "text": "092526587",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2587"
+    },
+    {
+      "text": "092526588",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2588"
+    },
+    {
+      "text": "092526589",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2589"
+    },
+    {
+      "text": "092626616",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2616"
+    },
+    {
+      "text": "100326795",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2795"
+    },
+    {
+      "text": "100326796",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2796"
+    },
+    {
+      "text": "101526036",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3036"
+    },
+    {
+      "text": "092826643",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2643"
+    },
+    {
+      "text": "092826644",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2644"
+    },
+    {
+      "text": "092826645",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2645"
+    },
+    {
+      "text": "110826587",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3587"
+    },
+    {
+      "text": "110826588",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3588"
+    },
+    {
+      "text": "110826589",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3589"
+    },
+    {
+      "text": "110826590",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3590"
+    },
+    {
+      "text": "111326696",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3696"
+    },
+    {
+      "text": "102226179",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3179"
+    },
+    {
+      "text": "102226181",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3181"
+    },
+    {
+      "text": "102726282",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3282"
+    },
+    {
+      "text": "110726572",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3572"
+    },
+    {
+      "text": "110726573",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3573"
+    },
+    {
+      "text": "110726574",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3574"
+    },
+    {
+      "text": "110726575",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3575"
+    },
+    {
+      "text": "110726581",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3581"
+    },
+    {
+      "text": "110726582",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3582"
+    },
+    {
+      "text": "110726583",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3583"
+    },
+    {
+      "text": "111226680",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3680"
+    },
+    {
+      "text": "111226693",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3693"
+    },
+    {
+      "text": "111226694",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3694"
+    },
+    {
+      "text": "111226695",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3695"
+    },
+    {
+      "text": "110926596",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3596"
+    },
+    {
+      "text": "110926597",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3597"
+    },
+    {
+      "text": "110926599",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3599"
+    },
+    {
+      "text": "110926600",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3600"
+    },
+    {
+      "text": "103026347",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3347"
+    },
+    {
+      "text": "103026348",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3348"
+    }
+  ]
+}

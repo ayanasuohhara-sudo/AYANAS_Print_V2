@@ -1,0 +1,131 @@
+{
+  "version": "1.1.1",
+  "categories": [
+    {
+      "id": "order",
+      "no": "01",
+      "label": "受注登録・検索",
+      "mode": "menu",
+      "cat": "order"
+    },
+    {
+      "id": "logistics",
+      "no": "02",
+      "label": "出庫・入庫",
+      "mode": "menu",
+      "cat": "logistics"
+    },
+    {
+      "id": "billing",
+      "no": "03",
+      "label": "納品書・請求書・入金",
+      "mode": "menu",
+      "cat": "billing"
+    },
+    {
+      "id": "work",
+      "no": "04",
+      "label": "作業進捗・完了登録",
+      "mode": "menu",
+      "cat": "work"
+    },
+    {
+      "id": "deadline",
+      "no": "05",
+      "label": "納期・作業負荷状況",
+      "mode": "direct",
+      "appId": 89
+    },
+    {
+      "id": "customer_schedule",
+      "no": "06",
+      "label": "納期・納品スケジュール管理",
+      "mode": "direct",
+      "appId": 94
+    },
+    {
+      "id": "analytics",
+      "no": "07",
+      "label": "各種データ・集計",
+      "mode": "menu",
+      "cat": "analytics"
+    },
+    {
+      "id": "masters",
+      "no": "08",
+      "label": "マスタ登録",
+      "mode": "menu",
+      "cat": "masters"
+    },
+    {
+      "id": "factory_portal",
+      "no": "09",
+      "label": "工場ポータル（業務）",
+      "mode": "direct",
+      "appId": 90,
+      "hub": true
+    },
+    {
+      "id": "store_portal",
+      "no": "10",
+      "label": "店舗ポータル（業務）",
+      "mode": "direct",
+      "appId": 87,
+      "hub": true
+    }
+  ],
+  "title": "AYANAS 業務メニュー",
+  "rendered": [
+    {
+      "text": "01受注登録・検索",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=order",
+      "dataId": ""
+    },
+    {
+      "text": "02出庫・入庫",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=logistics",
+      "dataId": ""
+    },
+    {
+      "text": "03納品書・請求書・入金",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=billing",
+      "dataId": ""
+    },
+    {
+      "text": "04作業進捗・完了登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=work",
+      "dataId": ""
+    },
+    {
+      "text": "05納期・作業負荷状況",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/89/",
+      "dataId": ""
+    },
+    {
+      "text": "06納期・納品スケジュール管理",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/94/",
+      "dataId": ""
+    },
+    {
+      "text": "07各種データ・集計",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=analytics",
+      "dataId": ""
+    },
+    {
+      "text": "08マスタ登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=masters",
+      "dataId": ""
+    },
+    {
+      "text": "09工場ポータル（業務）",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/90/",
+      "dataId": ""
+    },
+    {
+      "text": "10店舗ポータル（業務）",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/87/",
+      "dataId": ""
+    }
+  ],
+  "hasRoot": true
+}
