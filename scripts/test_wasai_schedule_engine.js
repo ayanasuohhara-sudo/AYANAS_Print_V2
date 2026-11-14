@@ -81,21 +81,28 @@ const master = (code, name, status, field, capacity) => {
 };
 
 const run = async () => {
-  assert('VERSION', C.VERSION === '1.2.1');
+  assert('VERSION', C.VERSION === '1.3.0');
   assert('HOST_APP_ID は本番ホスト', C.HOST_APP_ID === 98);
-  // PLAN_APP_ID は本番デプロイ後に数値が入る。未設定でもエンジンは動作する。
-  assert('PLAN_APP_ID は数値または null', C.PLAN_APP_ID === null || typeof C.PLAN_APP_ID === 'number');
+  assert('PLAN_APP_ID は本番予定 App', C.PLAN_APP_ID === 99);
   assert('参照 App', C.WASAI_MASTER_APP_ID === 73
     && C.WASAI_OUTBOUND_APP_ID === 74
     && C.INBOUND_APP_ID === 78);
   assert('monthly_capacity フィールドコード', C.FIELDS.monthlyCapacity === 'monthly_capacity');
+  assert('DISPLAY_KINDS は納期負荷と同型の4種',
+    C.DISPLAY_KINDS.length === 4
+    && C.DISPLAY_KINDS[0].key === 'outbound'
+    && C.DISPLAY_KINDS[1].key === 'planned');
+  assert('タイトルは入庫予定', C.MESSAGES.title.indexOf('入庫予定') !== -1);
 
   assert('desktop は予定 App 以外へ書込コードを持たない固定IDなし',
     !/app:\s*74/.test(desktop) || desktop.indexOf('WASAI_OUTBOUND') !== -1);
   assert('desktop は records GET を使う', desktop.indexOf('/k/v1/records.json') !== -1);
   assert('desktop の POST/PUT は record.json（予定用）',
     desktop.indexOf('/k/v1/record.json') !== -1);
+  assert('desktop は納期負荷型セル(cayan-ws-count)', desktop.indexOf('cayan-ws-count') !== -1);
+  assert('desktop は detailGroups を使う', desktop.indexOf('detailGroups') !== -1);
   assert('css にカレンダー根がある', css.indexOf('.cayan-ws-root') !== -1);
+  assert('css は納期負荷と同型の count 行', css.indexOf('.cayan-ws-count') !== -1);
 
   const bounds = E.monthBounds(2026, 11);
   assert('monthBounds', bounds.start === '2026-11-01' && bounds.end === '2026-11-30');
@@ -254,9 +261,18 @@ const run = async () => {
 
   const day12 = E.daySummary(model, '2026-11-12');
   assert('11/12 に2件', day12.rows.length === 2 && day12.totalPieces === 2);
+  assert('daySummary.counts 返却済', day12.counts.returned === 2);
 
   const day12OpenOnly = E.daySummary(model, '2026-11-12', { includeReturned: false });
   assert('返却済非表示で0', day12OpenOnly.rows.length === 0);
+
+  const lines12 = E.visibleCountLines(day12, { includeReturned: true, includePlanned: true });
+  assert('visibleCountLines は返却済のみ',
+    lines12.length === 1 && lines12[0].key === 'returned' && lines12[0].count === 2);
+  const groups12 = E.detailGroups(model, '2026-11-12', { includeReturned: true, includePlanned: true });
+  assert('detailGroups は返却済グループ',
+    groups12.length === 1 && groups12[0].key === 'returned' && groups12[0].count === 2);
+  assert('detailCountText', E.detailCountText(2) === '入庫予定明細 2件');
 
   const cross = E.aggregateMonth(
     [outbound({
@@ -276,10 +292,11 @@ const run = async () => {
     && cross.totals.outboundPieces === 2);
 
   const query = E.buildOutboundMonthQuery('002', 2026, 11);
-  assert('出庫クエリに和裁士と出庫確定',
+  assert('出庫クエリは入庫予定日優先',
     query.indexOf('wasai_code = "002"') !== -1
     && query.indexOf('出庫確定') !== -1
-    && query.indexOf('return_date') !== -1
+    && query.indexOf('return_date >= "2026-11-01"') !== -1
+    && query.indexOf('return_date = ""') !== -1
     && query.indexOf('日ship_date') !== -1);
 
   // fetchAllPages pagination

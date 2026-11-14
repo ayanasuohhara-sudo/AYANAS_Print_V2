@@ -1,0 +1,13 @@
+{
+  "hostId": 98,
+  "version": "1.3.0",
+  "planApp": 99,
+  "title": "和裁士入庫予定カレンダー",
+  "leadHasNyuko": true,
+  "uiMounted": true,
+  "cellCount": 30,
+  "countLineCount": 0,
+  "detailOk": false,
+  "groupTitle": "",
+  "chipsGone": true
+}

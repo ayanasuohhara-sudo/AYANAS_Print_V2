@@ -2,9 +2,9 @@
   'use strict';
 
   /**
-   * 和裁士別仕事予定カレンダー — 一覧 UI（第3段階）
-   * ホスト App の index をカレンダーに置換。App73/74/78 は GET のみ。
-   * 予定 App（PLAN_APP_ID）があるときのみ予約の読取・登録・取消を行う。
+   * 和裁士入庫予定カレンダー — 一覧 UI（納期負荷カレンダーと同仕様）
+   * 軸: App74 入庫予定日（return_date）。セルは状態別点数、日付クリックで明細。
+   * App73/74/78 は GET のみ。予定 App があるとき予約の登録・変更・取消可。
    */
 
   const ROOT_ID = 'ayanas-wasai-schedule-root';
@@ -131,170 +131,124 @@
     masters.find((row) => row.wasaiCode === selectedWasaiCode) || null
   );
 
-  const cellSummaryHtml = (date) => {
-    if (!model) {
-      return '';
+  const viewOptions = () => ({
+    includeReturned: showReturned,
+    includePlanned: showPlanned,
+  });
+
+  const cellHtml = (cell) => {
+    if (!cell) {
+      return '<div class="cayan-ws-cell is-blank"></div>';
     }
-    const summary = Engine.daySummary(model, date, {
-      includeReturned: showReturned,
-      includePlanned: showPlanned,
-    });
-    if (summary.totalPieces <= 0) {
-      return '';
-    }
-    const parts = [];
-    if (summary.outboundPieces > 0) {
-      parts.push(
-        '<span class="cayan-ws-chip is-outbound">'
-        + escapeHtml(String(summary.outboundPieces))
-        + '枚出庫中</span>'
-      );
-    }
-    if (showPlanned && summary.plannedPieces > 0) {
-      parts.push(
-        '<span class="cayan-ws-chip is-planned">'
-        + escapeHtml(String(summary.plannedPieces))
-        + '枚予約</span>'
-      );
-    }
-    if (showReturned && summary.returnedPieces > 0) {
-      parts.push(
-        '<span class="cayan-ws-chip is-returned">'
-        + escapeHtml(String(summary.returnedPieces))
-        + '枚返却済</span>'
-      );
-    }
-    if (summary.reworkPieces > 0) {
-      parts.push(
-        '<span class="cayan-ws-chip is-rework">'
-        + escapeHtml(String(summary.reworkPieces))
-        + '枚再加工</span>'
-      );
-    }
-    return '<div class="cayan-ws-chips">' + parts.join('') + '</div>';
+    const summary = model
+      ? Engine.daySummary(model, cell.ymd, viewOptions())
+      : { counts: {}, totalPieces: 0 };
+    const lines = Engine.visibleCountLines(summary, viewOptions());
+    const weekend = cell.isSunday ? ' is-sun' : (cell.isSaturday ? ' is-sat' : '');
+    const today = cell.ymd === Engine.todayParts(new Date()).ymd ? ' is-today' : '';
+    const selected = cell.ymd === selectedYmd ? ' is-selected' : '';
+    const lineHtml = lines.map((line) => (
+      '<span class="cayan-ws-count"><span>' + escapeHtml(line.label) + '</span>'
+      + '<span>' + escapeHtml(String(line.count)) + '</span></span>'
+    )).join('');
+    const aria = lines.map((line) => line.label + line.count).join(' ');
+
+    return '<button type="button" class="cayan-ws-cell' + weekend + today + selected + '"'
+      + ' data-ymd="' + escapeHtml(cell.ymd) + '"'
+      + ' aria-pressed="' + (cell.ymd === selectedYmd ? 'true' : 'false') + '"'
+      + ' aria-label="' + escapeHtml(cell.day + '日 ' + aria) + '">'
+      + '<span class="cayan-ws-day">' + escapeHtml(String(cell.day)) + '</span>'
+      + lineHtml
+      + '</button>';
   };
 
   const calendarHtml = () => {
     const weeks = Engine.buildCalendarWeeks(viewYear, viewMonth);
-    const today = Engine.todayParts(new Date()).ymd;
-    const head = cfg().WEEKDAY_LABELS
-      .map((label) => '<div class="cayan-ws-dow">' + escapeHtml(label) + '</div>')
-      .join('');
-
+    const headers = cfg().WEEKDAY_LABELS.map((label, index) => {
+      const weekend = index === 6 ? ' is-sun' : (index === 5 ? ' is-sat' : '');
+      return '<div class="cayan-ws-dow' + weekend + '">' + escapeHtml(label) + '</div>';
+    }).join('');
     const body = weeks.map((week) => (
-      '<div class="cayan-ws-week">'
-      + week.map((cell) => {
-        if (!cell) {
-          return '<div class="cayan-ws-cell is-blank"></div>';
-        }
-        const classes = ['cayan-ws-cell'];
-        if (cell.isSaturday) {
-          classes.push('is-sat');
-        }
-        if (cell.isSunday) {
-          classes.push('is-sun');
-        }
-        if (cell.ymd === today) {
-          classes.push('is-today');
-        }
-        if (cell.ymd === selectedYmd) {
-          classes.push('is-selected');
-        }
-        return '<button type="button" class="' + classes.join(' ') + '"'
-          + ' data-ymd="' + escapeHtml(cell.ymd) + '">'
-          + '<div class="cayan-ws-day">' + escapeHtml(String(cell.day)) + '</div>'
-          + cellSummaryHtml(cell.ymd)
-          + '</button>';
-      }).join('')
-      + '</div>'
+      '<div class="cayan-ws-week">' + week.map(cellHtml).join('') + '</div>'
     )).join('');
-
-    return '<div class="cayan-ws-grid">'
-      + '<div class="cayan-ws-week is-head">' + head + '</div>'
-      + body
-      + '</div>';
+    return '<div class="cayan-ws-grid">' + headers + '</div>' + body;
   };
 
   const detailRowHtml = (row) => {
-    const links = [];
-    if (row.source === 'outbound' && row.outboundRecordId) {
-      links.push(
-        '<a class="cayan-ws-link" href="'
-        + escapeHtml(Engine.outboundDetailPath(row.outboundRecordId))
-        + '" target="_blank" rel="noopener">出庫</a>'
-      );
-    }
-    if (row.orderRecordId) {
-      links.push(
-        '<a class="cayan-ws-link" href="'
-        + escapeHtml(Engine.orderDetailPath(row.orderRecordId))
-        + '" target="_blank" rel="noopener">受注</a>'
-      );
-    }
-    if (row.source === 'plan' && row.planRecordId && Engine.planDetailPath(row.planRecordId)) {
-      links.push(
-        '<a class="cayan-ws-link" href="'
-        + escapeHtml(Engine.planDetailPath(row.planRecordId))
-        + '" target="_blank" rel="noopener">予定</a>'
-      );
-    }
+    const manageCell = row.source === 'outbound' && row.outboundRecordId
+      ? '<a class="cayan-ws-link" href="'
+        + escapeHtml(location.origin + Engine.outboundDetailPath(row.outboundRecordId))
+        + '" target="_blank" rel="noopener noreferrer">'
+        + escapeHtml(row.manageNo || '—')
+        + '</a>'
+      : (row.source === 'plan' && row.planRecordId && Engine.planDetailPath(row.planRecordId)
+        ? '<a class="cayan-ws-link" href="'
+          + escapeHtml(location.origin + Engine.planDetailPath(row.planRecordId))
+          + '" target="_blank" rel="noopener noreferrer">'
+          + escapeHtml(row.manageNo || '（枠）')
+          + '</a>'
+        : escapeHtml(row.manageNo || '—'));
+
+    const actions = [];
     if (row.source === 'plan' && row.planRecordId && planAppId()) {
-      links.push(
+      actions.push(
         '<button type="button" class="cayan-ws-linkbtn" data-edit-plan="'
         + escapeHtml(row.planRecordId) + '">変更</button>'
       );
-      links.push(
+      actions.push(
         '<button type="button" class="cayan-ws-linkbtn" data-cancel-plan="'
         + escapeHtml(row.planRecordId) + '">取消</button>'
       );
     }
 
-    return '<tr class="cayan-ws-row is-' + escapeHtml(row.kind) + '">'
-      + '<td>' + escapeHtml(row.manageNo || '—') + '</td>'
-      + '<td>' + escapeHtml(row.itemSummary) + '</td>'
-      + '<td class="cayan-ws-num">' + escapeHtml(String(row.pieceCount)) + '</td>'
-      + '<td>' + escapeHtml(row.kindLabel) + '</td>'
+    return '<tr>'
+      + '<td class="cayan-ws-key">' + manageCell + '</td>'
+      + '<td class="cayan-ws-key">' + escapeHtml(row.itemSummary || '—') + '</td>'
+      + '<td>' + escapeHtml(String(row.pieceCount)) + '</td>'
+      + '<td class="cayan-ws-key">' + escapeHtml(row.kindLabel) + '</td>'
       + '<td>' + escapeHtml(row.shipDate || '—') + '</td>'
       + '<td>' + escapeHtml(row.returnDate || '—') + '</td>'
       + '<td>' + escapeHtml(row.inboundDate || '—') + '</td>'
-      + '<td>' + links.join(' · ') + '</td>'
+      + '<td>' + (actions.join(' · ') || '—') + '</td>'
       + '</tr>';
   };
+
+  const detailGroupHtml = (group) => (
+    '<section class="cayan-ws-group">'
+    + '<h3 class="cayan-ws-group-title">【'
+    + escapeHtml(group.label)
+    + '　'
+    + escapeHtml(String(group.count))
+    + '枚】</h3>'
+    + '<div class="cayan-ws-table-wrap"><table class="cayan-ws-table"><thead><tr>'
+    + '<th>管理番号</th><th>品目</th><th>枚数</th><th>状態</th>'
+    + '<th>出庫日</th><th>入庫予定日</th><th>入庫日</th><th>操作</th>'
+    + '</tr></thead><tbody>'
+    + group.rows.map(detailRowHtml).join('')
+    + '</tbody></table></div>'
+    + '</section>'
+  );
 
   const detailHtml = () => {
     if (!selectedWasaiCode) {
       return '<p class="cayan-ws-empty">' + escapeHtml(cfg().MESSAGES.selectWasai) + '</p>';
     }
     if (!selectedYmd) {
-      return '<p class="cayan-ws-empty">日付を選択すると明細を表示します。</p>';
+      return '';
     }
-    const summary = Engine.daySummary(model, selectedYmd, {
-      includeReturned: showReturned,
-      includePlanned: showPlanned,
-    });
-    const heading = '<h3 class="cayan-ws-detail-title">'
+    const groups = Engine.detailGroups(model, selectedYmd, viewOptions());
+    const totalRows = Engine.dayRows(model, selectedYmd, viewOptions()).length;
+    const heading = '<h2 class="cayan-ws-detail-title">'
       + escapeHtml(Engine.formatLongDate(selectedYmd))
-      + ' · '
-      + escapeHtml(cfg().MESSAGES.detailPrefix)
-      + escapeHtml(String(summary.rows.length))
-      + escapeHtml(cfg().MESSAGES.detailSuffix)
-      + '（'
-      + escapeHtml(String(summary.totalPieces))
-      + escapeHtml(cfg().MESSAGES.pieceSuffix)
-      + '）</h3>';
+      + '</h2>'
+      + '<p class="cayan-ws-detail-count">'
+      + escapeHtml(Engine.detailCountText(totalRows))
+      + '</p>';
 
-    if (summary.rows.length === 0) {
+    if (!groups.length) {
       return heading + '<p class="cayan-ws-empty">' + escapeHtml(cfg().MESSAGES.emptyDay) + '</p>';
     }
-
-    return heading
-      + '<div class="cayan-ws-table-wrap"><table class="cayan-ws-table">'
-      + '<thead><tr>'
-      + '<th>管理番号</th><th>品目</th><th>枚数</th><th>状態</th>'
-      + '<th>出庫日</th><th>返却予定日</th><th>入庫日</th><th>リンク</th>'
-      + '</tr></thead><tbody>'
-      + summary.rows.map(detailRowHtml).join('')
-      + '</tbody></table></div>';
+    return heading + groups.map(detailGroupHtml).join('');
   };
 
   const capacityHtml = () => {
@@ -573,8 +527,8 @@
 
   const shellHtml = () => (
     '<header class="cayan-ws-header">'
-    + '<h1 class="cayan-ws-title">和裁士別仕事予定カレンダー</h1>'
-    + '<p class="cayan-ws-lead">出庫済みの仕事を返却予定日で確認します（App74 正本・App78 で返却済を区別）。</p>'
+    + '<h1 class="cayan-ws-title">' + escapeHtml(cfg().MESSAGES.title) + '</h1>'
+    + '<p class="cayan-ws-lead">' + escapeHtml(cfg().MESSAGES.lead) + '</p>'
     + '</header>'
     + '<div class="cayan-ws-toolbar">'
     + '<label class="cayan-ws-label" for="cayan-ws-wasai">和裁士</label>'
@@ -586,13 +540,13 @@
     + '<input type="checkbox" id="cayan-ws-show-planned" checked />'
     + '予約を表示</label>'
     + '</div>'
+    + '<div id="cayan-ws-totals" class="cayan-ws-totals-wrap"></div>'
     + '<div class="cayan-ws-nav">'
     + '<button type="button" class="cayan-ws-btn" id="cayan-ws-prev">＜ 前月</button>'
     + '<h2 class="cayan-ws-month" id="cayan-ws-title"></h2>'
     + '<button type="button" class="cayan-ws-btn" id="cayan-ws-next">翌月 ＞</button>'
     + '<button type="button" class="cayan-ws-btn is-primary" id="cayan-ws-today">今日</button>'
     + '</div>'
-    + '<div id="cayan-ws-totals" class="cayan-ws-totals-wrap"></div>'
     + '<p class="cayan-ws-message" id="cayan-ws-message" hidden></p>'
     + '<div class="cayan-ws-cal-wrap"><div id="cayan-ws-cal"></div></div>'
     + '<section class="cayan-ws-detail" id="cayan-ws-detail"></section>'

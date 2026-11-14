@@ -212,8 +212,8 @@
   };
 
   /**
-   * 表示月に載りうる出庫を広く取る。
-   * return_date または 日ship_date が月内（どちらか一方で足りる）。
+   * 入庫予定日（return_date）が月内の出庫を取得。
+   * return_date 空の旧データのみ出庫日でフォールバック取得。
    */
   const buildOutboundMonthQuery = (wasaiCode, year, month) => {
     const bounds = monthBounds(year, month);
@@ -224,7 +224,8 @@
     return F.outboundStatus + ' in (' + quote(cfg().OUTBOUND_STATUS_CONFIRMED) + ')'
       + ' and ' + F.wasaiCode + ' = ' + code
       + ' and ((' + F.returnDate + ' >= ' + start + ' and ' + F.returnDate + ' <= ' + end + ')'
-      + ' or (' + F.shipDate + ' >= ' + start + ' and ' + F.shipDate + ' <= ' + end + '))'
+      + ' or (' + F.returnDate + ' = "" and ' + F.shipDate + ' >= ' + start
+      + ' and ' + F.shipDate + ' <= ' + end + '))'
       + ' order by ' + F.returnDate + ' asc, ' + F.shipDate + ' asc';
   };
 
@@ -792,8 +793,63 @@
       reworkPieces: reworkPieces,
       plannedPieces: plannedPieces,
       totalPieces: outboundPieces + returnedPieces + reworkPieces + plannedPieces,
+      counts: {
+        outbound: outboundPieces,
+        planned: plannedPieces,
+        returned: returnedPieces,
+        rework: reworkPieces,
+      },
     };
   };
+
+  /** 納期負荷カレンダーの visibleCountLines と同型 */
+  const visibleCountLines = (summary, options) => {
+    const opts = options || {};
+    const counts = summary && summary.counts ? summary.counts : summary;
+    return (cfg().DISPLAY_KINDS || [])
+      .filter((kind) => {
+        if (kind.key === 'returned' && opts.includeReturned === false) {
+          return false;
+        }
+        if (kind.key === 'planned' && opts.includePlanned === false) {
+          return false;
+        }
+        return Number(counts?.[kind.key] || 0) > 0;
+      })
+      .map((kind) => ({
+        key: kind.key,
+        label: kind.shortLabel,
+        count: Number(counts[kind.key] || 0),
+      }));
+  };
+
+  /** 納期負荷カレンダーの detailGroups と同型（状態ごと） */
+  const detailGroups = (model, date, options) => {
+    const opts = options || {};
+    const summary = daySummary(model, date, opts);
+    return (cfg().DISPLAY_KINDS || [])
+      .filter((kind) => {
+        if (kind.key === 'returned' && opts.includeReturned === false) {
+          return false;
+        }
+        if (kind.key === 'planned' && opts.includePlanned === false) {
+          return false;
+        }
+        return Number(summary.counts[kind.key] || 0) > 0;
+      })
+      .map((kind) => ({
+        key: kind.key,
+        label: kind.label,
+        count: summary.rows
+          .filter((row) => row.kind === kind.key)
+          .reduce((sum, row) => sum + Number(row.pieceCount || 0), 0),
+        rows: summary.rows.filter((row) => row.kind === kind.key),
+      }));
+  };
+
+  const detailCountText = (count) => (
+    cfg().MESSAGES.detailPrefix + count + cfg().MESSAGES.detailSuffix
+  );
 
   const formatLongDate = (date) => {
     const parts = String(date ?? '').split('-');
@@ -899,6 +955,9 @@
     aggregateMonth,
     dayRows,
     daySummary,
+    visibleCountLines,
+    detailGroups,
+    detailCountText,
     formatLongDate,
     outboundDetailPath,
     orderDetailPath,

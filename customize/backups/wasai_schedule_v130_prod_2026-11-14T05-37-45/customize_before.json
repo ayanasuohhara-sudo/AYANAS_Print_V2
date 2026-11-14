@@ -1,0 +1,50 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114052857F235B4B7B4414CA585E98E134B376D20028",
+          "name": "wasai_schedule_config.js",
+          "contentType": "text/javascript",
+          "size": "4465"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114052857EA5DEC1A695C4EC6BDB8F779048AD86E155",
+          "name": "wasai_schedule_engine.js",
+          "contentType": "text/javascript",
+          "size": "29863"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611140528578D5D4FBC38964E68A14965C1978E04AF326",
+          "name": "wasai_schedule_desktop.js",
+          "contentType": "text/javascript",
+          "size": "28119"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026111405285713F8FD4871D44929BFA24C49FFB0C64A170",
+          "name": "wasai_schedule.css",
+          "contentType": "text/css",
+          "size": "7052"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "4"
+}

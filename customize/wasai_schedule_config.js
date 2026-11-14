@@ -2,12 +2,12 @@
   'use strict';
 
   /**
-   * 和裁士別仕事予定カレンダー — 定数（第3段階）
-   * App73/74/78 は参照のみ。出庫・入庫・受注の処理は変更しない。
-   * PLAN_APP_ID は予定管理 App 作成後に設定する。
+   * 和裁士入庫予定カレンダー — 定数（v1.3.0 / 納期負荷カレンダー同仕様）
+   * 軸: App74 入庫予定日（return_date）。App73/74/78 は参照のみ。
+   * PLAN_APP_ID=99（予定管理）。出庫・入庫・受注の処理は変更しない。
    */
 
-  const WASAI_SCHEDULE_VERSION = '1.2.1';
+  const WASAI_SCHEDULE_VERSION = '1.3.0';
 
   const CAYANAS_WASAI_SCHEDULE = {
     VERSION: WASAI_SCHEDULE_VERSION,
@@ -57,12 +57,24 @@
       rework: '再加工',
       planned: '予約',
     },
+    /**
+     * セル表示順（納期負荷カレンダーの CATEGORIES と同型）。
+     * 件数0の行は出さない。
+     */
+    DISPLAY_KINDS: [
+      { key: 'outbound', label: '出庫中', shortLabel: '出庫中' },
+      { key: 'planned', label: '予約', shortLabel: '予約' },
+      { key: 'returned', label: '返却済', shortLabel: '返却済' },
+      { key: 'rework', label: '再加工', shortLabel: '再加工' },
+    ],
     MESSAGES: {
+      title: '和裁士入庫予定カレンダー',
+      lead: '和裁士ごとの入庫予定日に、出庫中／予約／返却済の点数を確認します（納期負荷カレンダーと同じ見方）。',
       loading: '読み込み中…',
       failed: '読み込みに失敗しました。再度お試しください。',
       selectWasai: '和裁士を選択してください。',
       emptyMaster: '有効な和裁士がマスタにありません。',
-      emptyDay: 'この日の仕事はありません。',
+      emptyDay: 'この入庫予定日の明細はありません。',
       truncated: '表示月の出庫が取得上限を超えたため、一部だけ表示しています。',
       hostUnset: 'ホスト App ID が未設定です。デプロイ手順を確認してください。',
       planAppUnset: '予定管理アプリ未設定のため、予約の登録はまだできません。',
@@ -72,7 +84,7 @@
       planCancelled: '予定を取消しました（履歴として残します）。',
       planEditMode: '予約を変更中',
       planCreateMode: '未出庫予定を登録',
-      detailPrefix: '明細 ',
+      detailPrefix: '入庫予定明細 ',
       detailSuffix: '件',
       pieceSuffix: '枚',
       capacityLabel: '月間処理可能',
