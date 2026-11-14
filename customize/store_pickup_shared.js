@@ -4,13 +4,15 @@
   /**
    * 店舗引き取り共通（UI / kintone 非依存）
    * - 引き取り待ち遷移判定
-   * - 引き取り完了ゲート（A550 / 完了 / 店舗 / 引き取り待ち(+移行互換) / delivery_no / 入金済）
+   * - 引き取り完了ゲート（A550 / 完了 / 店舗 / 引き取り待ち(+移行互換) / delivery_no / App16入金済み）
    * - PUT は delivery_status=納品済 のみ
+   * - 入金判定の正本は App16 store_payment_status（一部入金≠入金済み）
    */
 
   const STORE_CUSTOMER_CODE = 'A550';
   const PROCESS_DONE = '完了';
   const LOCATION_STORE = '店舗';
+  const PICKUP_VERSION = '1.1.0';
 
   const DELIVERY = {
     none: '未納品',
@@ -164,6 +166,7 @@
       deliveryNo: 'delivery_no',
       personalCustomerId: 'personal_customer_id',
       manageNo: 'manage_no',
+      storePaymentStatus: 'store_payment_status',
     };
 
     const customerCode = readValue(orderRecord, fieldMap.customerCode);
@@ -172,6 +175,9 @@
     const deliveryStatus = readValue(orderRecord, fieldMap.deliveryStatus);
     const deliveryNo = readValue(orderRecord, fieldMap.deliveryNo);
     const personalCustomerId = readValue(orderRecord, fieldMap.personalCustomerId);
+    const storePaymentStatus = opts.paymentStatus != null && opts.paymentStatus !== ''
+      ? norm(opts.paymentStatus)
+      : readValue(orderRecord, fieldMap.storePaymentStatus);
 
     if (deliveryStatus === DELIVERY.done) {
       return { ok: true, alreadyDone: true, code: 'already_done' };
@@ -236,29 +242,38 @@
     }
 
     if (opts.requirePaid !== false) {
-      const balance = opts.balanceInfo;
-      if (!balance) {
-        return {
-          ok: false,
-          code: 'no_balance',
-          reason: '入金状況を確認できません。',
-        };
-      }
       const unpaidApproved = !!opts.unpaidHandoverApproved;
-      if (balance.balance > 0.0001 && !unpaidApproved) {
-        const state = balance.state || '未入金';
-        return {
-          ok: false,
-          code: 'unpaid',
-          reason: state === '一部入金'
-            ? '一部入金のため引き取りできません。App97で残額を入金してください。'
-            : '未入金のため引き取りできません。App97で入金してください。',
-          balance: balance,
-        };
+      const Status = typeof window !== 'undefined' ? window.CAYANAS_StorePaymentStatus : null;
+      if (Status && typeof Status.evaluatePaymentForPickup === 'function') {
+        const pay = Status.evaluatePaymentForPickup(storePaymentStatus, unpaidApproved);
+        if (!pay.ok) {
+          return {
+            ok: false,
+            code: pay.code || 'unpaid',
+            reason: pay.reason,
+            paymentStatus: pay.status,
+            balance: opts.balanceInfo || null,
+          };
+        }
+      } else {
+        // フォールバック（status モジュール未読込時）: 入金済み / 入金済のみ通過
+        const paid = storePaymentStatus === '入金済み' || storePaymentStatus === '入金済';
+        if (!paid && !unpaidApproved) {
+          const state = storePaymentStatus || '未入金';
+          return {
+            ok: false,
+            code: 'unpaid',
+            reason: state === '一部入金'
+              ? '一部入金のため納品・引き取りできません。店舗受注一覧で「入金済み」に更新してください。'
+              : '未入金のため納品・引き取りできません。店舗受注一覧で「入金済み」に更新してください。',
+            paymentStatus: state,
+            balance: opts.balanceInfo || null,
+          };
+        }
       }
     }
 
-    return { ok: true };
+    return { ok: true, paymentStatus: storePaymentStatus || '未入金' };
   };
 
   /**
@@ -296,7 +311,7 @@
   };
 
   window.CAYANAS_StorePickup = {
-    VERSION: '1.0.0',
+    VERSION: PICKUP_VERSION,
     STORE_CUSTOMER_CODE: STORE_CUSTOMER_CODE,
     PROCESS_DONE: PROCESS_DONE,
     LOCATION_STORE: LOCATION_STORE,

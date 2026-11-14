@@ -91,7 +91,7 @@
     }
 
     const items = state.cart.items;
-    const anyUnpaid = items.some((row) => row.guideToApp97 || !row.paid);
+    const anyUnpaid = items.some((row) => row.guideToStatusUpdate || row.guideToApp97 || !row.paid);
     const canComplete = items.length > 0
       && items.every((row) => row.canComplete)
       && !state.busy;
@@ -106,9 +106,13 @@
         + '<td>' + escapeHtml(row.kimonoType || '—') + '</td>'
         + '<td>' + escapeHtml(row.itemNames || '—') + '</td>'
         + '<td>' + escapeHtml(row.paymentState || '—') + '</td>'
-        + '<td class="cayan-sd-pickup__num">' + yen(row.unpaidBalance != null
-          ? row.unpaidBalance
-          : (row.balance && row.balance.balance)) + '</td>'
+        + '<td class="cayan-sd-pickup__num">'
+        + (row.unpaidBalance == null && !(row.balance && row.balance.balance != null)
+          ? '—'
+          : yen(row.unpaidBalance != null
+            ? row.unpaidBalance
+            : (row.balance && row.balance.balance)))
+        + '</td>'
         + '<td><button type="button" class="cayan-sd-btn cayan-sd-pickup__remove" data-id="'
         + escapeHtml(row.orderRecordId) + '">削除</button></td>'
         + '</tr>'
@@ -139,13 +143,13 @@
         : '')
       + (anyUnpaid
         ? '<p class="cayan-sd-pickup__guide">'
-          + escapeHtml(cfg().MESSAGES.pickupGuideApp97)
+          + escapeHtml(cfg().MESSAGES.pickupGuideStatus || cfg().MESSAGES.pickupGuideApp97)
           + '</p>'
         : '')
       + '<div class="cayan-sd-pickup__table-wrap"><table class="cayan-sd-pickup__table">'
       + '<thead><tr>'
       + '<th>管理番号</th><th>お客様氏名</th><th>商品名</th><th>着物種類名</th>'
-      + '<th>加工内容</th><th>入金状況</th><th>未入金残額</th><th></th>'
+      + '<th>加工内容</th><th>入金状況</th><th>参考残額</th><th></th>'
       + '</tr></thead><tbody>' + rows + '</tbody></table></div>'
       + '<div class="cayan-sd-pickup__actions">'
       + '<button type="button" class="cayan-sd-btn is-primary" id="cayan-sd-pickup-complete"'
@@ -211,10 +215,11 @@
       state.personalCustomerId = result.personalCustomerId;
       state.clientName = result.clientName || candidate.clientName;
 
-      if (candidate.guideToApp97) {
+      if (candidate.guideToStatusUpdate || candidate.guideToApp97) {
         setMessage(
           candidate.manageNo + ': '
-          + (cfg().MESSAGES.pickupUnpaid || '未入金です。App97で入金してください。'),
+          + (cfg().MESSAGES.pickupUnpaid
+            || '未入金です。店舗受注一覧で入金状況を更新してください。'),
           true
         );
       } else if (!candidate.canComplete) {

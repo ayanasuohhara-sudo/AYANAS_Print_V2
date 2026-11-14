@@ -23,7 +23,7 @@
 
     const paymentClass = (state) => {
         const s = String(state ?? '');
-        if (s === '入金済') {
+        if (s === '入金済' || s === '入金済み') {
             return 'is-paid';
         }
         if (s === '一部入金') {

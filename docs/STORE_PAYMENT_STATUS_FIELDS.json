@@ -1,0 +1,17 @@
+{
+  "properties": {
+    "store_payment_status": {
+      "type": "DROP_DOWN",
+      "code": "store_payment_status",
+      "label": "入金状況",
+      "noLabel": false,
+      "required": false,
+      "options": {
+        "未入金": { "label": "未入金", "index": "0" },
+        "一部入金": { "label": "一部入金", "index": "1" },
+        "入金済み": { "label": "入金済み", "index": "2" }
+      },
+      "defaultValue": "未入金"
+    }
+  }
+}

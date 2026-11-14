@@ -31,6 +31,7 @@ const makeOrder = (overrides) => {
     work_status: { value: '仕上げ完了' },
     delivery_status: { value: '引き取り待ち' },
     delivery_no: { value: 'DN1' },
+    store_payment_status: { value: '入金済み' },
     detail_table: {
       value: [
         { value: { item_name: { value: '丸洗い' }, amount: { value: '3000' } } },
@@ -84,6 +85,7 @@ global.kintone = {
 };
 global.kintone.api.url = (p) => p;
 
+vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_status.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_pickup_shared.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_config.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_engine.js'), 'utf8'));
@@ -158,6 +160,7 @@ paymentsByPcm.set('P000002', [paidPayment(100, 3300)]);
     $id: { value: '101' },
     manage_no: { value: 'TSP-U' },
     delivery_status: { value: '引き取り待ち' },
+    store_payment_status: { value: '未入金' },
   }));
   paymentsByPcm.set('P000002', []);
   {
@@ -166,11 +169,12 @@ paymentsByPcm.set('P000002', [paidPayment(100, 3300)]);
     assert('unpaid no put', putLog.length === 0);
   }
 
-  // 4. 一部入金防止
+  // 4. 一部入金防止（App16 状況）
   reset();
   orders.set('102', makeOrder({
     $id: { value: '102' },
     manage_no: { value: 'TSP-P' },
+    store_payment_status: { value: '一部入金' },
   }));
   paymentsByPcm.set('P000002', [paidPayment(102, 1000)]);
   {
@@ -181,10 +185,14 @@ paymentsByPcm.set('P000002', [paidPayment(100, 3300)]);
     assert('partial no put', putLog.length === 0);
   }
 
-  // 5. 当日支払い後 → 完了（App97 精算後相当）
+  // 5. 当日支払い後 → App16 を入金済みにして完了（App97 新規登録不要）
   reset();
-  orders.set('103', makeOrder({ $id: { value: '103' }, manage_no: { value: 'TSP-S' } }));
-  paymentsByPcm.set('P000002', [paidPayment(103, 3300)]);
+  orders.set('103', makeOrder({
+    $id: { value: '103' },
+    manage_no: { value: 'TSP-S' },
+    store_payment_status: { value: '入金済み' },
+  }));
+  paymentsByPcm.set('P000002', []);
   {
     const r = await Api.completePickup('103', { expectedPersonalCustomerId: 'P000002' });
     assert('same-day paid pickup ok', r.ok === true);
@@ -250,18 +258,35 @@ paymentsByPcm.set('P000002', [paidPayment(100, 3300)]);
     assert('candidate productName', cand.productName.indexOf('小紋') !== -1);
     assert('candidate kimonoType', cand.kimonoType === '小紋');
     assert('candidate itemNames', cand.itemNames.indexOf('丸洗い') !== -1);
-    assert('candidate paymentState', cand.paymentState === '入金済');
+    assert('candidate paymentState', cand.paymentState === '入金済み');
     assert('candidate unpaidBalance 0', cand.unpaidBalance === 0);
     assert('candidate canComplete', cand.canComplete === true);
   }
 
-  // barcode unpaid guides to App97
+  // barcode unpaid guides to App16 status update (not App97)
   {
     const unpaidCand = Api.buildPickupCandidate(makeOrder({
       $id: { value: '108' },
       delivery_status: { value: '引き取り待ち' },
+      store_payment_status: { value: '未入金' },
     }), []);
-    assert('unpaid guides App97', unpaidCand.guideToApp97 === true && unpaidCand.canComplete === false);
+    assert('unpaid guides status update', unpaidCand.guideToStatusUpdate === true
+      && unpaidCand.guideToApp97 === false
+      && unpaidCand.canComplete === false);
+  }
+
+  // admin exception still allows partial
+  reset();
+  orders.set('109', makeOrder({
+    $id: { value: '109' },
+    store_payment_status: { value: '一部入金' },
+  }));
+  {
+    const r = await Api.completePickup('109', {
+      expectedPersonalCustomerId: 'P000002',
+      unpaidHandoverApproved: true,
+    });
+    assert('admin exception allows partial', r.ok === true && r.exception === true);
   }
 
   if (failed) {

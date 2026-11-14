@@ -17,6 +17,7 @@ global.kintone = {
 };
 global.kintone.api.url = (p) => p;
 
+vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_status.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_pickup_shared.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_config.js'), 'utf8'));
 vm.runInThisContext(fs.readFileSync(path.join(root, 'customize/store_payment_engine.js'), 'utf8'));
@@ -125,32 +126,43 @@ const order = {
   delivery_status: { value: '引き取り待ち' },
   delivery_no: { value: 'N1' },
   manage_no: { value: '100' },
+  store_payment_status: { value: '入金済み' },
 };
 
 assert('gate ok when paid', P.evaluatePickupGate(order, {
-  balanceInfo: { balance: 0, state: '入金済' },
+  paymentStatus: '入金済み',
 }).ok === true);
 
-assert('gate unpaid', P.evaluatePickupGate(order, {
-  balanceInfo: { balance: 1000, state: '未入金' },
+assert('gate unpaid', P.evaluatePickupGate({
+  ...order,
+  store_payment_status: { value: '未入金' },
+}, {
+  paymentStatus: '未入金',
+}).ok === false);
+
+assert('gate partial not paid', P.evaluatePickupGate({
+  ...order,
+  store_payment_status: { value: '一部入金' },
+}, {
+  paymentStatus: '一部入金',
 }).ok === false);
 
 assert('gate legacy 納品待ち', P.evaluatePickupGate({
   ...order,
   delivery_status: { value: '納品待ち' },
 }, {
-  balanceInfo: { balance: 0, state: '入金済' },
+  paymentStatus: '入金済み',
 }).ok === true);
 
 assert('gate already done', P.evaluatePickupGate({
   ...order,
   delivery_status: { value: '納品済' },
 }, {
-  balanceInfo: { balance: 0, state: '入金済' },
+  paymentStatus: '入金済み',
 }).alreadyDone === true);
 
 assert('gate pcm mismatch', P.evaluatePickupGate(order, {
-  balanceInfo: { balance: 0, state: '入金済' },
+  paymentStatus: '入金済み',
   expectedPersonalCustomerId: 'P999999',
 }).code === 'pcm_mismatch');
 
@@ -158,7 +170,7 @@ assert('gate not A550', P.evaluatePickupGate({
   ...order,
   customer_code: { value: 'M070' },
 }, {
-  balanceInfo: { balance: 0, state: '入金済' },
+  paymentStatus: '入金済み',
 }).ok === false);
 
 const cart = { items: [] };

@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-11-14T03:54:57.824Z",
+  "mode": "mock",
+  "rules": {
+    "paid": "残額0以下 → 入金済み候補",
+    "partial": "充当ありかつ残額あり → 一部入金候補",
+    "unpaid": "充当なし → 未入金候補",
+    "noOverwrite": true,
+    "bulkUpdateRequiresApproval": true
+  },
+  "summary": {
+    "total": 4,
+    "candidate_paid": 1,
+    "candidate_partial": 1,
+    "candidate_unpaid": 1,
+    "undetermined": 0,
+    "skipped_non_a550": 1,
+    "deliveredCaution": 1,
+    "multiDetail": 1,
+    "alreadySet": 0
+  },
+  "undetermined": [],
+  "samples": {
+    "paid": [
+      {
+        "bucket": "candidate_paid",
+        "suggested": "入金済み",
+        "id": "2",
+        "manageNo": "M002",
+        "deliveryStatus": "納品済",
+        "detailRows": 2,
+        "currentStatus": "",
+        "alreadySet": false,
+        "balanceState": "入金済",
+        "billedInclusive": 11000,
+        "paid": 11000,
+        "balance": 0,
+        "note": "multi_detail_lines_order_level_status",
+        "deliveredCaution": true
+      }
+    ],
+    "partial": [
+      {
+        "bucket": "candidate_partial",
+        "suggested": "一部入金",
+        "id": "3",
+        "manageNo": "M003",
+        "deliveryStatus": "未納品",
+        "detailRows": 1,
+        "currentStatus": "",
+        "alreadySet": false,
+        "balanceState": "一部入金",
+        "billedInclusive": 8800,
+        "paid": 4000,
+        "balance": 4800,
+        "note": "",
+        "deliveredCaution": false
+      }
+    ],
+    "unpaid": [
+      {
+        "bucket": "candidate_unpaid",
+        "suggested": "未入金",
+        "id": "1",
+        "manageNo": "M001",
+        "deliveryStatus": "引き取り待ち",
+        "detailRows": 1,
+        "currentStatus": "",
+        "alreadySet": false,
+        "balanceState": "未入金",
+        "billedInclusive": 11000,
+        "paid": 0,
+        "balance": 11000,
+        "note": "",
+        "deliveredCaution": false
+      }
+    ]
+  }
+}

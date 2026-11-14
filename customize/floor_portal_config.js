@@ -3,7 +3,7 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.6.1
+     * FLOOR_PORTAL_VERSION: 1.7.0
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
@@ -18,7 +18,7 @@
      * 文字サイズは工場／店舗で共通（工場相当）。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.6.1';
+    const FLOOR_PORTAL_VERSION = '1.7.0';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
@@ -139,7 +139,8 @@
         },
         /**
          * 店舗ポータル作業メニュー（A550 中心・PC/iPad・業務順）。
-         * featured: よく使う操作（受注登録／受注検索／引き取り／入金）。
+         * featured: よく使う操作（受注登録／受注検索／引き取り）。
+         * 入金状況は App16 店舗受注一覧で管理（スマレジ会計）。App97 は履歴参照のみ。
          * App85 は意図的に除外。リンク先アプリの処理ロジックは変更しない。
          */
         STORE_MENU_GROUPS: [
@@ -167,7 +168,8 @@
                 links: [
                     { appKey: 'deliverySlip', label: '納品書作成' },
                     { appKey: 'storeDeadline', label: '店舗納期カレンダー', note: '引き取り', featured: true },
-                    { appKey: 'storePayment', label: '入金登録', featured: true },
+                    { appKey: 'order', label: '入金状況（受注一覧）', note: 'App16', featured: true },
+                    { appKey: 'storePayment', label: '入金履歴（参照・任意）', note: 'App97' },
                 ],
             },
         ],
@@ -235,7 +237,7 @@
             summaryDueToday: '本日納期件数',
             summaryPickupWaiting: '引き取り待ち件数',
             factorySummaryDeliveryWaiting: '納品待ち',
-            summaryPaymentAmount: '本日の店舗入金額',
+            summaryPaymentAmount: '本日の店舗入金額（参考・App97）',
             summaryOverdue: '納期超過件数',
             summaryUnavailable: '—',
             summaryUnavailableTitle: '取得失敗',

@@ -12,7 +12,15 @@
    * スマレジ: 当面 API なし。会計後に S1 手入力。日次照合は手入力/CSV 想定。
    */
 
-  const STORE_PAYMENT_VERSION = '1.2.0-s1';
+  const STORE_PAYMENT_VERSION = '1.3.0-s1';
+
+  /** App16 A550 入金状況（正本。金額はスマレジ） */
+  const STORE_PAYMENT_STATUS = {
+    unpaid: '未入金',
+    partial: '一部入金',
+    paid: '入金済み',
+    field: 'store_payment_status',
+  };
 
   /** @type {number} 店舗入金管理 App ID */
   const STORE_PAYMENT_APP_ID = 97;
@@ -118,6 +126,7 @@
     workStatus: 'work_status',
     deliveryNo: 'delivery_no',
     deliveryDate: 'delivery_date',
+    storePaymentStatus: 'store_payment_status',
     revision: '$revision',
   };
 
@@ -158,6 +167,7 @@
     HEADER_FIELDS: HEADER_FIELDS,
     LINE_FIELDS: LINE_FIELDS,
     ORDER_FIELDS: ORDER_FIELDS,
+    STORE_PAYMENT_STATUS: STORE_PAYMENT_STATUS,
     PCM_FIELDS: PCM_FIELDS,
     NUMBERING: NUMBERING,
     UI: UI,

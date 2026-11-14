@@ -20,10 +20,10 @@
         return String(value ?? '');
     };
 
-    /** 表示用は入金済 / 未入金のみ（一部入金は未入金扱い） */
+    /** 受注表レイアウトは入金済 / 未入金の2値（一部入金・未入金は未入金扱い＝未完済） */
     const toBinaryPaymentState = (state, balance) => {
         const s = String(state ?? '').trim();
-        if (s === '入金済') {
+        if (s === '入金済' || s === '入金済み') {
             return '入金済';
         }
         if (s === '未入金' || s === '一部入金') {
@@ -37,10 +37,10 @@
     };
 
     const paymentClass = (state) => {
-        if (state === '入金済') {
+        if (state === '入金済' || state === '入金済み') {
             return 'is-paid';
         }
-        if (state === '未入金') {
+        if (state === '未入金' || state === '一部入金') {
             return 'is-unpaid';
         }
         return 'is-unknown';

@@ -405,26 +405,57 @@
       return { ok: true, alreadyDone: true };
     }
 
-    const personalCustomerId = E.readValue(order, C.ORDER_FIELDS.personalCustomerId);
-    const payments = await fetchPaymentsByCustomer(personalCustomerId);
-    const balance = E.getOrderBalance(order, payments);
+    const statusField = (C.ORDER_FIELDS && C.ORDER_FIELDS.storePaymentStatus)
+      || 'store_payment_status';
+    const paymentStatus = E.readValue(order, statusField);
+    let balance = null;
+    try {
+      const personalCustomerId = E.readValue(order, C.ORDER_FIELDS.personalCustomerId);
+      const payments = await fetchPaymentsByCustomer(personalCustomerId);
+      balance = E.getOrderBalance(order, payments);
+    } catch (err) {
+      balance = null;
+    }
 
     if (P && typeof P.evaluatePickupGate === 'function') {
       const gate = P.evaluatePickupGate(order, {
+        paymentStatus: paymentStatus,
         balanceInfo: balance,
         unpaidHandoverApproved: !!opts.unpaidHandoverApproved,
         expectedPersonalCustomerId: opts.expectedPersonalCustomerId || '',
       });
       if (gate.alreadyDone) {
-        return { ok: true, alreadyDone: true, balance: balance };
+        return { ok: true, alreadyDone: true, paymentStatus: paymentStatus, balance: balance };
       }
       if (!gate.ok) {
-        return { ok: false, error: gate.reason, code: gate.code, balance: balance };
+        return {
+          ok: false,
+          error: gate.reason,
+          code: gate.code,
+          paymentStatus: paymentStatus,
+          balance: balance,
+        };
       }
     } else {
-      const gate = E.canPickupWithBalance(balance, !!opts.unpaidHandoverApproved);
-      if (!gate.ok) {
-        return { ok: false, error: gate.reason, balance: balance };
+      const Status = window.CAYANAS_StorePaymentStatus;
+      if (Status && typeof Status.evaluatePaymentForPickup === 'function') {
+        const gate = Status.evaluatePaymentForPickup(
+          paymentStatus,
+          !!opts.unpaidHandoverApproved
+        );
+        if (!gate.ok) {
+          return {
+            ok: false,
+            error: gate.reason,
+            paymentStatus: paymentStatus,
+            balance: balance,
+          };
+        }
+      } else if (balance) {
+        const gate = E.canPickupWithBalance(balance, !!opts.unpaidHandoverApproved);
+        if (!gate.ok) {
+          return { ok: false, error: gate.reason, balance: balance };
+        }
       }
     }
 

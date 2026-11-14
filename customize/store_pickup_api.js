@@ -3,7 +3,8 @@
 
   /**
    * 店舗引き取り API（App92 / App97 共用）
-   * 入金登録は行わない。残高照会は StorePayment Engine を参照。
+   * 入金登録は行わない。支払ゲートは App16 store_payment_status を正本とする。
+   * App97 残高は参考表示のみ（通常運用では新規登録不要）。
    */
 
   const pickup = () => {
@@ -57,6 +58,7 @@
       F.workStatus,
       F.deliveryNo,
       F.deliveryDate,
+      F.storePaymentStatus || 'store_payment_status',
     ];
   };
 
@@ -114,17 +116,42 @@
     return rows[0] || null;
   };
 
+  const readStorePaymentStatus = (order) => {
+    const C = paymentCfg();
+    const E = paymentEngine();
+    const code = (C.ORDER_FIELDS && C.ORDER_FIELDS.storePaymentStatus) || 'store_payment_status';
+    const raw = E.readValue(order, code);
+    const Status = window.CAYANAS_StorePaymentStatus;
+    if (Status && typeof Status.normalizeStatus === 'function') {
+      return Status.normalizeStatus(raw) || Status.STATUS.unpaid;
+    }
+    const s = String(raw || '').trim();
+    if (s === '入金済み' || s === '入金済') {
+      return '入金済み';
+    }
+    if (s === '一部入金') {
+      return '一部入金';
+    }
+    return '未入金';
+  };
+
   const buildPickupCandidate = (order, payments) => {
     const P = pickup();
     const E = paymentEngine();
     const C = paymentCfg();
     const F = C.ORDER_FIELDS;
-    const balance = E.getOrderBalance(order, payments);
+    const Status = window.CAYANAS_StorePaymentStatus;
+    const paymentStatus = readStorePaymentStatus(order);
+    const balance = E.getOrderBalance(order, payments || []);
     const gate = P.evaluatePickupGate(order, {
+      paymentStatus: paymentStatus,
       balanceInfo: balance,
       requirePaid: true,
       unpaidHandoverApproved: false,
     });
+    const paid = Status && typeof Status.isFullyPaid === 'function'
+      ? Status.isFullyPaid(paymentStatus)
+      : (paymentStatus === '入金済み' || paymentStatus === '入金済');
     const kimonoType = E.readValue(order, F.kimonoType);
     const kimonoSpec = F.kimonoSpec ? E.readValue(order, F.kimonoSpec) : '';
     const productName = [kimonoType, kimonoSpec].filter(Boolean).join('　');
@@ -142,13 +169,15 @@
       locationStatus: E.readValue(order, F.locationStatus),
       deliveryStatus: E.readValue(order, F.deliveryStatus),
       deliveryNo: E.readValue(order, F.deliveryNo),
+      storePaymentStatus: paymentStatus,
       balance: balance,
-      paymentState: balance.state,
-      unpaidBalance: balance.balance,
-      paid: balance.balance <= 0.0001,
+      paymentState: paymentStatus,
+      unpaidBalance: paid ? 0 : (balance && balance.balance != null ? balance.balance : null),
+      paid: paid,
       pickupGate: gate,
-      canComplete: !!(gate.ok && !gate.alreadyDone && balance.balance <= 0.0001),
-      guideToApp97: !!(balance.balance > 0.0001),
+      canComplete: !!(gate.ok && !gate.alreadyDone && paid),
+      guideToApp97: false,
+      guideToStatusUpdate: !paid,
     };
   };
 
@@ -166,12 +195,18 @@
     if (!E.isValidPersonalCustomerId(personalCustomerId)) {
       return {
         ok: false,
-        error: 'この受注に個人顧客IDがありません。PCM 連携後に入金・引き取りしてください。',
+        error: 'この受注に個人顧客IDがありません。PCM 連携後に引き取りしてください。',
         orders: found.orders,
       };
     }
     const pcm = await fetchPcmById(personalCustomerId);
-    const payments = await fetchPaymentsByCustomer(personalCustomerId);
+    // App97 は参考表示のみ（ゲートには使わない）
+    let payments = [];
+    try {
+      payments = await fetchPaymentsByCustomer(personalCustomerId);
+    } catch (err) {
+      payments = [];
+    }
     const candidate = buildPickupCandidate(order, payments);
     return {
       ok: true,
@@ -204,11 +239,18 @@
       return { ok: true, alreadyDone: true };
     }
 
-    const personalCustomerId = E.readValue(order, C.ORDER_FIELDS.personalCustomerId);
-    const payments = await fetchPaymentsByCustomer(personalCustomerId);
-    const balance = E.getOrderBalance(order, payments);
+    const paymentStatus = readStorePaymentStatus(order);
+    let balance = null;
+    try {
+      const personalCustomerId = E.readValue(order, C.ORDER_FIELDS.personalCustomerId);
+      const payments = await fetchPaymentsByCustomer(personalCustomerId);
+      balance = E.getOrderBalance(order, payments);
+    } catch (err) {
+      balance = null;
+    }
 
     const gate = P.evaluatePickupGate(order, {
+      paymentStatus: paymentStatus,
       balanceInfo: balance,
       requirePaid: opts.requirePaid !== false,
       unpaidHandoverApproved: !!opts.unpaidHandoverApproved,
@@ -217,11 +259,17 @@
     });
 
     if (gate.alreadyDone) {
-      return { ok: true, alreadyDone: true, balance: balance };
+      return { ok: true, alreadyDone: true, paymentStatus: paymentStatus, balance: balance };
     }
 
     if (!gate.ok) {
-      return { ok: false, error: gate.reason, code: gate.code, balance: balance };
+      return {
+        ok: false,
+        error: gate.reason,
+        code: gate.code,
+        paymentStatus: paymentStatus,
+        balance: balance,
+      };
     }
 
     const putRecord = P.buildPickupPutRecord();
@@ -242,10 +290,16 @@
       return { ok: false, error: err && err.message ? err.message : String(err) };
     }
 
+    const Status = window.CAYANAS_StorePaymentStatus;
+    const paid = Status && typeof Status.isFullyPaid === 'function'
+      ? Status.isFullyPaid(paymentStatus)
+      : (paymentStatus === '入金済み' || paymentStatus === '入金済');
+
     return {
       ok: true,
+      paymentStatus: paymentStatus,
       balance: balance,
-      exception: !!opts.unpaidHandoverApproved && balance.balance > 0.0001,
+      exception: !!opts.unpaidHandoverApproved && !paid,
     };
   };
 

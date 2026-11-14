@@ -2,7 +2,8 @@
     'use strict';
 
     /**
-     * 店舗帳票用 — App97 残高照会（表示・集計のみ。更新しない）
+     * 店舗帳票用 — 入金状況表示（更新しない）
+     * 正本: App16 store_payment_status。金額参考: App97（任意・履歴）。
      * store_payment_engine.getOrderBalance と同型の税込計算。
      */
 
@@ -15,6 +16,7 @@
     const ID_PATTERN = /^P\d{6}$/;
     const TAX_RATE = 0.1;
     const PAYMENT_STATUS_CANCELLED = '取消';
+    const STORE_PAYMENT_STATUS_FIELD = 'store_payment_status';
     const HEADER = {
         paymentStatus: 'payment_status',
         lines: 'store_payment_lines',
@@ -102,6 +104,28 @@
             });
         });
         return Math.round(sum * 100) / 100;
+    };
+
+    const readStorePaymentStatus = (record) => {
+        const raw = readValue(record, STORE_PAYMENT_STATUS_FIELD);
+        if (raw === '入金済み' || raw === '入金済') {
+            return '入金済み';
+        }
+        if (raw === '一部入金' || raw === '未入金') {
+            return raw;
+        }
+        return '';
+    };
+
+    const resolveDisplayPaymentState = (orderRecord, balanceState) => {
+        const fromApp16 = readStorePaymentStatus(orderRecord);
+        if (fromApp16) {
+            return fromApp16;
+        }
+        if (balanceState === '入金済') {
+            return '入金済み';
+        }
+        return balanceState || '未入金';
     };
 
     const buildBalance = (billedInclusive, paid) => {
@@ -268,10 +292,12 @@
             header.client_name = pcmName;
         }
         header.pcm_phone = pcmPhone;
-        header.payment_state = balance.state;
+        const displayState = resolveDisplayPaymentState(record, balance.state);
+        header.payment_state = displayState;
+        header.store_payment_status = displayState;
         header.payment_billed_inclusive = balance.billedInclusive;
         header.payment_paid = balance.paid;
-        header.payment_balance = balance.balance;
+        header.payment_balance = displayState === '入金済み' ? 0 : balance.balance;
         header.payment_exclusive = balance.exclusive;
         header.payment_tax = balance.tax;
         header.payment_note = paymentNote;
@@ -280,10 +306,10 @@
             header: header,
             details: data.details || [],
             summary: Object.assign({}, data.summary, {
-                payment_state: balance.state,
+                payment_state: displayState,
                 billedInclusive: balance.billedInclusive,
                 paid: balance.paid,
-                balance: balance.balance,
+                balance: header.payment_balance,
             }),
         };
     };
@@ -357,11 +383,15 @@
             sumBilled += balance.billedInclusive;
             sumPaid += balance.paid;
             sumBalance += balance.balance;
+            const displayState = order
+                ? resolveDisplayPaymentState(order, balance.state)
+                : (balance.state || '不明');
             return Object.assign({}, detail, {
-                payment_state: balance.state,
+                payment_state: displayState,
+                store_payment_status: displayState,
                 payment_billed_inclusive: balance.billedInclusive,
                 payment_paid: balance.paid,
-                payment_balance: balance.balance,
+                payment_balance: displayState === '入金済み' ? 0 : balance.balance,
                 order_record_id: order && order.$id ? String(order.$id.value) : '',
             });
         });
@@ -372,9 +402,28 @@
             header.general_client_name = pcmName;
         }
         header.payment_note = paymentNote;
-        header.payment_state = sumBalance <= 0.0001 && sumBilled > 0
-            ? '入金済'
-            : (sumPaid > 0 ? (sumBalance > 0 ? '一部入金' : '入金済') : '未入金');
+        const statusVotes = { '未入金': 0, '一部入金': 0, '入金済み': 0 };
+        enrichedDetails.forEach((d) => {
+            const st = d.payment_state;
+            if (Object.prototype.hasOwnProperty.call(statusVotes, st)) {
+                statusVotes[st] += 1;
+            }
+        });
+        if (statusVotes['一部入金'] > 0) {
+            header.payment_state = '一部入金';
+        } else if (statusVotes['未入金'] > 0 && statusVotes['入金済み'] === 0) {
+            header.payment_state = '未入金';
+        } else if (statusVotes['入金済み'] > 0 && statusVotes['未入金'] === 0
+          && statusVotes['一部入金'] === 0) {
+            header.payment_state = '入金済み';
+        } else if (statusVotes['入金済み'] > 0 && statusVotes['未入金'] > 0) {
+            header.payment_state = '一部入金';
+        } else {
+            header.payment_state = sumBalance <= 0.0001 && sumBilled > 0
+                ? '入金済み'
+                : (sumPaid > 0 ? (sumBalance > 0 ? '一部入金' : '入金済み') : '未入金');
+        }
+        header.store_payment_status = header.payment_state;
 
         return {
             header: header,
