@@ -276,14 +276,76 @@ body.ayanas-wasai-schedule-active .gaia-argoui-app-index-pager {
   color: #1e3a8a;
 }
 
+.cayan-ws-chip.is-planned {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
 .cayan-ws-chip.is-returned {
   background: #e7e5e4;
   color: #44403c;
 }
 
 .cayan-ws-chip.is-rework {
-  background: #ffedd5;
+  background: #fce7f3;
+  color: #9d174d;
+}
+
+.cayan-ws-row.is-planned td:nth-child(4) {
+  color: #c2410c;
+  font-weight: 700;
+}
+
+.cayan-ws-linkbtn {
+  border: 0;
+  padding: 0;
+  background: transparent;
   color: #9a3412;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cayan-ws-plan {
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+}
+
+.cayan-ws-plan-title {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+
+.cayan-ws-plan-note {
+  margin: 0 0 10px;
+  color: #78716c;
+  font-size: 13px;
+}
+
+.cayan-ws-plan-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px 12px;
+  align-items: end;
+}
+
+.cayan-ws-plan-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cayan-ws-plan-form input {
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid #d6d3d1;
+  border-radius: 6px;
+  font: inherit;
 }
 
 .cayan-ws-detail {

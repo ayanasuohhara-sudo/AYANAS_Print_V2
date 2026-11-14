@@ -4,29 +4,29 @@
 
 ---
 
-## 1. ホスト App 作成
+## 1. ホスト App
 
-1. kintone でアプリを新規作成  
-2. 推奨アプリ名: **和裁士別仕事予定カレンダー**  
-3. フォームは最小でよい（スペース1つだけ等）。一覧をカレンダー UI が隠す  
-4. 作成後の **App ID** を控える  
+**本番作成済（2026-11-14）**: App **98** — `和裁士別仕事予定カレンダー`  
+URL: `https://o5nppg7kb4ly.cybozu.com/k/98/`
 
-空き ID 例（2026-11-14 時点で未使用）: 98 以降。採番は環境に任せる。
+フォームは最小でよい。一覧をカレンダー UI が隠す。
 
 ---
 
-## 2. 設定変更（デプロイ直前）
+## 2. 設定
 
 `customize/wasai_schedule_config.js`:
 
 ```javascript
-HOST_APP_ID: <作成したAppID>,
+HOST_APP_ID: 98,
+PLAN_APP_ID: null, // 第3段階の予定 App 作成後に設定
 ```
 
 一時検証のみ:
 
 ```javascript
-window.CAYANAS_WASAI_SCHEDULE_HOST_APP_ID = <AppID>;
+window.CAYANAS_WASAI_SCHEDULE_HOST_APP_ID = 98;
+window.CAYANAS_WASAI_SCHEDULE_PLAN_APP_ID = <予定AppID>;
 ```
 
 ---
@@ -40,7 +40,8 @@ window.CAYANAS_WASAI_SCHEDULE_HOST_APP_ID = <AppID>;
 | 3 | `customize/wasai_schedule_engine.js` |
 | 4 | `customize/wasai_schedule_desktop.js` |
 
-適用: すべてのユーザー / デスクトップ（第1段階は PC 想定）。
+適用: すべてのユーザー / デスクトップ（第1〜2段階は PC 想定）。  
+第1・2段階本番反映時点の VERSION は **1.1.0**。リポジトリの第3段階コードは **1.2.0**（再デプロイは別承認）。
 
 ---
 

@@ -1,0 +1,55 @@
+{
+  "hostId": 98,
+  "cfgHost": 98,
+  "version": "1.1.0",
+  "rights": {
+    "73": {
+      "ok": true,
+      "totalCount": "5"
+    },
+    "74": {
+      "ok": true,
+      "totalCount": "23"
+    },
+    "78": {
+      "ok": true,
+      "totalCount": "65"
+    }
+  },
+  "uiMounted": true,
+  "selectOptions": 6,
+  "capacityText": "月間処理可能 未設定変更は和裁士マスタ（App73）で行います",
+  "monthLabel": "2026年12月",
+  "monthSwitched": true,
+  "selectedCode": "002",
+  "selectedCapacityLabel": "未設定",
+  "totals": {
+    "outboundPieces": 2,
+    "returnedPieces": 5,
+    "reworkPieces": 0,
+    "totalPieces": 7,
+    "itemCount": 7
+  },
+  "masters": [
+    {
+      "code": "001",
+      "label": "未設定"
+    },
+    {
+      "code": "002",
+      "label": "未設定"
+    },
+    {
+      "code": "003",
+      "label": "未設定"
+    },
+    {
+      "code": "004",
+      "label": "未設定"
+    },
+    {
+      "code": "005",
+      "label": "未設定"
+    }
+  ]
+}

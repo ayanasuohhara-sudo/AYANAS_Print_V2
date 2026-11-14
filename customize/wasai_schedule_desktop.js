@@ -2,9 +2,9 @@
   'use strict';
 
   /**
-   * 和裁士別仕事予定カレンダー — 一覧 UI（第2段階）
+   * 和裁士別仕事予定カレンダー — 一覧 UI（第3段階）
    * ホスト App の index をカレンダーに置換。App73/74/78 は GET のみ。
-   * 月間処理可能枚数は App73.monthly_capacity を表示（未設定は「未設定」）。
+   * 予定 App（PLAN_APP_ID）があるときのみ予約の読取・登録・取消を行う。
    */
 
   const ROOT_ID = 'ayanas-wasai-schedule-root';
@@ -41,6 +41,9 @@
   let message = '';
   let messageKind = '';
   let showReturned = true;
+  let showPlanned = true;
+  let planMessage = '';
+  let planMessageKind = '';
 
   const escapeHtml = (value) => String(value ?? '')
     .replace(/&/g, '&amp;')
@@ -102,6 +105,26 @@
     return response.records || [];
   };
 
+  const planAppId = () => {
+    if (typeof window.CAYANAS_WASAI_SCHEDULE_PLAN_APP_ID === 'number') {
+      return window.CAYANAS_WASAI_SCHEDULE_PLAN_APP_ID;
+    }
+    return cfg().PLAN_APP_ID;
+  };
+
+  const fetchPlanPage = async (query) => {
+    const appId = planAppId();
+    if (!appId) {
+      return [];
+    }
+    const response = await kintoneGet(
+      appId,
+      query,
+      Engine.planFetchFields()
+    );
+    return response.records || [];
+  };
+
   const selectedMaster = () => (
     masters.find((row) => row.wasaiCode === selectedWasaiCode) || null
   );
@@ -110,7 +133,10 @@
     if (!model) {
       return '';
     }
-    const summary = Engine.daySummary(model, date, { includeReturned: showReturned });
+    const summary = Engine.daySummary(model, date, {
+      includeReturned: showReturned,
+      includePlanned: showPlanned,
+    });
     if (summary.totalPieces <= 0) {
       return '';
     }
@@ -120,6 +146,13 @@
         '<span class="cayan-ws-chip is-outbound">'
         + escapeHtml(String(summary.outboundPieces))
         + '枚出庫中</span>'
+      );
+    }
+    if (showPlanned && summary.plannedPieces > 0) {
+      parts.push(
+        '<span class="cayan-ws-chip is-planned">'
+        + escapeHtml(String(summary.plannedPieces))
+        + '枚予約</span>'
       );
     }
     if (showReturned && summary.returnedPieces > 0) {
@@ -182,7 +215,7 @@
 
   const detailRowHtml = (row) => {
     const links = [];
-    if (row.outboundRecordId) {
+    if (row.source === 'outbound' && row.outboundRecordId) {
       links.push(
         '<a class="cayan-ws-link" href="'
         + escapeHtml(Engine.outboundDetailPath(row.outboundRecordId))
@@ -194,6 +227,19 @@
         '<a class="cayan-ws-link" href="'
         + escapeHtml(Engine.orderDetailPath(row.orderRecordId))
         + '" target="_blank" rel="noopener">受注</a>'
+      );
+    }
+    if (row.source === 'plan' && row.planRecordId && Engine.planDetailPath(row.planRecordId)) {
+      links.push(
+        '<a class="cayan-ws-link" href="'
+        + escapeHtml(Engine.planDetailPath(row.planRecordId))
+        + '" target="_blank" rel="noopener">予定</a>'
+      );
+    }
+    if (row.source === 'plan' && row.planRecordId && planAppId()) {
+      links.push(
+        '<button type="button" class="cayan-ws-linkbtn" data-cancel-plan="'
+        + escapeHtml(row.planRecordId) + '">取消</button>'
       );
     }
 
@@ -216,7 +262,10 @@
     if (!selectedYmd) {
       return '<p class="cayan-ws-empty">日付を選択すると明細を表示します。</p>';
     }
-    const summary = Engine.daySummary(model, selectedYmd, { includeReturned: showReturned });
+    const summary = Engine.daySummary(model, selectedYmd, {
+      includeReturned: showReturned,
+      includePlanned: showPlanned,
+    });
     const heading = '<h3 class="cayan-ws-detail-title">'
       + escapeHtml(Engine.formatLongDate(selectedYmd))
       + ' · '
@@ -271,11 +320,13 @@
     }
     const totals = model.totals || {};
     const visibleReturned = showReturned ? Number(totals.returnedPieces || 0) : 0;
+    const visiblePlanned = showPlanned ? Number(totals.plannedPieces || 0) : 0;
     const outbound = Number(totals.outboundPieces || 0);
     const rework = Number(totals.reworkPieces || 0);
     return capacity
       + '<div class="cayan-ws-totals" aria-live="polite">'
       + '<span>出庫中 <strong>' + escapeHtml(String(outbound)) + '</strong>枚</span>'
+      + '<span>予約 <strong>' + escapeHtml(String(visiblePlanned)) + '</strong>枚</span>'
       + (showReturned
         ? '<span>返却済 <strong>' + escapeHtml(String(visibleReturned)) + '</strong>枚</span>'
         : '')
@@ -283,6 +334,37 @@
         ? '<span>再加工 <strong>' + escapeHtml(String(rework)) + '</strong>枚</span>'
         : '')
       + '</div>';
+  };
+
+  const planPanelHtml = () => {
+    const master = selectedMaster();
+    if (!selectedWasaiCode || !master) {
+      return '';
+    }
+    if (!planAppId()) {
+      return '<section class="cayan-ws-plan">'
+        + '<h3 class="cayan-ws-plan-title">未出庫予定</h3>'
+        + '<p class="cayan-ws-empty">' + escapeHtml(cfg().MESSAGES.planAppUnset) + '</p>'
+        + '</section>';
+    }
+    const defaultReturn = selectedYmd || Engine.todayParts(new Date()).ymd;
+    return '<section class="cayan-ws-plan">'
+      + '<h3 class="cayan-ws-plan-title">未出庫予定を登録</h3>'
+      + '<p class="cayan-ws-plan-note">登録元は事務所。将来の本人スマホ入力は source=本人 を使用します。</p>'
+      + (planMessage
+        ? '<p class="cayan-ws-message is-' + escapeHtml(planMessageKind || 'info') + '">'
+          + escapeHtml(planMessage) + '</p>'
+        : '')
+      + '<div class="cayan-ws-plan-form">'
+      + '<label>管理番号 <input id="cayan-ws-plan-manage" type="text" /></label>'
+      + '<label>品目 <input id="cayan-ws-plan-item" type="text" /></label>'
+      + '<label>枚数 <input id="cayan-ws-plan-pieces" type="number" min="1" step="1" value="1" /></label>'
+      + '<label>開始予定日 <input id="cayan-ws-plan-start" type="date" /></label>'
+      + '<label>返却予定日 <input id="cayan-ws-plan-return" type="date" value="'
+      + escapeHtml(defaultReturn) + '" /></label>'
+      + '<label>備考 <input id="cayan-ws-plan-notes" type="text" /></label>'
+      + '<button type="button" class="cayan-ws-btn is-primary" id="cayan-ws-plan-save">予約を登録</button>'
+      + '</div></section>';
   };
 
   const masterOptionsHtml = () => {
@@ -311,7 +393,9 @@
     const cal = root.querySelector('#cayan-ws-cal');
     const detail = root.querySelector('#cayan-ws-detail');
     const totals = root.querySelector('#cayan-ws-totals');
+    const plan = root.querySelector('#cayan-ws-plan');
     const returnedToggle = root.querySelector('#cayan-ws-show-returned');
+    const plannedToggle = root.querySelector('#cayan-ws-show-planned');
 
     title.textContent = Engine.monthBounds(viewYear, viewMonth).label;
     note.textContent = message;
@@ -329,10 +413,17 @@
       returnedToggle.checked = showReturned;
       returnedToggle.disabled = loading || !selectedWasaiCode;
     }
+    if (plannedToggle) {
+      plannedToggle.checked = showPlanned;
+      plannedToggle.disabled = loading || !selectedWasaiCode;
+    }
 
     cal.innerHTML = loading || !selectedWasaiCode ? '' : calendarHtml();
     detail.innerHTML = loading ? '' : detailHtml();
     totals.innerHTML = loading ? '' : totalsHtml();
+    if (plan) {
+      plan.innerHTML = loading ? '' : planPanelHtml();
+    }
 
     root.querySelectorAll('.cayan-ws-nav button').forEach((button) => {
       button.disabled = loading;
@@ -405,6 +496,21 @@
         console.warn('[wasai_schedule] App78 参照をスキップ', inboundError);
       }
 
+      let planRecords = [];
+      let planTruncated = false;
+      if (planAppId()) {
+        try {
+          const planFetched = await Engine.fetchAllPages(
+            Engine.buildPlanMonthQuery(selectedWasaiCode, year, month),
+            fetchPlanPage
+          );
+          planRecords = planFetched.records;
+          planTruncated = planFetched.truncated;
+        } catch (planError) {
+          console.warn('[wasai_schedule] 予定 App 参照をスキップ', planError);
+        }
+      }
+
       if (ticket !== requestSerial) {
         return;
       }
@@ -415,11 +521,14 @@
         selectedWasaiCode,
         year,
         month,
-        { includeReturned: true }
+        {
+          includeReturned: true,
+          planRecords: planRecords,
+        }
       );
 
       loading = false;
-      if (outboundFetched.truncated || inboundTruncated) {
+      if (outboundFetched.truncated || inboundTruncated || planTruncated) {
         message = cfg().MESSAGES.truncated;
         messageKind = 'warn';
       } else {
@@ -451,6 +560,9 @@
     + '<label class="cayan-ws-check">'
     + '<input type="checkbox" id="cayan-ws-show-returned" checked />'
     + '返却済を表示</label>'
+    + '<label class="cayan-ws-check">'
+    + '<input type="checkbox" id="cayan-ws-show-planned" checked />'
+    + '予約を表示</label>'
     + '</div>'
     + '<div class="cayan-ws-nav">'
     + '<button type="button" class="cayan-ws-btn" id="cayan-ws-prev">＜ 前月</button>'
@@ -462,6 +574,7 @@
     + '<p class="cayan-ws-message" id="cayan-ws-message" hidden></p>'
     + '<div class="cayan-ws-cal-wrap"><div id="cayan-ws-cal"></div></div>'
     + '<section class="cayan-ws-detail" id="cayan-ws-detail"></section>'
+    + '<div id="cayan-ws-plan"></div>'
   );
 
   const bind = (root) => {
@@ -496,6 +609,11 @@
       paint();
     });
 
+    root.querySelector('#cayan-ws-show-planned').addEventListener('change', (event) => {
+      showPlanned = !!event.target.checked;
+      paint();
+    });
+
     root.querySelector('#cayan-ws-cal').addEventListener('click', (event) => {
       const button = event.target.closest('[data-ymd]');
       if (!button || loading) {
@@ -504,6 +622,102 @@
       selectedYmd = button.getAttribute('data-ymd') || '';
       paint();
     });
+
+    root.addEventListener('click', async (event) => {
+      const cancelBtn = event.target.closest('[data-cancel-plan]');
+      if (cancelBtn) {
+        const planId = cancelBtn.getAttribute('data-cancel-plan');
+        await cancelPlan(planId);
+        return;
+      }
+      if (event.target && event.target.id === 'cayan-ws-plan-save') {
+        await savePlanFromForm(root);
+      }
+    });
+  };
+
+  const savePlanFromForm = async (root) => {
+    const appId = planAppId();
+    const master = selectedMaster();
+    if (!appId || !master) {
+      planMessage = cfg().MESSAGES.planAppUnset;
+      planMessageKind = 'warn';
+      paint();
+      return;
+    }
+    const input = {
+      wasaiCode: master.wasaiCode,
+      wasaiName: master.wasaiName,
+      manageNo: (root.querySelector('#cayan-ws-plan-manage') || {}).value,
+      itemSummary: (root.querySelector('#cayan-ws-plan-item') || {}).value,
+      pieceCount: (root.querySelector('#cayan-ws-plan-pieces') || {}).value,
+      plannedStartDate: (root.querySelector('#cayan-ws-plan-start') || {}).value,
+      plannedReturnDate: (root.querySelector('#cayan-ws-plan-return') || {}).value,
+      planStatus: cfg().PLAN_STATUS.reserved,
+      source: cfg().PLAN_SOURCE.office,
+      notes: (root.querySelector('#cayan-ws-plan-notes') || {}).value,
+    };
+
+    let existing = [];
+    try {
+      existing = (await Engine.fetchAllPages(
+        cfg().FIELDS.wasaiCode + ' = "' + Engine.escapeQueryValue(master.wasaiCode) + '"'
+          + ' and ' + cfg().FIELDS.planStatus + ' in ("' + cfg().PLAN_STATUS.reserved + '")',
+        fetchPlanPage
+      )).records;
+    } catch (error) {
+      planMessage = cfg().MESSAGES.failed;
+      planMessageKind = 'error';
+      paint();
+      return;
+    }
+
+    const validated = Engine.validatePlanInput(input, existing);
+    if (!validated.ok) {
+      planMessage = validated.errors.join(' / ');
+      planMessageKind = 'error';
+      paint();
+      return;
+    }
+
+    try {
+      await kintone.api(kintone.api.url('/k/v1/record.json', true), 'POST', {
+        app: appId,
+        record: Engine.buildPlanRecordPayload(input),
+      });
+      planMessage = cfg().MESSAGES.planSaved;
+      planMessageKind = 'info';
+      await loadMonth(viewYear, viewMonth, selectedYmd || input.plannedReturnDate);
+    } catch (error) {
+      console.error('[wasai_schedule] plan save', error);
+      planMessage = cfg().MESSAGES.failed;
+      planMessageKind = 'error';
+      paint();
+    }
+  };
+
+  const cancelPlan = async (planRecordId) => {
+    const appId = planAppId();
+    if (!appId || !planRecordId) {
+      return;
+    }
+    try {
+      await kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', {
+        app: appId,
+        id: planRecordId,
+        record: {
+          [cfg().FIELDS.planStatus]: { value: cfg().PLAN_STATUS.cancelled },
+        },
+      });
+      planMessage = cfg().MESSAGES.planCancelled;
+      planMessageKind = 'info';
+      await loadMonth(viewYear, viewMonth, selectedYmd);
+    } catch (error) {
+      console.error('[wasai_schedule] plan cancel', error);
+      planMessage = cfg().MESSAGES.failed;
+      planMessageKind = 'error';
+      paint();
+    }
   };
 
   const mount = () => {

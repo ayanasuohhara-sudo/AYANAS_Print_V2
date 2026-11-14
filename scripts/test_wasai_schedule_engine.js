@@ -81,20 +81,19 @@ const master = (code, name, status, field, capacity) => {
 };
 
 const run = async () => {
-  assert('VERSION', C.VERSION === '1.1.0');
-  assert('HOST_APP_ID は未設定（本番作成待ち）', C.HOST_APP_ID === null);
+  assert('VERSION', C.VERSION === '1.2.0');
+  assert('HOST_APP_ID は本番ホスト', C.HOST_APP_ID === 98);
+  assert('PLAN_APP_ID は未設定（第3段階本番待ち）', C.PLAN_APP_ID === null);
   assert('参照 App', C.WASAI_MASTER_APP_ID === 73
     && C.WASAI_OUTBOUND_APP_ID === 74
     && C.INBOUND_APP_ID === 78);
   assert('monthly_capacity フィールドコード', C.FIELDS.monthlyCapacity === 'monthly_capacity');
 
-  assert('desktop が PUT/POST しない',
-    desktop.indexOf("'PUT'") === -1
-    && desktop.indexOf('"PUT"') === -1
-    && desktop.indexOf("'POST'") === -1
-    && desktop.indexOf('"POST"') === -1);
-
-  assert('desktop は GET records のみ', desktop.indexOf('/k/v1/records.json') !== -1);
+  assert('desktop は予定 App 以外へ書込コードを持たない固定IDなし',
+    !/app:\s*74/.test(desktop) || desktop.indexOf('WASAI_OUTBOUND') !== -1);
+  assert('desktop は records GET を使う', desktop.indexOf('/k/v1/records.json') !== -1);
+  assert('desktop の POST/PUT は record.json（予定用）',
+    desktop.indexOf('/k/v1/record.json') !== -1);
   assert('css にカレンダー根がある', css.indexOf('.cayan-ws-root') !== -1);
 
   const bounds = E.monthBounds(2026, 11);
@@ -150,8 +149,9 @@ const run = async () => {
 
   assert('desktop に能力表示がある', desktop.indexOf('capacityLabel') !== -1
     || desktop.indexOf('formatMonthlyCapacity') !== -1);
-  assert('desktop が能力を PUT しない', desktop.indexOf('monthly_capacity') === -1
-    || (!desktop.includes("'PUT'") && !desktop.includes('"PUT"')));
+  assert('desktop が monthly_capacity を直接PUTしない',
+    !/monthly_capacity[\s\S]{0,80}PUT/.test(desktop)
+    && desktop.indexOf('capacityEditHint') !== -1);
 
   const openKind = E.classifyLineKind('出庫中', 'M1', new Map());
   const emptyKind = E.classifyLineKind('', 'M2', new Map());
@@ -292,6 +292,93 @@ const run = async () => {
   });
   assert('fetchAllPages が複数ページ結合', paged.records.length === C.PAGE_LIMIT + 1
     && paged.truncated === false);
+
+  const planRec = (opts) => ({
+    $id: { value: opts.id || 'p1' },
+    wasai_code: { value: opts.code || '002' },
+    wasai_name: { value: opts.name || '西口陽子' },
+    manage_no: { value: opts.manageNo || '' },
+    item_summary: { value: opts.item || '袷' },
+    piece_count: { value: opts.pieces == null ? '1' : String(opts.pieces) },
+    planned_start_date: { value: opts.start || '' },
+    planned_return_date: { value: opts.ret || '2026-11-20' },
+    plan_status: { value: opts.status || '予約' },
+    linked_outbound_record_id: { value: opts.linked || '' },
+    linked_outbound_line_id: { value: '' },
+    source: { value: opts.source || '事務所' },
+    notes: { value: opts.notes || '' },
+  });
+
+  const withPlan = E.aggregateMonth(
+    [outbound({
+      id: '33',
+      ship: '2026-11-04',
+      ret: '2026-11-12',
+      lines: [line({ manageNo: '101326013', status: '出庫中', pieces: 1, item: '国内仕立' })],
+    })],
+    [],
+    '002',
+    2026,
+    11,
+    {
+      planRecords: [
+        planRec({ id: 'p-open', manageNo: 'NEW001', ret: '2026-11-20', pieces: 2 }),
+        planRec({ id: 'p-dup', manageNo: '101326013', ret: '2026-11-18', pieces: 1 }),
+        planRec({ id: 'p-cancel', manageNo: 'CXL1', status: '取消', ret: '2026-11-19' }),
+        planRec({ id: 'p-ship', manageNo: 'OLD1', status: '出庫済', ret: '2026-11-21' }),
+      ],
+    }
+  );
+  assert('予約はカレンダーに載る', withPlan.totals.plannedPieces === 2
+    && withPlan.days['2026-11-20']
+    && withPlan.days['2026-11-20'].plannedPieces === 2);
+  assert('出庫済み manage_no の予約は二重計上しない',
+    !withPlan.items.some((row) => row.planRecordId === 'p-dup')
+    && withPlan.suppressedPlans.some((row) => row.manageNo === '101326013'));
+  assert('取消・出庫済ステータスは非表示',
+    !withPlan.items.some((row) => row.planRecordId === 'p-cancel' || row.planRecordId === 'p-ship'));
+  assert('出庫中と予約が同居', withPlan.totals.outboundPieces === 1
+    && withPlan.totals.plannedPieces === 2);
+
+  const dupes = E.findDuplicateReservedPlans(
+    [planRec({ id: 'a', manageNo: 'M1' }), planRec({ id: 'b', manageNo: 'M1' })],
+    '002',
+    'M1',
+    'a'
+  );
+  assert('管理番号重複検出', dupes.length === 1 && E.readValue(dupes[0], '$id') === 'b');
+
+  const bad = E.validatePlanInput({
+    wasaiCode: '002',
+    manageNo: 'M1',
+    pieceCount: 1,
+    plannedReturnDate: '2026-11-20',
+    planStatus: '予約',
+  }, [planRec({ id: 'a', manageNo: 'M1' })]);
+  assert('重複予約は validate で弾く', bad.ok === false
+    && bad.errors.indexOf(C.MESSAGES.planDuplicate) !== -1);
+
+  const good = E.validatePlanInput({
+    wasaiCode: '002',
+    manageNo: '',
+    pieceCount: 3,
+    plannedReturnDate: '2026-11-20',
+    planStatus: '予約',
+  }, []);
+  assert('枠予定は重複チェック対象外', good.ok === true);
+
+  const payload = E.buildPlanRecordPayload({
+    wasaiCode: '002',
+    wasaiName: '西口陽子',
+    manageNo: 'X',
+    itemSummary: '袷',
+    pieceCount: 2,
+    plannedReturnDate: '2026-11-22',
+    source: '本人',
+  });
+  assert('予定ペイロード', payload.plan_status.value === '予約'
+    && payload.source.value === '本人'
+    && payload.piece_count.value === 2);
 
   if (failed > 0) {
     console.error('FAILED ' + failed);

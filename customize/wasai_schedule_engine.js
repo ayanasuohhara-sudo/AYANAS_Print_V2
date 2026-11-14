@@ -424,11 +424,255 @@
     String(left || '').localeCompare(String(right || ''), 'ja', { numeric: true })
   );
 
+  const kindSortRank = (kind) => {
+    if (kind === cfg().WORK_KIND.outbound) return 0;
+    if (kind === cfg().WORK_KIND.planned) return 1;
+    if (kind === cfg().WORK_KIND.rework) return 2;
+    return 3;
+  };
+
+  const buildOutboundManageIndex = (outboundItems) => {
+    const map = new Map();
+    (outboundItems || []).forEach((item) => {
+      const manageNo = String(item.manageNo || '').trim();
+      if (!manageNo) {
+        return;
+      }
+      if (!map.has(manageNo)) {
+        map.set(manageNo, item);
+      }
+    });
+    return map;
+  };
+
+  const buildPlanMonthQuery = (wasaiCode, year, month) => {
+    const bounds = monthBounds(year, month);
+    const F = cfg().FIELDS;
+    const PS = cfg().PLAN_STATUS;
+    return F.wasaiCode + ' = ' + quote(wasaiCode)
+      + ' and ' + F.planStatus + ' in ('
+      + quote(PS.reserved) + ', ' + quote(PS.shipped)
+      + ')'
+      + ' and ' + F.planReturnDate + ' >= ' + quote(bounds.start)
+      + ' and ' + F.planReturnDate + ' <= ' + quote(bounds.end)
+      + ' order by ' + F.planReturnDate + ' asc';
+  };
+
+  const planFetchFields = () => {
+    const F = cfg().FIELDS;
+    return [
+      F.id,
+      F.wasaiCode,
+      F.wasaiName,
+      F.planManageNo,
+      F.planItemSummary,
+      F.planPieceCount,
+      F.planStartDate,
+      F.planReturnDate,
+      F.planStatus,
+      F.planLinkedOutboundRecordId,
+      F.planLinkedOutboundLineId,
+      F.planSource,
+      F.planNotes,
+    ];
+  };
+
+  /**
+   * 予約の manage_no 重複（空以外）。excludePlanId は編集中レコード除外。
+   */
+  const findDuplicateReservedPlans = (planRecords, wasaiCode, manageNo, excludePlanId) => {
+    const target = String(manageNo || '').trim();
+    if (!target) {
+      return [];
+    }
+    const F = cfg().FIELDS;
+    const reserved = cfg().PLAN_STATUS.reserved;
+    const exclude = String(excludePlanId || '').trim();
+    return (planRecords || []).filter((record) => {
+      const id = readValue(record, F.id);
+      if (exclude && id === exclude) {
+        return false;
+      }
+      if (wasaiCode && readValue(record, F.wasaiCode) !== wasaiCode) {
+        return false;
+      }
+      if (readValue(record, F.planStatus) !== reserved) {
+        return false;
+      }
+      return readValue(record, F.planManageNo) === target;
+    });
+  };
+
+  const validatePlanInput = (input, existingPlans) => {
+    const value = input || {};
+    const errors = [];
+    if (!String(value.wasaiCode || '').trim()) {
+      errors.push('和裁士コードが必要です');
+    }
+    if (!String(value.plannedReturnDate || '').trim()) {
+      errors.push('返却予定日が必要です');
+    }
+    const pieces = Number(value.pieceCount);
+    if (!Number.isFinite(pieces) || !Number.isInteger(pieces) || pieces < 1) {
+      errors.push('予定枚数は1以上の整数です');
+    }
+    const status = String(value.planStatus || cfg().PLAN_STATUS.reserved).trim();
+    if (status === cfg().PLAN_STATUS.reserved) {
+      const dupes = findDuplicateReservedPlans(
+        existingPlans,
+        value.wasaiCode,
+        value.manageNo,
+        value.planRecordId
+      );
+      if (dupes.length) {
+        errors.push(cfg().MESSAGES.planDuplicate);
+      }
+    }
+    return {
+      ok: errors.length === 0,
+      errors: errors,
+    };
+  };
+
+  const buildPlanRecordPayload = (input) => {
+    const F = cfg().FIELDS;
+    const value = input || {};
+    const pieces = Number(value.pieceCount);
+    return {
+      [F.wasaiCode]: { value: String(value.wasaiCode || '').trim() },
+      [F.wasaiName]: { value: String(value.wasaiName || '').trim() },
+      [F.planManageNo]: { value: String(value.manageNo || '').trim() },
+      [F.planItemSummary]: { value: String(value.itemSummary || '').trim() },
+      [F.planPieceCount]: { value: Number.isFinite(pieces) ? pieces : 1 },
+      [F.planStartDate]: { value: String(value.plannedStartDate || '').slice(0, 10) },
+      [F.planReturnDate]: { value: String(value.plannedReturnDate || '').slice(0, 10) },
+      [F.planStatus]: { value: String(value.planStatus || cfg().PLAN_STATUS.reserved) },
+      [F.planLinkedOutboundRecordId]: { value: String(value.linkedOutboundRecordId || '').trim() },
+      [F.planLinkedOutboundLineId]: { value: String(value.linkedOutboundLineId || '').trim() },
+      [F.planSource]: { value: String(value.source || cfg().PLAN_SOURCE.office) },
+      [F.planNotes]: { value: String(value.notes || '') },
+    };
+  };
+
+  /**
+   * 予定レコード → カレンダー行。
+   * App74 に同一 manage_no の出庫がある予約は二重計上しない（除外）。
+   */
+  const extractWorkItemsFromPlans = (planRecords, options) => {
+    const opts = options || {};
+    const bounds = opts.bounds || null;
+    const outboundByManageNo = opts.outboundByManageNo instanceof Map
+      ? opts.outboundByManageNo
+      : new Map();
+    const includeShippedPlans = opts.includeShippedPlans === true;
+    const F = cfg().FIELDS;
+    const PS = cfg().PLAN_STATUS;
+    const items = [];
+    const suppressed = [];
+
+    (planRecords || []).forEach((record) => {
+      const planRecordId = readValue(record, F.id);
+      const wasaiCode = readValue(record, F.wasaiCode);
+      const wasaiName = readValue(record, F.wasaiName);
+      const manageNo = readValue(record, F.planManageNo);
+      const planStatus = readValue(record, F.planStatus) || PS.reserved;
+      if (planStatus === PS.cancelled) {
+        return;
+      }
+
+      const linkedOutbound = manageNo ? outboundByManageNo.get(manageNo) : null;
+      const linkedByOutbound = !!linkedOutbound;
+      const explicitlyShipped = planStatus === PS.shipped
+        || !!readValue(record, F.planLinkedOutboundRecordId);
+
+      // 予約かつ出庫実績あり → 出庫側のみ残し予定は落とす
+      if (planStatus === PS.reserved && linkedByOutbound) {
+        suppressed.push({
+          planRecordId: planRecordId,
+          manageNo: manageNo,
+          reason: 'linked_to_outbound',
+          outboundRecordId: linkedOutbound.outboundRecordId,
+        });
+        return;
+      }
+
+      if (explicitlyShipped && !includeShippedPlans) {
+        suppressed.push({
+          planRecordId: planRecordId,
+          manageNo: manageNo,
+          reason: 'already_shipped',
+        });
+        return;
+      }
+
+      if (planStatus !== PS.reserved && !includeShippedPlans) {
+        return;
+      }
+
+      const startDate = readValue(record, F.planStartDate).slice(0, 10);
+      const returnDate = readValue(record, F.planReturnDate).slice(0, 10);
+      const calendarDate = calendarDateForLine(startDate, returnDate);
+      if (bounds && (!calendarDate || !isYmdInMonth(calendarDate, bounds))) {
+        return;
+      }
+
+      const pieceRaw = readNumber(record, F.planPieceCount, 1);
+      const pieceCount = pieceRaw > 0 ? pieceRaw : 1;
+      const itemSummary = readValue(record, F.planItemSummary) || '（品目未設定）';
+
+      items.push({
+        key: 'plan:' + planRecordId,
+        planRecordId: planRecordId,
+        outboundRecordId: readValue(record, F.planLinkedOutboundRecordId),
+        outboundLineId: readValue(record, F.planLinkedOutboundLineId),
+        wasaiCode: wasaiCode,
+        wasaiName: wasaiName,
+        manageNo: manageNo,
+        shipDate: startDate,
+        returnDate: returnDate || startDate,
+        calendarDate: calendarDate,
+        inboundDate: '',
+        lineStatus: planStatus,
+        kind: cfg().WORK_KIND.planned,
+        kindLabel: cfg().WORK_KIND_LABEL.planned,
+        pieceCount: pieceCount,
+        itemSummary: itemSummary,
+        deadline: '',
+        orderRecordId: '',
+        customerName: '',
+        clientName: '',
+        confirmedVia78: false,
+        source: 'plan',
+        planStatus: planStatus,
+        planSource: readValue(record, F.planSource) || cfg().PLAN_SOURCE.office,
+        notes: readValue(record, F.planNotes),
+      });
+    });
+
+    return {
+      items: items,
+      suppressed: suppressed,
+    };
+  };
+
+  /**
+   * 予約を出庫済にリンクするペイロード（保存用）。App74 は変更しない。
+   */
+  const buildLinkPlanToOutboundPayload = (outboundItem) => {
+    const F = cfg().FIELDS;
+    const item = outboundItem || {};
+    return {
+      [F.planStatus]: { value: cfg().PLAN_STATUS.shipped },
+      [F.planLinkedOutboundRecordId]: { value: String(item.outboundRecordId || '') },
+      [F.planLinkedOutboundLineId]: { value: String(item.outboundLineId || '') },
+    };
+  };
+
   const aggregateMonth = (outboundRecords, inboundRecords, wasaiCode, year, month, options) => {
     const opts = options || {};
     const bounds = monthBounds(year, month);
     const inboundConfirmMap = buildInboundConfirmMap(inboundRecords);
-    const items = extractWorkItemsFromOutbound(outboundRecords, {
+    const outboundItems = extractWorkItemsFromOutbound(outboundRecords, {
       bounds: bounds,
       inboundConfirmMap: inboundConfirmMap,
       includeReturned: opts.includeReturned !== false,
@@ -436,10 +680,22 @@
       !wasaiCode || item.wasaiCode === wasaiCode
     ));
 
+    const outboundByManageNo = buildOutboundManageIndex(outboundItems);
+    const planExtract = extractWorkItemsFromPlans(opts.planRecords || [], {
+      bounds: bounds,
+      outboundByManageNo: outboundByManageNo,
+      includeShippedPlans: opts.includeShippedPlans === true,
+    });
+    const planItems = planExtract.items.filter((item) => (
+      !wasaiCode || item.wasaiCode === wasaiCode
+    ));
+
+    const items = outboundItems.concat(planItems);
     const days = {};
     let outboundPieces = 0;
     let returnedPieces = 0;
     let reworkPieces = 0;
+    let plannedPieces = 0;
 
     items.forEach((item) => {
       const date = item.calendarDate;
@@ -449,6 +705,7 @@
           outboundPieces: 0,
           returnedPieces: 0,
           reworkPieces: 0,
+          plannedPieces: 0,
           totalPieces: 0,
         };
       }
@@ -458,6 +715,9 @@
       if (item.kind === cfg().WORK_KIND.outbound) {
         days[date].outboundPieces += item.pieceCount;
         outboundPieces += item.pieceCount;
+      } else if (item.kind === cfg().WORK_KIND.planned) {
+        days[date].plannedPieces += item.pieceCount;
+        plannedPieces += item.pieceCount;
       } else if (item.kind === cfg().WORK_KIND.rework) {
         days[date].reworkPieces += item.pieceCount;
         reworkPieces += item.pieceCount;
@@ -469,9 +729,9 @@
 
     Object.keys(days).forEach((date) => {
       days[date].rows.sort((left, right) => (
-        (left.kind === right.kind ? 0 : (left.kind === cfg().WORK_KIND.outbound ? -1 : 1))
+        (kindSortRank(left.kind) - kindSortRank(right.kind))
         || compareManageNo(left.manageNo, right.manageNo)
-        || compareManageNo(left.outboundRecordId, right.outboundRecordId)
+        || compareManageNo(left.outboundRecordId || left.planRecordId, right.outboundRecordId || right.planRecordId)
       ));
     });
 
@@ -487,18 +747,23 @@
         outboundPieces: outboundPieces,
         returnedPieces: returnedPieces,
         reworkPieces: reworkPieces,
-        totalPieces: outboundPieces + returnedPieces + reworkPieces,
+        plannedPieces: plannedPieces,
+        totalPieces: outboundPieces + returnedPieces + reworkPieces + plannedPieces,
         itemCount: items.length,
       },
+      suppressedPlans: planExtract.suppressed,
       items: items,
     };
   };
 
   const dayRows = (model, date, options) => {
     const opts = options || {};
-    const rows = model?.days?.[date]?.rows ? model.days[date].rows.slice() : [];
+    let rows = model?.days?.[date]?.rows ? model.days[date].rows.slice() : [];
     if (opts.includeReturned === false) {
-      return rows.filter((row) => row.kind !== cfg().WORK_KIND.returned);
+      rows = rows.filter((row) => row.kind !== cfg().WORK_KIND.returned);
+    }
+    if (opts.includePlanned === false) {
+      rows = rows.filter((row) => row.kind !== cfg().WORK_KIND.planned);
     }
     return rows;
   };
@@ -508,9 +773,12 @@
     let outboundPieces = 0;
     let returnedPieces = 0;
     let reworkPieces = 0;
+    let plannedPieces = 0;
     rows.forEach((row) => {
       if (row.kind === cfg().WORK_KIND.outbound) {
         outboundPieces += row.pieceCount;
+      } else if (row.kind === cfg().WORK_KIND.planned) {
+        plannedPieces += row.pieceCount;
       } else if (row.kind === cfg().WORK_KIND.rework) {
         reworkPieces += row.pieceCount;
       } else {
@@ -522,7 +790,8 @@
       outboundPieces: outboundPieces,
       returnedPieces: returnedPieces,
       reworkPieces: reworkPieces,
-      totalPieces: outboundPieces + returnedPieces + reworkPieces,
+      plannedPieces: plannedPieces,
+      totalPieces: outboundPieces + returnedPieces + reworkPieces + plannedPieces,
     };
   };
 
@@ -541,6 +810,14 @@
   const orderDetailPath = (recordId) => (
     '/k/' + cfg().ORDER_APP_ID + '/show#record=' + encodeURIComponent(String(recordId ?? ''))
   );
+
+  const planDetailPath = (recordId) => {
+    const appId = cfg().PLAN_APP_ID;
+    if (!appId) {
+      return '';
+    }
+    return '/k/' + appId + '/show#record=' + encodeURIComponent(String(recordId ?? ''));
+  };
 
   const fetchAllPages = async (baseQuery, fetchPage) => {
     const limit = cfg().PAGE_LIMIT;
@@ -611,12 +888,21 @@
     classifyLineKind,
     pieceCountOf,
     extractWorkItems: extractWorkItemsFromOutbound,
+    buildOutboundManageIndex,
+    buildPlanMonthQuery,
+    planFetchFields,
+    findDuplicateReservedPlans,
+    validatePlanInput,
+    buildPlanRecordPayload,
+    extractWorkItemsFromPlans,
+    buildLinkPlanToOutboundPayload,
     aggregateMonth,
     dayRows,
     daySummary,
     formatLongDate,
     outboundDetailPath,
     orderDetailPath,
+    planDetailPath,
     fetchAllPages,
     capacityAttributionMonth,
     readValue,
