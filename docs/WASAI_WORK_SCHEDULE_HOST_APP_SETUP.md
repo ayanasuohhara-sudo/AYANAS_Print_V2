@@ -19,14 +19,14 @@ URL: `https://o5nppg7kb4ly.cybozu.com/k/98/`
 
 ```javascript
 HOST_APP_ID: 98,
-PLAN_APP_ID: null, // 第3段階の予定 App 作成後に設定
+PLAN_APP_ID: 99, // 和裁士仕事予定管理
 ```
 
 一時検証のみ:
 
 ```javascript
 window.CAYANAS_WASAI_SCHEDULE_HOST_APP_ID = 98;
-window.CAYANAS_WASAI_SCHEDULE_PLAN_APP_ID = <予定AppID>;
+window.CAYANAS_WASAI_SCHEDULE_PLAN_APP_ID = 99;
 ```
 
 ---
@@ -40,8 +40,8 @@ window.CAYANAS_WASAI_SCHEDULE_PLAN_APP_ID = <予定AppID>;
 | 3 | `customize/wasai_schedule_engine.js` |
 | 4 | `customize/wasai_schedule_desktop.js` |
 
-適用: すべてのユーザー / デスクトップ（第1〜2段階は PC 想定）。  
-第1・2段階本番反映時点の VERSION は **1.1.0**。リポジトリの第3段階コードは **1.2.0**（再デプロイは別承認）。
+適用: すべてのユーザー / デスクトップ（PC 想定）。  
+本番 VERSION: **1.2.1**（第3段階反映済）。
 
 ---
 

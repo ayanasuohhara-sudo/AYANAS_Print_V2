@@ -1,9 +1,7 @@
-# 和裁士仕事予定管理 App — 設計（第3段階・本番未作成）
+# 和裁士仕事予定管理 App — 設計（第3段階）
 
-**本番の新規 App 作成・反映は別途承認後。** 本ドキュメントと JS はローカル実装。
-
-推奨アプリ名: **和裁士仕事予定管理**  
-ホスト（App98）から参照。`PLAN_APP_ID` に採番後の ID を設定する。
+**本番作成済（2026-11-14）**: App **99** — `和裁士仕事予定管理`  
+ホスト App98 の `PLAN_APP_ID: 99`。詳細は [WASAI_WORK_SCHEDULE_PHASE3_PROD_DEPLOY_REPORT.md](./WASAI_WORK_SCHEDULE_PHASE3_PROD_DEPLOY_REPORT.md)。
 
 ---
 

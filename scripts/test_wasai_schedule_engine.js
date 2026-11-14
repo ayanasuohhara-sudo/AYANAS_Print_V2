@@ -81,9 +81,10 @@ const master = (code, name, status, field, capacity) => {
 };
 
 const run = async () => {
-  assert('VERSION', C.VERSION === '1.2.0');
+  assert('VERSION', C.VERSION === '1.2.1');
   assert('HOST_APP_ID は本番ホスト', C.HOST_APP_ID === 98);
-  assert('PLAN_APP_ID は未設定（第3段階本番待ち）', C.PLAN_APP_ID === null);
+  // PLAN_APP_ID は本番デプロイ後に数値が入る。未設定でもエンジンは動作する。
+  assert('PLAN_APP_ID は数値または null', C.PLAN_APP_ID === null || typeof C.PLAN_APP_ID === 'number');
   assert('参照 App', C.WASAI_MASTER_APP_ID === 73
     && C.WASAI_OUTBOUND_APP_ID === 74
     && C.INBOUND_APP_ID === 78);

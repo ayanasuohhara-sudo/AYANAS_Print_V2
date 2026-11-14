@@ -1,0 +1,141 @@
+{
+  "stamp": "2026-11-14T05-28-33",
+  "workDir": "/workspace/customize/backups/wasai_schedule_phase3_prod_2026-11-14T05-28-33",
+  "steps": {
+    "backup": {
+      "ok": true,
+      "js": [
+        {
+          "type": "FILE",
+          "name": "wasai_schedule_config.js",
+          "fileKey": "20261114051321D20F1773E7BF49FFBA8488088A87E59D154",
+          "contentType": "text/javascript",
+          "size": "3800"
+        },
+        {
+          "type": "FILE",
+          "name": "wasai_schedule_engine.js",
+          "fileKey": "20261114051321C947611A44F14AFAA83A7FCFD8031895120",
+          "contentType": "text/javascript",
+          "size": "19879"
+        },
+        {
+          "type": "FILE",
+          "name": "wasai_schedule_desktop.js",
+          "fileKey": "2026111405132231FFCF4AECA0470385D9BBA7B490E4E9201",
+          "contentType": "text/javascript",
+          "size": "17898"
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "name": "wasai_schedule.css",
+          "fileKey": "20261114051321A5B0794076664595A09201004F48EEF7022",
+          "contentType": "text/css",
+          "size": "6028"
+        }
+      ],
+      "fileCount": 4
+    },
+    "planApp": {
+      "ok": true,
+      "reused": false,
+      "appId": 99,
+      "name": "和裁士仕事予定管理",
+      "fieldCodes": [
+        "notes",
+        "piece_count",
+        "planned_return_date",
+        "wasai_name",
+        "item_summary",
+        "source",
+        "linked_outbound_record_id",
+        "wasai_code",
+        "manage_no",
+        "planned_start_date",
+        "plan_status",
+        "linked_outbound_line_id"
+      ],
+      "deployFields": {
+        "app": "99",
+        "status": "SUCCESS"
+      },
+      "deployLayout": {
+        "app": "99",
+        "status": "SUCCESS"
+      }
+    },
+    "patch": {
+      "ok": true,
+      "planAppId": 99
+    },
+    "customize": {
+      "ok": true,
+      "deploy": {
+        "app": "98",
+        "status": "SUCCESS"
+      },
+      "js": [
+        "wasai_schedule_config.js",
+        "wasai_schedule_engine.js",
+        "wasai_schedule_desktop.js"
+      ],
+      "css": [
+        "wasai_schedule.css"
+      ]
+    },
+    "tests": {
+      "checks": {
+        "capacityDisplay": true,
+        "create": true,
+        "update": true,
+        "duplicateBlocked": true,
+        "doubleCountPrevented": true,
+        "plannedVisible": true,
+        "kindColors": {
+          "hasOutboundKind": true,
+          "hasPlannedKind": true
+        },
+        "cancelKeepsHistory": true,
+        "cancelledHidden": true,
+        "wasaiSwitchQuery": true,
+        "monthSwitchBounds": true,
+        "baitCancelled": true,
+        "app74Untouched": true
+      },
+      "ids": {
+        "create": "1",
+        "doubleCountBait": "2"
+      },
+      "errors": [],
+      "cfg": {
+        "host": 98,
+        "plan": 99,
+        "version": "1.2.1"
+      },
+      "uiMounted": true,
+      "selectedWasai": {
+        "recordId": "2",
+        "wasaiCode": "002",
+        "wasaiName": "西口陽子",
+        "tradeName": "",
+        "registrationStatus": "有効",
+        "monthlyCapacity": null,
+        "monthlyCapacityLabel": "未設定"
+      },
+      "totals": {
+        "outboundPieces": 2,
+        "returnedPieces": 5,
+        "reworkPieces": 0,
+        "plannedPieces": 3,
+        "totalPieces": 10,
+        "itemCount": 8
+      },
+      "capacityText": "月間処理可能 未設定変更は和裁士マスタ（App73）で行います",
+      "selectCount": 6,
+      "ok": true,
+      "screenshot": "/opt/cursor/artifacts/wasai_schedule_phase3_prod.png"
+    }
+  }
+}

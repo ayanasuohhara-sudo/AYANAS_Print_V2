@@ -2,12 +2,12 @@
   'use strict';
 
   /**
-   * 和裁士別仕事予定カレンダー — 定数（第3段階ローカル）
+   * 和裁士別仕事予定カレンダー — 定数（第3段階）
    * App73/74/78 は参照のみ。出庫・入庫・受注の処理は変更しない。
-   * PLAN_APP_ID は予定管理 App 作成後に設定（本番未作成のあいだは null）。
+   * PLAN_APP_ID は予定管理 App 作成後に設定する。
    */
 
-  const WASAI_SCHEDULE_VERSION = '1.2.0';
+  const WASAI_SCHEDULE_VERSION = '1.2.1';
 
   const CAYANAS_WASAI_SCHEDULE = {
     VERSION: WASAI_SCHEDULE_VERSION,
@@ -16,8 +16,8 @@
     WASAI_OUTBOUND_APP_ID: 74,
     INBOUND_APP_ID: 78,
     ORDER_APP_ID: 16,
-    /** 第3段階: 本番作成後に設定。null のあいだは予定の読取・登録 UI を無効化 */
-    PLAN_APP_ID: null,
+    /** 予定管理 App ID（本番デプロイ時に設定） */
+    PLAN_APP_ID: 99,
     PAGE_LIMIT: 500,
     MAX_OFFSET: 10000,
     WEEKDAY_LABELS: ['月', '火', '水', '木', '金', '土', '日'],
@@ -68,7 +68,10 @@
       planAppUnset: '予定管理アプリ未設定のため、予約の登録はまだできません。',
       planDuplicate: '同じ管理番号の予約が既にあります。',
       planSaved: '予定を保存しました。',
-      planCancelled: '予定を取消しました。',
+      planUpdated: '予定を更新しました。',
+      planCancelled: '予定を取消しました（履歴として残します）。',
+      planEditMode: '予約を変更中',
+      planCreateMode: '未出庫予定を登録',
       detailPrefix: '明細 ',
       detailSuffix: '件',
       pieceSuffix: '枚',
