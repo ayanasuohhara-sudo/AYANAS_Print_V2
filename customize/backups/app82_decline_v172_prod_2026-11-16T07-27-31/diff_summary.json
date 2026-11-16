@@ -1,0 +1,113 @@
+{
+  "stamp": "2026-11-16T07-27-31",
+  "backup": "/agent/repos/AYANAS_Print_V2/customize/backups/app82_decline_v172_prod_2026-11-16T07-27-31",
+  "files": {
+    "business_dashboard_config.js": {
+      "size": 14970,
+      "sha1": "fb975f329f3389a7f8440dfbde841cb3396dbcf4"
+    },
+    "ar_config.js": {
+      "size": 1886,
+      "sha1": "9d4fd699d9ecda7b36f805dc8ee10307a763ac94"
+    },
+    "payment_create.js": {
+      "size": 49476,
+      "sha1": "0a0dde0befe171982424134fbfe495afef9458fb"
+    },
+    "ar_engine.js": {
+      "size": 17148,
+      "sha1": "65f44ae6f0523157f4c7fc694760e70c12caef82"
+    },
+    "business_dashboard_engine.js": {
+      "size": 64912,
+      "sha1": "d4c539a293045def8a2794fad662d55ca202adf6"
+    },
+    "business_dashboard_monthly_engine.js": {
+      "size": 31391,
+      "sha1": "570cae12eb2c9604c469d26b49956e082f2dc204"
+    },
+    "business_dashboard_money.js": {
+      "size": 19266,
+      "sha1": "605e61635431fc5b297ec5cd14a0fd7b53c1bc4e"
+    },
+    "business_dashboard_desktop.js": {
+      "size": 62953,
+      "sha1": "862b2a906e14878b101ab1eba97a77f7260f3614"
+    },
+    "business_dashboard.css": {
+      "size": 8248,
+      "sha1": "3269bb9918d6bf51ffc395db2d5a0299efe9afd3"
+    }
+  },
+  "jsOrder": [
+    "business_dashboard_config.js",
+    "ar_config.js",
+    "payment_create.js",
+    "ar_engine.js",
+    "business_dashboard_engine.js",
+    "business_dashboard_monthly_engine.js",
+    "business_dashboard_money.js",
+    "business_dashboard_desktop.js"
+  ],
+  "cssOrder": [
+    "business_dashboard.css"
+  ],
+  "monthlyBeforeDesktop": true,
+  "diff": {
+    "business_dashboard_config.js": {
+      "status": "different",
+      "localSha": "3cf2ddac5e3a9c777ae6c77381292139a499957d",
+      "prodSha": "fb975f329f3389a7f8440dfbde841cb3396dbcf4",
+      "action": "override_local"
+    },
+    "ar_config.js": {
+      "status": "different",
+      "localSha": "013847d95c84915937786c6fc7932bbe20ab7cdd",
+      "prodSha": "9d4fd699d9ecda7b36f805dc8ee10307a763ac94",
+      "action": "keep_prod"
+    },
+    "payment_create.js": {
+      "status": "different",
+      "localSha": "524331affdd5630ba77485d466bc18961220feda",
+      "prodSha": "0a0dde0befe171982424134fbfe495afef9458fb",
+      "action": "keep_prod"
+    },
+    "ar_engine.js": {
+      "status": "different",
+      "localSha": "6aa53f02d7126c9e6137a003e7bbb52da8b6c8a9",
+      "prodSha": "65f44ae6f0523157f4c7fc694760e70c12caef82",
+      "action": "keep_prod"
+    },
+    "business_dashboard_engine.js": {
+      "status": "different",
+      "localSha": "af617213e8a17a7e0ce919276d126201aaccb78e",
+      "prodSha": "d4c539a293045def8a2794fad662d55ca202adf6",
+      "action": "keep_prod"
+    },
+    "business_dashboard_monthly_engine.js": {
+      "status": "different",
+      "localSha": "55448e82c14785f3b33645a8829b6fbda457b3f4",
+      "prodSha": "570cae12eb2c9604c469d26b49956e082f2dc204",
+      "action": "override_local"
+    },
+    "business_dashboard_money.js": {
+      "status": "different",
+      "localSha": "81254ea2f28f026b2ad74a5e71c8f9c4200a581b",
+      "prodSha": "605e61635431fc5b297ec5cd14a0fd7b53c1bc4e",
+      "action": "keep_prod"
+    },
+    "business_dashboard_desktop.js": {
+      "status": "different",
+      "localSha": "cd23d03b358322953d74883d2d8e964135a328b2",
+      "prodSha": "862b2a906e14878b101ab1eba97a77f7260f3614",
+      "action": "override_local"
+    },
+    "business_dashboard.css": {
+      "status": "different",
+      "localSha": "285085b9507c7af49e246221fe4e3e1450eb77f5",
+      "prodSha": "3269bb9918d6bf51ffc395db2d5a0299efe9afd3",
+      "action": "override_local"
+    }
+  },
+  "dailyEngineKeepProd": true
+}
