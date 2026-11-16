@@ -1,0 +1,266 @@
+{
+  "ok": true,
+  "dataStart": "2026-03-24",
+  "versions": {
+    "monthly": "1.2.0"
+  },
+  "orderCount": 303,
+  "fy2025": {
+    "total": 150,
+    "tailor": 119,
+    "other": 31,
+    "conflict": 0,
+    "overseas": 112,
+    "domestic": 7,
+    "obi": 0
+  },
+  "fy2026": {
+    "total": 153,
+    "tailor": 132,
+    "other": 20,
+    "conflict": 1,
+    "overseas": 105,
+    "domestic": 27,
+    "obi": 0
+  },
+  "afterDataAll": {
+    "total": 303,
+    "tailor": 251,
+    "other": 51,
+    "conflict": 1,
+    "overseas": 217,
+    "domestic": 34,
+    "obi": 0
+  },
+  "monthBucket": {
+    "2026-05": {
+      "total": 53,
+      "tailor": 40,
+      "other": 13,
+      "conflict": 0,
+      "overseas": 36,
+      "domestic": 4,
+      "obi": 0
+    },
+    "2026-06": {
+      "total": 47,
+      "tailor": 42,
+      "other": 5,
+      "conflict": 0,
+      "overseas": 39,
+      "domestic": 3,
+      "obi": 0
+    },
+    "2026-07": {
+      "total": 50,
+      "tailor": 37,
+      "other": 13,
+      "conflict": 0,
+      "overseas": 37,
+      "domestic": 0,
+      "obi": 0
+    },
+    "2026-08": {
+      "total": 38,
+      "tailor": 34,
+      "other": 4,
+      "conflict": 0,
+      "overseas": 27,
+      "domestic": 7,
+      "obi": 0
+    },
+    "2026-09": {
+      "total": 50,
+      "tailor": 38,
+      "other": 11,
+      "conflict": 1,
+      "overseas": 29,
+      "domestic": 9,
+      "obi": 0
+    },
+    "2026-10": {
+      "total": 46,
+      "tailor": 43,
+      "other": 3,
+      "conflict": 0,
+      "overseas": 33,
+      "domestic": 10,
+      "obi": 0
+    },
+    "2026-11": {
+      "total": 19,
+      "tailor": 17,
+      "other": 2,
+      "conflict": 0,
+      "overseas": 16,
+      "domestic": 1,
+      "obi": 0
+    }
+  },
+  "otherDueToKaigaiTe": 6,
+  "otherKaigaiSamples": [
+    {
+      "manageNo": "050726-14",
+      "orderDate": "2026-05-07",
+      "kimonoType": "小紋",
+      "names": [
+        "海外仕立て",
+        "ゆのし",
+        "ガード加工　丸巻"
+      ]
+    },
+    {
+      "manageNo": "050726-13",
+      "orderDate": "2026-05-07",
+      "kimonoType": "小紋",
+      "names": [
+        "海外仕立て",
+        "ゆのし",
+        "ガード加工　丸巻"
+      ]
+    },
+    {
+      "manageNo": "050826-07",
+      "orderDate": "2026-05-08",
+      "kimonoType": "紬着物",
+      "names": [
+        "海外仕立て",
+        "湯通し"
+      ]
+    },
+    {
+      "manageNo": "050826-11",
+      "orderDate": "2026-05-08",
+      "kimonoType": "紬着物",
+      "names": [
+        "海外仕立て",
+        "解き洗張り"
+      ]
+    },
+    {
+      "manageNo": "050826-09",
+      "orderDate": "2026-05-08",
+      "kimonoType": "羽織",
+      "names": [
+        "海外仕立て",
+        "ゆのしガード"
+      ]
+    },
+    {
+      "manageNo": "050926-57",
+      "orderDate": "2026-05-09",
+      "kimonoType": "小紋",
+      "names": [
+        "海外仕立て",
+        "ゆのしガード"
+      ]
+    }
+  ],
+  "hypoTailorIfAliasKaigaiTe": 257,
+  "hypoGainFromAlias": 6,
+  "topUnresolved": [
+    {
+      "name": "解き洗張り",
+      "n": 7
+    },
+    {
+      "name": "海外仕立て",
+      "n": 6
+    },
+    {
+      "name": "返品",
+      "n": 3
+    }
+  ],
+  "overseasNamed": [
+    {
+      "code": "001",
+      "name": "仕立",
+      "sub": "海外仕立"
+    }
+  ],
+  "customerForFy": {
+    "2025": {
+      "keys": [
+        "version",
+        "asOfDate",
+        "dataStartDate",
+        "fiscal",
+        "fiscalYears",
+        "filters",
+        "filterOptions",
+        "series",
+        "yearTotalKimono",
+        "yearTotals",
+        "selectedMonth",
+        "kimonoTypes",
+        "customerRanking",
+        "customerMatrix",
+        "conflicts",
+        "conflictCount",
+        "backlog",
+        "meta"
+      ],
+      "monthKeys": [],
+      "found": {
+        "tailor": 37,
+        "overseas": 37,
+        "domestic": 0,
+        "obi": 0,
+        "name": "大進ホンダ株式会社"
+      },
+      "fromMonths": {
+        "tailor": 0,
+        "overseas": 0,
+        "domestic": 0,
+        "obi": 0,
+        "perMonth": {}
+      },
+      "yearTailor": 1036
+    },
+    "2026": {
+      "keys": [
+        "version",
+        "asOfDate",
+        "dataStartDate",
+        "fiscal",
+        "fiscalYears",
+        "filters",
+        "filterOptions",
+        "series",
+        "yearTotalKimono",
+        "yearTotals",
+        "selectedMonth",
+        "kimonoTypes",
+        "customerRanking",
+        "customerMatrix",
+        "conflicts",
+        "conflictCount",
+        "backlog",
+        "meta"
+      ],
+      "monthKeys": [],
+      "found": {
+        "tailor": 17,
+        "overseas": 16,
+        "domestic": 1,
+        "obi": 0,
+        "name": "大進ホンダ株式会社"
+      },
+      "fromMonths": {
+        "tailor": 0,
+        "overseas": 0,
+        "domestic": 0,
+        "obi": 0,
+        "perMonth": {}
+      },
+      "yearTailor": 1079
+    }
+  },
+  "augNov2026": {
+    "total": 153,
+    "tailor": 132,
+    "other": 20,
+    "conflict": 1
+  }
+}
