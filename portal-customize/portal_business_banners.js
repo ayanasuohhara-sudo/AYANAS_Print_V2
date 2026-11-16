@@ -2,7 +2,7 @@
     'use strict';
 
     /**
-     * AYANAS 標準ポータル — 8分類バナー表示。
+     * AYANASU 標準ポータル — 11項目フラットバナー表示。
      * portal.show + getContentSpaceElement() のみ使用。
      * 既存ウィジェット・お知らせ・portal-apps-readable の左列操作には触れない。
      * エラー時も既存ポータル表示を妨げない。
@@ -98,7 +98,7 @@
             + '<div class="ayanas-pbb-inner">'
             + '<h2 class="ayanas-pbb-title">' + escapeHtml(cfg().TITLE || '') + '</h2>'
             + '<p class="ayanas-pbb-lead">' + escapeHtml(cfg().LEAD || '') + '</p>'
-            + '<div class="ayanas-pbb-grid" role="navigation" aria-label="業務分類">'
+            + '<div class="ayanas-pbb-grid" role="navigation" aria-label="業務メニュー">'
             + categories.map(itemHtml).join('')
             + '</div>'
             + '</div>';
@@ -143,6 +143,11 @@
             '  grid-template-columns: repeat(4, minmax(0, 1fr));',
             '  gap: 12px;',
             '  width: 100%;',
+            '}',
+            '@media (max-width: 1100px) {',
+            '  #' + cfg().ROOT_ID + ' .ayanas-pbb-grid {',
+            '    grid-template-columns: repeat(3, minmax(0, 1fr));',
+            '  }',
             '}',
             '#' + cfg().ROOT_ID + ' .ayanas-pbb-item {',
             '  display: flex;',

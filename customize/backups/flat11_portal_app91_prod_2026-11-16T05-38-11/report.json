@@ -1,0 +1,146 @@
+{
+  "stamp": "2026-11-16T05-38-11",
+  "workDir": "/agent/repos/AYANAS_Print_V2/customize/backups/flat11_portal_app91_prod_2026-11-16T05-38-11",
+  "steps": {
+    "backupPortal": {
+      "scripts": [
+        "portal_business_banners_config.js",
+        "portal_business_banners.js",
+        "portal_business_banners.css"
+      ]
+    },
+    "backupApp91": {
+      "count": 6,
+      "names": [
+        "hub_nav_config.js",
+        "hub_nav.js",
+        "business_menu_config.js",
+        "business_menu_desktop.js",
+        "hub_nav.css",
+        "business_menu.css"
+      ]
+    },
+    "portal": {
+      "ok": true,
+      "updateStatus": 200,
+      "beforeScripts": [
+        "portal_business_banners_config.js",
+        "portal_business_banners.js",
+        "portal_business_banners.css"
+      ],
+      "afterScripts": [
+        "portal_business_banners_config.js",
+        "portal_business_banners.js",
+        "portal_business_banners.css"
+      ],
+      "keys": {
+        "kConfig": "8fe49bd4-d45e-43b1-9974-56804c9fd4b3",
+        "kJs": "0767bbcb-0123-41b5-9740-cf6c190405f7",
+        "kCss": "fcfbe305-ce97-4d5c-863d-9a82fa740abe"
+      }
+    },
+    "app91": {
+      "ok": true,
+      "deploy": {
+        "app": "91",
+        "status": "SUCCESS"
+      },
+      "js": [
+        "hub_nav_config.js",
+        "hub_nav.js",
+        "business_menu_config.js",
+        "business_menu_desktop.js"
+      ],
+      "css": [
+        "hub_nav.css",
+        "business_menu.css"
+      ]
+    },
+    "verify": {
+      "portal": {
+        "ver": "3.0.0",
+        "labels": [
+          "受注登録",
+          "外注出庫",
+          "和裁士出庫",
+          "外注入庫",
+          "海外出庫",
+          "納品書作成",
+          "請求書作成",
+          "納期",
+          "店舗",
+          "工場",
+          "マスタ"
+        ],
+        "hrefs": [
+          "https://o5nppg7kb4ly.cybozu.com/k/16/",
+          "https://o5nppg7kb4ly.cybozu.com/k/27/",
+          "https://o5nppg7kb4ly.cybozu.com/k/74/",
+          "https://o5nppg7kb4ly.cybozu.com/k/78/",
+          "https://o5nppg7kb4ly.cybozu.com/k/28/",
+          "https://o5nppg7kb4ly.cybozu.com/k/19/",
+          "https://o5nppg7kb4ly.cybozu.com/k/35/",
+          "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=deadline",
+          "https://o5nppg7kb4ly.cybozu.com/k/87/",
+          "https://o5nppg7kb4ly.cybozu.com/k/90/",
+          "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=masters"
+        ],
+        "count": 11
+      },
+      "app91": {
+        "ver": "3.0.0",
+        "hub": true,
+        "tiles": [
+          {
+            "label": "受注登録",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/16/"
+          },
+          {
+            "label": "外注出庫",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/27/"
+          },
+          {
+            "label": "和裁士出庫",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/74/"
+          },
+          {
+            "label": "外注入庫",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/78/"
+          },
+          {
+            "label": "海外出庫",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/28/"
+          },
+          {
+            "label": "納品書",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/19/"
+          },
+          {
+            "label": "請求書",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/35/"
+          },
+          {
+            "label": "納期",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=deadline"
+          },
+          {
+            "label": "店舗",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+          },
+          {
+            "label": "工場",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+          },
+          {
+            "label": "マスタ",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=masters"
+          }
+        ],
+        "count": 11
+      }
+    }
+  },
+  "ok": true,
+  "portalOk": true,
+  "appOk": true
+}

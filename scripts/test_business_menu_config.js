@@ -113,10 +113,21 @@ assert('工場メニューに App98',
 assert('工場メニューに App86 維持',
     F.SECTIONS.some((s) => (s.items || []).some((i) => i.appId === 86)));
 
-assert('ポータル先頭は店舗', P.CATEGORIES[0].appId === 87 && P.CATEGORIES[0].hub === true);
-assert('ポータル2番目は工場', P.CATEGORIES[1].appId === 90 && P.CATEGORIES[1].hub === true);
-assert('ポータルは8枠', P.CATEGORIES.length === 8);
-assert('ポータル VERSION 2.0.0', P.VERSION === '2.0.0');
+assert('ポータル VERSION 3.0.0', P.VERSION === '3.0.0');
+assert('ポータルは11枠', Array.isArray(P.CATEGORIES) && P.CATEGORIES.length === 11);
+assert('ポータル01 受注→16', P.CATEGORIES[0].label === '受注登録' && P.CATEGORIES[0].appId === 16);
+assert('ポータル04 外注入庫→78', P.CATEGORIES[3].label === '外注入庫' && P.CATEGORIES[3].appId === 78);
+assert('ポータル08 納期 menu', P.CATEGORIES[7].label === '納期' && P.CATEGORIES[7].mode === 'menu'
+    && P.CATEGORIES[7].cat === 'deadline');
+assert('ポータル09 店舗→87', P.CATEGORIES[8].label === '店舗' && P.CATEGORIES[8].appId === 87
+    && P.CATEGORIES[8].hub === true);
+assert('ポータル10 工場→90', P.CATEGORIES[9].label === '工場' && P.CATEGORIES[9].appId === 90
+    && P.CATEGORIES[9].hub === true);
+assert('ポータル11 マスタ', P.CATEGORIES[10].label === 'マスタ' && P.CATEGORIES[10].cat === 'masters');
+assert('ポータル店舗・工場は各1',
+    P.CATEGORIES.filter((c) => c.appId === 87).length === 1
+    && P.CATEGORIES.filter((c) => c.appId === 90).length === 1);
+assert('ポータルに App85 なし', P.CATEGORIES.every((c) => c.appId !== 85));
 
 assert('共通ナビ部品あり', !!Hub && typeof Hub.renderHtml === 'function');
 const navHtml = Hub.renderHtml({ activeAppId: 91 });

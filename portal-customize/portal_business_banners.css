@@ -1,5 +1,5 @@
 /*
- * AYANAS 標準ポータル — 8分類バナー
+ * AYANASU 標準ポータル — 11項目フラットバナー
  * 登録先: kintoneシステム管理 → JavaScript / CSSでカスタマイズ（全体・PC用CSS）
  * JS側でも同等スタイルを注入する（CSS未登録時の保険）。
  */
@@ -39,6 +39,12 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   width: 100%;
+}
+
+@media (max-width: 1100px) {
+  #ayanas-portal-business-banners .ayanas-pbb-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 #ayanas-portal-business-banners .ayanas-pbb-item {
