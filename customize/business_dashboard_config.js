@@ -3,13 +3,14 @@
 
     /**
      * 業務ダッシュボード — 定数
-     * BUSINESS_DASHBOARD_VERSION: 1.6.4
+     * BUSINESS_DASHBOARD_VERSION: 1.7.0
+     * 1.7.0: 経営月次タブ（8月起算12か月）追加。日次は維持。
      *
      * kintone で「業務ダッシュボード」アプリ作成後、
      * BUSINESS_DASHBOARD_APP_ID を実 ID に差し替えてください（0 のままでは一覧 UI は起動しません）。
      */
 
-    const BUSINESS_DASHBOARD_VERSION = '1.6.4';
+    const BUSINESS_DASHBOARD_VERSION = '1.7.0';
 
     /** 業務ダッシュボード（kintone ホストアプリ） */
     const BUSINESS_DASHBOARD_APP_ID = 82;
@@ -118,6 +119,58 @@
             moneyFullArLink: '売掛管理（App22）で全列表示',
             moneyDepsMissing: '④を表示するには App82 に ar_config.js → payment_create.js → ar_engine.js → business_dashboard_money.js を business_dashboard_desktop.js より前に登録してください。',
             moneyErrorPrefix: '売掛集計に失敗しました。',
+            tabDaily: '日次',
+            tabMonthly: '経営月次',
+            monthlyTitle: '経営月次分析',
+            monthlyLead: '受注日基準・8月起算12か月。仕立て枚数と金額は別集計。追加加工は仕立て枚数に数えません。',
+            monthlyFiscalYear: '分析年度',
+            monthlyRouteAll: '合計（海外＋国内）',
+            monthlyRouteOverseas: '海外仕立',
+            monthlyRouteDomestic: '国内仕立',
+            monthlyCustomerAll: '全得意先',
+            monthlyKimonoAll: '全着物種類',
+            monthlyApply: '表示更新',
+            monthlyReload: '再集計',
+            monthlyChartTitle: '12か月 受注枚数推移',
+            monthlyTableTitle: '月別一覧（8月〜翌7月）',
+            monthlyAmountTitle: '金額・単価（選択月）',
+            monthlyKimonoTitle: '着物種類別 受注枚数',
+            monthlyCustomerRankTitle: '得意先ランキング（選択月）',
+            monthlyCustomerMatrixTitle: '得意先×月別 受注枚数',
+            monthlyBacklogTitle: '未納品の受注残',
+            monthlyDataStartNote: 'App16 データ開始日以前の月は未集計（—）。将来月は未到来。前年同月比較は表示しません。',
+            monthlySeparationNote: '仕立て金額＝中分類が海外仕立/国内仕立/帯仕立の明細合計。追加加工は含めません。未解決明細がある受注の金額分離は「分離不可」。',
+            monthlyColMonth: '月',
+            monthlyColOverseas: '海外仕立',
+            monthlyColDomestic: '国内仕立',
+            monthlyColTotal: '合計',
+            monthlyColCumulative: '累計',
+            monthlyColMom: '前月比',
+            monthlyColMomRate: '増減率',
+            monthlyStatusFuture: '未到来',
+            monthlyStatusBeforeData: '—',
+            monthlySeparationImpossible: '分離不可',
+            monthlyOrderTotal: '受注総額',
+            monthlyTailorAmount: '仕立て金額',
+            monthlyAddonAmount: '追加加工金額',
+            monthlyAvgOrder: '平均受注単価',
+            monthlyAvgTailor: '平均仕立単価',
+            monthlyDepsMissing: '経営月次を表示するには business_dashboard_monthly_engine.js を desktop より前に登録してください。',
+        },
+        /**
+         * 経営月次（8/1〜翌7/31）。日次の今年度(6/1〜)とは別定義。
+         */
+        MONTHLY: {
+            DATA_START_DATE: '2026-03-24',
+            MONTH_ORDER: [8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7],
+            TAILOR_SUBCATEGORIES: ['海外仕立', '国内仕立', '帯仕立'],
+            OVERSEAS_SUBCATEGORY: '海外仕立',
+            DOMESTIC_SUBCATEGORIES: ['国内仕立', '帯仕立'],
+            /** 集計側のみ正規化（元データは変更しない） */
+            SUBCATEGORY_ALIASES: {
+                '洗い張り': '洗張り',
+                '修理・直し': '修理',
+            },
         },
         /** 全体状況 — 受注/納品ブロックの列（Excel 全体状況.xlsx 準拠） */
         OVERVIEW_CATEGORY_COLUMNS: [

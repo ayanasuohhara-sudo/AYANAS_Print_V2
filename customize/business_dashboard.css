@@ -377,3 +377,138 @@ button.ayanas-bd-toggle {
 .ayanas-bd-table tbody tr:hover td {
   background: #f8fafc;
 }
+
+/* —— 経営月次 —— */
+.ayanas-bd-main-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.ayanas-bd-main-tab {
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ayanas-bd-main-tab.is-active {
+  background: #1e3a5f;
+  border-color: #1e3a5f;
+  color: #fff;
+}
+
+.ayanas-bd-lead {
+  margin: 0 0 8px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.ayanas-bd-m-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+  margin-top: 10px;
+}
+
+.ayanas-bd-m-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.ayanas-bd-m-filters select {
+  min-width: 140px;
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.ayanas-bd-m-routes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ayanas-bd-m-chart {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 8px;
+  align-items: end;
+  min-height: 160px;
+  padding: 12px 8px 4px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.ayanas-bd-m-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ayanas-bd-m-bar {
+  width: 100%;
+  max-width: 36px;
+  border-radius: 4px 4px 0 0;
+  background: #2f5f8a;
+}
+
+.ayanas-bd-m-bar.is-future,
+.ayanas-bd-m-bar.is-empty {
+  background: #e2e8f0;
+}
+
+.ayanas-bd-m-bar-label {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.ayanas-bd-m-bar-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ayanas-bd-m-row {
+  cursor: pointer;
+}
+
+.ayanas-bd-m-row.is-selected td {
+  background: #e8f1fa;
+}
+
+.ayanas-bd-scroll {
+  overflow-x: auto;
+}
+
+.ayanas-bd-table--matrix {
+  min-width: 900px;
+  font-size: 13px;
+}
+
+.ayanas-bd-sub {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .ayanas-bd-m-chart {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    row-gap: 16px;
+  }
+}

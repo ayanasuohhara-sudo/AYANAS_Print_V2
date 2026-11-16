@@ -17,9 +17,10 @@
 3. `customize/payment_create.js`（④・変更なし）
 4. `customize/ar_engine.js`（④）
 5. `customize/business_dashboard_engine.js`
-6. `customize/business_dashboard_money.js`（④ UI）
-7. `customize/business_dashboard_desktop.js`
-8. `customize/business_dashboard.css`（CSS ファイルとして）
+6. `customize/business_dashboard_monthly_engine.js`（経営月次・1.7.0〜）
+7. `customize/business_dashboard_money.js`（④ UI）
+8. `customize/business_dashboard_desktop.js`
+9. `customize/business_dashboard.css`（CSS ファイルとして）
 
 **App 22 / App 35 / App 21 には business_dashboard 用 JS を登録しない。**
 
