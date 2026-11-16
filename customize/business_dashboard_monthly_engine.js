@@ -6,7 +6,7 @@
      * CAYANAS_BusinessDashboardMonthly
      */
 
-    const VERSION = '1.0.0';
+    const VERSION = '1.1.0';
 
     const assertDeps = () => {
         if (typeof CAYANAS_BUSINESS_DASHBOARD === 'undefined') {
@@ -127,28 +127,59 @@
         return '';
     };
 
-    /**
-     * @returns {'overseas'|'domestic'|'other'}
-     */
-    const classifyKimonoRoute = (subcategories) => {
-        const set = new Set((subcategories || []).map(normalizeSubcategory).filter(Boolean));
+    const tailorCategoryKeys = () => {
         const overseas = M().OVERSEAS_SUBCATEGORY || '海外仕立';
-        const domestic = M().DOMESTIC_SUBCATEGORIES || ['国内仕立', '帯仕立'];
-        if (set.has(overseas)) {
-            return 'overseas';
-        }
-        for (let i = 0; i < domestic.length; i += 1) {
-            if (set.has(domestic[i])) {
-                return 'domestic';
-            }
-        }
-        return 'other';
+        const domestic = M().DOMESTIC_KIMONO_SUBCATEGORY || '国内仕立';
+        const obi = M().OBI_SUBCATEGORY || '帯仕立';
+        return { overseas, domestic, obi };
     };
+
+    /**
+     * App13中分類から仕立てルートを決定。
+     * 複数の仕立て分類が同居する場合は conflict（重複計上しない）。
+     * @returns {{
+     *   route: 'overseas'|'domestic'|'obi'|'conflict'|'other',
+     *   tailorCategories: string[],
+     *   isConflict: boolean,
+     * }}
+     */
+    const classifyTailorRouteDetail = (subcategories) => {
+        const keys = tailorCategoryKeys();
+        const set = new Set((subcategories || []).map(normalizeSubcategory).filter(Boolean));
+        const found = [];
+        if (set.has(keys.overseas)) {
+            found.push('overseas');
+        }
+        if (set.has(keys.domestic)) {
+            found.push('domestic');
+        }
+        if (set.has(keys.obi)) {
+            found.push('obi');
+        }
+        if (found.length === 0) {
+            return { route: 'other', tailorCategories: [], isConflict: false };
+        }
+        if (found.length === 1) {
+            return { route: found[0], tailorCategories: found, isConflict: false };
+        }
+        return { route: 'conflict', tailorCategories: found, isConflict: true };
+    };
+
+    /**
+     * @returns {'overseas'|'domestic'|'obi'|'conflict'|'other'}
+     */
+    const classifyKimonoRoute = (subcategories) => (
+        classifyTailorRouteDetail(subcategories).route
+    );
 
     const isTailorSubcategory = (sub) => {
         const list = M().TAILOR_SUBCATEGORIES || ['海外仕立', '国内仕立', '帯仕立'];
         return list.indexOf(normalizeSubcategory(sub)) >= 0;
     };
+
+    const isCountableTailorRoute = (route) => (
+        route === 'overseas' || route === 'domestic' || route === 'obi'
+    );
 
     /**
      * 1受注の行解析
@@ -194,7 +225,8 @@
             }
         });
 
-        const route = classifyKimonoRoute(subs);
+        const classified = classifyTailorRouteDetail(subs);
+        const route = classified.route;
 
         return {
             manageNo,
@@ -204,12 +236,14 @@
             kimonoType,
             kimonoSpec,
             route,
+            tailorCategories: classified.tailorCategories,
+            isConflict: classified.isConflict,
             orderTotal,
             tailorAmount,
             addonAmount,
             unresolvedAmount,
             amountSeparable: !hasUnresolved,
-            isTailorKimono: route === 'overseas' || route === 'domestic',
+            isTailorKimono: isCountableTailorRoute(route),
         };
     };
 
@@ -271,6 +305,7 @@
     const emptyMonthMetrics = () => ({
         overseasKimono: 0,
         domesticKimono: 0,
+        obiKimono: 0,
         tailorKimono: 0,
         orderTotal: 0,
         tailorAmount: 0,
@@ -288,6 +323,7 @@
                 customerName: name || key,
                 overseasKimono: 0,
                 domesticKimono: 0,
+                obiKimono: 0,
                 tailorKimono: 0,
                 orderTotal: 0,
                 tailorAmount: 0,
@@ -306,22 +342,29 @@
                 kimonoType: key,
                 overseasKimono: 0,
                 domesticKimono: 0,
+                obiKimono: 0,
                 tailorKimono: 0,
             });
         }
         return map.get(key);
     };
 
+    const bumpRouteCount = (target, route) => {
+        if (route === 'overseas') {
+            target.overseasKimono += 1;
+        } else if (route === 'domestic') {
+            target.domesticKimono += 1;
+        } else if (route === 'obi') {
+            target.obiKimono += 1;
+        }
+        target.tailorKimono += 1;
+    };
+
     const addOrderToMonth = (bucket, order) => {
         if (!order.manageNo || !order.isTailorKimono) {
             return;
         }
-        if (order.route === 'overseas') {
-            bucket.overseasKimono += 1;
-        } else if (order.route === 'domestic') {
-            bucket.domesticKimono += 1;
-        }
-        bucket.tailorKimono += 1;
+        bumpRouteCount(bucket, order.route);
         bucket.orderTotal += order.orderTotal;
         if (order.amountSeparable) {
             bucket.tailorAmount += order.tailorAmount;
@@ -333,12 +376,7 @@
         const cust = ensureCustomer(bucket.byCustomer, order.customerCode, order.customerName);
         if (!cust.manageNos.has(order.manageNo)) {
             cust.manageNos.add(order.manageNo);
-            if (order.route === 'overseas') {
-                cust.overseasKimono += 1;
-            } else {
-                cust.domesticKimono += 1;
-            }
-            cust.tailorKimono += 1;
+            bumpRouteCount(cust, order.route);
         }
         cust.orderTotal += order.orderTotal;
         if (order.amountSeparable) {
@@ -349,12 +387,7 @@
         }
 
         const typeRow = ensureType(bucket.byKimonoType, order.kimonoType);
-        if (order.route === 'overseas') {
-            typeRow.overseasKimono += 1;
-        } else {
-            typeRow.domesticKimono += 1;
-        }
-        typeRow.tailorKimono += 1;
+        bumpRouteCount(typeRow, order.route);
     };
 
     const finalizeCustomerMap = (map) => (
@@ -363,6 +396,7 @@
             customerName: row.customerName,
             overseasKimono: row.overseasKimono,
             domesticKimono: row.domesticKimono,
+            obiKimono: row.obiKimono,
             tailorKimono: row.tailorKimono,
             orderTotal: row.orderTotal,
             tailorAmount: row.tailorAmount,
@@ -383,7 +417,23 @@
         if (routeFilter === 'domestic') {
             return metrics.domesticKimono;
         }
+        if (routeFilter === 'obi') {
+            return metrics.obiKimono;
+        }
         return metrics.tailorKimono;
+    };
+
+    const routeCountFromRow = (row, routeFilter) => {
+        if (routeFilter === 'overseas') {
+            return row.overseasKimono;
+        }
+        if (routeFilter === 'domestic') {
+            return row.domesticKimono;
+        }
+        if (routeFilter === 'obi') {
+            return row.obiKimono;
+        }
+        return row.tailorKimono;
     };
 
     const buildMonthSeries = (fiscal, monthBuckets, asOf, dataStart, routeFilter) => {
@@ -413,6 +463,7 @@
                 status,
                 overseasKimono: status === 'ready' ? metrics.overseasKimono : null,
                 domesticKimono: status === 'ready' ? metrics.domesticKimono : null,
+                obiKimono: status === 'ready' ? metrics.obiKimono : null,
                 tailorKimono: status === 'ready' ? metrics.tailorKimono : null,
                 filteredKimono: count,
                 cumulative: status === 'ready' ? cumulative : null,
@@ -443,11 +494,7 @@
                     });
                 }
                 const target = customerMap.get(code);
-                const value = routeFilter === 'overseas'
-                    ? row.overseasKimono
-                    : routeFilter === 'domestic'
-                        ? row.domesticKimono
-                        : row.tailorKimono;
+                const value = routeCountFromRow(row, routeFilter);
                 target.months[monthMeta.key] = value;
                 target.yearTotal += value;
             });
@@ -462,18 +509,8 @@
         );
         return finalizeCustomerMap(selectedMetrics.byCustomer).map((row) => {
             const prev = prevMap.get(row.customerCode);
-            const currentCount = routeFilter === 'overseas'
-                ? row.overseasKimono
-                : routeFilter === 'domestic'
-                    ? row.domesticKimono
-                    : row.tailorKimono;
-            const prevCount = prev
-                ? (routeFilter === 'overseas'
-                    ? prev.overseasKimono
-                    : routeFilter === 'domestic'
-                        ? prev.domesticKimono
-                        : prev.tailorKimono)
-                : 0;
+            const currentCount = routeCountFromRow(row, routeFilter);
+            const prevCount = prev ? routeCountFromRow(prev, routeFilter) : 0;
             const currentAmount = row.orderTotal;
             const prevAmount = prev ? prev.orderTotal : 0;
             return {
@@ -498,6 +535,9 @@
         if (filters.route === 'domestic' && order.route !== 'domestic') {
             return false;
         }
+        if (filters.route === 'obi' && order.route !== 'obi') {
+            return false;
+        }
         if (filters.customerCode && filters.customerCode !== 'ALL'
             && order.customerCode !== filters.customerCode) {
             return false;
@@ -512,7 +552,7 @@
     /**
      * @param {{
      *   fiscalStartYear: number,
-     *   route?: 'all'|'overseas'|'domestic',
+     *   route?: 'all'|'overseas'|'domestic'|'obi',
      *   customerCode?: string,
      *   kimonoType?: string,
      *   selectedMonthKey?: string,
@@ -560,6 +600,7 @@
 
         const lookup = buildProductLookup(productRecords);
         const analyzed = [];
+        const conflicts = [];
         const customerOptions = new Map();
         const kimonoOptions = new Set();
 
@@ -572,6 +613,21 @@
                 return;
             }
             analyzed.push(order);
+            if (order.isConflict
+                && order.orderDate >= fiscal.startDate
+                && order.orderDate <= fiscal.endDate) {
+                conflicts.push({
+                    manageNo: order.manageNo,
+                    orderDate: order.orderDate,
+                    customerCode: order.customerCode,
+                    customerName: order.customerName,
+                    kimonoType: order.kimonoType,
+                    tailorCategories: order.tailorCategories.slice(),
+                    orderTotal: order.orderTotal,
+                    tailorAmount: order.tailorAmount,
+                    addonAmount: order.addonAmount,
+                });
+            }
             if (order.isTailorKimono) {
                 customerOptions.set(
                     order.customerCode || '（未設定）',
@@ -654,6 +710,21 @@
 
         const yearReady = series.filter((row) => row.status === 'ready');
         const yearTotalKimono = yearReady.reduce((sum, row) => sum + (row.filteredKimono || 0), 0);
+        const yearOverseas = yearReady.reduce((sum, row) => sum + (row.overseasKimono || 0), 0);
+        const yearDomestic = yearReady.reduce((sum, row) => sum + (row.domesticKimono || 0), 0);
+        const yearObi = yearReady.reduce((sum, row) => sum + (row.obiKimono || 0), 0);
+
+        const filteredConflicts = conflicts.filter((row) => {
+            if (filters.customerCode && filters.customerCode !== 'ALL'
+                && row.customerCode !== filters.customerCode) {
+                return false;
+            }
+            if (filters.kimonoType && filters.kimonoType !== 'ALL'
+                && row.kimonoType !== filters.kimonoType) {
+                return false;
+            }
+            return true;
+        });
 
         return {
             version: VERSION,
@@ -678,12 +749,20 @@
             },
             series,
             yearTotalKimono,
+            yearTotals: {
+                overseasKimono: yearOverseas,
+                domesticKimono: yearDomestic,
+                obiKimono: yearObi,
+                tailorKimono: yearOverseas + yearDomestic + yearObi,
+                conflictCount: filteredConflicts.length,
+            },
             selectedMonth: {
                 key: selectedMonthKey,
                 label: selectedSeriesRow ? selectedSeriesRow.label : selectedMonthKey,
                 status: selectedSeriesRow ? selectedSeriesRow.status : 'ready',
                 overseasKimono: selectedMetrics.overseasKimono,
                 domesticKimono: selectedMetrics.domesticKimono,
+                obiKimono: selectedMetrics.obiKimono,
                 tailorKimono: selectedMetrics.tailorKimono,
                 filteredKimono: filterRouteCount(selectedMetrics, routeFilter),
                 orderTotal: selectedMetrics.orderTotal,
@@ -697,6 +776,8 @@
             kimonoTypes: finalizeTypeMap(selectedMetrics.byKimonoType),
             customerRanking: buildCustomerRanking(selectedMetrics, previousMetrics, routeFilter),
             customerMatrix: buildCustomerMatrix(fiscal, monthBuckets, asOf, dataStart, routeFilter),
+            conflicts: filteredConflicts.slice(0, 200),
+            conflictCount: filteredConflicts.length,
             backlog: {
                 openKimono: openOrders.length,
                 orders: openOrders.slice(0, 200).map((order) => ({
@@ -716,9 +797,11 @@
                     && o.orderDate >= fiscal.startDate
                     && o.orderDate <= fiscal.endDate
                 )).length,
+                conflictCountInFiscal: conflicts.length,
                 notes: [
                     '枚数は distinct manage_no（着物単位）。qty合計ではない。',
                     '追加加工は仕立て枚数に数えない。',
+                    '仕立て分類は海外仕立／国内仕立／帯仕立。複数同居は競合として報告し枚数に含めない。',
                     '金額は明細中分類で仕立/追加を分離。未解決は分離不可。',
                     '前年同月比較はデータ不足のため非表示。',
                 ],
@@ -732,6 +815,7 @@
         todayYmdJst,
         normalizeSubcategory,
         classifyKimonoRoute,
+        classifyTailorRouteDetail,
         analyzeOrder,
         fiscalYearRange,
         listFiscalYears,

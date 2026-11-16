@@ -1106,6 +1106,7 @@
 
     const renderMonthlyTable = (report) => {
         const u = ui();
+        const yt = report.yearTotals || {};
         const rows = (report.series || []).map((row) => {
             const selected = row.key === report.filters.selectedMonthKey ? ' is-selected' : '';
             return `
@@ -1113,6 +1114,7 @@
   <td>${escapeHtml(row.label)}</td>
   <td class="num">${formatMonthCell(row.overseasKimono, row.status)}</td>
   <td class="num">${formatMonthCell(row.domesticKimono, row.status)}</td>
+  <td class="num">${formatMonthCell(row.obiKimono, row.status)}</td>
   <td class="num">${formatMonthCell(row.tailorKimono, row.status)}</td>
   <td class="num">${formatMonthCell(row.cumulative, row.status)}</td>
   <td class="num">${row.status === 'ready' ? formatMom(row.mom, row.momRate) : '—'}</td>
@@ -1121,14 +1123,21 @@
         return `
 <section class="ayanas-bd-section">
   <h2 class="ayanas-bd-section__title">${escapeHtml(u.monthlyTableTitle || '月別一覧')}</h2>
-  <p class="ayanas-bd-note">年度累計（集計済月）: ${formatInt(report.yearTotalKimono)} 枚</p>
+  <p class="ayanas-bd-note">
+    年度累計（集計済・競合除く）: 海外 ${formatInt(yt.overseasKimono || 0)}
+    / 国内着物 ${formatInt(yt.domesticKimono || 0)}
+    / 帯 ${formatInt(yt.obiKimono || 0)}
+    / 仕立て合計 ${formatInt(yt.tailorKimono || report.yearTotalKimono || 0)} 枚
+    ${yt.conflictCount ? ` / 競合 ${formatInt(yt.conflictCount)} 件` : ''}
+  </p>
   <table class="ayanas-bd-table ayanas-bd-table--summary">
     <thead>
       <tr>
         <th>${escapeHtml(u.monthlyColMonth || '月')}</th>
         <th>${escapeHtml(u.monthlyColOverseas || '海外仕立')}</th>
-        <th>${escapeHtml(u.monthlyColDomestic || '国内仕立')}</th>
-        <th>${escapeHtml(u.monthlyColTotal || '合計')}</th>
+        <th>${escapeHtml(u.monthlyColDomestic || '国内着物仕立')}</th>
+        <th>${escapeHtml(u.monthlyColObi || '帯仕立')}</th>
+        <th>${escapeHtml(u.monthlyColTotal || '仕立て合計')}</th>
         <th>${escapeHtml(u.monthlyColCumulative || '累計')}</th>
         <th>${escapeHtml(u.monthlyColMom || '前月比')}</th>
       </tr>
@@ -1156,6 +1165,10 @@
   <p class="ayanas-bd-note">${escapeHtml(u.monthlySeparationNote || '')}</p>
   <table class="ayanas-bd-table ayanas-bd-table--summary">
     <tbody>
+      <tr><th>${escapeHtml(u.monthlyColOverseas || '海外仕立')}</th><td class="num">${formatInt(s.overseasKimono)} 枚</td></tr>
+      <tr><th>${escapeHtml(u.monthlyColDomestic || '国内着物仕立')}</th><td class="num">${formatInt(s.domesticKimono)} 枚</td></tr>
+      <tr><th>${escapeHtml(u.monthlyColObi || '帯仕立')}</th><td class="num">${formatInt(s.obiKimono)} 枚</td></tr>
+      <tr><th>${escapeHtml(u.monthlyColTotal || '仕立て合計')}</th><td class="num">${formatInt(s.tailorKimono)} 枚</td></tr>
       <tr><th>${escapeHtml(u.monthlyOrderTotal || '受注総額')}</th><td class="num">${formatYen(s.orderTotal)}</td></tr>
       <tr><th>${escapeHtml(u.monthlyTailorAmount || '仕立て金額')}</th><td class="num">${sep}</td></tr>
       <tr><th>${escapeHtml(u.monthlyAddonAmount || '追加加工金額')}</th><td class="num">${addon}</td></tr>
@@ -1168,18 +1181,73 @@
     };
 
     const renderMonthlyKimonoTypes = (report) => {
+        const u = ui();
         const rows = (report.kimonoTypes || []).map((row) => `
 <tr>
   <td>${escapeHtml(row.kimonoType)}</td>
   <td class="num">${formatInt(row.overseasKimono)}</td>
   <td class="num">${formatInt(row.domesticKimono)}</td>
+  <td class="num">${formatInt(row.obiKimono)}</td>
   <td class="num">${formatInt(row.tailorKimono)}</td>
-</tr>`).join('') || '<tr><td colspan="4">データなし</td></tr>';
+</tr>`).join('') || '<tr><td colspan="5">データなし</td></tr>';
         return `
 <section class="ayanas-bd-section">
-  <h2 class="ayanas-bd-section__title">${escapeHtml(ui().monthlyKimonoTitle || '着物種類別')}</h2>
+  <h2 class="ayanas-bd-section__title">${escapeHtml(u.monthlyKimonoTitle || '着物種類別')}</h2>
   <table class="ayanas-bd-table">
-    <thead><tr><th>着物種類</th><th>海外</th><th>国内</th><th>合計</th></tr></thead>
+    <thead><tr>
+      <th>着物種類</th>
+      <th>${escapeHtml(u.monthlyRouteLabelOverseas || '海外')}</th>
+      <th>${escapeHtml(u.monthlyRouteLabelDomestic || '国内着物')}</th>
+      <th>${escapeHtml(u.monthlyRouteLabelObi || '帯')}</th>
+      <th>${escapeHtml(u.monthlyColTotal || '合計')}</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+</section>`;
+    };
+
+    const formatRouteLabel = (route) => {
+        const u = ui();
+        if (route === 'overseas') {
+            return u.monthlyRouteLabelOverseas || '海外';
+        }
+        if (route === 'domestic') {
+            return u.monthlyRouteLabelDomestic || '国内着物';
+        }
+        if (route === 'obi') {
+            return u.monthlyRouteLabelObi || '帯';
+        }
+        if (route === 'conflict') {
+            return u.monthlyRouteLabelConflict || '競合';
+        }
+        return route || '—';
+    };
+
+    const renderMonthlyConflicts = (report) => {
+        const u = ui();
+        const conflicts = report.conflicts || [];
+        if (!conflicts.length) {
+            return `
+<section class="ayanas-bd-section">
+  <h2 class="ayanas-bd-section__title">${escapeHtml(u.monthlyConflictsTitle || '仕立て分類の競合')}</h2>
+  <p class="ayanas-bd-note">競合なし（1管理番号に複数の仕立て分類が同居する受注はありません）。</p>
+</section>`;
+        }
+        const catLabel = (key) => formatRouteLabel(key);
+        const rows = conflicts.map((row) => `
+<tr>
+  <td>${escapeHtml(row.manageNo)}</td>
+  <td>${escapeHtml(row.orderDate)}</td>
+  <td>${escapeHtml(row.customerName)}</td>
+  <td>${escapeHtml(row.kimonoType)}</td>
+  <td>${escapeHtml((row.tailorCategories || []).map(catLabel).join('＋'))}</td>
+</tr>`).join('');
+        return `
+<section class="ayanas-bd-section">
+  <h2 class="ayanas-bd-section__title">${escapeHtml(u.monthlyConflictsTitle || '仕立て分類の競合')}</h2>
+  <p class="ayanas-bd-note">競合 ${formatInt(report.conflictCount || conflicts.length)} 件。枚数集計には含めず報告のみです。</p>
+  <table class="ayanas-bd-table">
+    <thead><tr><th>管理番号</th><th>受注日</th><th>得意先</th><th>着物種類</th><th>同居分類</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>
 </section>`;
@@ -1246,7 +1314,7 @@
   <td>${escapeHtml(row.orderDate)}</td>
   <td>${escapeHtml(row.customerName)}</td>
   <td>${escapeHtml(row.kimonoType)}</td>
-  <td>${escapeHtml(row.route === 'overseas' ? '海外' : '国内')}</td>
+  <td>${escapeHtml(formatRouteLabel(row.route))}</td>
 </tr>`).join('') || '<tr><td colspan="5">受注残なし</td></tr>';
         return `
 <section class="ayanas-bd-section">
@@ -1284,16 +1352,18 @@
     <select id="ayanas-bd-m-year">${years}</select>
   </label>
   <div class="ayanas-bd-m-routes">
-    ${routeBtn('all', u.monthlyRouteAll || '合計')}
+    ${routeBtn('all', u.monthlyRouteAll || '仕立て合計')}
     ${routeBtn('overseas', u.monthlyRouteOverseas || '海外仕立')}
-    ${routeBtn('domestic', u.monthlyRouteDomestic || '国内仕立')}
+    ${routeBtn('domestic', u.monthlyRouteDomestic || '国内着物仕立')}
+    ${routeBtn('obi', u.monthlyRouteObi || '帯仕立')}
   </div>
   <label>得意先<select id="ayanas-bd-m-customer">${customers}</select></label>
   <label>着物種類<select id="ayanas-bd-m-kimono">${types}</select></label>
   <label>選択月<select id="ayanas-bd-m-month">${months}</select></label>
   <button type="button" class="ayanas-bd-btn ayanas-bd-btn--primary" id="ayanas-bd-m-apply">${escapeHtml(u.monthlyApply || '表示更新')}</button>
   <button type="button" class="ayanas-bd-btn" id="ayanas-bd-m-reload">${escapeHtml(u.monthlyReload || '再集計')}</button>
-</div>`;
+</div>
+<p class="ayanas-bd-note">${escapeHtml(u.monthlyRouteNote || '')}</p>`;
     };
 
     const renderMonthlyView = () => {
@@ -1322,7 +1392,8 @@ ${renderMonthlyAmounts(report)}
 ${renderMonthlyKimonoTypes(report)}
 ${renderMonthlyCustomerRank(report)}
 ${renderMonthlyCustomerMatrix(report)}
-${renderMonthlyBacklog(report)}`;
+${renderMonthlyBacklog(report)}
+${renderMonthlyConflicts(report)}`;
     };
 
     const renderAll = (root) => {

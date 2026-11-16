@@ -3,14 +3,15 @@
 
     /**
      * 業務ダッシュボード — 定数
-     * BUSINESS_DASHBOARD_VERSION: 1.7.0
+     * BUSINESS_DASHBOARD_VERSION: 1.7.1
+     * 1.7.1: 経営月次の仕立て分類を 海外 / 国内着物 / 帯 に分離（競合は重複計上せず報告）。日次は維持。
      * 1.7.0: 経営月次タブ（8月起算12か月）追加。日次は維持。
      *
      * kintone で「業務ダッシュボード」アプリ作成後、
      * BUSINESS_DASHBOARD_APP_ID を実 ID に差し替えてください（0 のままでは一覧 UI は起動しません）。
      */
 
-    const BUSINESS_DASHBOARD_VERSION = '1.7.0';
+    const BUSINESS_DASHBOARD_VERSION = '1.7.1';
 
     /** 業務ダッシュボード（kintone ホストアプリ） */
     const BUSINESS_DASHBOARD_APP_ID = 82;
@@ -122,11 +123,12 @@
             tabDaily: '日次',
             tabMonthly: '経営月次',
             monthlyTitle: '経営月次分析',
-            monthlyLead: '受注日基準・8月起算12か月。仕立て枚数と金額は別集計。追加加工は仕立て枚数に数えません。',
+            monthlyLead: '受注日基準・8月起算12か月。仕立ては海外／国内着物／帯に分離。追加加工は仕立て枚数に数えません。',
             monthlyFiscalYear: '分析年度',
-            monthlyRouteAll: '合計（海外＋国内）',
+            monthlyRouteAll: '仕立て合計',
             monthlyRouteOverseas: '海外仕立',
-            monthlyRouteDomestic: '国内仕立',
+            monthlyRouteDomestic: '国内着物仕立',
+            monthlyRouteObi: '帯仕立',
             monthlyCustomerAll: '全得意先',
             monthlyKimonoAll: '全着物種類',
             monthlyApply: '表示更新',
@@ -138,12 +140,15 @@
             monthlyCustomerRankTitle: '得意先ランキング（選択月）',
             monthlyCustomerMatrixTitle: '得意先×月別 受注枚数',
             monthlyBacklogTitle: '未納品の受注残',
+            monthlyConflictsTitle: '仕立て分類の競合',
             monthlyDataStartNote: 'App16 データ開始日以前の月は未集計（—）。将来月は未到来。前年同月比較は表示しません。',
             monthlySeparationNote: '仕立て金額＝中分類が海外仕立/国内仕立/帯仕立の明細合計。追加加工は含めません。未解決明細がある受注の金額分離は「分離不可」。',
+            monthlyRouteNote: '1管理番号＝1枚。App13中分類で海外仕立／国内仕立／帯仕立を分離。複数の仕立て分類が同居する場合は重複計上せず競合として報告します。',
             monthlyColMonth: '月',
             monthlyColOverseas: '海外仕立',
-            monthlyColDomestic: '国内仕立',
-            monthlyColTotal: '合計',
+            monthlyColDomestic: '国内着物仕立',
+            monthlyColObi: '帯仕立',
+            monthlyColTotal: '仕立て合計',
             monthlyColCumulative: '累計',
             monthlyColMom: '前月比',
             monthlyColMomRate: '増減率',
@@ -156,6 +161,10 @@
             monthlyAvgOrder: '平均受注単価',
             monthlyAvgTailor: '平均仕立単価',
             monthlyDepsMissing: '経営月次を表示するには business_dashboard_monthly_engine.js を desktop より前に登録してください。',
+            monthlyRouteLabelOverseas: '海外',
+            monthlyRouteLabelDomestic: '国内着物',
+            monthlyRouteLabelObi: '帯',
+            monthlyRouteLabelConflict: '競合',
         },
         /**
          * 経営月次（8/1〜翌7/31）。日次の今年度(6/1〜)とは別定義。
@@ -165,6 +174,9 @@
             MONTH_ORDER: [8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7],
             TAILOR_SUBCATEGORIES: ['海外仕立', '国内仕立', '帯仕立'],
             OVERSEAS_SUBCATEGORY: '海外仕立',
+            DOMESTIC_KIMONO_SUBCATEGORY: '国内仕立',
+            OBI_SUBCATEGORY: '帯仕立',
+            /** @deprecated 1.7.1 以降は DOMESTIC_KIMONO / OBI を使用 */
             DOMESTIC_SUBCATEGORIES: ['国内仕立', '帯仕立'],
             /** 集計側のみ正規化（元データは変更しない） */
             SUBCATEGORY_ALIASES: {
