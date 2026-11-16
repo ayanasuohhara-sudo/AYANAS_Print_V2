@@ -6,7 +6,11 @@
    * App ID は本番作成後に必ず実値へ更新すること（0 のままでは動作しない）。
    */
 
-  const PCM_CONFIG_VERSION = '1.1.0-app16-link';
+  /**
+   * 1.2.0-p1-measure: 寸法履歴サブテーブル対応（カルテ表示・現行フラグ）
+   * 1.1.0-app16-link: App16 受注履歴連携
+   */
+  const PCM_CONFIG_VERSION = '1.2.0-p1-measure';
 
   /** @type {number} 個人顧客マスタ App ID */
   const PCM_APP_ID = 96;
@@ -116,10 +120,54 @@
     kimonoType: 'kimono_type',
     detailTable: 'detail_table',
     detailItemName: 'item_name',
+    detailAmount: 'amount',
     deadline: 'deadline',
     processStatus: 'process_status',
     locationStatus: 'location_status',
     deliveryStatus: 'delivery_status',
+    deliveryDate: 'delivery_date',
+    storePaymentStatus: 'store_payment_status',
+  };
+
+  /** App96 寸法履歴サブテーブル（本番フィールド追加後に有効） */
+  const MEASURE = {
+    table: 'measure_history',
+    measuredAt: 'measured_at',
+    measureKind: 'measure_kind',
+    garmentType: 'garment_type',
+    measureLabel: 'measure_label',
+    isCurrent: 'is_current',
+    manageNo: 'manage_no',
+    heightCm: 'height_cm',
+    mitakeCm: 'mitake_cm',
+    yukiCm: 'yuki_cm',
+    katahabaCm: 'katahaba_cm',
+    sodeCm: 'sode_cm',
+    sodehabaCm: 'sodehaba_cm',
+    maehabaCm: 'maehaba_cm',
+    ushirohabaCm: 'ushirohaba_cm',
+    susoCm: 'suso_cm',
+    eriCm: 'eri_cm',
+    bustCm: 'bust_cm',
+    waistCm: 'waist_cm',
+    hipCm: 'hip_cm',
+    measureNote: 'measure_note',
+    currentOption: '現行',
+    kinds: {
+      body: '身体寸法',
+      finish: '仕上がり寸法',
+    },
+    garments: {
+      body: '身体',
+      nagagi: '長着',
+      juban: '長襦袢',
+      haori: '羽織',
+      coat: 'コート',
+      hakama: '袴',
+      other: 'その他',
+    },
+    /** 現行フラグの重複判定キー: 種類 + 対象 + 寸法名称 */
+    currentKeyParts: ['measureKind', 'garmentType', 'measureLabel'],
   };
 
   window.CAYANAS_PCM = {
@@ -136,6 +184,7 @@
     FIELDS: FIELDS,
     COUNTER_FIELDS: COUNTER_FIELDS,
     ORDER_HISTORY_FIELDS: ORDER_HISTORY_FIELDS,
+    MEASURE: MEASURE,
     WEB_VERIFIED: WEB_VERIFIED,
     REGISTRATION_SOURCE: REGISTRATION_SOURCE,
     MEMBER_STATUS: MEMBER_STATUS,

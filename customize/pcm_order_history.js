@@ -72,6 +72,25 @@
     return names.slice(0, 3).join('、') + ' 他' + (names.length - 3) + '件';
   };
 
+  const sumAmount = (record) => {
+    const table = record && record[OF.detailTable];
+    const rows = (table && table.value) || [];
+    let total = 0;
+    let has = false;
+    rows.forEach(function(row) {
+      const raw = readValue(row.value || {}, OF.detailAmount || 'amount');
+      if (raw === '') {
+        return;
+      }
+      const n = Number(raw);
+      if (Number.isFinite(n)) {
+        total += n;
+        has = true;
+      }
+    });
+    return has ? total.toLocaleString('ja-JP') : '—';
+  };
+
   const loadHistory = async (personalCustomerId, host) => {
     const status = host.querySelector('.pcm-order-history__status');
     const body = host.querySelector('.pcm-order-history__body');
@@ -101,7 +120,9 @@
           OF.processStatus,
           OF.locationStatus,
           OF.deliveryStatus,
-        ],
+          OF.deliveryDate,
+          OF.storePaymentStatus,
+        ].filter(Boolean),
       });
 
       const records = resp.records || [];
@@ -115,8 +136,8 @@
       const table = document.createElement('table');
       table.className = 'pcm-order-history__table';
       table.innerHTML = '<thead><tr>'
-        + '<th>受注日</th><th>管理番号</th><th>着物種類</th><th>加工内容</th>'
-        + '<th>納期</th><th>工程</th><th>現物場所</th><th>納品状況</th>'
+        + '<th>受注日</th><th>管理番号</th><th>着物種類</th><th>加工内容</th><th>金額</th>'
+        + '<th>納期</th><th>納品日</th><th>納品状況</th><th>入金</th>'
         + '</tr></thead>';
       const tbody = document.createElement('tbody');
 
@@ -133,10 +154,11 @@
           + '<td>' + link + '</td>'
           + '<td>' + escapeHtml(readValue(rec, OF.kimonoType)) + '</td>'
           + '<td>' + escapeHtml(summarizeItems(rec)) + '</td>'
+          + '<td class="num">' + escapeHtml(sumAmount(rec)) + '</td>'
           + '<td>' + escapeHtml(readValue(rec, OF.deadline)) + '</td>'
-          + '<td>' + escapeHtml(readValue(rec, OF.processStatus)) + '</td>'
-          + '<td>' + escapeHtml(readValue(rec, OF.locationStatus)) + '</td>'
-          + '<td>' + escapeHtml(readValue(rec, OF.deliveryStatus)) + '</td>';
+          + '<td>' + escapeHtml(readValue(rec, OF.deliveryDate) || '—') + '</td>'
+          + '<td>' + escapeHtml(readValue(rec, OF.deliveryStatus)) + '</td>'
+          + '<td>' + escapeHtml(readValue(rec, OF.storePaymentStatus) || '—') + '</td>';
         tbody.appendChild(tr);
       });
 
@@ -163,8 +185,8 @@
     panel.id = PANEL_ID;
     panel.className = 'pcm-order-history';
     panel.innerHTML = ''
-      + '<p class="pcm-order-history__title">受注履歴（App16）</p>'
-      + '<p class="pcm-order-history__note">同一 personal_customer_id の店舗受注です。読取のみ。</p>'
+      + '<p class="pcm-order-history__title">利用履歴（App16）</p>'
+      + '<p class="pcm-order-history__note">同一 personal_customer_id の店舗受注です。読取のみ。寸法は上のカルテパネルを参照。</p>'
       + '<div class="pcm-order-history__status">準備中…</div>'
       + '<div class="pcm-order-history__body"></div>';
 

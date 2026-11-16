@@ -3,7 +3,8 @@
 
     /**
      * 工場・店舗 作業状況ポータル
-     * FLOOR_PORTAL_VERSION: 1.8.0
+     * FLOOR_PORTAL_VERSION: 1.8.1
+     * 1.8.1: 店舗メニュー「顧客カルテ」(App96) を受付の先頭 featured に
      *
      * 工場用アプリと店舗用アプリを作ったあと、
      * APP.factoryPortal と APP.storePortal に App ID を入れてください。
@@ -21,7 +22,7 @@
      * 本番 v1.6.1 ベース。リポジトリ v1.7.0 の入金状況リンク変更は未承認のため混入しない。
      */
 
-    const FLOOR_PORTAL_VERSION = '1.8.0';
+    const FLOOR_PORTAL_VERSION = '1.8.1';
 
     const WS = typeof window !== 'undefined' && window.CAYANAS_WORK_STATUS
         ? window.CAYANAS_WORK_STATUS
@@ -152,7 +153,7 @@
                 id: 'reception',
                 label: '受付・顧客',
                 links: [
-                    { appKey: 'personalCustomer', label: '個人顧客マスタ' },
+                    { appKey: 'personalCustomer', label: '顧客カルテ', featured: true, note: '履歴・寸法' },
                     { appKey: 'order', label: '受注明細管理', featured: true },
                     { appKey: 'orderSearch', label: '受注検索', featured: true },
                 ],
@@ -225,7 +226,7 @@
             shortcutWork: '社内作業登録',
             shortcutComplete: '仕上げ完了登録',
             storeMenuTitle: '店舗メニュー（A550）',
-            storeMenuLead: 'A550 専用・業務順。社内入庫登録＝App34、社内作業登録＝作業（＋任意で保管場所）、仕上げ完了登録＝App30。店舗納期カレンダー＝App92（引き取り）。メニューはショートカットであり権限付与ではありません。',
+            storeMenuLead: 'A550 専用・業務順。先頭の顧客カルテ（App96）で氏名・かな・電話から履歴・寸法を確認。社内入庫登録＝App34、社内作業登録＝作業（＋任意で保管場所）、仕上げ完了登録＝App30。店舗納期カレンダー＝App92（引き取り）。メニューはショートカットであり権限付与ではありません。',
             storePermissionNote: 'App92 など権限制限のあるアプリは、権限のないユーザーには操作できません（表示だけでは権限は付きません）。App97 への通常業務リンクは出していません。',
             factoryModeBadge: '工場',
             storeModeBadge: '店舗 A550',

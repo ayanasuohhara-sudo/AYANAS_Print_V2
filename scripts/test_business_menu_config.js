@@ -150,7 +150,9 @@ assert('floor に App97 通常リンクなし（storePayment メニュー）',
 assert('floor は 1.7.0 入金状況リンクを混入しない',
     floorCfg.indexOf('入金状況（受注一覧）') < 0
     && floorCfg.indexOf('入金履歴（参照・任意）') < 0);
-assert('floor VERSION 1.8.0', /FLOOR_PORTAL_VERSION = '1\.8\.0'/.test(floorCfg));
+assert('floor VERSION 1.8.1', /FLOOR_PORTAL_VERSION = '1\.8\.1'/.test(floorCfg));
+assert('floor 顧客カルテ featured',
+    /appKey: 'personalCustomer',\s*label: '顧客カルテ',\s*featured: true/.test(floorCfg));
 assert('App92 は店舗メニューに残る', floorCfg.indexOf("appKey: 'storeDeadline'") !== -1);
 
 if (failed) {

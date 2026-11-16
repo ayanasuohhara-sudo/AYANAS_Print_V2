@@ -220,8 +220,11 @@ const run = () => {
     assert('メニューグループは受付・作業・納品会計', groupIds.join(',') === 'reception,work,delivery_accounting');
     const featuredKeys = (C.STORE_MENU_GROUPS || []).flatMap((g) => (g.links || [])
         .filter((l) => l.featured).map((l) => l.appKey));
-    assert('強調は受注・検索・引き取り（App97なし）', featuredKeys.join(',') === 'order,orderSearch,storeDeadline');
-    assert('バージョン 1.8.0', C.VERSION === '1.8.0');
+    assert('強調は顧客カルテ・受注・検索・引き取り（App97なし）',
+        featuredKeys.join(',') === 'personalCustomer,order,orderSearch,storeDeadline');
+    assert('顧客カルテラベル', (C.STORE_MENU_GROUPS || []).some((g) => (g.links || [])
+        .some((l) => l.appKey === 'personalCustomer' && l.label === '顧客カルテ' && l.featured)));
+    assert('バージョン 1.8.1', C.VERSION === '1.8.1');
     assert('店舗メニューに App97 を出さない', storeMenuAppKeys.indexOf('storePayment') < 0);
     const deliveryGroup = (C.STORE_MENU_GROUPS || []).find((g) => g.id === 'delivery_accounting');
     const deliveryLabels = (deliveryGroup && deliveryGroup.links || []).map((l) => l.label);

@@ -3,7 +3,8 @@
 
   /**
    * PCM 画面 — 採番・複製対策・類似候補・一覧検索 UI
-   * 読込順: pcm_config → pcm_numbering → pcm_engine → 本ファイル → pcm.css
+   * 読込順: pcm_config → pcm_numbering → pcm_engine → pcm_measure_engine
+   *   → 本ファイル → pcm_order_history → pcm_measure_panel → pcm.css
    */
 
   const C = window.CAYANAS_PCM;
@@ -98,8 +99,8 @@
       }
       setTimeout(function() {
         showRecordBanner(
-          '個人顧客IDは保存時に自動採番されます（P000001形式）。'
-          + ' 利用回数・累計金額は App16 未連携のため自動更新されません。',
+          '顧客カルテ: 個人顧客IDは保存時に自動採番されます（P000001形式）。'
+          + ' 寸法は履歴行を追加して残してください。利用回数・累計金額は App16 未連携のため自動更新されません。',
           false
         );
         lockSensitiveFields();
@@ -111,8 +112,8 @@
       setTimeout(function() {
         lockSensitiveFields();
         showRecordBanner(
-          '個人顧客ID・WEBアカウントID・利用集計は一般編集を制限しています。'
-          + ' 氏名・電話のみでの顧客自動統合は行いません。',
+          '顧客カルテ: 個人顧客ID・WEBアカウントID・利用集計は一般編集を制限しています。'
+          + ' 氏名・電話のみでの顧客自動統合は行いません。寸法の過去行は削除せず履歴として残してください。',
           false
         );
       }, 200);

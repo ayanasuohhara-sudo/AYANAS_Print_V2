@@ -35,7 +35,7 @@
 .pcm-search-panel input {
   box-sizing: border-box;
   width: 100%;
-  min-height: 40px;
+  min-height: 48px;
   padding: 8px 10px;
   font-size: 16px;
   border: 1px solid #c9d1d9;
@@ -50,7 +50,7 @@
 }
 
 .pcm-search-panel button {
-  min-height: 40px;
+  min-height: 48px;
   padding: 8px 16px;
   font-size: 15px;
   border-radius: 6px;
@@ -178,6 +178,112 @@
   background: #e8eef7;
 }
 
+.pcm-order-history__table .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.pcm-measure-panel {
+  margin: 16px;
+  padding: 12px 14px;
+  border: 1px solid #c5d4e8;
+  border-radius: 8px;
+  background: #f4f8fb;
+}
+
+.pcm-measure-panel__title {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f3a5f;
+}
+
+.pcm-measure-panel__title--sub {
+  margin-top: 14px;
+}
+
+.pcm-measure-panel__note,
+.pcm-measure-panel__empty {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #556;
+  line-height: 1.5;
+}
+
+.pcm-measure-panel__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.pcm-measure-card {
+  background: #fff;
+  border: 1px solid #d5dde8;
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-height: 88px;
+}
+
+.pcm-measure-card__head {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #1f2328;
+}
+
+.pcm-measure-card__badge {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #dafbe1;
+  color: #116329;
+  font-size: 12px;
+}
+
+.pcm-measure-card__meta,
+.pcm-measure-card__note {
+  font-size: 12px;
+  color: #57606a;
+  margin-bottom: 4px;
+}
+
+.pcm-measure-card__dims {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #0f172a;
+}
+
+.pcm-measure-panel__scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pcm-measure-panel__table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+}
+
+.pcm-measure-panel__table th,
+.pcm-measure-panel__table td {
+  padding: 8px 10px;
+  border: 1px solid #d5dde8;
+  text-align: left;
+  vertical-align: top;
+}
+
+.pcm-measure-panel__table th {
+  background: #e8eef7;
+}
+
+.pcm-measure-panel__table tr.is-current td {
+  background: #f0fff4;
+}
+
 @media (max-width: 900px) {
   .pcm-search-panel {
     margin: 8px;
@@ -186,7 +292,29 @@
 
   .pcm-search-panel input,
   .pcm-search-panel button {
-    min-height: 44px;
+    min-height: 48px;
     font-size: 16px;
+  }
+
+  .pcm-measure-panel,
+  .pcm-order-history {
+    margin: 10px 8px;
+  }
+
+  .pcm-measure-panel__cards {
+    grid-template-columns: 1fr;
+  }
+
+  .pcm-measure-card,
+  .pcm-order-history__table td,
+  .pcm-order-history__table th {
+    font-size: 14px;
+  }
+
+  .pcm-order-history__table th,
+  .pcm-order-history__table td,
+  .pcm-measure-panel__table th,
+  .pcm-measure-panel__table td {
+    padding: 10px 12px;
   }
 }
