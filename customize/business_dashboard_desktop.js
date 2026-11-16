@@ -18,12 +18,25 @@
     let activeKimonoSegment = 'total';
     /** 'daily' | 'monthly' */
     let activeMainTab = 'daily';
+    /** 'overview' | 'decline' */
+    let monthlySubTab = 'overview';
     let lastMonthlyReport = null;
+    let lastDeclineReport = null;
     let monthlyFiscalStartYear = null;
     let monthlyRoute = 'all';
     let monthlyCustomerCode = 'ALL';
     let monthlyKimonoType = 'ALL';
     let monthlySelectedMonthKey = '';
+    let declineRecentEndMonthKey = '';
+    let declineRoute = 'all';
+    let declineSearch = '';
+    let declineStatusFilter = 'all';
+    let declineSortBy = 'delta';
+    let declineMajorPct = 50;
+    let declineMildPct = 20;
+    let declineGrowthPct = 20;
+    let declineSelectedCustomer = '';
+    let cachedMonthlySource = null;
 
     const cfg = () => CAYANAS_BUSINESS_DASHBOARD;
     const ui = () => cfg().UI;
@@ -1370,10 +1383,274 @@
 <p class="ayanas-bd-note">${escapeHtml(u.monthlyRouteNote || '')}</p>`;
     };
 
+    const renderMonthlySubTabs = () => {
+        const u = ui();
+        const tab = (id, label) => (
+            `<button type="button" class="ayanas-bd-subtab${monthlySubTab === id ? ' is-active' : ''}" data-bd-m-subtab="${id}">${escapeHtml(label)}</button>`
+        );
+        return `
+<nav class="ayanas-bd-subtabs" aria-label="月次内切替">
+  ${tab('overview', u.monthlySubOverview || '月次概要')}
+  ${tab('decline', u.monthlySubDecline || '受注減少得意先')}
+</nav>`;
+    };
+
+    const formatDeclineStatus = (status) => {
+        const u = ui();
+        if (status === 'stopped') return u.declineStatusStopped || '受注停止';
+        if (status === 'major_down') return u.declineStatusMajor || '大幅減少';
+        if (status === 'down') return u.declineStatusDown || '受注減少';
+        if (status === 'up') return u.declineStatusUp || '受注増加';
+        return u.declineStatusStable || '安定';
+    };
+
+    const formatDeclineRate = (rate) => {
+        if (rate === null || rate === undefined) {
+            return '—';
+        }
+        const sign = rate > 0 ? '+' : '';
+        return `${sign}${(rate * 100).toFixed(1)}%`;
+    };
+
+    const orderAppUrl = (query) => {
+        const appId = cfg().ORDER_APP_ID || 16;
+        return `/k/${appId}/?query=${encodeURIComponent(query || '')}`;
+    };
+
+    const downloadDeclineCsv = (report) => {
+        const rows = report?.rows || [];
+        const header = [
+            '得意先コード', '得意先名', '比較前3か月', '直近3か月', '増減枚数', '増減率',
+            '直近受注金額', '最終受注日', '判定', '競合件数',
+        ];
+        const lines = [header.join(',')];
+        rows.forEach((row) => {
+            const cells = [
+                row.customerCode,
+                row.customerName,
+                row.priorCount,
+                row.recentCount,
+                row.delta,
+                row.rate === null || row.rate === undefined ? '' : (row.rate * 100).toFixed(2),
+                row.recentAmount,
+                row.lastOrderDate || '',
+                formatDeclineStatus(row.status),
+                row.conflictCount || 0,
+            ].map((value) => `"${String(value ?? '').replace(/"/g, '""')}"`);
+            lines.push(cells.join(','));
+        });
+        const blob = new Blob([`\uFEFF${lines.join('\n')}`], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `app82_decline_${report?.windows?.recentEndMonthKey || 'export'}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+    };
+
+    const renderDeclineFilters = (report) => {
+        const u = ui();
+        const ends = (report.windows?.recentEndOptions || []).map((opt) => (
+            `<option value="${escapeHtml(opt.key)}"${opt.key === report.windows.recentEndMonthKey ? ' selected' : ''}>${escapeHtml(opt.label)}</option>`
+        )).join('');
+        const routeBtn = (id, label) => (
+            `<button type="button" class="ayanas-bd-btn${report.filters.route === id ? ' is-active' : ''}" data-bd-d-route="${id}">${escapeHtml(label)}</button>`
+        );
+        const statusBtn = (id, label) => (
+            `<button type="button" class="ayanas-bd-btn${report.filters.statusFilter === id ? ' is-active' : ''}" data-bd-d-status="${id}">${escapeHtml(label)}</button>`
+        );
+        return `
+<div class="ayanas-bd-m-filters ayanas-bd-d-filters">
+  <label>${escapeHtml(u.declineRecentEnd || '直近完了月')}
+    <select id="ayanas-bd-d-end">${ends}</select>
+  </label>
+  <label>${escapeHtml(u.declineMajorThreshold || '大幅減少(%)')}
+    <input id="ayanas-bd-d-major" type="number" min="1" max="100" value="${escapeHtml(report.filters.thresholds.majorDeclinePct)}">
+  </label>
+  <label>${escapeHtml(u.declineMildThreshold || '減少(%)')}
+    <input id="ayanas-bd-d-mild" type="number" min="1" max="100" value="${escapeHtml(report.filters.thresholds.declinePct)}">
+  </label>
+  <label>${escapeHtml(u.declineGrowthThreshold || '増加(%)')}
+    <input id="ayanas-bd-d-growth" type="number" min="1" max="100" value="${escapeHtml(report.filters.thresholds.growthPct)}">
+  </label>
+  <label>${escapeHtml(u.declineSearch || '得意先検索')}
+    <input id="ayanas-bd-d-search" type="search" value="${escapeHtml(report.filters.search || '')}" placeholder="コード / 名称">
+  </label>
+  <label>並び替え
+    <select id="ayanas-bd-d-sort">
+      <option value="delta"${report.filters.sortBy === 'delta' ? ' selected' : ''}>${escapeHtml(u.declineSortDelta || '減少枚数順')}</option>
+      <option value="rate"${report.filters.sortBy === 'rate' ? ' selected' : ''}>${escapeHtml(u.declineSortRate || '減少率順')}</option>
+      <option value="amount"${report.filters.sortBy === 'amount' ? ' selected' : ''}>${escapeHtml(u.declineSortAmount || '直近金額順')}</option>
+      <option value="status"${report.filters.sortBy === 'status' ? ' selected' : ''}>判定順</option>
+    </select>
+  </label>
+  <button type="button" class="ayanas-bd-btn ayanas-bd-btn--primary" id="ayanas-bd-d-apply">${escapeHtml(u.monthlyApply || '表示更新')}</button>
+  <button type="button" class="ayanas-bd-btn" id="ayanas-bd-d-csv">${escapeHtml(u.declineCsv || 'CSV出力')}</button>
+</div>
+<div class="ayanas-bd-m-routes">
+  ${routeBtn('all', u.monthlyRouteAll || '仕立て合計')}
+  ${routeBtn('overseas', u.monthlyRouteOverseas || '海外仕立')}
+  ${routeBtn('domestic', u.monthlyRouteDomestic || '国内着物仕立')}
+  ${routeBtn('obi', u.monthlyRouteObi || '帯仕立')}
+</div>
+<div class="ayanas-bd-m-routes ayanas-bd-d-status-filters">
+  ${statusBtn('all', 'すべて')}
+  ${statusBtn('stopped', u.declineStatusStopped || '受注停止')}
+  ${statusBtn('major_down', u.declineStatusMajor || '大幅減少')}
+  ${statusBtn('down', u.declineStatusDown || '受注減少')}
+  ${statusBtn('stable', u.declineStatusStable || '安定')}
+  ${statusBtn('up', u.declineStatusUp || '受注増加')}
+</div>`;
+    };
+
+    const renderDeclineTrend = (row) => {
+        const series = row?.trend || [];
+        const max = Math.max(1, ...series.map((item) => item.filteredKimono || 0));
+        const bars = series.map((item) => {
+            const height = Math.max(4, Math.round(((item.filteredKimono || 0) / max) * 100));
+            return `
+<div class="ayanas-bd-m-bar-wrap" title="${escapeHtml(item.key)}: ${formatInt(item.filteredKimono)}枚">
+  <div class="ayanas-bd-m-bar" style="height:${height}px"></div>
+  <span class="ayanas-bd-m-bar-label">${escapeHtml(item.label)}</span>
+  <span class="ayanas-bd-m-bar-value">${formatInt(item.filteredKimono)}</span>
+</div>`;
+        }).join('');
+        return `
+<section class="ayanas-bd-section">
+  <h2 class="ayanas-bd-section__title">${escapeHtml(ui().declineTrendTitle || '月別12か月受注推移')}</h2>
+  <div class="ayanas-bd-m-chart ayanas-bd-d-trend">${bars}</div>
+</section>`;
+    };
+
+    const renderDeclineDetail = (report) => {
+        const u = ui();
+        const row = (report.rows || []).find((item) => item.customerCode === declineSelectedCustomer);
+        if (!row) {
+            return '';
+        }
+        return `
+<section class="ayanas-bd-section ayanas-bd-d-detail">
+  <h2 class="ayanas-bd-section__title">${escapeHtml(u.declineDetailTitle || '得意先詳細')} — ${escapeHtml(row.customerName)}</h2>
+  <p class="ayanas-bd-note">
+    コード ${escapeHtml(row.customerCode)} /
+    比較前 ${formatInt(row.priorCount)} /
+    直近 ${formatInt(row.recentCount)} /
+    増減 ${formatInt(row.delta)} /
+    ${escapeHtml(formatDeclineRate(row.rate))} /
+    ${escapeHtml(formatDeclineStatus(row.status))}
+  </p>
+  <p class="ayanas-bd-note">
+    内訳（直近）: 海外 ${formatInt(row.recentBreakdown.overseasKimono)}
+    / 国内着物 ${formatInt(row.recentBreakdown.domesticKimono)}
+    / 帯 ${formatInt(row.recentBreakdown.obiKimono)}
+    / 金額 ${formatYen(row.recentAmount)}
+    / 最終受注日 ${escapeHtml(row.lastOrderDate || '—')}
+    / 競合 ${formatInt(row.conflictCount)}
+  </p>
+  <p><a class="ayanas-bd-link" href="${escapeHtml(orderAppUrl(row.orderAppQuery))}" target="_blank" rel="noopener">${escapeHtml(u.declineOpenOrders || 'App16で受注を開く')}</a></p>
+  ${renderDeclineTrend(row)}
+</section>`;
+    };
+
+    const renderDeclineView = () => {
+        const u = ui();
+        if (!lastDeclineReport) {
+            return `<p class="ayanas-bd-message">${escapeHtml(u.loading)}</p>`;
+        }
+        const report = lastDeclineReport;
+        const s = report.summary || {};
+        const rows = (report.rows || []).map((row, index) => `
+<tr class="ayanas-bd-d-row${row.customerCode === declineSelectedCustomer ? ' is-selected' : ''}" data-bd-d-customer="${escapeHtml(row.customerCode)}">
+  <td>${index + 1}</td>
+  <td>${escapeHtml(row.customerCode)}</td>
+  <td>${escapeHtml(row.customerName)}</td>
+  <td class="num">${formatInt(row.priorCount)}</td>
+  <td class="num">${formatInt(row.recentCount)}</td>
+  <td class="num">${formatInt(row.delta)}</td>
+  <td class="num">${escapeHtml(formatDeclineRate(row.rate))}</td>
+  <td class="num">${formatYen(row.recentAmount)}</td>
+  <td class="num">${escapeHtml(row.lastOrderDate || '—')}</td>
+  <td><span class="ayanas-bd-d-badge is-${escapeHtml(row.status)}">${escapeHtml(formatDeclineStatus(row.status))}</span></td>
+</tr>`).join('') || `<tr><td colspan="10">${escapeHtml(u.declineEmpty || 'データなし')}</td></tr>`;
+
+        return `
+${renderDeclineFilters(report)}
+<p class="ayanas-bd-note">
+  比較前 ${escapeHtml(report.windows.priorLabel)} /
+  直近 ${escapeHtml(report.windows.recentLabel)} /
+  停止 ${formatInt(s.stopped)}・大幅減少 ${formatInt(s.majorDown)}・減少 ${formatInt(s.down)}・安定 ${formatInt(s.stable)}・増加 ${formatInt(s.up)}
+  / 分類競合 ${formatInt(report.conflictCount)} 件
+</p>
+${report.windows.insufficientComparison ? `<p class="ayanas-bd-error">${escapeHtml(u.declineInsufficient || '')}</p>` : ''}
+<p class="ayanas-bd-note">${escapeHtml(u.declineConflictNote || '')}</p>
+<section class="ayanas-bd-section">
+  <h2 class="ayanas-bd-section__title">${escapeHtml(u.declineTitle || '受注減少ランキング')}</h2>
+  <div class="ayanas-bd-scroll">
+  <table class="ayanas-bd-table ayanas-bd-table--decline">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>${escapeHtml(u.declineColCode || '得意先コード')}</th>
+        <th>${escapeHtml(u.declineColName || '得意先名')}</th>
+        <th>${escapeHtml(u.declineColPrior || '比較前3か月')}</th>
+        <th>${escapeHtml(u.declineColRecent || '直近3か月')}</th>
+        <th>${escapeHtml(u.declineColDelta || '増減枚数')}</th>
+        <th>${escapeHtml(u.declineColRate || '増減率')}</th>
+        <th>${escapeHtml(u.declineColAmount || '直近受注金額')}</th>
+        <th>${escapeHtml(u.declineColLastOrder || '最終受注日')}</th>
+        <th>${escapeHtml(u.declineColStatus || '判定')}</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>
+  </div>
+</section>
+${renderDeclineDetail(report)}
+${report.conflicts && report.conflicts.length ? `
+<section class="ayanas-bd-section">
+  <h2 class="ayanas-bd-section__title">${escapeHtml(u.monthlyConflictsTitle || '仕立て分類の競合')}</h2>
+  <table class="ayanas-bd-table">
+    <thead><tr><th>管理番号</th><th>受注日</th><th>得意先</th><th>同居分類</th></tr></thead>
+    <tbody>
+      ${report.conflicts.map((c) => `
+<tr>
+  <td>${escapeHtml(c.manageNo)}</td>
+  <td>${escapeHtml(c.orderDate)}</td>
+  <td>${escapeHtml(c.customerName || c.customerCode)}</td>
+  <td>${escapeHtml((c.tailorCategories || []).map(formatRouteLabel).join('＋'))}</td>
+</tr>`).join('')}
+    </tbody>
+  </table>
+</section>` : ''}`;
+    };
+
+    const renderMonthlyOverview = (report) => `
+${renderMonthlyFilters(report)}
+${renderMonthlyChart(report)}
+${renderMonthlyTable(report)}
+${renderMonthlyAmounts(report)}
+${renderMonthlyKimonoTypes(report)}
+${renderMonthlyCustomerRank(report)}
+${renderMonthlyCustomerMatrix(report)}
+${renderMonthlyBacklog(report)}
+${renderMonthlyConflicts(report)}`;
+
     const renderMonthlyView = () => {
         const u = ui();
         if (typeof CAYANAS_BusinessDashboardMonthly === 'undefined') {
             return `<div class="ayanas-bd-error">${escapeHtml(u.monthlyDepsMissing || '')}</div>`;
+        }
+        if (monthlySubTab === 'decline') {
+            return `
+<div class="ayanas-bd-toolbar">
+  <h1 class="ayanas-bd-title">${escapeHtml(u.declineTitle || '受注減少得意先')}</h1>
+  ${renderMainTabs()}
+  ${renderMonthlySubTabs()}
+  <p class="ayanas-bd-lead">${escapeHtml(u.declineLead || '')}</p>
+</div>
+${renderDeclineView()}`;
         }
         if (!lastMonthlyReport) {
             return `<p class="ayanas-bd-message">${escapeHtml(u.loading)}</p>`;
@@ -1383,21 +1660,14 @@
 <div class="ayanas-bd-toolbar">
   <h1 class="ayanas-bd-title">${escapeHtml(u.monthlyTitle || '経営月次分析')}</h1>
   ${renderMainTabs()}
+  ${renderMonthlySubTabs()}
   <p class="ayanas-bd-lead">${escapeHtml(u.monthlyLead || '')}</p>
   <p class="ayanas-bd-note">${escapeHtml(u.monthlyDataStartNote || '')}
     / データ開始: ${escapeHtml(report.dataStartDate)} / 基準日: ${escapeHtml(report.asOfDate)}
     / ${escapeHtml(report.fiscal.label)}（${escapeHtml(report.fiscal.startDate)}〜${escapeHtml(report.fiscal.endDate)}）
   </p>
-  ${renderMonthlyFilters(report)}
 </div>
-${renderMonthlyChart(report)}
-${renderMonthlyTable(report)}
-${renderMonthlyAmounts(report)}
-${renderMonthlyKimonoTypes(report)}
-${renderMonthlyCustomerRank(report)}
-${renderMonthlyCustomerMatrix(report)}
-${renderMonthlyBacklog(report)}
-${renderMonthlyConflicts(report)}`;
+${renderMonthlyOverview(report)}`;
     };
 
     const renderAll = (root) => {
@@ -1488,7 +1758,10 @@ ${renderMeta()}
 
         const mReload = root.querySelector('#ayanas-bd-m-reload');
         if (mReload) {
-            mReload.addEventListener('click', () => loadAndRender(root));
+            mReload.addEventListener('click', () => {
+                cachedMonthlySource = null;
+                loadAndRender(root);
+            });
         }
 
         root.querySelectorAll('[data-bd-m-month]').forEach((row) => {
@@ -1497,6 +1770,67 @@ ${renderMeta()}
                 loadAndRender(root);
             });
         });
+
+        root.querySelectorAll('[data-bd-m-subtab]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const next = button.getAttribute('data-bd-m-subtab') || 'overview';
+                if (next === monthlySubTab) {
+                    return;
+                }
+                monthlySubTab = next;
+                loadAndRender(root);
+            });
+        });
+
+        root.querySelectorAll('[data-bd-d-route]').forEach((button) => {
+            button.addEventListener('click', () => {
+                declineRoute = button.getAttribute('data-bd-d-route') || 'all';
+                loadAndRender(root);
+            });
+        });
+
+        root.querySelectorAll('[data-bd-d-status]').forEach((button) => {
+            button.addEventListener('click', () => {
+                declineStatusFilter = button.getAttribute('data-bd-d-status') || 'all';
+                loadAndRender(root);
+            });
+        });
+
+        root.querySelectorAll('[data-bd-d-customer]').forEach((row) => {
+            row.addEventListener('click', () => {
+                declineSelectedCustomer = row.getAttribute('data-bd-d-customer') || '';
+                renderAll(root);
+                bindEvents(root);
+            });
+        });
+
+        const dApply = root.querySelector('#ayanas-bd-d-apply');
+        if (dApply) {
+            dApply.addEventListener('click', () => {
+                const endEl = root.querySelector('#ayanas-bd-d-end');
+                const majorEl = root.querySelector('#ayanas-bd-d-major');
+                const mildEl = root.querySelector('#ayanas-bd-d-mild');
+                const growthEl = root.querySelector('#ayanas-bd-d-growth');
+                const searchEl = root.querySelector('#ayanas-bd-d-search');
+                const sortEl = root.querySelector('#ayanas-bd-d-sort');
+                if (endEl) declineRecentEndMonthKey = endEl.value || '';
+                if (majorEl) declineMajorPct = Number(majorEl.value) || declineMajorPct;
+                if (mildEl) declineMildPct = Number(mildEl.value) || declineMildPct;
+                if (growthEl) declineGrowthPct = Number(growthEl.value) || declineGrowthPct;
+                if (searchEl) declineSearch = searchEl.value || '';
+                if (sortEl) declineSortBy = sortEl.value || 'delta';
+                loadAndRender(root);
+            });
+        }
+
+        const dCsv = root.querySelector('#ayanas-bd-d-csv');
+        if (dCsv) {
+            dCsv.addEventListener('click', () => {
+                if (lastDeclineReport) {
+                    downloadDeclineCsv(lastDeclineReport);
+                }
+            });
+        }
 
         root.querySelectorAll('[data-bd-kimono-seg]').forEach((button) => {
 
@@ -1631,15 +1965,44 @@ ${renderMeta()}
                     bindEvents(root);
                     return;
                 }
-                lastMonthlyReport = await CAYANAS_BusinessDashboardMonthly.buildMonthlyReport({
-                    fiscalStartYear: monthlyFiscalStartYear || undefined,
-                    route: monthlyRoute,
-                    customerCode: monthlyCustomerCode,
-                    kimonoType: monthlyKimonoType,
-                    selectedMonthKey: monthlySelectedMonthKey || undefined,
-                });
-                monthlyFiscalStartYear = lastMonthlyReport.fiscal.startYear;
-                monthlySelectedMonthKey = lastMonthlyReport.filters.selectedMonthKey;
+                const Monthly = CAYANAS_BusinessDashboardMonthly;
+                if (!cachedMonthlySource) {
+                    cachedMonthlySource = await Monthly.prepareMonthlySource({});
+                }
+                if (monthlySubTab === 'decline') {
+                    lastDeclineReport = await Monthly.buildDeclineReport({
+                        analyzed: cachedMonthlySource.analyzed,
+                        conflicts: cachedMonthlySource.conflicts,
+                        customerMaster: cachedMonthlySource.customerMaster,
+                        orderRecordCount: cachedMonthlySource.orderRecordCount,
+                        recentEndMonthKey: declineRecentEndMonthKey || undefined,
+                        route: declineRoute,
+                        search: declineSearch,
+                        statusFilter: declineStatusFilter,
+                        sortBy: declineSortBy,
+                        majorDeclinePct: declineMajorPct,
+                        declinePct: declineMildPct,
+                        growthPct: declineGrowthPct,
+                    });
+                    if (!declineRecentEndMonthKey) {
+                        declineRecentEndMonthKey = lastDeclineReport.windows.recentEndMonthKey;
+                    }
+                    if (declineSelectedCustomer
+                        && !(lastDeclineReport.rows || []).some((r) => r.customerCode === declineSelectedCustomer)) {
+                        declineSelectedCustomer = (lastDeclineReport.rows[0] && lastDeclineReport.rows[0].customerCode) || '';
+                    }
+                } else {
+                    lastMonthlyReport = await Monthly.buildMonthlyReport({
+                        fiscalStartYear: monthlyFiscalStartYear || undefined,
+                        route: monthlyRoute,
+                        customerCode: monthlyCustomerCode,
+                        kimonoType: monthlyKimonoType,
+                        selectedMonthKey: monthlySelectedMonthKey || undefined,
+                        analyzed: cachedMonthlySource.analyzed,
+                    });
+                    monthlyFiscalStartYear = lastMonthlyReport.fiscal.startYear;
+                    monthlySelectedMonthKey = lastMonthlyReport.filters.selectedMonthKey;
+                }
                 renderAll(root);
                 bindEvents(root);
                 return;

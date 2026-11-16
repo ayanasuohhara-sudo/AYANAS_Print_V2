@@ -23,9 +23,11 @@ const assert = (name, cond) => {
     console.error('FAIL ' + name);
 };
 
-assert('dashboard VERSION 1.7.1', global.CAYANAS_BUSINESS_DASHBOARD_VERSION === '1.7.1');
-assert('monthly engine 1.1.0', M.VERSION === '1.1.0');
+assert('dashboard VERSION 1.7.2', global.CAYANAS_BUSINESS_DASHBOARD_VERSION === '1.7.2');
+assert('monthly engine 1.2.0', M.VERSION === '1.2.0');
 assert('MONTHLY defined', !!C.MONTHLY);
+assert('CUSTOMER_APP_ID 8', C.CUSTOMER_APP_ID === 8);
+assert('DECLINE defaults', C.MONTHLY.DECLINE.WINDOW_MONTHS === 3);
 assert('month order starts Aug', C.MONTHLY.MONTH_ORDER[0] === 8 && C.MONTHLY.MONTH_ORDER[11] === 7);
 assert('data start', C.MONTHLY.DATA_START_DATE === '2026-03-24');
 assert('domestic kimono key', C.MONTHLY.DOMESTIC_KIMONO_SUBCATEGORY === '国内仕立');
@@ -313,9 +315,97 @@ const octOverseas = {
         || desktop.indexOf("routeBtn('obi'") >= 0);
     assert('desktop conflict section', desktop.indexOf('renderMonthlyConflicts') >= 0);
     assert('desktop uses Monthly engine', desktop.indexOf('CAYANAS_BusinessDashboardMonthly') >= 0);
+    assert('desktop decline view', desktop.indexOf('renderDeclineView') >= 0);
+    assert('desktop decline csv', desktop.indexOf('downloadDeclineCsv') >= 0);
 
     // daily desktop markers unchanged (smoke)
     assert('daily overview still present', desktop.indexOf('ayanas-bd-overview-table') >= 0);
+
+    assert('last completed Nov16 -> Oct', M.lastCompletedMonthKey('2026-11-16') === '2026-10');
+    const windows = M.buildComparisonWindows('2026-11-16', null, '2026-03-24');
+    assert('recent Aug-Oct', windows.recentMonthKeys.join(',') === '2026-08,2026-09,2026-10');
+    assert('prior May-Jul', windows.priorMonthKeys.join(',') === '2026-05,2026-06,2026-07');
+    assert('May-Jul prior is after data start', windows.insufficientComparison === false);
+    const earlyWindows = M.buildComparisonWindows('2026-11-16', '2026-05', '2026-03-24');
+    assert('early prior insufficient', earlyWindows.insufficientComparison === true);
+
+    assert('status stopped', M.classifyDeclineStatus(10, 0, {}).status === 'stopped');
+    assert('status major', M.classifyDeclineStatus(10, 4, {}).status === 'major_down');
+    assert('status down', M.classifyDeclineStatus(10, 7, {}).status === 'down');
+    assert('status stable', M.classifyDeclineStatus(10, 9, {}).status === 'stable');
+    assert('status up', M.classifyDeclineStatus(10, 13, {}).status === 'up');
+    assert('rate null when prior0', M.classifyDeclineStatus(0, 5, {}).rate === null);
+
+    const priorHeavy = {
+        manage_no: { value: 'D1' },
+        order_date: { value: '2026-06-10' },
+        customer_code: { value: 'CX' },
+        customer_name: { value: '減少商事（旧名）' },
+        kimono_type: { value: '訪問着' },
+        kimono_spec: { value: '袷' },
+        aggregation_status: { value: '有効' },
+        detail_table: {
+            value: [{
+                value: {
+                    item_code: { value: 'OV1' },
+                    item_name: { value: '海外仕立' },
+                    amount: { value: '10000' },
+                },
+            }],
+        },
+    };
+    const priorHeavy2 = { ...priorHeavy, manage_no: { value: 'D2' }, order_date: { value: '2026-07-01' } };
+    const recentLight = {
+        ...priorHeavy,
+        manage_no: { value: 'D3' },
+        order_date: { value: '2026-09-01' },
+        customer_name: { value: '名称ゆれ' },
+        detail_table: {
+            value: [{
+                value: {
+                    item_code: { value: 'OV1' },
+                    item_name: { value: '海外仕立' },
+                    amount: { value: '8000' },
+                },
+            }],
+        },
+    };
+    const stoppedPrior = {
+        ...priorHeavy,
+        manage_no: { value: 'D4' },
+        customer_code: { value: 'CY' },
+        customer_name: { value: '停止商店' },
+        order_date: { value: '2026-05-20' },
+    };
+    const customers = [
+        {
+            customer_code: { value: 'CX' },
+            customer_name: { value: '減少商事' },
+        },
+        {
+            customer_code: { value: 'CY' },
+            customer_name: { value: '停止商店マスタ' },
+        },
+    ];
+
+    const decline = await M.buildDeclineReport({
+        asOfDate: '2026-11-16',
+        recentEndMonthKey: '2026-10',
+        route: 'all',
+        orders: [priorHeavy, priorHeavy2, recentLight, stoppedPrior, conflict],
+        products,
+        customers,
+        deliveredManageNos: new Set(),
+    });
+    assert('decline recent end Oct', decline.windows.recentEndMonthKey === '2026-10');
+    const cx = decline.rows.find((r) => r.customerCode === 'CX');
+    const cy = decline.rows.find((r) => r.customerCode === 'CY');
+    assert('CX uses master name', cx && cx.customerName === '減少商事');
+    assert('CX prior2 recent1', cx.priorCount === 2 && cx.recentCount === 1 && cx.delta === -1);
+    assert('CX major or down', cx.status === 'major_down' || cx.status === 'down');
+    assert('CY stopped', cy && cy.status === 'stopped' && cy.recentCount === 0);
+    assert('CX trend 12', cx.trend.length === 12);
+    assert('decline has conflict separate', decline.conflictCount >= 1);
 
     if (failed) {
         process.exit(1);

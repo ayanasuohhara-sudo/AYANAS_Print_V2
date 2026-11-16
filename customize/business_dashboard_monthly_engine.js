@@ -6,7 +6,7 @@
      * CAYANAS_BusinessDashboardMonthly
      */
 
-    const VERSION = '1.1.0';
+    const VERSION = '1.2.0';
 
     const assertDeps = () => {
         if (typeof CAYANAS_BUSINESS_DASHBOARD === 'undefined') {
@@ -587,55 +587,90 @@
         const deliveryFields = [df.detailTable, df.aggregationStatus];
 
         const [orderRecords, productRecords, deliveryRecords] = await Promise.all([
-            opts.orders
-                ? Promise.resolve(opts.orders)
-                : fetchAllRecords(CFG().ORDER_APP_ID, 'order by order_date asc', orderFields),
-            opts.products
-                ? Promise.resolve(opts.products)
-                : fetchAllRecords(CFG().PRODUCT_APP_ID, 'order by ' + pf.itemCode + ' asc', productFields),
+            opts.analyzed
+                ? Promise.resolve(null)
+                : (opts.orders
+                    ? Promise.resolve(opts.orders)
+                    : fetchAllRecords(CFG().ORDER_APP_ID, 'order by order_date asc', orderFields)),
+            opts.analyzed
+                ? Promise.resolve(null)
+                : (opts.products
+                    ? Promise.resolve(opts.products)
+                    : fetchAllRecords(CFG().PRODUCT_APP_ID, 'order by ' + pf.itemCode + ' asc', productFields)),
             opts.deliveredManageNos
                 ? Promise.resolve(null)
                 : fetchAllRecords(CFG().DELIVERY_APP_ID, 'order by レコード番号 asc', deliveryFields),
         ]);
 
-        const lookup = buildProductLookup(productRecords);
+        const lookup = opts.analyzed ? null : buildProductLookup(productRecords);
         const analyzed = [];
         const conflicts = [];
         const customerOptions = new Map();
         const kimonoOptions = new Set();
 
-        (orderRecords || []).forEach((record) => {
-            if (!isAggregationActive(record)) {
-                return;
-            }
-            const order = analyzeOrder(record, lookup);
-            if (!order.manageNo || !order.orderDate) {
-                return;
-            }
-            analyzed.push(order);
-            if (order.isConflict
-                && order.orderDate >= fiscal.startDate
-                && order.orderDate <= fiscal.endDate) {
-                conflicts.push({
-                    manageNo: order.manageNo,
-                    orderDate: order.orderDate,
-                    customerCode: order.customerCode,
-                    customerName: order.customerName,
-                    kimonoType: order.kimonoType,
-                    tailorCategories: order.tailorCategories.slice(),
-                    orderTotal: order.orderTotal,
-                    tailorAmount: order.tailorAmount,
-                    addonAmount: order.addonAmount,
-                });
-            }
-            if (order.isTailorKimono) {
-                customerOptions.set(
-                    order.customerCode || '（未設定）',
-                    order.customerName || order.customerCode || '（未設定）'
-                );
-                kimonoOptions.add(order.kimonoType || '—');
-            }
-        });
+        if (Array.isArray(opts.analyzed)) {
+            opts.analyzed.forEach((order) => {
+                if (!order?.manageNo || !order.orderDate) {
+                    return;
+                }
+                analyzed.push(order);
+                if (order.isConflict
+                    && order.orderDate >= fiscal.startDate
+                    && order.orderDate <= fiscal.endDate) {
+                    conflicts.push({
+                        manageNo: order.manageNo,
+                        orderDate: order.orderDate,
+                        customerCode: order.customerCode,
+                        customerName: order.customerName,
+                        kimonoType: order.kimonoType,
+                        tailorCategories: (order.tailorCategories || []).slice(),
+                        orderTotal: order.orderTotal,
+                        tailorAmount: order.tailorAmount,
+                        addonAmount: order.addonAmount,
+                    });
+                }
+                if (order.isTailorKimono) {
+                    customerOptions.set(
+                        order.customerCode || '（未設定）',
+                        order.customerName || order.customerCode || '（未設定）'
+                    );
+                    kimonoOptions.add(order.kimonoType || '—');
+                }
+            });
+        } else {
+            (orderRecords || []).forEach((record) => {
+                if (!isAggregationActive(record)) {
+                    return;
+                }
+                const order = analyzeOrder(record, lookup);
+                if (!order.manageNo || !order.orderDate) {
+                    return;
+                }
+                analyzed.push(order);
+                if (order.isConflict
+                    && order.orderDate >= fiscal.startDate
+                    && order.orderDate <= fiscal.endDate) {
+                    conflicts.push({
+                        manageNo: order.manageNo,
+                        orderDate: order.orderDate,
+                        customerCode: order.customerCode,
+                        customerName: order.customerName,
+                        kimonoType: order.kimonoType,
+                        tailorCategories: order.tailorCategories.slice(),
+                        orderTotal: order.orderTotal,
+                        tailorAmount: order.tailorAmount,
+                        addonAmount: order.addonAmount,
+                    });
+                }
+                if (order.isTailorKimono) {
+                    customerOptions.set(
+                        order.customerCode || '（未設定）',
+                        order.customerName || order.customerCode || '（未設定）'
+                    );
+                    kimonoOptions.add(order.kimonoType || '—');
+                }
+            });
+        }
 
         const filters = {
             route: routeFilter,
@@ -790,7 +825,9 @@
                 })),
             },
             meta: {
-                orderRecordCount: (orderRecords || []).length,
+                orderRecordCount: opts.analyzed
+                    ? analyzed.length
+                    : (orderRecords || []).length,
                 analyzedCount: analyzed.length,
                 tailorKimonoInFiscal: analyzed.filter((o) => (
                     o.isTailorKimono
@@ -809,6 +846,455 @@
         };
     };
 
+    const parseMonthKey = (key) => {
+        const text = String(key || '');
+        const year = Number(text.slice(0, 4));
+        const month = Number(text.slice(5, 7));
+        return { year, month, key: `${year}-${pad2(month)}` };
+    };
+
+    const shiftMonthKey = (key, deltaMonths) => {
+        const { year, month } = parseMonthKey(key);
+        const index = year * 12 + (month - 1) + Number(deltaMonths || 0);
+        const nextYear = Math.floor(index / 12);
+        const nextMonth = (index % 12) + 1;
+        return `${nextYear}-${pad2(nextMonth)}`;
+    };
+
+    const listMonthKeysEnding = (endKey, count) => {
+        const n = Math.max(1, Number(count) || 1);
+        const keys = [];
+        for (let i = n - 1; i >= 0; i -= 1) {
+            keys.push(shiftMonthKey(endKey, -i));
+        }
+        return keys;
+    };
+
+    /**
+     * 当月は未完了として除外し、直前の完了月を返す。
+     */
+    const lastCompletedMonthKey = (asOfYmd) => {
+        const asOf = normalizeYmd(asOfYmd) || todayYmdJst();
+        return shiftMonthKey(asOf.slice(0, 7), -1);
+    };
+
+    const buildComparisonWindows = (asOfYmd, recentEndMonthKey, dataStartYmd) => {
+        const asOf = normalizeYmd(asOfYmd) || todayYmdJst();
+        const dataStart = normalizeYmd(dataStartYmd) || M().DATA_START_DATE || '2026-03-24';
+        const declineCfg = M().DECLINE || {};
+        const windowMonths = Number(declineCfg.WINDOW_MONTHS) || 3;
+        const trendMonths = Number(declineCfg.TREND_MONTHS) || 12;
+        const completed = lastCompletedMonthKey(asOf);
+        let recentEnd = recentEndMonthKey ? String(recentEndMonthKey).slice(0, 7) : completed;
+        if (recentEnd > completed) {
+            recentEnd = completed;
+        }
+        const recentKeys = listMonthKeysEnding(recentEnd, windowMonths);
+        const priorEnd = shiftMonthKey(recentKeys[0], -1);
+        const priorKeys = listMonthKeysEnding(priorEnd, windowMonths);
+        const trendKeys = listMonthKeysEnding(recentEnd, trendMonths);
+        const priorStart = `${priorKeys[0]}-01`;
+        const insufficient = priorStart < dataStart;
+        const optionEnd = completed;
+        const optionStart = shiftMonthKey(dataStart.slice(0, 7), 2);
+        const recentEndOptions = [];
+        let cursor = optionStart;
+        while (cursor <= optionEnd) {
+            recentEndOptions.push({
+                key: cursor,
+                label: `${Number(cursor.slice(0, 4))}年${Number(cursor.slice(5, 7))}月`,
+            });
+            cursor = shiftMonthKey(cursor, 1);
+        }
+        return {
+            asOfDate: asOf,
+            dataStartDate: dataStart,
+            recentEndMonthKey: recentEnd,
+            recentMonthKeys: recentKeys,
+            priorMonthKeys: priorKeys,
+            trendMonthKeys: trendKeys,
+            recentLabel: `${recentKeys[0]}〜${recentKeys[recentKeys.length - 1]}`,
+            priorLabel: `${priorKeys[0]}〜${priorKeys[priorKeys.length - 1]}`,
+            insufficientComparison: insufficient,
+            recentEndOptions,
+            windowMonths,
+            trendMonths,
+        };
+    };
+
+    const orderMatchesRoute = (order, routeFilter) => {
+        if (!order || !order.isTailorKimono) {
+            return false;
+        }
+        if (!routeFilter || routeFilter === 'all') {
+            return true;
+        }
+        return order.route === routeFilter;
+    };
+
+    const emptyRouteCounts = () => ({
+        overseasKimono: 0,
+        domesticKimono: 0,
+        obiKimono: 0,
+        tailorKimono: 0,
+        orderTotal: 0,
+    });
+
+    const addRouteCount = (bucket, order) => {
+        if (!order || !order.isTailorKimono) {
+            return;
+        }
+        if (order.route === 'overseas') {
+            bucket.overseasKimono += 1;
+        } else if (order.route === 'domestic') {
+            bucket.domesticKimono += 1;
+        } else if (order.route === 'obi') {
+            bucket.obiKimono += 1;
+        }
+        bucket.tailorKimono += 1;
+        bucket.orderTotal += order.orderTotal || 0;
+    };
+
+    const routeCountValue = (bucket, routeFilter) => {
+        if (routeFilter === 'overseas') {
+            return bucket.overseasKimono;
+        }
+        if (routeFilter === 'domestic') {
+            return bucket.domesticKimono;
+        }
+        if (routeFilter === 'obi') {
+            return bucket.obiKimono;
+        }
+        return bucket.tailorKimono;
+    };
+
+    const classifyDeclineStatus = (priorCount, recentCount, thresholds) => {
+        const majorPct = Number(thresholds?.majorDeclinePct);
+        const declinePct = Number(thresholds?.declinePct);
+        const growthPct = Number(thresholds?.growthPct);
+        const major = Number.isFinite(majorPct) ? majorPct : 50;
+        const mild = Number.isFinite(declinePct) ? declinePct : 20;
+        const growth = Number.isFinite(growthPct) ? growthPct : 20;
+
+        if (priorCount <= 0) {
+            if (recentCount > 0) {
+                return { status: 'up', rate: null };
+            }
+            return { status: 'stable', rate: null };
+        }
+        if (recentCount === 0) {
+            return { status: 'stopped', rate: -1 };
+        }
+        const rate = (recentCount - priorCount) / priorCount;
+        if (rate <= -(major / 100)) {
+            return { status: 'major_down', rate };
+        }
+        if (rate <= -(mild / 100)) {
+            return { status: 'down', rate };
+        }
+        if (rate >= (growth / 100)) {
+            return { status: 'up', rate };
+        }
+        return { status: 'stable', rate };
+    };
+
+    const buildCustomerMasterLookup = (customerRecords) => {
+        const cf = F().customer || { customerCode: 'customer_code', customerName: 'customer_name' };
+        const byCode = new Map();
+        (customerRecords || []).forEach((record) => {
+            const code = String(getFieldValue(record, cf.customerCode)).trim();
+            const name = String(getFieldValue(record, cf.customerName)).trim();
+            if (code) {
+                byCode.set(code, name || code);
+            }
+        });
+        return byCode;
+    };
+
+    /**
+     * 月次・減少分析で共用する受注解析ソース。
+     */
+    const prepareMonthlySource = async (options) => {
+        assertDeps();
+        const opts = options || {};
+        const of = F().order;
+        const pf = F().product;
+        const cf = F().customer || { customerCode: 'customer_code', customerName: 'customer_name' };
+        const orderFields = [
+            of.manageNo, of.orderDate, of.customerCode, of.customerName,
+            of.kimonoType, of.kimonoSpec, of.detailTable, of.aggregationStatus,
+        ];
+        const productFields = [pf.itemCode, pf.itemName, pf.subcategory];
+        const customerFields = [cf.customerCode, cf.customerName];
+
+        const [orderRecords, productRecords, customerRecords] = await Promise.all([
+            opts.orders
+                ? Promise.resolve(opts.orders)
+                : fetchAllRecords(CFG().ORDER_APP_ID, 'order by order_date asc', orderFields),
+            opts.products
+                ? Promise.resolve(opts.products)
+                : fetchAllRecords(CFG().PRODUCT_APP_ID, 'order by ' + pf.itemCode + ' asc', productFields),
+            opts.customers
+                ? Promise.resolve(opts.customers)
+                : (CFG().CUSTOMER_APP_ID
+                    ? fetchAllRecords(CFG().CUSTOMER_APP_ID, 'order by ' + cf.customerCode + ' asc', customerFields)
+                    : Promise.resolve([])),
+        ]);
+
+        const lookup = buildProductLookup(productRecords);
+        const customerMaster = buildCustomerMasterLookup(customerRecords);
+        const byManage = new Map();
+        const conflicts = [];
+
+        (orderRecords || []).forEach((record) => {
+            if (!isAggregationActive(record)) {
+                return;
+            }
+            const order = analyzeOrder(record, lookup);
+            if (!order.manageNo || !order.orderDate) {
+                return;
+            }
+            if (customerMaster.has(order.customerCode)) {
+                order.customerName = customerMaster.get(order.customerCode);
+            }
+            const existing = byManage.get(order.manageNo);
+            if (!existing || order.orderDate >= existing.orderDate) {
+                byManage.set(order.manageNo, order);
+            }
+        });
+
+        const analyzed = [...byManage.values()];
+        analyzed.forEach((order) => {
+            if (order.isConflict) {
+                conflicts.push({
+                    manageNo: order.manageNo,
+                    orderDate: order.orderDate,
+                    customerCode: order.customerCode,
+                    customerName: order.customerName,
+                    kimonoType: order.kimonoType,
+                    tailorCategories: (order.tailorCategories || []).slice(),
+                    orderTotal: order.orderTotal,
+                });
+            }
+        });
+
+        return {
+            analyzed,
+            conflicts,
+            customerMaster,
+            productLookup: lookup,
+            orderRecordCount: (orderRecords || []).length,
+            productRecordCount: (productRecords || []).length,
+            customerRecordCount: (customerRecords || []).length,
+        };
+    };
+
+    /**
+     * 受注減少得意先レポート
+     */
+    const buildDeclineReport = async (options) => {
+        assertDeps();
+        const opts = options || {};
+        const asOf = normalizeYmd(opts.asOfDate) || todayYmdJst();
+        const dataStart = M().DATA_START_DATE || '2026-03-24';
+        const declineCfg = M().DECLINE || {};
+        const windows = buildComparisonWindows(asOf, opts.recentEndMonthKey, dataStart);
+        const routeFilter = opts.route || 'all';
+        const searchText = String(opts.search || '').trim().toLowerCase();
+        const statusFilter = opts.statusFilter || 'all';
+        const sortBy = opts.sortBy || 'delta';
+        const thresholds = {
+            majorDeclinePct: opts.majorDeclinePct ?? declineCfg.DEFAULT_MAJOR_DECLINE_PCT ?? 50,
+            declinePct: opts.declinePct ?? declineCfg.DEFAULT_DECLINE_PCT ?? 20,
+            growthPct: opts.growthPct ?? declineCfg.DEFAULT_GROWTH_PCT ?? 20,
+        };
+
+        const source = opts.analyzed
+            ? {
+                analyzed: opts.analyzed,
+                conflicts: opts.conflicts || [],
+                customerMaster: opts.customerMaster || new Map(),
+                orderRecordCount: opts.orderRecordCount || (opts.analyzed || []).length,
+            }
+            : await prepareMonthlySource(opts);
+
+        const recentSet = new Set(windows.recentMonthKeys);
+        const priorSet = new Set(windows.priorMonthKeys);
+        const trendSet = new Set(windows.trendMonthKeys);
+        const customers = new Map();
+
+        const ensure = (code, name) => {
+            const key = code || '（未設定）';
+            if (!customers.has(key)) {
+                customers.set(key, {
+                    customerCode: key,
+                    customerName: name || key,
+                    prior: emptyRouteCounts(),
+                    recent: emptyRouteCounts(),
+                    trend: Object.fromEntries(windows.trendMonthKeys.map((k) => [k, emptyRouteCounts()])),
+                    lastOrderDate: '',
+                    conflictCount: 0,
+                    manageNos: new Set(),
+                });
+            }
+            const row = customers.get(key);
+            if (name && (!row.customerName || row.customerName === key)) {
+                row.customerName = name;
+            }
+            return row;
+        };
+
+        (source.analyzed || []).forEach((order) => {
+            if (!order.manageNo) {
+                return;
+            }
+            const monthKey = order.orderDate.slice(0, 7);
+            const row = ensure(order.customerCode, order.customerName);
+            if (order.isConflict) {
+                if (recentSet.has(monthKey) || priorSet.has(monthKey) || trendSet.has(monthKey)) {
+                    row.conflictCount += 1;
+                }
+                return;
+            }
+            if (!order.isTailorKimono) {
+                return;
+            }
+            if (order.orderDate > row.lastOrderDate) {
+                row.lastOrderDate = order.orderDate;
+            }
+            if (!orderMatchesRoute(order, routeFilter)) {
+                return;
+            }
+            if (row.manageNos.has(order.manageNo)) {
+                return;
+            }
+            row.manageNos.add(order.manageNo);
+            if (priorSet.has(monthKey)) {
+                addRouteCount(row.prior, order);
+            }
+            if (recentSet.has(monthKey)) {
+                addRouteCount(row.recent, order);
+            }
+            if (trendSet.has(monthKey)) {
+                addRouteCount(row.trend[monthKey], order);
+            }
+        });
+
+        const rows = [...customers.values()].map((row) => {
+            const priorCount = routeCountValue(row.prior, routeFilter);
+            const recentCount = routeCountValue(row.recent, routeFilter);
+            const classified = classifyDeclineStatus(priorCount, recentCount, thresholds);
+            const delta = recentCount - priorCount;
+            const trend = windows.trendMonthKeys.map((key) => ({
+                key,
+                label: `${Number(key.slice(5, 7))}月`,
+                overseasKimono: row.trend[key].overseasKimono,
+                domesticKimono: row.trend[key].domesticKimono,
+                obiKimono: row.trend[key].obiKimono,
+                tailorKimono: row.trend[key].tailorKimono,
+                filteredKimono: routeCountValue(row.trend[key], routeFilter),
+                orderTotal: row.trend[key].orderTotal,
+            }));
+            return {
+                customerCode: row.customerCode,
+                customerName: row.customerName,
+                priorCount,
+                recentCount,
+                delta,
+                rate: classified.rate,
+                status: classified.status,
+                recentAmount: row.recent.orderTotal,
+                lastOrderDate: row.lastOrderDate || null,
+                conflictCount: row.conflictCount,
+                priorBreakdown: { ...row.prior },
+                recentBreakdown: { ...row.recent },
+                trend,
+                orderAppQuery: `customer_code = "${String(row.customerCode).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`,
+            };
+        }).filter((row) => {
+            if (row.priorCount === 0 && row.recentCount === 0 && row.conflictCount === 0) {
+                return false;
+            }
+            if (searchText) {
+                const hay = `${row.customerCode} ${row.customerName}`.toLowerCase();
+                if (hay.indexOf(searchText) < 0) {
+                    return false;
+                }
+            }
+            if (statusFilter && statusFilter !== 'all' && row.status !== statusFilter) {
+                return false;
+            }
+            return true;
+        });
+
+        const statusRank = {
+            stopped: 0,
+            major_down: 1,
+            down: 2,
+            stable: 3,
+            up: 4,
+        };
+
+        rows.sort((a, b) => {
+            if (sortBy === 'rate') {
+                const ar = a.rate === null ? 999 : a.rate;
+                const br = b.rate === null ? 999 : b.rate;
+                return ar - br || a.delta - b.delta || a.customerCode.localeCompare(b.customerCode, 'ja');
+            }
+            if (sortBy === 'amount') {
+                return b.recentAmount - a.recentAmount || a.delta - b.delta;
+            }
+            if (sortBy === 'status') {
+                return (statusRank[a.status] - statusRank[b.status]) || a.delta - b.delta;
+            }
+            return a.delta - b.delta || (a.rate === null ? 1 : a.rate) - (b.rate === null ? 1 : b.rate);
+        });
+
+        const summary = {
+            totalCustomers: rows.length,
+            stopped: rows.filter((r) => r.status === 'stopped').length,
+            majorDown: rows.filter((r) => r.status === 'major_down').length,
+            down: rows.filter((r) => r.status === 'down').length,
+            stable: rows.filter((r) => r.status === 'stable').length,
+            up: rows.filter((r) => r.status === 'up').length,
+        };
+
+        const windowConflicts = (source.conflicts || []).filter((c) => {
+            const key = String(c.orderDate || '').slice(0, 7);
+            return recentSet.has(key) || priorSet.has(key);
+        });
+
+        return {
+            version: VERSION,
+            asOfDate: asOf,
+            dataStartDate: dataStart,
+            windows,
+            filters: {
+                route: routeFilter,
+                search: opts.search || '',
+                statusFilter,
+                sortBy,
+                recentEndMonthKey: windows.recentEndMonthKey,
+                thresholds,
+            },
+            summary,
+            rows,
+            conflicts: windowConflicts,
+            conflictCount: windowConflicts.length,
+            meta: {
+                orderRecordCount: source.orderRecordCount || 0,
+                analyzedCount: (source.analyzed || []).length,
+                notes: [
+                    '直近完了月を終点とする3か月 vs その前3か月。',
+                    '当月（未完了月）は基本比較に含めない。',
+                    '比較前0枚の増減率は算出しない。',
+                    '分類競合は仕立て枚数に含めず別表示。',
+                    '顧客コード基準。名称はApp8顧客マスタを優先。',
+                ],
+            },
+        };
+    };
+
     /* テスト用に公開 */
     window.CAYANAS_BusinessDashboardMonthly = {
         VERSION,
@@ -822,6 +1308,14 @@
         monthStatus,
         buildProductLookup,
         buildMonthlyReport,
+        shiftMonthKey,
+        listMonthKeysEnding,
+        lastCompletedMonthKey,
+        buildComparisonWindows,
+        classifyDeclineStatus,
+        buildCustomerMasterLookup,
+        prepareMonthlySource,
+        buildDeclineReport,
     };
 
 }());

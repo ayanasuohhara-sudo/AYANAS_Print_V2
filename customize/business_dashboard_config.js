@@ -3,7 +3,8 @@
 
     /**
      * 業務ダッシュボード — 定数
-     * BUSINESS_DASHBOARD_VERSION: 1.7.1
+     * BUSINESS_DASHBOARD_VERSION: 1.7.2
+     * 1.7.2: 経営月次に受注減少得意先の自動抽出を追加。日次は維持。
      * 1.7.1: 経営月次の仕立て分類を 海外 / 国内着物 / 帯 に分離（競合は重複計上せず報告）。日次は維持。
      * 1.7.0: 経営月次タブ（8月起算12か月）追加。日次は維持。
      *
@@ -11,7 +12,7 @@
      * BUSINESS_DASHBOARD_APP_ID を実 ID に差し替えてください（0 のままでは一覧 UI は起動しません）。
      */
 
-    const BUSINESS_DASHBOARD_VERSION = '1.7.1';
+    const BUSINESS_DASHBOARD_VERSION = '1.7.2';
 
     /** 業務ダッシュボード（kintone ホストアプリ） */
     const BUSINESS_DASHBOARD_APP_ID = 82;
@@ -21,6 +22,7 @@
         ORDER_APP_ID: 16,
         DELIVERY_APP_ID: 19,
         PRODUCT_APP_ID: 13,
+        CUSTOMER_APP_ID: 8,
         A550_CUSTOMER_CODE: 'A550',
         /**
          * 集計対象。取消だけ除外し、有効・空欄・未取得は対象。
@@ -165,6 +167,39 @@
             monthlyRouteLabelDomestic: '国内着物',
             monthlyRouteLabelObi: '帯',
             monthlyRouteLabelConflict: '競合',
+            monthlySubOverview: '月次概要',
+            monthlySubDecline: '受注減少得意先',
+            declineTitle: '受注減少得意先',
+            declineLead: '直近の完了3か月とその前の3か月を比較し、受注停止・減少の得意先を自動抽出します。',
+            declineRecentEnd: '直近完了月（終点）',
+            declineMajorThreshold: '大幅減少(%)',
+            declineMildThreshold: '減少(%)',
+            declineGrowthThreshold: '増加(%)',
+            declineSearch: '得意先検索',
+            declineSortDelta: '減少枚数順',
+            declineSortRate: '減少率順',
+            declineSortAmount: '直近金額順',
+            declineCsv: 'CSV出力',
+            declineOpenOrders: 'App16で受注を開く',
+            declineInsufficient: '比較期間にデータ開始前の月が含まれるため、比較精度が不足しています。',
+            declineStatusStopped: '受注停止',
+            declineStatusMajor: '大幅減少',
+            declineStatusDown: '受注減少',
+            declineStatusStable: '安定',
+            declineStatusUp: '受注増加',
+            declineColCode: '得意先コード',
+            declineColName: '得意先名',
+            declineColPrior: '比較前3か月',
+            declineColRecent: '直近3か月',
+            declineColDelta: '増減枚数',
+            declineColRate: '増減率',
+            declineColAmount: '直近受注金額',
+            declineColLastOrder: '最終受注日',
+            declineColStatus: '判定',
+            declineDetailTitle: '得意先詳細',
+            declineTrendTitle: '月別12か月受注推移',
+            declineEmpty: '条件に一致する得意先はありません。',
+            declineConflictNote: '分類競合は仕立て枚数に含めず、別途報告します（v1.7.1ルール維持）。',
         },
         /**
          * 経営月次（8/1〜翌7/31）。日次の今年度(6/1〜)とは別定義。
@@ -182,6 +217,13 @@
             SUBCATEGORY_ALIASES: {
                 '洗い張り': '洗張り',
                 '修理・直し': '修理',
+            },
+            DECLINE: {
+                WINDOW_MONTHS: 3,
+                TREND_MONTHS: 12,
+                DEFAULT_MAJOR_DECLINE_PCT: 50,
+                DEFAULT_DECLINE_PCT: 20,
+                DEFAULT_GROWTH_PCT: 20,
             },
         },
         /** 全体状況 — 受注/納品ブロックの列（Excel 全体状況.xlsx 準拠） */
@@ -280,6 +322,10 @@
                 itemCode: 'item_code',
                 itemName: 'item_name',
                 subcategory: 'subcategory',
+            },
+            customer: {
+                customerCode: 'customer_code',
+                customerName: 'customer_name',
             },
         },
     };

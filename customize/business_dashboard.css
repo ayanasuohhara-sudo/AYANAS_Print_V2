@@ -491,6 +491,86 @@ button.ayanas-bd-toggle {
   background: #e8f1fa;
 }
 
+.ayanas-bd-subtabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+
+.ayanas-bd-subtab {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ayanas-bd-subtab.is-active {
+  background: #0f766e;
+  border-color: #0f766e;
+  color: #fff;
+}
+
+.ayanas-bd-d-filters input[type="number"],
+.ayanas-bd-d-filters input[type="search"] {
+  min-width: 110px;
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.ayanas-bd-table--decline {
+  min-width: 1100px;
+}
+
+.ayanas-bd-d-row {
+  cursor: pointer;
+}
+
+.ayanas-bd-d-row.is-selected td {
+  background: #ecfdf5;
+}
+
+.ayanas-bd-d-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.ayanas-bd-d-badge.is-stopped,
+.ayanas-bd-d-badge.is-major_down {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ayanas-bd-d-badge.is-down {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.ayanas-bd-d-badge.is-up {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.ayanas-bd-d-trend {
+  min-height: 140px;
+}
+
+.ayanas-bd-link {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
 .ayanas-bd-scroll {
   overflow-x: auto;
 }
