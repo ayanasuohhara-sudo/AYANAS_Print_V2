@@ -1,0 +1,464 @@
+{
+  "stamp": "2026-11-16T06-55-34",
+  "backup": "/agent/repos/AYANAS_Print_V2/customize/backups/app82_monthly_v171_prod_2026-11-16T06-55-34",
+  "work": "/agent/repos/AYANAS_Print_V2/customize/backups/app82_monthly_v171_deploy_2026-11-16T06-55-34",
+  "expected": {
+    "overseas": 936,
+    "domestic": 30,
+    "obi": 102,
+    "tailor": 1068,
+    "conflicts": 1,
+    "overall": 1069,
+    "months": {
+      "2026-08": 297,
+      "2026-09": 250,
+      "2026-10": 335,
+      "2026-11": 186
+    },
+    "conflictManageNo": "090526327"
+  },
+  "steps": {
+    "backup": {
+      "stamp": "2026-11-16T06-55-34",
+      "backup": "/agent/repos/AYANAS_Print_V2/customize/backups/app82_monthly_v171_prod_2026-11-16T06-55-34",
+      "files": {
+        "business_dashboard_config.js": {
+          "size": 14062,
+          "sha1": "0d846d81f862c7e8ffb3f33946e6195728ba748f"
+        },
+        "ar_config.js": {
+          "size": 1886,
+          "sha1": "9d4fd699d9ecda7b36f805dc8ee10307a763ac94"
+        },
+        "payment_create.js": {
+          "size": 49476,
+          "sha1": "0a0dde0befe171982424134fbfe495afef9458fb"
+        },
+        "ar_engine.js": {
+          "size": 17148,
+          "sha1": "65f44ae6f0523157f4c7fc694760e70c12caef82"
+        },
+        "business_dashboard_engine.js": {
+          "size": 64912,
+          "sha1": "d4c539a293045def8a2794fad662d55ca202adf6"
+        },
+        "business_dashboard_monthly_engine.js": {
+          "size": 27893,
+          "sha1": "a82659ef39f512f492b8eb4ba2cb1adb60d8808d"
+        },
+        "business_dashboard_money.js": {
+          "size": 19266,
+          "sha1": "605e61635431fc5b297ec5cd14a0fd7b53c1bc4e"
+        },
+        "business_dashboard_desktop.js": {
+          "size": 59259,
+          "sha1": "f350823f037d3e41d6b91336f135abca190bd7a6"
+        },
+        "business_dashboard.css": {
+          "size": 8248,
+          "sha1": "3269bb9918d6bf51ffc395db2d5a0299efe9afd3"
+        }
+      },
+      "jsOrder": [
+        "business_dashboard_config.js",
+        "ar_config.js",
+        "payment_create.js",
+        "ar_engine.js",
+        "business_dashboard_engine.js",
+        "business_dashboard_monthly_engine.js",
+        "business_dashboard_money.js",
+        "business_dashboard_desktop.js"
+      ],
+      "cssOrder": [
+        "business_dashboard.css"
+      ],
+      "monthlyBeforeDesktop": true,
+      "diff": {
+        "business_dashboard_config.js": {
+          "status": "different",
+          "localSha": "fb975f329f3389a7f8440dfbde841cb3396dbcf4",
+          "prodSha": "0d846d81f862c7e8ffb3f33946e6195728ba748f",
+          "action": "override_local"
+        },
+        "ar_config.js": {
+          "status": "different",
+          "localSha": "013847d95c84915937786c6fc7932bbe20ab7cdd",
+          "prodSha": "9d4fd699d9ecda7b36f805dc8ee10307a763ac94",
+          "action": "keep_prod"
+        },
+        "payment_create.js": {
+          "status": "different",
+          "localSha": "524331affdd5630ba77485d466bc18961220feda",
+          "prodSha": "0a0dde0befe171982424134fbfe495afef9458fb",
+          "action": "keep_prod"
+        },
+        "ar_engine.js": {
+          "status": "different",
+          "localSha": "6aa53f02d7126c9e6137a003e7bbb52da8b6c8a9",
+          "prodSha": "65f44ae6f0523157f4c7fc694760e70c12caef82",
+          "action": "keep_prod"
+        },
+        "business_dashboard_engine.js": {
+          "status": "different",
+          "localSha": "af617213e8a17a7e0ce919276d126201aaccb78e",
+          "prodSha": "d4c539a293045def8a2794fad662d55ca202adf6",
+          "action": "keep_prod"
+        },
+        "business_dashboard_monthly_engine.js": {
+          "status": "different",
+          "localSha": "570cae12eb2c9604c469d26b49956e082f2dc204",
+          "prodSha": "a82659ef39f512f492b8eb4ba2cb1adb60d8808d",
+          "action": "override_local"
+        },
+        "business_dashboard_money.js": {
+          "status": "different",
+          "localSha": "81254ea2f28f026b2ad74a5e71c8f9c4200a581b",
+          "prodSha": "605e61635431fc5b297ec5cd14a0fd7b53c1bc4e",
+          "action": "keep_prod"
+        },
+        "business_dashboard_desktop.js": {
+          "status": "different",
+          "localSha": "862b2a906e14878b101ab1eba97a77f7260f3614",
+          "prodSha": "f350823f037d3e41d6b91336f135abca190bd7a6",
+          "action": "override_local"
+        },
+        "business_dashboard.css": {
+          "status": "identical",
+          "localSha": "3269bb9918d6bf51ffc395db2d5a0299efe9afd3",
+          "prodSha": "3269bb9918d6bf51ffc395db2d5a0299efe9afd3",
+          "action": "noop"
+        }
+      },
+      "dailyEngineKeepProd": true,
+      "dailyLocalExists": true,
+      "dailyProdExists": true
+    },
+    "deploy": {
+      "ok": true,
+      "deploy": {
+        "app": "82",
+        "status": "SUCCESS"
+      },
+      "js": [
+        "business_dashboard_config.js",
+        "ar_config.js",
+        "payment_create.js",
+        "ar_engine.js",
+        "business_dashboard_engine.js",
+        "business_dashboard_monthly_engine.js",
+        "business_dashboard_money.js",
+        "business_dashboard_desktop.js"
+      ],
+      "css": [
+        "business_dashboard.css"
+      ],
+      "restore": false
+    },
+    "orderOk": true,
+    "verify": {
+      "ok": true,
+      "checks": {
+        "ver171": true,
+        "monthly110": true,
+        "dailySections": true,
+        "monthlyTab": true,
+        "chart12": true,
+        "routes": true,
+        "yearNoteOverall": true,
+        "conflictSection": true,
+        "filters": true,
+        "matrix": true,
+        "counts": true,
+        "months": true,
+        "conflictManageNo": true,
+        "classify": true,
+        "dailyAfter": true,
+        "jsOrder": true
+      },
+      "dailyReady": {
+        "ver": "1.7.1",
+        "monthlyVer": "1.1.0",
+        "hasMonthly": true,
+        "hasEngine": true,
+        "root": true,
+        "tabs": [
+          {
+            "id": "daily",
+            "text": "日次",
+            "active": true
+          },
+          {
+            "id": "monthly",
+            "text": "経営月次",
+            "active": false
+          }
+        ],
+        "sections": 9,
+        "title": "業務ダッシュボード"
+      },
+      "monthly": {
+        "loading": false,
+        "hasChart": true,
+        "bars": 12,
+        "rows": [
+          {
+            "key": "2026-08",
+            "cells": [
+              "8月",
+              "263",
+              "8",
+              "26",
+              "297",
+              "297",
+              "—"
+            ]
+          },
+          {
+            "key": "2026-09",
+            "cells": [
+              "9月",
+              "215",
+              "9",
+              "26",
+              "250",
+              "547",
+              "-47（-15.8%）"
+            ]
+          },
+          {
+            "key": "2026-10",
+            "cells": [
+              "10月",
+              "304",
+              "12",
+              "19",
+              "335",
+              "882",
+              "+85（+34.0%）"
+            ]
+          },
+          {
+            "key": "2026-11",
+            "cells": [
+              "11月",
+              "154",
+              "1",
+              "31",
+              "186",
+              "1,068",
+              "-149（-44.5%）"
+            ]
+          },
+          {
+            "key": "2026-12",
+            "cells": [
+              "12月",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "—"
+            ]
+          },
+          {
+            "key": "2027-01",
+            "cells": [
+              "1月",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "—"
+            ]
+          },
+          {
+            "key": "2027-02",
+            "cells": [
+              "2月",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "—"
+            ]
+          },
+          {
+            "key": "2027-03",
+            "cells": [
+              "3月",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "—"
+            ]
+          },
+          {
+            "key": "2027-04",
+            "cells": [
+              "4月",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "—"
+            ]
+          },
+          {
+            "key": "2027-05",
+            "cells": [
+              "5月",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "—"
+            ]
+          },
+          {
+            "key": "2027-06",
+            "cells": [
+              "6月",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "—"
+            ]
+          },
+          {
+            "key": "2027-07",
+            "cells": [
+              "7月",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "未到来",
+              "—"
+            ]
+          }
+        ],
+        "title": "経営月次分析",
+        "err": "",
+        "yearNote": "年度累計: 海外 936\n    / 国内着物 30\n    / 帯 102\n    / 仕立て合計 1,068 枚\n    / 分類競合 1 件\n    （全体 1,069 ＝ 仕立て合計 1,068 ＋ 競合 1）",
+        "conflictSection": true,
+        "routeButtons": [
+          "all",
+          "overseas",
+          "domestic",
+          "obi"
+        ],
+        "filters": true,
+        "matrixRows": 46,
+        "custOpts": 59,
+        "typeOpts": 52,
+        "sectionTitles": [
+          "12か月 受注枚数推移",
+          "月別一覧（8月〜翌7月）",
+          "金額・単価（選択月）（11月）",
+          "着物種類別 受注枚数",
+          "得意先ランキング（選択月）",
+          "得意先×月別 受注枚数",
+          "未納品の受注残",
+          "仕立て分類の競合"
+        ]
+      },
+      "probe": {
+        "ver": "1.1.0",
+        "yearTotals": {
+          "overseasKimono": 936,
+          "domesticKimono": 30,
+          "obiKimono": 102,
+          "tailorKimono": 1068,
+          "conflictCount": 1
+        },
+        "overall": 1069,
+        "conflicts": [
+          {
+            "manageNo": "090526327",
+            "orderDate": "2026-09-05",
+            "cats": [
+              "overseas",
+              "obi"
+            ]
+          }
+        ],
+        "series": [
+          {
+            "key": "2026-08",
+            "overseas": 263,
+            "domestic": 8,
+            "obi": 26,
+            "total": 297
+          },
+          {
+            "key": "2026-09",
+            "overseas": 215,
+            "domestic": 9,
+            "obi": 26,
+            "total": 250
+          },
+          {
+            "key": "2026-10",
+            "overseas": 304,
+            "domestic": 12,
+            "obi": 19,
+            "total": 335
+          },
+          {
+            "key": "2026-11",
+            "overseas": 154,
+            "domestic": 1,
+            "obi": 31,
+            "total": 186
+          }
+        ],
+        "selected": {
+          "key": "2026-11",
+          "overseas": 154,
+          "domestic": 1,
+          "obi": 31,
+          "total": 186,
+          "orderTotal": 2157500,
+          "tailorAmount": 1895050,
+          "addonAmount": 262450
+        },
+        "backlog": 2104,
+        "matrix": 46,
+        "ranking": 23,
+        "classifyObi": "obi",
+        "classifyConflict": "conflict"
+      },
+      "dailyAfter": {
+        "activeDaily": true,
+        "sections": 9,
+        "title": "業務ダッシュボード",
+        "ver": "1.7.1"
+      },
+      "customize": {
+        "js": [
+          "business_dashboard_config.js",
+          "ar_config.js",
+          "payment_create.js",
+          "ar_engine.js",
+          "business_dashboard_engine.js",
+          "business_dashboard_monthly_engine.js",
+          "business_dashboard_money.js",
+          "business_dashboard_desktop.js"
+        ],
+        "css": [
+          "business_dashboard.css"
+        ]
+      }
+    }
+  },
+  "ok": true
+}

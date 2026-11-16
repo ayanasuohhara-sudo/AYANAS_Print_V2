@@ -1107,6 +1107,9 @@
     const renderMonthlyTable = (report) => {
         const u = ui();
         const yt = report.yearTotals || {};
+        const tailorTotal = yt.tailorKimono || report.yearTotalKimono || 0;
+        const conflictTotal = yt.conflictCount || report.conflictCount || 0;
+        const overallTotal = tailorTotal + conflictTotal;
         const rows = (report.series || []).map((row) => {
             const selected = row.key === report.filters.selectedMonthKey ? ' is-selected' : '';
             return `
@@ -1124,11 +1127,12 @@
 <section class="ayanas-bd-section">
   <h2 class="ayanas-bd-section__title">${escapeHtml(u.monthlyTableTitle || '月別一覧')}</h2>
   <p class="ayanas-bd-note">
-    年度累計（集計済・競合除く）: 海外 ${formatInt(yt.overseasKimono || 0)}
+    年度累計: 海外 ${formatInt(yt.overseasKimono || 0)}
     / 国内着物 ${formatInt(yt.domesticKimono || 0)}
     / 帯 ${formatInt(yt.obiKimono || 0)}
-    / 仕立て合計 ${formatInt(yt.tailorKimono || report.yearTotalKimono || 0)} 枚
-    ${yt.conflictCount ? ` / 競合 ${formatInt(yt.conflictCount)} 件` : ''}
+    / 仕立て合計 ${formatInt(tailorTotal)} 枚
+    / 分類競合 ${formatInt(conflictTotal)} 件
+    （全体 ${formatInt(overallTotal)} ＝ 仕立て合計 ${formatInt(tailorTotal)} ＋ 競合 ${formatInt(conflictTotal)}）
   </p>
   <table class="ayanas-bd-table ayanas-bd-table--summary">
     <thead>
@@ -1245,7 +1249,7 @@
         return `
 <section class="ayanas-bd-section">
   <h2 class="ayanas-bd-section__title">${escapeHtml(u.monthlyConflictsTitle || '仕立て分類の競合')}</h2>
-  <p class="ayanas-bd-note">競合 ${formatInt(report.conflictCount || conflicts.length)} 件。枚数集計には含めず報告のみです。</p>
+  <p class="ayanas-bd-note">分類競合 ${formatInt(report.conflictCount || conflicts.length)} 件。仕立て合計には含めません（全体＝仕立て合計＋競合）。元データは変更しません。</p>
   <table class="ayanas-bd-table">
     <thead><tr><th>管理番号</th><th>受注日</th><th>得意先</th><th>着物種類</th><th>同居分類</th></tr></thead>
     <tbody>${rows}</tbody>
