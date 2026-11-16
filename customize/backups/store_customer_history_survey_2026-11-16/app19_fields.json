@@ -1,0 +1,346 @@
+{
+  "count": 21,
+  "fields": [
+    {
+      "code": "aggregation_status",
+      "label": "集計状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "取消",
+        "有効"
+      ],
+      "fields": null
+    },
+    {
+      "code": "barcode_input",
+      "label": "バーコード入力",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_date",
+      "label": "納品日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_detail",
+      "label": "納品明細テーブル",
+      "type": "SUBTABLE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": [
+        "amount",
+        "slip_no",
+        "qty",
+        "in_charge",
+        "manage_no",
+        "kimono_spec",
+        "item_name",
+        "kimono_type",
+        "unit_price",
+        "client_name"
+      ]
+    },
+    {
+      "code": "delivery_no",
+      "label": "納品番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_type",
+      "label": "納品方法",
+      "type": "DROP_DOWN",
+      "required": true,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "工場引渡し",
+        "発送",
+        "本社納品",
+        "店舗引渡し"
+      ],
+      "fields": null
+    },
+    {
+      "code": "invoice_status",
+      "label": "請求状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "未請求",
+        "請求済",
+        "取消"
+      ],
+      "fields": null
+    },
+    {
+      "code": "sales_date",
+      "label": "納品書作成日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "subtotal",
+      "label": "税抜合計",
+      "type": "CALC",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "tax",
+      "label": "消費税",
+      "type": "CALC",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "total_amount",
+      "label": "税込合計",
+      "type": "CALC",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "type": "CATEGORY",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "ステータス",
+      "label": "ステータス",
+      "type": "STATUS",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "レコード番号",
+      "label": "レコード番号",
+      "type": "RECORD_NUMBER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作成日時",
+      "label": "作成日時",
+      "type": "CREATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作成者",
+      "label": "作成者",
+      "type": "CREATOR",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作業者",
+      "label": "作業者",
+      "type": "STATUS_ASSIGNEE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "更新日時",
+      "label": "更新日時",
+      "type": "UPDATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "更新者",
+      "label": "更新者",
+      "type": "MODIFIER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    }
+  ],
+  "interesting": [
+    {
+      "code": "barcode_input",
+      "label": "バーコード入力",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_date",
+      "label": "納品日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_detail",
+      "label": "納品明細テーブル",
+      "type": "SUBTABLE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": [
+        "amount",
+        "slip_no",
+        "qty",
+        "in_charge",
+        "manage_no",
+        "kimono_spec",
+        "item_name",
+        "kimono_type",
+        "unit_price",
+        "client_name"
+      ]
+    },
+    {
+      "code": "delivery_no",
+      "label": "納品番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_type",
+      "label": "納品方法",
+      "type": "DROP_DOWN",
+      "required": true,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "工場引渡し",
+        "発送",
+        "本社納品",
+        "店舗引渡し"
+      ],
+      "fields": null
+    },
+    {
+      "code": "sales_date",
+      "label": "納品書作成日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "total_amount",
+      "label": "税込合計",
+      "type": "CALC",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    }
+  ]
+}
