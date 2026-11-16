@@ -2,15 +2,16 @@
     'use strict';
 
     /**
-     * AYANASU 業務メニュー — 6分類（共通 TOP = App91）
+     * AYANASU 業務メニュー — 11項目フラット構成（共通 TOP = App91）
      *
-     * - URL: /k/{BUSINESS_MENU_APP_ID}/?cat={categoryId}
-     * - 旧 cat（order 等）は CATEGORY_ALIASES で新分類へ吸収
-     * - App92/97 は店舗ポータル（App87）側。App95/99 は非掲載
-     * - 表示名は App87 / App90 と揃える（正式名称ベース）
+     * - ホーム: 11ボタンを一覧表示（直接アプリ or サブメニュー）
+     * - URL: /k/91/ または /k/91/?cat={masters|deadline|…}
+     * - 旧 cat（store / factory 等）は CATEGORY_ALIASES でホームへ吸収
+     * - App85 等の削除済み入庫アプリには接続しない
+     * - 店舗・工場ポータル内部は変更しない（各1ボタンで App87 / App90）
      */
 
-    const BUSINESS_MENU_VERSION = '2.0.0';
+    const BUSINESS_MENU_VERSION = '3.0.0';
 
     const CAYANAS_BUSINESS_MENU = {
         VERSION: BUSINESS_MENU_VERSION,
@@ -19,108 +20,147 @@
         BUSINESS_MENU_APP_ID: 91,
 
         TITLE: 'AYANASU 業務メニュー',
-        LEAD: '業務内容からアプリを選びます。店舗専用の納期・引き取りは店舗ポータルから。',
-        /** 共通ハブナビを使う（portal TOP リンクはハブに統合） */
+        LEAD: 'よく使う業務へ直接移動します。店舗・工場の詳細メニューは各ポータルから。',
+        /** 共通ハブナビを使う（TOP / 店舗 / 工場） */
         USE_HUB_NAV: true,
 
         QUERY_KEY: 'cat',
-        DEFAULT_CATEGORY: 'store',
+        /** ホーム（11項目グリッド） */
+        DEFAULT_CATEGORY: 'home',
 
         /**
-         * 旧8分類 URL 互換
+         * 旧6分類・旧8分類 URL 互換 → ホーム or サブへ
          */
         CATEGORY_ALIASES: {
-            order: 'store',
-            logistics: 'outsourcing',
-            billing: 'finance',
-            work: 'factory',
-            deadline: 'schedule',
-            customer_schedule: 'schedule',
-            analytics: 'finance',
+            store: 'home',
+            factory: 'home',
+            outsourcing: 'home',
+            finance: 'home',
+            schedule: 'deadline',
+            order: 'home',
+            logistics: 'home',
+            billing: 'home',
+            work: 'home',
+            customer_schedule: 'deadline',
+            analytics: 'home',
             masters: 'masters',
+            deadline: 'deadline',
+            home: 'home',
         },
 
         /**
-         * 6分類（表示順）。mode: menu | direct | soon
-         * path 省略時は一覧 /k/{appId}/
+         * ホームに並べる11項目（表示順固定）。
+         * mode:
+         *   - direct … アプリへ直接遷移（home グリッドの href）
+         *   - menu   … ?cat=id でサブ一覧
          */
-        CATEGORIES: [
+        MENU_ITEMS: [
+            {
+                id: 'order',
+                label: '受注登録',
+                shortLabel: '受注登録',
+                icon: 'order',
+                mode: 'direct',
+                directAppId: 16,
+            },
+            {
+                id: 'outsource_out',
+                label: '外注出庫',
+                shortLabel: '外注出庫',
+                icon: 'outsource',
+                mode: 'direct',
+                directAppId: 27,
+            },
+            {
+                id: 'wasai_out',
+                label: '和裁士出庫',
+                shortLabel: '和裁士出庫',
+                icon: 'wasai',
+                mode: 'direct',
+                directAppId: 74,
+            },
+            {
+                id: 'inbound',
+                label: '外注入庫',
+                shortLabel: '外注入庫',
+                icon: 'inbound',
+                mode: 'direct',
+                directAppId: 78,
+            },
+            {
+                id: 'overseas_out',
+                label: '海外出庫',
+                shortLabel: '海外出庫',
+                icon: 'overseas',
+                mode: 'direct',
+                directAppId: 28,
+            },
+            {
+                id: 'delivery',
+                label: '納品書作成',
+                shortLabel: '納品書',
+                icon: 'delivery',
+                mode: 'direct',
+                directAppId: 19,
+            },
+            {
+                id: 'invoice',
+                label: '請求書作成',
+                shortLabel: '請求書',
+                icon: 'invoice',
+                mode: 'direct',
+                directAppId: 35,
+            },
+            {
+                id: 'deadline',
+                label: '納期',
+                shortLabel: '納期',
+                icon: 'calendar',
+                mode: 'menu',
+                /**
+                 * 推奨: App89 納期負荷カレンダーを主入口。
+                 * App94 は納期・納品の横断スケジュール、App98 は和裁士入庫予定。
+                 */
+                items: [
+                    {
+                        appId: 89,
+                        label: '納期負荷カレンダー',
+                        icon: 'calendar',
+                        note: '推奨・日次の納期負荷',
+                    },
+                    {
+                        appId: 94,
+                        label: '納期・納品スケジュール管理',
+                        icon: 'schedule',
+                        note: '顧客別・横断スケジュール',
+                    },
+                    {
+                        appId: 98,
+                        label: '和裁士別仕事予定カレンダー',
+                        icon: 'wasai',
+                        note: '和裁士入庫予定',
+                    },
+                ],
+            },
             {
                 id: 'store',
-                label: '店舗業務',
+                label: '店舗',
                 shortLabel: '店舗',
                 icon: 'store',
-                mode: 'menu',
-                items: [
-                    { appId: 87, label: '店舗ポータル', icon: 'store' },
-                    { appId: 16, label: '受注明細管理', icon: 'order' },
-                    { appId: 88, label: '受注検索', icon: 'search' },
-                    { appId: 96, label: '個人顧客マスタ', icon: 'customer' },
-                ],
+                mode: 'direct',
+                directAppId: 87,
             },
             {
                 id: 'factory',
-                label: '工場業務',
+                label: '工場',
                 shortLabel: '工場',
                 icon: 'work',
-                mode: 'menu',
-                items: [
-                    { appId: 90, label: '工場ポータル', icon: 'status' },
-                    { appId: 86, label: '工場作業状況ポータル', icon: 'status' },
-                    { appId: 16, label: '受注明細管理', icon: 'order' },
-                    { appId: 88, label: '受注検索', icon: 'search' },
-                    { appId: 84, label: '社内作業登録', icon: 'work' },
-                    { appId: 30, label: '仕上げ完了登録', icon: 'complete' },
-                    { appId: 34, label: '社内入庫登録', icon: 'move' },
-                    { appId: 98, label: '和裁士別仕事予定カレンダー', icon: 'wasai' },
-                ],
-            },
-            {
-                id: 'outsourcing',
-                label: '外注管理',
-                shortLabel: '外注',
-                icon: 'logistics',
-                mode: 'menu',
-                items: [
-                    { appId: 27, label: '外注出庫', icon: 'outsource' },
-                    { appId: 28, label: '海外外注出庫', icon: 'overseas' },
-                    { appId: 74, label: '和裁士出庫', icon: 'wasai' },
-                    { appId: 78, label: '外注入庫', icon: 'inbound' },
-                    { appId: 26, label: '外注先マスタ', icon: 'vendor' },
-                    { appId: 23, label: '外注加工マスタ', icon: 'process' },
-                ],
-            },
-            {
-                id: 'finance',
-                label: '売上・経理',
-                shortLabel: '経理',
-                icon: 'billing',
-                mode: 'menu',
-                items: [
-                    { appId: 19, label: '納品書作成', icon: 'delivery' },
-                    { appId: 35, label: '請求書作成', icon: 'invoice' },
-                    { appId: 21, label: '入金管理（登録）', icon: 'payment', path: 'edit' },
-                    { appId: 21, label: '入金管理（一覧）', icon: 'paymentList' },
-                    { appId: 22, label: '売掛一覧', icon: 'ar' },
-                    { appId: 75, label: '和裁士支払明細', icon: 'wasaiPay' },
-                    { appId: 82, label: '業務ダッシュボード', icon: 'dashboard' },
-                ],
-            },
-            {
-                id: 'schedule',
-                label: '予定・納期',
-                shortLabel: '予定納期',
-                icon: 'calendar',
-                mode: 'menu',
-                items: [
-                    { appId: 89, label: '納期負荷カレンダー', icon: 'calendar' },
-                    { appId: 94, label: '納期・納品スケジュール管理', icon: 'schedule' },
-                    { appId: 98, label: '和裁士別仕事予定カレンダー', icon: 'wasai' },
-                ],
+                mode: 'direct',
+                directAppId: 90,
             },
             {
                 id: 'masters',
-                label: 'マスタ・設定',
+                label: 'マスタ',
                 shortLabel: 'マスタ',
                 icon: 'masters',
                 mode: 'menu',
@@ -137,9 +177,29 @@
             },
         ],
 
+        /**
+         * CATEGORIES は desktop / 旧テスト互換用。
+         * home + menu サブ（deadline / masters）を含む。
+         */
+        get CATEGORIES() {
+            const home = {
+                id: 'home',
+                label: '業務メニュー',
+                shortLabel: 'ホーム',
+                icon: 'list',
+                mode: 'home',
+                items: this.MENU_ITEMS,
+            };
+            const menus = (this.MENU_ITEMS || []).filter((item) => item.mode === 'menu');
+            return [home].concat(menus);
+        },
+
         MESSAGES: {
             noAppId: '業務メニューのアプリIDが未設定です。business_menu_config.js の BUSINESS_MENU_APP_ID を設定してください。',
             soonBody: 'このメニューは準備中です。アプリ完成後にリンクを設定します。',
+            backHome: '業務メニューへ戻る',
+            deadlineLead: '納期関連アプリです。通常の日次確認は「納期負荷カレンダー」を推奨します。',
+            mastersLead: 'マスタ一覧です。',
         },
     };
 

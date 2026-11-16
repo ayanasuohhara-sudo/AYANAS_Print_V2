@@ -1,4 +1,4 @@
-/* AYANAS 業務メニュー — 一覧レコードは隠す。ツールバー／アプリ設定は触らない */
+/* AYANASU 業務メニュー — 11項目フラット。一覧レコードは隠す。ツールバー／アプリ設定は触らない */
 body.ayanas-bm-v1 .recordlist-gaia,
 body.ayanas-bm-v1 .recordlist-header-gaia,
 body.ayanas-bm-v1 .gaia-argoui-app-index-pager {
@@ -25,6 +25,10 @@ body.ayanas-bm-v1 .gaia-argoui-app-index-pager {
 
 .cayan-bm-topbar {
   margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
 }
 
 .cayan-bm-top-link {
@@ -69,76 +73,10 @@ body.ayanas-bm-v1 .gaia-argoui-app-index-pager {
   color: #555555;
 }
 
-/* PC: 4列×2段 */
-.cayan-bm-nav {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0 0 24px;
-}
-
-.cayan-bm-nav__item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  min-height: 65px;
-  height: auto;
-  padding: 10px 14px;
-  border: 1px solid #d5d5d5;
-  border-radius: 8px;
-  background: #fafafa;
-  color: #222222;
-  text-decoration: none;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.cayan-bm-nav__item.is-active {
-  background: #dce8f4;
-  border-color: #2f5f8a;
-  border-width: 2px;
-  box-shadow: inset 4px 0 0 #2f5f8a;
-  color: #12304f;
-}
-
-.cayan-bm-nav__item.is-disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  background: #f3f3f3;
-}
-
-.cayan-bm-nav__icon {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-}
-
-.cayan-bm-nav__icon svg {
-  width: 28px;
-  height: 28px;
-  fill: #2f5f8a;
-}
-
-.cayan-bm-nav__label {
-  flex: 1 1 auto;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.3;
-  word-break: break-word;
-}
-
-.cayan-bm-nav__badge {
-  flex: 0 0 auto;
-  font-size: 12px;
-  font-weight: 700;
-  color: #666666;
-  background: #e8e8e8;
-  border-radius: 4px;
-  padding: 2px 6px;
+.cayan-bm-sublead {
+  margin: 0 0 16px;
+  font-size: 15px;
+  color: #555555;
 }
 
 .cayan-bm-section__title {
@@ -148,7 +86,63 @@ body.ayanas-bm-v1 .gaia-argoui-app-index-pager {
   color: #222222;
 }
 
-/* 業務リンク: 2列基本 */
+/* ホーム 11項目: PC 4列 */
+.cayan-bm-home {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.cayan-bm-home__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+  min-height: 96px;
+  padding: 16px 18px;
+  border: 1px solid #c5ced9;
+  border-radius: 10px;
+  background: #f5f7fa;
+  color: #111111;
+  text-decoration: none;
+}
+
+.cayan-bm-home__tile:hover,
+.cayan-bm-home__tile:focus {
+  background: #ffffff;
+  border-color: #2f5f8a;
+  box-shadow: 0 0 0 2px rgba(47, 95, 138, 0.18);
+  outline: none;
+}
+
+.cayan-bm-home__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  pointer-events: none;
+}
+
+.cayan-bm-home__icon svg {
+  width: 26px;
+  height: 26px;
+  fill: #2f5f8a;
+}
+
+.cayan-bm-home__label {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  word-break: break-word;
+  pointer-events: none;
+}
+
+/* サブメニュー（納期・マスタ）: 2列 */
 .cayan-bm-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -197,13 +191,25 @@ body.ayanas-bm-v1 .gaia-argoui-app-index-pager {
   fill: #2f5f8a;
 }
 
-.cayan-bm-btn__label {
+.cayan-bm-btn__text {
   flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.cayan-bm-btn__label {
   font-size: 20px;
   font-weight: 700;
   line-height: 1.35;
   word-break: break-word;
-  pointer-events: none;
+}
+
+.cayan-bm-btn__note {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555555;
 }
 
 .cayan-bm-soon {
@@ -226,7 +232,13 @@ body.ayanas-bm-v1 .gaia-argoui-app-index-pager {
   font-size: 16px;
 }
 
-/* iPad / 狭い幅: 列数のみ変更。文字サイズは縮小しない */
+@media (max-width: 960px) {
+  .cayan-bm-home {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* iPad / 狭い幅: 2列。文字サイズは縮小しない */
 @media (max-width: 900px) {
   .cayan-bm-root {
     padding: 14px 12px 32px;
@@ -242,18 +254,17 @@ body.ayanas-bm-v1 .gaia-argoui-app-index-pager {
     font-size: 16px;
   }
 
-  .cayan-bm-nav {
+  .cayan-bm-home {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 
-  .cayan-bm-nav__item {
-    min-height: 65px;
-    font-size: 18px;
+  .cayan-bm-home__tile {
+    min-height: 88px;
   }
 
-  .cayan-bm-nav__label {
-    font-size: 18px;
+  .cayan-bm-home__label {
+    font-size: 17px;
   }
 
   .cayan-bm-grid {

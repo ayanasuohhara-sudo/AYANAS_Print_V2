@@ -2,15 +2,18 @@
     'use strict';
 
     /**
-     * AYANAS 業務メニュー — 一覧画面。
+     * AYANASU 業務メニュー — 11項目フラット一覧（App91）。
      * 既存アプリのレコードは更新しない。同一タブで業務アプリへ遷移する。
      * スタイルは JS 内でも注入する（CSS 差し替え遅延時の保険）。
      */
 
     const ROOT_ID = 'ayanas-business-menu-root';
-    const STYLE_ID = 'ayanas-business-menu-style-v2';
+    const STYLE_ID = 'ayanas-business-menu-style-v3';
     const BODY_CLASS = 'ayanas-bm-v1';
-    const LEGACY_STYLE_IDS = ['ayanas-business-menu-style-v1'];
+    const LEGACY_STYLE_IDS = [
+        'ayanas-business-menu-style-v1',
+        'ayanas-business-menu-style-v2',
+    ];
 
     if (typeof CAYANAS_BUSINESS_MENU === 'undefined') {
         console.error('[business_menu] business_menu_config.js を先に読み込んでください。');
@@ -24,15 +27,11 @@
     const cfg = () => CAYANAS_BUSINESS_MENU;
 
     const isMenuApp = () => {
-
         const appId = Number(cfg().BUSINESS_MENU_APP_ID);
-
         if (!appId) {
             return false;
         }
-
         return Number(kintone.app.getId()) === appId;
-
     };
 
     const escapeHtml = (value) => String(value ?? '')
@@ -41,22 +40,30 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
 
-    const categories = () => {
-
-        const list = cfg().CATEGORIES;
-
+    const menuItems = () => {
+        const list = cfg().MENU_ITEMS;
         return Array.isArray(list) ? list : [];
+    };
 
+    const findMenuItem = (id) => menuItems().find((item) => item && item.id === id) || null;
+
+    const categories = () => {
+        const list = cfg().CATEGORIES;
+        return Array.isArray(list) ? list : [];
     };
 
     const findCategory = (id) => categories().find((c) => c && c.id === id) || null;
 
-    const resolveCategoryId = () => {
-
+    /**
+     * URL ?cat= を解決。
+     * home / 空 / 旧 alias → home
+     * deadline / masters → サブメニュー
+     */
+    const resolveViewId = () => {
         const key = String(cfg().QUERY_KEY || 'cat');
         const params = new URLSearchParams(location.search || '');
         const raw = String(params.get(key) || '').trim();
-        const fallback = String(cfg().DEFAULT_CATEGORY || 'store');
+        const fallback = String(cfg().DEFAULT_CATEGORY || 'home');
         const aliases = cfg().CATEGORY_ALIASES || {};
 
         if (!raw) {
@@ -64,46 +71,48 @@
         }
 
         const mapped = aliases[raw] ? String(aliases[raw]) : raw;
-        const found = findCategory(mapped);
 
-        if (!found || found.mode === 'direct' || found.mode === 'soon') {
-            /* direct / soon / 未知はメニュー初期画面へ（エラーにしない） */
-            return fallback;
+        if (mapped === 'home' || mapped === fallback) {
+            return 'home';
         }
 
-        return found.id;
+        const menu = findMenuItem(mapped);
+        if (menu && menu.mode === 'menu') {
+            return menu.id;
+        }
 
+        const cat = findCategory(mapped);
+        if (cat && (cat.mode === 'menu' || cat.mode === 'home')) {
+            return cat.id;
+        }
+
+        return fallback;
     };
 
     const appUrl = (item) => {
-
         const appId = Number(item.appId);
         const rawPath = String(item.path ?? '').trim().replace(/^\/+|\/+$/g, '');
         const suffix = rawPath ? rawPath + '/' : '';
-
         return location.origin + '/k/' + appId + '/' + suffix;
-
     };
 
     const menuCategoryUrl = (categoryId) => {
-
         const appId = Number(cfg().BUSINESS_MENU_APP_ID);
         const key = String(cfg().QUERY_KEY || 'cat');
-
         return location.origin + '/k/' + appId + '/?' + key + '=' + encodeURIComponent(categoryId);
-
     };
 
-    const directUrl = (category) => {
-
-        const appId = Number(category.directAppId);
-
-        if (!appId) {
-            return location.origin + '/k/' + Number(cfg().BUSINESS_MENU_APP_ID || 91) + '/';
-        }
-
+    const homeUrl = () => {
+        const appId = Number(cfg().BUSINESS_MENU_APP_ID) || 91;
         return location.origin + '/k/' + appId + '/';
+    };
 
+    const directUrl = (item) => {
+        const appId = Number(item.directAppId || item.appId);
+        if (!appId) {
+            return homeUrl();
+        }
+        return location.origin + '/k/' + appId + '/';
     };
 
     const ICONS = {
@@ -142,72 +151,99 @@
 
     const iconHtml = (key) => ICONS[key] || ICONS.order;
 
-    const itemHtml = (item) => (
-        '<a class="cayan-bm-btn"'
-        + ' href="' + escapeHtml(appUrl(item)) + '"'
-        + ' data-app-id="' + escapeHtml(item.appId) + '">'
-        + '<span class="cayan-bm-btn__icon">' + iconHtml(item.icon) + '</span>'
-        + '<span class="cayan-bm-btn__label">' + escapeHtml(item.label) + '</span>'
-        + '</a>'
-    );
-
-    const navItemHtml = (category, activeId) => {
-
-        const isActive = category.id === activeId;
-        const label = category.shortLabel || category.label;
-        const baseClass = 'cayan-bm-nav__item'
-            + (isActive ? ' is-active' : '')
-            + (category.mode === 'soon' ? ' is-disabled' : '');
-
-        if (category.mode === 'soon') {
-            return '<span class="' + baseClass + '" aria-disabled="true" title="準備中">'
-                + '<span class="cayan-bm-nav__icon">' + iconHtml(category.icon) + '</span>'
-                + '<span class="cayan-bm-nav__label">' + escapeHtml(label) + '</span>'
-                + '<span class="cayan-bm-nav__badge">準備中</span>'
-                + '</span>';
-        }
-
-        const href = category.mode === 'direct'
-            ? directUrl(category)
-            : menuCategoryUrl(category.id);
-
-        return '<a class="' + baseClass + '"'
-            + ' href="' + escapeHtml(href) + '"'
-            + (isActive ? ' aria-current="page"' : '')
-            + '>'
-            + '<span class="cayan-bm-nav__icon">' + iconHtml(category.icon) + '</span>'
-            + '<span class="cayan-bm-nav__label">' + escapeHtml(label) + '</span>'
+    const itemLinkHtml = (item) => {
+        const note = item.note
+            ? '<span class="cayan-bm-btn__note">' + escapeHtml(item.note) + '</span>'
+            : '';
+        return '<a class="cayan-bm-btn"'
+            + ' href="' + escapeHtml(appUrl(item)) + '"'
+            + ' data-app-id="' + escapeHtml(item.appId) + '">'
+            + '<span class="cayan-bm-btn__icon">' + iconHtml(item.icon) + '</span>'
+            + '<span class="cayan-bm-btn__text">'
+            + '<span class="cayan-bm-btn__label">' + escapeHtml(item.label) + '</span>'
+            + note
+            + '</span>'
             + '</a>';
-
     };
 
-    const bodyHtml = (category) => {
+    const homeTileHtml = (item) => {
+        const label = item.shortLabel || item.label;
+        let href;
+        let dataAttrs = ' data-menu-id="' + escapeHtml(item.id) + '"';
 
-        if (!category || category.mode === 'soon') {
-            return '<div class="cayan-bm-soon">'
-                + '<p class="cayan-bm-soon__title">' + escapeHtml((category && category.label) || '準備中') + '</p>'
-                + '<p class="cayan-bm-soon__text">' + escapeHtml(cfg().MESSAGES.soonBody) + '</p>'
+        if (item.mode === 'direct') {
+            href = directUrl(item);
+            dataAttrs += ' data-app-id="' + escapeHtml(item.directAppId) + '"';
+        } else if (item.mode === 'menu') {
+            href = menuCategoryUrl(item.id);
+        } else {
+            href = homeUrl();
+        }
+
+        return '<a class="cayan-bm-home__tile"'
+            + ' href="' + escapeHtml(href) + '"'
+            + dataAttrs
+            + '>'
+            + '<span class="cayan-bm-home__icon">' + iconHtml(item.icon) + '</span>'
+            + '<span class="cayan-bm-home__label">' + escapeHtml(label) + '</span>'
+            + '</a>';
+    };
+
+    const backHomeHtml = () => (
+        '<div class="cayan-bm-topbar">'
+        + '<a class="cayan-bm-top-link" href="' + escapeHtml(homeUrl()) + '">'
+        + escapeHtml((cfg().MESSAGES && cfg().MESSAGES.backHome) || '業務メニューへ戻る')
+        + '</a>'
+        + '</div>'
+    );
+
+    const submenuLead = (viewId) => {
+        const messages = cfg().MESSAGES || {};
+        if (viewId === 'deadline') {
+            return messages.deadlineLead || '';
+        }
+        if (viewId === 'masters') {
+            return messages.mastersLead || '';
+        }
+        return '';
+    };
+
+    const bodyHtml = (viewId) => {
+        if (viewId === 'home') {
+            return '<div class="cayan-bm-home" aria-label="業務メニュー11項目">'
+                + menuItems().map(homeTileHtml).join('')
                 + '</div>';
         }
 
-        if (category.mode === 'direct') {
-            /* 通常はポータル／ナビから直接遷移。万一開けた場合の案内 */
+        const menu = findMenuItem(viewId);
+        if (!menu || menu.mode !== 'menu') {
             return '<div class="cayan-bm-soon">'
-                + '<p class="cayan-bm-soon__title">' + escapeHtml(category.label) + '</p>'
+                + '<p class="cayan-bm-soon__title">メニューが見つかりません</p>'
                 + '<p class="cayan-bm-soon__text">'
-                + '<a class="cayan-bm-btn" href="' + escapeHtml(directUrl(category)) + '">'
-                + '<span class="cayan-bm-btn__icon">' + iconHtml(category.icon) + '</span>'
-                + '<span class="cayan-bm-btn__label">' + escapeHtml(category.label) + 'を開く</span>'
+                + '<a class="cayan-bm-top-link" href="' + escapeHtml(homeUrl()) + '">'
+                + escapeHtml((cfg().MESSAGES && cfg().MESSAGES.backHome) || '業務メニューへ戻る')
                 + '</a></p>'
                 + '</div>';
         }
 
-        const items = Array.isArray(category.items) ? category.items : [];
+        const items = Array.isArray(menu.items) ? menu.items : [];
+        const lead = submenuLead(viewId);
 
-        return '<div class="cayan-bm-grid">'
-            + items.map(itemHtml).join('')
+        return backHomeHtml()
+            + (lead
+                ? '<p class="cayan-bm-sublead">' + escapeHtml(lead) + '</p>'
+                : '')
+            + '<div class="cayan-bm-grid">'
+            + items.map(itemLinkHtml).join('')
             + '</div>';
+    };
 
+    const sectionTitle = (viewId) => {
+        if (viewId === 'home') {
+            return '業務メニュー';
+        }
+        const menu = findMenuItem(viewId);
+        return menu ? menu.label : '';
     };
 
     const hubNavHtml = () => {
@@ -222,32 +258,22 @@
         });
     };
 
-    const shellHtml = (activeId) => {
-
-        const category = findCategory(activeId) || findCategory(cfg().DEFAULT_CATEGORY);
-
-        return ''
-            + hubNavHtml()
-            + '<header class="cayan-bm-header">'
-            + '<h1 class="cayan-bm-title">' + escapeHtml(cfg().TITLE) + '</h1>'
-            + '<p class="cayan-bm-lead">' + escapeHtml(cfg().LEAD) + '</p>'
-            + '</header>'
-            + '<nav class="cayan-bm-nav" aria-label="業務分類">'
-            + categories().map((c) => navItemHtml(c, activeId)).join('')
-            + '</nav>'
-            + '<section class="cayan-bm-section" data-category="' + escapeHtml(category ? category.id : '') + '">'
-            + '<h2 class="cayan-bm-section__title">' + escapeHtml(category ? category.label : '') + '</h2>'
-            + bodyHtml(category)
-            + '</section>';
-
-    };
+    const shellHtml = (viewId) => (
+        ''
+        + hubNavHtml()
+        + '<header class="cayan-bm-header">'
+        + '<h1 class="cayan-bm-title">' + escapeHtml(cfg().TITLE) + '</h1>'
+        + '<p class="cayan-bm-lead">' + escapeHtml(cfg().LEAD) + '</p>'
+        + '</header>'
+        + '<section class="cayan-bm-section" data-category="' + escapeHtml(viewId) + '">'
+        + '<h2 class="cayan-bm-section__title">' + escapeHtml(sectionTitle(viewId)) + '</h2>'
+        + bodyHtml(viewId)
+        + '</section>'
+    );
 
     const injectStyles = () => {
-
-        /* 外部CSSより後に注入し、文字サイズを確実に効かせる（!important） */
         [STYLE_ID].concat(LEGACY_STYLE_IDS).forEach((id) => {
             const existing = document.getElementById(id);
-
             if (existing) {
                 existing.remove();
             }
@@ -276,14 +302,6 @@
             '}',
             '.cayan-bm-root * { box-sizing: border-box; }',
             '.cayan-bm-topbar { margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }',
-            '.cayan-bm-hubs { display: flex; flex-wrap: wrap; gap: 8px; }',
-            '.cayan-bm-hub {',
-            '  display: inline-flex; align-items: center; justify-content: center;',
-            '  min-height: 44px; padding: 0 14px; border-radius: 8px;',
-            '  border: 1px solid #c5ced9; background: #eef6ff; color: #1a1a1a;',
-            '  font-size: 14px !important; font-weight: 700; text-decoration: none;',
-            '}',
-            '.cayan-bm-hub:hover, .cayan-bm-hub:focus { border-color: #2f5f8a; background: #fff; }',
             '.cayan-bm-top-link {',
             '  display: inline-flex; align-items: center; justify-content: center;',
             '  min-height: 48px !important; padding: 10px 20px;',
@@ -301,40 +319,35 @@
             '  letter-spacing: 0.04em; color: #111;',
             '}',
             '.cayan-bm-lead { margin: 6px 0 0; font-size: 16px !important; color: #555; }',
-            '.cayan-bm-nav {',
+            '.cayan-bm-sublead { margin: 0 0 16px; font-size: 15px !important; color: #555; }',
+            '.cayan-bm-section__title { margin: 0 0 16px; font-size: 20px !important; font-weight: 700 !important; color: #222; }',
+            /* ホーム 11項目: PC 4列 / タブレット 3列 / 狭い幅 2列 */
+            '.cayan-bm-home {',
             '  display: grid;',
             '  grid-template-columns: repeat(4, minmax(0, 1fr));',
-            '  gap: 12px;',
-            '  margin: 0 0 24px;',
+            '  gap: 14px;',
             '}',
-            '.cayan-bm-nav__item {',
-            '  display: flex; flex-direction: row; align-items: center; gap: 10px;',
-            '  min-height: 65px !important; padding: 10px 14px;',
-            '  border: 1px solid #d5d5d5; border-radius: 8px;',
-            '  background: #fafafa; color: #222; text-decoration: none;',
+            '.cayan-bm-home__tile {',
+            '  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;',
+            '  gap: 10px;',
+            '  min-height: 96px !important; padding: 16px 18px;',
+            '  border: 1px solid #c5ced9; border-radius: 10px;',
+            '  background: #f5f7fa; color: #111; text-decoration: none;',
+            '}',
+            '.cayan-bm-home__tile:hover, .cayan-bm-home__tile:focus {',
+            '  background: #fff; border-color: #2f5f8a;',
+            '  box-shadow: 0 0 0 2px rgba(47, 95, 138, 0.18); outline: none;',
+            '}',
+            '.cayan-bm-home__icon {',
+            '  display: inline-flex; align-items: center; justify-content: center;',
+            '  width: 44px !important; height: 44px !important; border-radius: 8px;',
+            '  background: #fff; border: 1px solid #d8d8d8; pointer-events: none;',
+            '}',
+            '.cayan-bm-home__icon svg { width: 26px !important; height: 26px !important; fill: #2f5f8a; }',
+            '.cayan-bm-home__label {',
             '  font-size: 18px !important; font-weight: 700 !important;',
+            '  line-height: 1.3; word-break: break-word; pointer-events: none;',
             '}',
-            '.cayan-bm-nav__item.is-active {',
-            '  background: #dce8f4; border-color: #2f5f8a; border-width: 2px;',
-            '  box-shadow: inset 4px 0 0 #2f5f8a; color: #12304f;',
-            '}',
-            '.cayan-bm-nav__item.is-disabled {',
-            '  opacity: 0.55; cursor: not-allowed; background: #f3f3f3;',
-            '}',
-            '.cayan-bm-nav__icon {',
-            '  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;',
-            '  width: 28px !important; height: 28px !important;',
-            '}',
-            '.cayan-bm-nav__icon svg { width: 28px !important; height: 28px !important; fill: #2f5f8a; }',
-            '.cayan-bm-nav__label {',
-            '  flex: 1 1 auto; font-size: 18px !important; font-weight: 700 !important;',
-            '  line-height: 1.3; word-break: break-word;',
-            '}',
-            '.cayan-bm-nav__badge {',
-            '  flex: 0 0 auto; font-size: 12px; font-weight: 700; color: #666;',
-            '  background: #e8e8e8; border-radius: 4px; padding: 2px 6px;',
-            '}',
-            '.cayan-bm-section__title { margin: 0 0 16px; font-size: 20px !important; font-weight: 700 !important; color: #222; }',
             '.cayan-bm-grid {',
             '  display: grid;',
             '  grid-template-columns: repeat(2, minmax(0, 1fr));',
@@ -356,9 +369,15 @@
             '  background: #fff; border: 1px solid #d8d8d8; pointer-events: none;',
             '}',
             '.cayan-bm-btn__icon svg { width: 32px !important; height: 32px !important; fill: #2f5f8a; }',
+            '.cayan-bm-btn__text {',
+            '  flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px; pointer-events: none;',
+            '}',
             '.cayan-bm-btn__label {',
-            '  flex: 1 1 auto; font-size: 20px !important; font-weight: 700 !important;',
-            '  line-height: 1.35; word-break: break-word; pointer-events: none;',
+            '  font-size: 20px !important; font-weight: 700 !important;',
+            '  line-height: 1.35; word-break: break-word;',
+            '}',
+            '.cayan-bm-btn__note {',
+            '  font-size: 13px !important; font-weight: 500 !important; color: #555;',
             '}',
             '.cayan-bm-soon {',
             '  padding: 28px 20px; border: 1px dashed #c5c5c5; border-radius: 10px;',
@@ -366,13 +385,16 @@
             '}',
             '.cayan-bm-soon__title { margin: 0 0 8px; font-size: 20px !important; font-weight: 700 !important; }',
             '.cayan-bm-soon__text { margin: 0; color: #555; font-size: 16px !important; }',
+            '@media (max-width: 960px) {',
+            '  .cayan-bm-home { grid-template-columns: repeat(3, minmax(0, 1fr)); }',
+            '}',
             '@media (max-width: 900px) {',
             '  .cayan-bm-root { padding: 14px 12px 32px; font-size: 18px !important; }',
             '  .cayan-bm-title { font-size: 24px !important; }',
             '  .cayan-bm-top-link { min-height: 48px !important; font-size: 16px !important; }',
-            '  .cayan-bm-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }',
-            '  .cayan-bm-nav__item { min-height: 65px !important; font-size: 18px !important; }',
-            '  .cayan-bm-nav__label { font-size: 18px !important; }',
+            '  .cayan-bm-home { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }',
+            '  .cayan-bm-home__tile { min-height: 88px !important; }',
+            '  .cayan-bm-home__label { font-size: 17px !important; }',
             '  .cayan-bm-grid { grid-template-columns: 1fr; gap: 14px; }',
             '  .cayan-bm-btn { min-height: 80px !important; }',
             '  .cayan-bm-btn__label { font-size: 20px !important; }',
@@ -380,23 +402,17 @@
         ].join('\n');
 
         document.head.appendChild(style);
-
     };
 
     const removeRoot = () => {
-
         document.body.classList.remove(BODY_CLASS);
-
         const root = document.getElementById(ROOT_ID);
-
         if (root) {
             root.remove();
         }
-
     };
 
     const mount = () => {
-
         if (!isMenuApp()) {
             return;
         }
@@ -404,7 +420,7 @@
         injectStyles();
         document.body.classList.add(BODY_CLASS);
 
-        const activeId = resolveCategoryId();
+        const viewId = resolveViewId();
         let root = document.getElementById(ROOT_ID);
 
         if (!root) {
@@ -415,12 +431,10 @@
             mountPoint.insertBefore(root, mountPoint.firstChild);
         }
 
-        root.innerHTML = shellHtml(activeId);
-
+        root.innerHTML = shellHtml(viewId);
     };
 
     kintone.events.on('app.record.index.show', (event) => {
-
         if (!Number(cfg().BUSINESS_MENU_APP_ID)) {
             console.warn('[business_menu]', cfg().MESSAGES.noAppId);
             return event;
@@ -431,21 +445,15 @@
         }
 
         mount();
-
         return event;
-
     });
 
     kintone.events.on('app.record.index.hide', (event) => {
-
         if (!isMenuApp()) {
             return event;
         }
-
         removeRoot();
-
         return event;
-
     });
 
 }());
