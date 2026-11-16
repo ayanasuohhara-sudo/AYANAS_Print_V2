@@ -1,0 +1,18 @@
+{
+  "payment_create.js": {
+    "status": "DIFFERS",
+    "prodBytes": 48035,
+    "localBytes": 59046,
+    "prodVer": "2.0.16",
+    "localVer": "2.0.17",
+    "fileKey": "20261114060224E3E94CED7B39436DB219523A33497A2A301"
+  },
+  "invoice_balance_desktop.js": {
+    "status": "DIFFERS",
+    "prodBytes": 6679,
+    "localBytes": 18212,
+    "prodVer": null,
+    "localVer": "1.1.0",
+    "fileKey": "20261114060224B486FEDC9D7342F2877572F85A8C6BB6047"
+  }
+}

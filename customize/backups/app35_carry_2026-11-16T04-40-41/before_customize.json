@@ -1,0 +1,78 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261116043802C967455503954749872C00DD79B1EF27130",
+          "name": "app_nav_banner_config.js",
+          "contentType": "text/javascript; charset=utf-8",
+          "size": "2635"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261116043802CAD18C53F5714EE085D1DA747637B162157",
+          "name": "app_nav_banner.js",
+          "contentType": "text/javascript; charset=utf-8",
+          "size": "6659"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611160438023839F206734C42D79BE42E208A5294EA119",
+          "name": "payment_create.js",
+          "contentType": "text/javascript",
+          "size": "59046"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611160438035E2DCFFFD1BC4BB19A21CDC48F7A6082262",
+          "name": "invoice_balance_desktop.js",
+          "contentType": "text/javascript",
+          "size": "19168"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611160438021FB9EC9EB66A49E3BCE4AC4D487A6234144",
+          "name": "app_nav_banner.css",
+          "contentType": "text/css; charset=utf-8",
+          "size": "4473"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611160438021A8C406A73F442B4B82A928F2A7E7C50132",
+          "name": "payment_create.js",
+          "contentType": "text/javascript",
+          "size": "59046"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026111604380245EE14E2D69E4348B672F24CDB2DEF9A164",
+          "name": "invoice_balance_desktop.js",
+          "contentType": "text/javascript",
+          "size": "19168"
+        }
+      }
+    ],
+    "css": []
+  },
+  "revision": "40"
+}

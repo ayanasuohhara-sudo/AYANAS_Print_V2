@@ -368,7 +368,7 @@ assert(
         { filename: 'invoice_balance_desktop.js' }
     );
     assert('InvoiceBalanceDesktop exported', !!balSandbox.InvoiceBalanceDesktop);
-    assert('balance desktop version 1.1.0', balSandbox.InvoiceBalanceDesktop.VERSION === '1.1.0');
+    assert('balance desktop version 1.1.x', String(balSandbox.InvoiceBalanceDesktop.VERSION).indexOf('1.1.') === 0);
 }
 
 if (failed > 0) {

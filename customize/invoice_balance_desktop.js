@@ -4,7 +4,7 @@
     /**
      * 請求書 App 35 — 前回請求額・入金の自動引き継ぎ
      * 前提: payment_create.js を先に読み込む（PaymentCreateV2）
-     * INVOICE_BALANCE_JS_VERSION: 1.1.0
+     * INVOICE_BALANCE_JS_VERSION: 1.1.2
      *
      * トリガー:
      * - 新規作成・編集画面表示（customer_code あり）
@@ -15,7 +15,7 @@
      * - InvoiceCreate / BulkInvoiceCreate が存在する場合は一括作成の 0 固定をパッチ
      */
 
-    const INVOICE_BALANCE_JS_VERSION = '1.1.0';
+    const INVOICE_BALANCE_JS_VERSION = '1.1.2';
     const INVOICE_APP_ID = 35;
     const REFRESH_BUTTON_ID = 'ayanas-invoice-balance-refresh-button';
     const IMPORT_BUTTON_ID = 'ayanas-invoice-import-button';
@@ -78,33 +78,67 @@
 
     };
 
+    const buildNumberUpdate = (currentField, value) => {
+
+        const update = { value: String(value) };
+
+        // kintone.app.record.set では既存フィールドの type を維持しないと
+        // submit 時に event.record[code].type is invalid になる
+        if (currentField && currentField.type) {
+            update.type = currentField.type;
+        }
+
+        return update;
+
+    };
+
     const applyRefreshToScreen = (applied) => {
 
         const fields = PaymentCreateV2.INVOICE_FIELDS;
-        const updates = {
-            [fields.carryOver]: { value: String(applied.carryOver) },
-            [fields.paymentAmount]: { value: String(applied.paymentAmount) },
-        };
-
         const currentRecord = kintone.app.record.get().record ?? {};
+        const updates = {};
+
+        if (currentRecord[fields.carryOver]) {
+            updates[fields.carryOver] = buildNumberUpdate(
+                currentRecord[fields.carryOver],
+                applied.carryOver
+            );
+        }
+
+        if (currentRecord[fields.paymentAmount]) {
+            updates[fields.paymentAmount] = buildNumberUpdate(
+                currentRecord[fields.paymentAmount],
+                applied.paymentAmount
+            );
+        }
 
         if (currentRecord[fields.displayLastInvoiceAmount]) {
-            updates[fields.displayLastInvoiceAmount] = {
-                value: String(applied.displayLastInvoiceAmount ?? applied.carryOver),
-            };
+            updates[fields.displayLastInvoiceAmount] = buildNumberUpdate(
+                currentRecord[fields.displayLastInvoiceAmount],
+                applied.displayLastInvoiceAmount ?? applied.carryOver
+            );
         }
 
         if (currentRecord[fields.lastInvoiceAmount]) {
-            updates[fields.lastInvoiceAmount] = {
-                value: String(applied.lastInvoiceAmount ?? applied.carryOver),
-            };
+            updates[fields.lastInvoiceAmount] = buildNumberUpdate(
+                currentRecord[fields.lastInvoiceAmount],
+                applied.lastInvoiceAmount ?? applied.carryOver
+            );
         }
 
-        if (currentRecord[fields.balance]) {
-            updates[fields.balance] = { value: String(applied.balance) };
+        // balance が CALC の場合は set しない（kintone 計算式に任せる）
+        if (currentRecord[fields.balance]
+            && currentRecord[fields.balance].type
+            && currentRecord[fields.balance].type !== 'CALC') {
+            updates[fields.balance] = buildNumberUpdate(
+                currentRecord[fields.balance],
+                applied.balance
+            );
         }
 
-        kintone.app.record.set({ record: updates });
+        if (Object.keys(updates).length > 0) {
+            kintone.app.record.set({ record: updates });
+        }
 
     };
 
