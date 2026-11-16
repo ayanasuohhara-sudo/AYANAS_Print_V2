@@ -4,12 +4,19 @@
     /**
      * 入金管理 App 21（V2）
      * payment_create.js — 充当集計・請求書 App 35 同期
-     * PAYMENT_JS_VERSION: 2.0.16
+     * PAYMENT_JS_VERSION: 2.0.17
      *
      * グローバル名 PaymentCreateV2（AYANAS Invoice プラグインの PaymentCreate と衝突しない）
+     *
+     * 請求書ヘッダー繰越（App35）規約:
+     * - carry_over … 直前「請求済」(legacy「確定」含む) の税込請求額（gross）。残高ではない
+     * - payment_amount … その直前請求への App21 充当合計（cash+fee+discount）。請求対象期間では絞らない
+     * - 繰越額 … carry_over − payment_amount
+     * - balance … carry_over − payment_amount + 今回請求額
+     * - 再計算は常に絶対値（加算差分ではない）→ 再編集でも二重計上しない
      */
 
-    const PAYMENT_JS_VERSION = '2.0.16';
+    const PAYMENT_JS_VERSION = '2.0.17';
 
     const PaymentCreateV2 = {};
 
@@ -77,12 +84,24 @@
     };
 
     const INVOICE_STATUS_BILLED = '請求済';
-    /** 請求書 App 35 の dropdown（AYANAS Invoice: 未請求 / 請求済 / 取消）。「確定」は使わない */
+    /**
+     * App 35 現行: 未請求 / 請求済 / 取消。
+     * legacy Invoice プラグイン由来の「確定」も請求確定済みとして扱う（繰越ソース）。
+     * 「作成中」「未請求」は未確定 → 繰越ソースにしない。
+     */
+    const INVOICE_STATUS_CONFIRMED_LEGACY = '確定';
     const INVOICE_STATUS_CANCEL = '取消';
     const INVOICE_STATUS_UNBILLED = '未請求';
+    const INVOICE_STATUS_CREATING = '作成中';
 
     const BILLED_INVOICE_STATUSES = [
         INVOICE_STATUS_BILLED,
+        INVOICE_STATUS_CONFIRMED_LEGACY,
+    ];
+
+    const UNCONFIRMED_INVOICE_STATUSES = [
+        INVOICE_STATUS_CREATING,
+        INVOICE_STATUS_UNBILLED,
     ];
 
     const PAYMENT_STATUS_UNPAID = '未入金';
@@ -421,6 +440,95 @@
 
     };
 
+    const invoiceSortKey = (invoiceRecord) => {
+        const date = String(getFieldValue(invoiceRecord, INVOICE_FIELDS.invoiceDate) || '').trim();
+        const no = String(getFieldValue(invoiceRecord, INVOICE_FIELDS.invoiceNo) || '').trim();
+        return `${date}\t${no}`;
+    };
+
+    const isBilledInvoiceStatus = (status) => (
+        BILLED_INVOICE_STATUSES.includes(String(status ?? '').trim())
+    );
+
+    const isUnconfirmedInvoiceStatus = (status) => (
+        UNCONFIRMED_INVOICE_STATUSES.includes(String(status ?? '').trim())
+    );
+
+    /**
+     * 請求一覧から「直前の確定済み請求」を選ぶ（純関数・テスト用）。
+     * 条件: status ∈ {請求済, 確定}、excludeInvoiceNo 以外、invoice_date desc / invoice_no desc。
+     * 未確定（作成中・未請求）はソースにしない。取消も除外。
+     */
+    PaymentCreateV2.selectPriorBilledInvoice = (invoiceRecords, excludeInvoiceNo = '') => {
+
+        const exclude = String(excludeInvoiceNo ?? '').trim();
+        const billed = (invoiceRecords || [])
+            .filter((invoiceRecord) => {
+                const no = String(getFieldValue(invoiceRecord, INVOICE_FIELDS.invoiceNo)).trim();
+                if (exclude && no === exclude) {
+                    return false;
+                }
+                return isBilledInvoiceStatus(getFieldValue(invoiceRecord, INVOICE_FIELDS.invoiceStatus));
+            })
+            .sort((a, b) => (invoiceSortKey(a) < invoiceSortKey(b) ? 1 : -1));
+
+        return billed[0] ?? null;
+
+    };
+
+    /**
+     * 直前確定請求より新しい未確定請求があるか（警告用）。
+     */
+    PaymentCreateV2.findUnconfirmedAfterPrior = (invoiceRecords, priorInvoice, excludeInvoiceNo = '') => {
+
+        const exclude = String(excludeInvoiceNo ?? '').trim();
+        const priorKey = priorInvoice ? invoiceSortKey(priorInvoice) : '';
+
+        return (invoiceRecords || []).find((invoiceRecord) => {
+            const no = String(getFieldValue(invoiceRecord, INVOICE_FIELDS.invoiceNo)).trim();
+            if (exclude && no === exclude) {
+                return false;
+            }
+            if (!isUnconfirmedInvoiceStatus(getFieldValue(invoiceRecord, INVOICE_FIELDS.invoiceStatus))) {
+                return false;
+            }
+            if (!priorInvoice) {
+                return true;
+            }
+            return invoiceSortKey(invoiceRecord) > priorKey;
+        }) ?? null;
+
+    };
+
+    /**
+     * ヘッダー金額の純計算（kintone 不要）。
+     * carry は常に前回税込請求額（gross）。入金反映後残高を carry に載せないため、
+     * payment は前回請求への充当のみを差し引き、二重控除しない。
+     */
+    PaymentCreateV2.computeHeaderAmounts = ({
+        priorBillingTarget = 0,
+        paymentOnPriorInvoice = 0,
+        currentInvoiceAmount = 0,
+    } = {}) => {
+
+        const carryOver = toNumber(priorBillingTarget);
+        const paymentAmount = toNumber(paymentOnPriorInvoice);
+        const invoiceAmount = toNumber(currentInvoiceAmount);
+        const carryForwardAmount = carryOver - paymentAmount;
+        const balance = carryOver - paymentAmount + invoiceAmount;
+        const currentBillingAmount = carryForwardAmount + invoiceAmount;
+
+        return {
+            carryOver,
+            paymentAmount,
+            carryForwardAmount,
+            invoiceAmount,
+            balance,
+            currentBillingAmount,
+        };
+
+    };
+
     PaymentCreateV2.fetchLastBilledInvoiceForCustomer = async (customerCode, excludeInvoiceNo = '') => {
 
         const code = String(customerCode ?? '').trim();
@@ -444,6 +552,7 @@
             fields: [
                 INVOICE_FIELDS.invoiceNo,
                 INVOICE_FIELDS.invoiceDate,
+                INVOICE_FIELDS.invoiceStatus,
                 INVOICE_FIELDS.invoiceAmount,
                 INVOICE_FIELDS.total,
             ],
@@ -461,9 +570,39 @@
 
     };
 
+    /** 得意先の請求書一覧（繰越判定・未確定検出用） */
+    PaymentCreateV2.fetchInvoicesForCustomerHeader = async (customerCode) => {
+
+        const code = String(customerCode ?? '').trim();
+
+        if (!code) {
+            return [];
+        }
+
+        const query = buildQuery([
+            `${INVOICE_FIELDS.customerCode} = "${escapeQueryValue(code)}"`,
+        ], {
+            orderBy: 'invoice_date desc, invoice_no desc',
+        });
+
+        return fetchAllRecords(INVOICE_APP_ID, query, [
+            '$id',
+            INVOICE_FIELDS.invoiceNo,
+            INVOICE_FIELDS.invoiceDate,
+            INVOICE_FIELDS.invoiceStatus,
+            INVOICE_FIELDS.invoiceAmount,
+            INVOICE_FIELDS.total,
+            INVOICE_FIELDS.paymentAmount,
+            INVOICE_FIELDS.discountAmount,
+            INVOICE_FIELDS.paymentStatus,
+        ]);
+
+    };
+
     /**
      * 前回請求額（App21 display_last_invoice_amount と同義）=
      * 請求済の最新1件の回収対象額。見つからない場合は App21 入金の表示値を参照。
+     * ※請求書ヘッダー繰越では billed のみを使い、このフォールバックは入金画面用。
      */
     PaymentCreateV2.fetchDisplayLastInvoiceAmountFromLatestPayment = async (customerCode) => {
 
@@ -547,8 +686,34 @@
         toNumber(totals.cash) + toNumber(totals.fee) + toNumber(totals.discount)
     );
 
+    const emptyHeaderRefresh = () => ({
+        displayLastInvoiceAmount: 0,
+        lastInvoiceAmount: 0,
+        priorPaymentTotal: 0,
+        paymentOnLastInvoice: 0,
+        carryOverNet: 0,
+        priorInvoiceNo: '',
+        priorInvoiceDate: '',
+        priorInvoiceStatus: '',
+        priorSource: 'none',
+        paymentScope: 'allocations_to_prior_billed_invoice',
+        skippedUnconfirmedPrior: false,
+        unconfirmedInvoiceNo: '',
+        note: '新規得意先または請求済請求なし → 繰越0',
+    });
+
     /**
-     * 請求書再作成・取込時に App35 ヘッダーへ反映する残高・入金・前回請求を App21/35 から再集計する。
+     * 請求書ヘッダー用の繰越・入金を App21/35 から再集計（絶対再計算）。
+     *
+     * 入金範囲:
+     *   App21 の充当行で invoice_no = 直前請求済請求番号 のもののみ。
+     *   請求対象期間（billing_from/to）や締日では絞らない（期間混同防止）。
+     *   同一充当の二重計上なし（行単位の cash+fee+discount 合計）。
+     *
+     * 未確定の前回請求:
+     *   作成中/未請求は繰越ソースに使わない。より新しい未確定があれば
+     *   skippedUnconfirmedPrior=true（確定済み直前があればそちらを使用）。
+     *
      * @param {string} customerCode
      * @param {{ excludeInvoiceNo?: string }} options 編集中の請求番号（自分自身を除外）
      */
@@ -556,28 +721,34 @@
 
         const code = String(customerCode ?? '').trim();
         const excludeInvoiceNo = String(options.excludeInvoiceNo ?? '').trim();
-        const empty = {
-            displayLastInvoiceAmount: 0,
-            lastInvoiceAmount: 0,
-            priorPaymentTotal: 0,
-            paymentOnLastInvoice: 0,
-            carryOverNet: 0,
-        };
 
         if (!code) {
-            return empty;
+            return emptyHeaderRefresh();
         }
 
-        const [billedInvoices, paymentRecords, lastInvoice] = await Promise.all([
-            PaymentCreateV2.fetchBilledInvoicesForCustomer(code),
+        const [customerInvoices, paymentRecords] = await Promise.all([
+            PaymentCreateV2.fetchInvoicesForCustomerHeader(code),
             PaymentCreateV2.fetchAllActivePaymentRecords(),
-            PaymentCreateV2.fetchLastBilledInvoiceForCustomer(code, excludeInvoiceNo),
         ]);
+
+        const lastInvoice = PaymentCreateV2.selectPriorBilledInvoice(
+            customerInvoices,
+            excludeInvoiceNo
+        );
+        const unconfirmed = PaymentCreateV2.findUnconfirmedAfterPrior(
+            customerInvoices,
+            lastInvoice,
+            excludeInvoiceNo
+        );
 
         let priorPaymentTotal = 0;
         let carryOverNet = 0;
 
-        billedInvoices.forEach((invoiceRecord) => {
+        customerInvoices.forEach((invoiceRecord) => {
+
+            if (!isBilledInvoiceStatus(getFieldValue(invoiceRecord, INVOICE_FIELDS.invoiceStatus))) {
+                return;
+            }
 
             const invoiceNo = String(getFieldValue(invoiceRecord, INVOICE_FIELDS.invoiceNo)).trim();
 
@@ -600,33 +771,41 @@
 
         });
 
-        let paymentOnLastInvoice = 0;
-        let lastInvoiceForPayment = lastInvoice;
+        const displayLastInvoiceAmount = lastInvoice
+            ? PaymentCreateV2.getBillingTarget(lastInvoice)
+            : 0;
 
-        const displayLastInvoiceAmount = await PaymentCreateV2.resolveDisplayLastInvoiceAmount(
-            code,
-            excludeInvoiceNo
-        );
-
-        if (!lastInvoiceForPayment && displayLastInvoiceAmount > 0) {
-            lastInvoiceForPayment = await PaymentCreateV2.fetchLastBilledInvoiceForCustomer(code, excludeInvoiceNo)
-                ?? await PaymentCreateV2.fetchLastBilledInvoiceForCustomer(code, '');
-        }
-
-        const lastInvoiceNo = lastInvoiceForPayment
-            ? String(getFieldValue(lastInvoiceForPayment, INVOICE_FIELDS.invoiceNo)).trim()
+        const lastInvoiceNo = lastInvoice
+            ? String(getFieldValue(lastInvoice, INVOICE_FIELDS.invoiceNo)).trim()
+            : '';
+        const lastInvoiceDate = lastInvoice
+            ? String(getFieldValue(lastInvoice, INVOICE_FIELDS.invoiceDate)).trim()
+            : '';
+        const lastInvoiceStatus = lastInvoice
+            ? String(getFieldValue(lastInvoice, INVOICE_FIELDS.invoiceStatus)).trim()
             : '';
 
-        if (lastInvoiceNo) {
+        let paymentOnLastInvoice = 0;
 
+        if (lastInvoiceNo) {
             const totals = PaymentCreateV2.aggregateInvoiceFromPayments(
                 paymentRecords,
                 lastInvoiceNo,
                 null
             );
-
             paymentOnLastInvoice = sumSettledFromTotals(totals);
+        }
 
+        let note = '';
+
+        if (!lastInvoice) {
+            note = unconfirmed
+                ? `前回請求が未確定（${getFieldValue(unconfirmed, INVOICE_FIELDS.invoiceNo)}）のため繰越0。確定後に再取得してください。`
+                : '前回の請求済請求なし → 繰越0';
+        } else if (unconfirmed) {
+            note = `未確定の請求（${getFieldValue(unconfirmed, INVOICE_FIELDS.invoiceNo)}）をスキップし、直前の請求済 ${lastInvoiceNo} を使用`;
+        } else {
+            note = `直前請求済 ${lastInvoiceNo} の税込請求額を carry_over、その充当合計を payment_amount`;
         }
 
         return {
@@ -635,20 +814,30 @@
             priorPaymentTotal,
             paymentOnLastInvoice,
             carryOverNet,
+            priorInvoiceNo: lastInvoiceNo,
+            priorInvoiceDate: lastInvoiceDate,
+            priorInvoiceStatus: lastInvoiceStatus,
+            priorSource: lastInvoice ? 'billed' : 'none',
+            paymentScope: 'allocations_to_prior_billed_invoice',
+            skippedUnconfirmedPrior: Boolean(unconfirmed),
+            unconfirmedInvoiceNo: unconfirmed
+                ? String(getFieldValue(unconfirmed, INVOICE_FIELDS.invoiceNo)).trim()
+                : '',
+            note,
         };
 
     };
 
-    /** 請求後残高 = 前回請求残高 − 今回入金額 ＋ 今回請求額 */
+    /** 請求後残高 = 前回請求額 − 今回入金額 ＋ 今回請求額 */
     PaymentCreateV2.calculateInvoiceHeaderBalance = (carryOver, invoiceAmount, paymentAmount) => (
         toNumber(carryOver) - toNumber(paymentAmount) + toNumber(invoiceAmount)
     );
 
     /**
-     * computeInvoiceHeaderRefresh の結果を請求書レコードへ反映。
-     * carry_over … 直前「請求済」の税込請求額（印刷の前回請求額）
+     * computeInvoiceHeaderRefresh の結果を請求書レコードへ反映（絶対上書き）。
+     * carry_over … 直前請求済の税込請求額（印刷の前回御請求額）
      * payment_amount … その請求への入金充当合計
-     * balance … 前回請求残高 − 今回入金額 ＋ 今回請求額（kintone 計算式と同じ）
+     * balance … carry_over − payment_amount + invoice_amount
      */
     PaymentCreateV2.applyInvoiceHeaderRefreshToRecord = (record, refresh) => {
 
@@ -656,16 +845,15 @@
         const displayAmount = toNumber(
             refresh?.displayLastInvoiceAmount ?? refresh?.lastInvoiceAmount
         );
-        const carry = displayAmount;
         const paymentTotal = toNumber(refresh?.paymentOnLastInvoice);
-        const balance = PaymentCreateV2.calculateInvoiceHeaderBalance(
-            carry,
-            invoiceAmount,
-            paymentTotal
-        );
+        const amounts = PaymentCreateV2.computeHeaderAmounts({
+            priorBillingTarget: displayAmount,
+            paymentOnPriorInvoice: paymentTotal,
+            currentInvoiceAmount: invoiceAmount,
+        });
 
-        setNumberField(record, INVOICE_FIELDS.carryOver, carry);
-        setNumberField(record, INVOICE_FIELDS.paymentAmount, paymentTotal);
+        setNumberField(record, INVOICE_FIELDS.carryOver, amounts.carryOver);
+        setNumberField(record, INVOICE_FIELDS.paymentAmount, amounts.paymentAmount);
 
         if (record[INVOICE_FIELDS.displayLastInvoiceAmount]) {
             setNumberField(record, INVOICE_FIELDS.displayLastInvoiceAmount, displayAmount);
@@ -676,17 +864,91 @@
         }
 
         if (record[INVOICE_FIELDS.balance]) {
-            setNumberField(record, INVOICE_FIELDS.balance, balance);
+            setNumberField(record, INVOICE_FIELDS.balance, amounts.balance);
         }
 
         return {
-            carryOver: carry,
-            paymentAmount: paymentTotal,
+            carryOver: amounts.carryOver,
+            paymentAmount: amounts.paymentAmount,
             displayLastInvoiceAmount: displayAmount,
             lastInvoiceAmount: displayAmount,
             carryOverNet: toNumber(refresh?.carryOverNet),
-            balance,
+            balance: amounts.balance,
+            carryForwardAmount: amounts.carryForwardAmount,
+            currentBillingAmount: amounts.currentBillingAmount,
+            priorInvoiceNo: refresh?.priorInvoiceNo || '',
+            priorInvoiceDate: refresh?.priorInvoiceDate || '',
+            priorInvoiceStatus: refresh?.priorInvoiceStatus || '',
+            priorSource: refresh?.priorSource || 'none',
+            skippedUnconfirmedPrior: Boolean(refresh?.skippedUnconfirmedPrior),
+            unconfirmedInvoiceNo: refresh?.unconfirmedInvoiceNo || '',
+            note: refresh?.note || '',
         };
+
+    };
+
+    /**
+     * 一括作成など REST POST 用レコード payload に繰越・入金を反映。
+     * buildMonthlyInvoiceRecord の carryOver=0 固定を置き換える。
+     */
+    PaymentCreateV2.applyInvoiceHeaderRefreshToRestPayload = (payload, refresh) => {
+
+        if (!payload || typeof payload !== 'object') {
+            return payload;
+        }
+
+        const invoiceAmount = toNumber(
+            payload[INVOICE_FIELDS.invoiceAmount]?.value
+            ?? payload[INVOICE_FIELDS.total]?.value
+        );
+        const displayAmount = toNumber(
+            refresh?.displayLastInvoiceAmount ?? refresh?.lastInvoiceAmount
+        );
+        const paymentTotal = toNumber(refresh?.paymentOnLastInvoice);
+        const amounts = PaymentCreateV2.computeHeaderAmounts({
+            priorBillingTarget: displayAmount,
+            paymentOnPriorInvoice: paymentTotal,
+            currentInvoiceAmount: invoiceAmount,
+        });
+
+        payload[INVOICE_FIELDS.carryOver] = { value: String(amounts.carryOver) };
+        payload[INVOICE_FIELDS.paymentAmount] = { value: String(amounts.paymentAmount) };
+        payload[INVOICE_FIELDS.balance] = { value: String(amounts.balance) };
+
+        if (payload[INVOICE_FIELDS.displayLastInvoiceAmount]
+            || refresh?.displayLastInvoiceAmount !== undefined) {
+            payload[INVOICE_FIELDS.displayLastInvoiceAmount] = {
+                value: String(displayAmount),
+            };
+        }
+
+        return {
+            payload,
+            applied: {
+                carryOver: amounts.carryOver,
+                paymentAmount: amounts.paymentAmount,
+                balance: amounts.balance,
+                carryForwardAmount: amounts.carryForwardAmount,
+                priorInvoiceNo: refresh?.priorInvoiceNo || '',
+                priorSource: refresh?.priorSource || 'none',
+                note: refresh?.note || '',
+            },
+        };
+
+    };
+
+    PaymentCreateV2.enrichRestPayloadWithHeaderRefresh = async (
+        payload,
+        customerCode,
+        options = {}
+    ) => {
+
+        const refresh = await PaymentCreateV2.computeInvoiceHeaderRefresh(
+            customerCode,
+            options
+        );
+
+        return PaymentCreateV2.applyInvoiceHeaderRefreshToRestPayload(payload, refresh);
 
     };
 
@@ -706,6 +968,11 @@
         return PaymentCreateV2.applyInvoiceHeaderRefreshToRecord(record, refresh);
 
     };
+
+    PaymentCreateV2.BILLED_INVOICE_STATUSES = BILLED_INVOICE_STATUSES;
+    PaymentCreateV2.UNCONFIRMED_INVOICE_STATUSES = UNCONFIRMED_INVOICE_STATUSES;
+    PaymentCreateV2.isBilledInvoiceStatus = isBilledInvoiceStatus;
+    PaymentCreateV2.isUnconfirmedInvoiceStatus = isUnconfirmedInvoiceStatus;
 
     PaymentCreateV2.computeWriteoffAmount = (record) => (
         toNumber(getFieldValue(record, PAYMENT_FIELDS.paymentAmount))

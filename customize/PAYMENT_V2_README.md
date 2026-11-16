@@ -69,23 +69,40 @@
 
 ## 請求書 App 35 — 入金・繰越の再取得（再作成向け）
 
-請求書を作り直すとき、ヘッダーの **入金額・繰越・前回請求額** を App 21 / 35 から最新化します。
+請求書ヘッダーの **入金額・繰越・前回請求額** を App 21 / 35 から最新化します（`PAYMENT_JS_VERSION` 2.0.17+ / `invoice_balance_desktop` 1.1.0+）。
+
+### 意味（変更しない）
+
+| 項目 | 意味 |
+|------|------|
+| `carry_over` | 直前の**請求済**（legacy「確定」含む）請求の税込請求額（gross）。残高ではない |
+| `payment_amount` | その直前請求への App21 **充当合計**（cash+fee+discount）。請求対象期間では絞らない |
+| 繰越額（印刷） | `carry_over − payment_amount` |
+| 今回御請求額（印刷） | 繰越額 ＋ 今回売上（税込） |
+| `balance` | `carry_over − payment_amount + invoice_amount` |
+
+再計算は常に**絶対値上書き**（差分加算ではない）→ 再編集でも二重計上しない。
 
 ### 設定（App 35）
 
 1. **JavaScript / CSSでカスタマイズ** に次の順で追加  
    - `payment_create.js`（App 21 と同じファイル）  
    - `invoice_balance_desktop.js`
-2. **`display_last_invoice_amount`（前回請求額）** を App 35 に追加すると、再取得・再作成時に App21 と同じロジックでセットされます（**carry_over も同値**）。
-3. **`carry_over`（前回請求残高）** … `display_last_invoice_amount` と同じ（請求済最新1件の請求額。App21 入金の表示値をフォールバック）  
-   **`payment_amount`** … 直前「請求済」請求への入金充当合計（App 21 集計）  
-   **`balance`（計算）** … `carry_over − payment_amount + invoice_amount`  
-   例: 929,500 − 929,500 + 399,300 = **399,300**
+2. **`display_last_invoice_amount`（前回請求額）** を App 35 に追加すると、再取得時に同値セット（**carry_over も同値**）。
 
 ### 動作
 
-- ボタン **「入金・繰越を再取得」**（未請求取込ボタン横）
-- **未請求データ取込** の直後に自動再取得
+- 新規作成・編集画面表示時（`customer_code` あり）に自動再取得
+- ボタン **「入金・繰越を再取得」**
+- **未請求データ取込** 完了後に自動再取得
+- **請求書作成** ボタン実行直前に再取得
 - **請求先コード** 変更時に自動再取得
+- **一括／月次作成**: `InvoiceCreate` / `BulkInvoiceCreate` をパッチし、得意先ごとに enrich（`carryOver = 0` 固定を廃止）
 
-確定済請求の判定は **`invoice_status` = 請求済** です（App 35 の選択肢に合わせています）。
+### 前回請求の判定
+
+- 繰越ソース: `invoice_status ∈ {請求済, 確定}` の最新1件（自レコード除外）
+- 未確定（`作成中` / `未請求`）はソースにしない。より新しい未確定があれば `skippedUnconfirmedPrior` を立て、確定済み直前を使用（無ければ繰越0）
+- 新規得意先・請求済なし → 繰越0
+
+例: 929,500 − 929,500 + 399,300 = **399,300**
