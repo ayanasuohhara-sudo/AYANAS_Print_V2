@@ -1,0 +1,78 @@
+{
+  "js": [
+    "business_dashboard_config.js",
+    "ar_config.js",
+    "payment_create.js",
+    "ar_engine.js",
+    "business_dashboard_engine.js",
+    "business_dashboard_money.js",
+    "business_dashboard_desktop.js"
+  ],
+  "css": [
+    "business_dashboard.css"
+  ],
+  "diffs": [
+    {
+      "name": "business_dashboard_config.js",
+      "kind": "js",
+      "prodSize": 11148,
+      "localSize": 14062,
+      "same": false
+    },
+    {
+      "name": "ar_config.js",
+      "kind": "js",
+      "prodSize": 1886,
+      "localSize": 1834,
+      "same": false
+    },
+    {
+      "name": "payment_create.js",
+      "kind": "js",
+      "prodSize": 49476,
+      "localSize": 59046,
+      "same": false
+    },
+    {
+      "name": "ar_engine.js",
+      "kind": "js",
+      "prodSize": 17148,
+      "localSize": 16563,
+      "same": false
+    },
+    {
+      "name": "business_dashboard_engine.js",
+      "kind": "js",
+      "prodSize": 64912,
+      "localSize": 62939,
+      "same": false
+    },
+    {
+      "name": "business_dashboard_money.js",
+      "kind": "js",
+      "prodSize": 19266,
+      "localSize": 18682,
+      "same": false
+    },
+    {
+      "name": "business_dashboard_desktop.js",
+      "kind": "js",
+      "prodSize": 43253,
+      "localSize": 59259,
+      "same": false
+    },
+    {
+      "name": "business_dashboard.css",
+      "kind": "css",
+      "prodSize": 6525,
+      "localSize": 8248,
+      "same": false
+    },
+    {
+      "name": "business_dashboard_monthly_engine.js",
+      "status": "local_new",
+      "localSize": 27893,
+      "inProd": false
+    }
+  ]
+}
