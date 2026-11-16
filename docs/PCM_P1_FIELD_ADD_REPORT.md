@@ -2,16 +2,14 @@
 
 - **作成日**: 2026-11-16（Asia/Tokyo）
 - **対象**: App96 個人顧客マスタ（店舗個人顧客カルテ）
-- **状態**: **ローカル実装のみ完了。本番フィールド追加・JS反映は未実施（承認待ち）**
+- **状態**: **本番反映済み（2026-11-16 Asia/Tokyo）** — 詳細は `docs/PCM_P1_PROD_DEPLOY_REPORT.md`
 
 ---
 
 ## 1. 今回の結論
 
-App96 にサブテーブル `measure_history`（寸法履歴）の追加が必要です。  
-仕様 JSON は `docs/APP96_MEASURE_HISTORY_FIELDS.json` に用意済みです。
-
-**本報告時点では本番 API でのフィールド追加・デプロイは行っていません。**
+App96 にサブテーブル `measure_history`（寸法履歴）を追加しました。  
+仕様 JSON は `docs/APP96_MEASURE_HISTORY_FIELDS.json`。
 
 ---
 
@@ -75,11 +73,6 @@ pcm_config → pcm_numbering → pcm_engine → pcm_measure_engine
 
 ---
 
-## 6. 本番反映に必要な承認事項
+## 6. 本番反映
 
-1. App96 に `measure_history` を追加（上記 JSON）
-2. フォームレイアウトへサブテーブル配置（基本情報の下〜利用履歴の上を推奨）
-3. App96 カスタマイズへ measure 系 JS 追加・既存 pcm_* / CSS 更新
-4. App87（＋必要なら App86）へ `floor_portal_config.js` `1.8.1` 反映
-
-承認後に実施スクリプト／手順を別途用意します。
+2026-11-16（Asia/Tokyo）に実施済み。報告: `docs/PCM_P1_PROD_DEPLOY_REPORT.md`

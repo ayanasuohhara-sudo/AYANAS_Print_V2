@@ -1,0 +1,62 @@
+{
+  "steps": [
+    {
+      "step": "bare_create",
+      "ok": true,
+      "id": "72",
+      "pid": "P000076"
+    },
+    {
+      "step": "put_measures",
+      "ok": true
+    }
+  ],
+  "hasTable": true,
+  "inner": [
+    "yuki_cm",
+    "bust_cm",
+    "measured_at",
+    "garment_type",
+    "height_cm",
+    "ushirohaba_cm",
+    "hip_cm",
+    "maehaba_cm",
+    "sode_cm",
+    "mitake_cm",
+    "measure_kind",
+    "measure_label",
+    "katahaba_cm",
+    "sodehaba_cm",
+    "measure_note",
+    "waist_cm",
+    "suso_cm",
+    "manage_no",
+    "is_current",
+    "eri_cm"
+  ],
+  "bareId": "72",
+  "measure": {
+    "id": "72",
+    "pid": "P000076",
+    "rowCount": 3,
+    "currentCount": 2,
+    "finishCurrentCount": 1,
+    "oldKept": true,
+    "oldNotCurrent": true,
+    "decimalOk": true
+  },
+  "existing": {
+    "ok": true,
+    "name": "土蔵菜摘",
+    "historyLen": 0
+  },
+  "orderHistory": {
+    "count": 2,
+    "sample": {
+      "manageNo": "111626757",
+      "deliveryDate": null,
+      "payment": "未入金"
+    }
+  },
+  "ok": true
+}

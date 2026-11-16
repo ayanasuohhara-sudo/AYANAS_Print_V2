@@ -1,0 +1,102 @@
+{
+  "stamp": "2026-11-16T08-18-38",
+  "workDir": "/workspace/customize/backups/pcm_p1_prod_verify_2026-11-16T08-18-38",
+  "api": {
+    "steps": [
+      {
+        "step": "bare_create",
+        "ok": true,
+        "id": "72",
+        "pid": "P000076"
+      },
+      {
+        "step": "put_measures",
+        "ok": true
+      }
+    ],
+    "hasTable": true,
+    "inner": [
+      "yuki_cm",
+      "bust_cm",
+      "measured_at",
+      "garment_type",
+      "height_cm",
+      "ushirohaba_cm",
+      "hip_cm",
+      "maehaba_cm",
+      "sode_cm",
+      "mitake_cm",
+      "measure_kind",
+      "measure_label",
+      "katahaba_cm",
+      "sodehaba_cm",
+      "measure_note",
+      "waist_cm",
+      "suso_cm",
+      "manage_no",
+      "is_current",
+      "eri_cm"
+    ],
+    "bareId": "72",
+    "measure": {
+      "id": "72",
+      "pid": "P000076",
+      "rowCount": 3,
+      "currentCount": 2,
+      "finishCurrentCount": 1,
+      "oldKept": true,
+      "oldNotCurrent": true,
+      "decimalOk": true
+    },
+    "existing": {
+      "ok": true,
+      "name": "土蔵菜摘",
+      "historyLen": 0
+    },
+    "orderHistory": {
+      "count": 2,
+      "sample": {
+        "manageNo": "111626757",
+        "deliveryDate": null,
+        "payment": "未入金"
+      }
+    },
+    "ok": true
+  },
+  "detailUi": {
+    "pcm": "1.2.0-p1-measure",
+    "hasEngine": true,
+    "measurePanel": true,
+    "historyPanel": true,
+    "title": "現行寸法サマリ",
+    "cards": 2,
+    "rows": 3,
+    "currentBadge": 2,
+    "ok": true
+  },
+  "existingUi": {
+    "pcm": "1.2.0-p1-measure",
+    "measurePanel": true,
+    "historyPanel": true,
+    "historyStatus": "2 件（最大50件）。PCM氏名変更は過去受注のお客様名へ自動反映しません。",
+    "historyHasAmount": true,
+    "historyHasDelivery": true,
+    "historyHasPay": true,
+    "ok": true
+  },
+  "portalUi": {
+    "ver": "1.8.1",
+    "hasKarte": true,
+    "href": "https://o5nppg7kb4ly.cybozu.com/k/96/",
+    "featured": true,
+    "ok": true
+  },
+  "ipadUi": {
+    "w": 1699,
+    "measurePanel": true,
+    "cards": 2,
+    "historyPanel": true,
+    "ok": true
+  },
+  "ok": true
+}

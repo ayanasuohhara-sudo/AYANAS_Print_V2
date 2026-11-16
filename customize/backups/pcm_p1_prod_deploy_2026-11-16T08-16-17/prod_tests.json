@@ -1,0 +1,31 @@
+{
+  "api": {
+    "ok": false,
+    "error": "Missing or invalid input.",
+    "code": "CB_VA01"
+  },
+  "detailUi": {
+    "ok": false
+  },
+  "existingUi": {
+    "url": "https://o5nppg7kb4ly.cybozu.com/k/96/show#record=71",
+    "pcm": "1.2.0-p1-measure",
+    "measurePanel": true,
+    "historyPanel": true,
+    "historyStatus": "2 件（最大50件）。PCM氏名変更は過去受注のお客様名へ自動反映しません。",
+    "historyTable": true,
+    "nameField": "",
+    "ok": true
+  },
+  "portalUi": {
+    "ver": "1.8.1",
+    "html": "kintone\n大原健嗣\n店舗ポータル\nApp:店舗ポータル\n（すべて）\n----\nNew record\nApp settings\nApp settings menuOptions\nAYANASU\nTOP\n店舗\n工場\n店舗 A550\n店舗ポータル\n更新\n店舗メニュー（A550）\n\nA550 専用・業務順。先頭の顧客カルテ（App96）で氏名・かな・電話から履歴・寸法を確認。社内入庫登録＝App34、社内作業登録＝作業（＋任意で保管場所）、仕上げ完了登録＝App30。店舗納期カレンダー＝App92（引き取り）。メニューはショートカットであり権限付与ではありません。\n\nApp92 など権限制限のあるアプリは、権限のないユーザーには操作できません（表示だけでは権限は付きません）。App97 への通常業務リンクは出していません。\n\n受付・顧客\n顧客カルテ\n履歴・寸法\n受注明細管理\n受注検索\n作業・移動\n社内入庫登録\nApp34\n社内作業登録\n作業＋場所可\n仕上げ完了登録\nApp30\n納品・会計\n納品書作成\n店舗納期カレンダー\n引き取り\n本日の店舗状況（A550）\n本日の店舗状況（A550）\n読み込み中…\n取得失敗\n現在状況\n在庫総数\n0\n未着\n0\n問合せ・見積り\n0\nしみ抜き中\n0\n修理中\n0\n再直し中\n0\n仕上げ中\n0\n納品待ち\n0\n\nA550・店舗現物のみ（法人データは含めません）。納品待ちカードは納品状態です。作業カードと重なるため、合計は在庫総数になりません。\n\n納期\n納期超過\n0\n今日納期\n0\n7日以内\n0\n今月納期\n0\n\n納期のカードは重なります。空欄の納期は入りません。\n\n絞り込み解除\n読み込み中…\n\n該当する商品はありません。",
+    "hasKarte": true,
+    "karteHref": "https://o5nppg7kb4ly.cybozu.com/k/96/",
+    "featured": true,
+    "ok": true
+  },
+  "ipadUi": {
+    "ok": false
+  }
+}
