@@ -144,12 +144,12 @@ const assert = (name, cond) => {
 };
 
 const home = createEnvironment('');
-assert('VERSION 3.0.0', home.version === '3.0.0');
+assert('VERSION 3.1.0', home.version === '3.1.0');
 assert('hub nav present', home.html.indexOf('cayan-hub-nav') >= 0);
 assert('TOP aria-current', home.html.indexOf('aria-current="page"') >= 0);
 
 const tiles = extractHrefs(home.html, 'cayan-bm-home__tile');
-assert('11 tiles', tiles.length === 11);
+assert('12 tiles', tiles.length === 12);
 
 const expected = [
     ['受注登録', '/k/16/'],
@@ -157,6 +157,7 @@ const expected = [
     ['和裁士出庫', '/k/74/'],
     ['外注入庫', '/k/78/'],
     ['海外出庫', '/k/28/'],
+    ['完了登録', '/k/30/'],
     ['納品書', '/k/19/'],
     ['請求書', '/k/35/'],
     ['納期', 'cat=deadline'],
@@ -194,7 +195,7 @@ assert('masters 8 buttons', mBtns.length === 8);
 assert('masters first App8', mBtns[0] && mBtns[0].href.indexOf('/k/8/') >= 0);
 
 const alias = createEnvironment('?cat=store');
-assert('alias store → 11 home tiles', extractHrefs(alias.html, 'cayan-bm-home__tile').length === 11);
+assert('alias store → 12 home tiles', extractHrefs(alias.html, 'cayan-bm-home__tile').length === 12);
 
 const oldSchedule = createEnvironment('?cat=schedule');
 assert('alias schedule → deadline', extractHrefs(oldSchedule.html, 'cayan-bm-btn').length === 3

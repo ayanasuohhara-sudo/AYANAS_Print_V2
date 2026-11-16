@@ -2,14 +2,14 @@
     'use strict';
 
     /**
-     * AYANASU 標準ポータル — 業務バナー定義（11項目フラット）。
+     * AYANASU 標準ポータル — 業務バナー定義（12項目フラット）。
      * 登録先: kintoneシステム管理 → JavaScript / CSSでカスタマイズ（全体・PC用）
      *
-     * App91 業務メニューと同じ11項目・同じ順序。
-     * 店舗・工場は各1件（重複なし）。外注入庫は App78。
+     * App91 業務メニューと同じ12項目・同じ順序。
+     * 店舗・工場は各1件（重複なし）。外注入庫は App78。完了登録は App30。
      */
 
-    const PORTAL_BUSINESS_BANNERS_VERSION = '3.0.0';
+    const PORTAL_BUSINESS_BANNERS_VERSION = '3.1.0';
 
     const CAYANAS_PORTAL_BUSINESS_BANNERS = {
         VERSION: PORTAL_BUSINESS_BANNERS_VERSION,
@@ -64,29 +64,36 @@
                 appId: 28,
             },
             {
-                id: 'delivery',
+                id: 'complete',
                 no: '06',
+                label: '完了登録',
+                mode: 'direct',
+                appId: 30,
+            },
+            {
+                id: 'delivery',
+                no: '07',
                 label: '納品書作成',
                 mode: 'direct',
                 appId: 19,
             },
             {
                 id: 'invoice',
-                no: '07',
+                no: '08',
                 label: '請求書作成',
                 mode: 'direct',
                 appId: 35,
             },
             {
                 id: 'deadline',
-                no: '08',
+                no: '09',
                 label: '納期',
                 mode: 'menu',
                 cat: 'deadline',
             },
             {
                 id: 'store',
-                no: '09',
+                no: '10',
                 label: '店舗',
                 mode: 'direct',
                 appId: 87,
@@ -94,7 +101,7 @@
             },
             {
                 id: 'factory',
-                no: '10',
+                no: '11',
                 label: '工場',
                 mode: 'direct',
                 appId: 90,
@@ -102,7 +109,7 @@
             },
             {
                 id: 'masters',
-                no: '11',
+                no: '12',
                 label: 'マスタ',
                 mode: 'menu',
                 cat: 'masters',

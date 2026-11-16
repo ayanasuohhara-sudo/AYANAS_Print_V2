@@ -1,0 +1,152 @@
+{
+  "stamp": "2026-11-16T05-50-59",
+  "workDir": "/agent/repos/AYANAS_Print_V2/customize/backups/flat11_portal_app91_prod_2026-11-16T05-50-59",
+  "steps": {
+    "backupPortal": {
+      "scripts": [
+        "portal_business_banners_config.js",
+        "portal_business_banners.js",
+        "portal_business_banners.css"
+      ]
+    },
+    "backupApp91": {
+      "count": 6,
+      "names": [
+        "hub_nav_config.js",
+        "hub_nav.js",
+        "business_menu_config.js",
+        "business_menu_desktop.js",
+        "hub_nav.css",
+        "business_menu.css"
+      ]
+    },
+    "portal": {
+      "ok": true,
+      "updateStatus": 200,
+      "beforeScripts": [
+        "portal_business_banners_config.js",
+        "portal_business_banners.js",
+        "portal_business_banners.css"
+      ],
+      "afterScripts": [
+        "portal_business_banners_config.js",
+        "portal_business_banners.js",
+        "portal_business_banners.css"
+      ],
+      "keys": {
+        "kConfig": "a5b4c633-e00f-4824-9e24-4b4a0ce79110",
+        "kJs": "87413757-afa9-4d9b-9439-f11b2b3eb8e3",
+        "kCss": "9505fd7d-ce8a-422e-bb31-cd01392b06eb"
+      }
+    },
+    "app91": {
+      "ok": true,
+      "deploy": {
+        "app": "91",
+        "status": "SUCCESS"
+      },
+      "js": [
+        "hub_nav_config.js",
+        "hub_nav.js",
+        "business_menu_config.js",
+        "business_menu_desktop.js"
+      ],
+      "css": [
+        "hub_nav.css",
+        "business_menu.css"
+      ]
+    },
+    "verify": {
+      "portal": {
+        "ver": "3.1.0",
+        "labels": [
+          "受注登録",
+          "外注出庫",
+          "和裁士出庫",
+          "外注入庫",
+          "海外出庫",
+          "完了登録",
+          "納品書作成",
+          "請求書作成",
+          "納期",
+          "店舗",
+          "工場",
+          "マスタ"
+        ],
+        "hrefs": [
+          "https://o5nppg7kb4ly.cybozu.com/k/16/",
+          "https://o5nppg7kb4ly.cybozu.com/k/27/",
+          "https://o5nppg7kb4ly.cybozu.com/k/74/",
+          "https://o5nppg7kb4ly.cybozu.com/k/78/",
+          "https://o5nppg7kb4ly.cybozu.com/k/28/",
+          "https://o5nppg7kb4ly.cybozu.com/k/30/",
+          "https://o5nppg7kb4ly.cybozu.com/k/19/",
+          "https://o5nppg7kb4ly.cybozu.com/k/35/",
+          "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=deadline",
+          "https://o5nppg7kb4ly.cybozu.com/k/87/",
+          "https://o5nppg7kb4ly.cybozu.com/k/90/",
+          "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=masters"
+        ],
+        "count": 12
+      },
+      "app91": {
+        "ver": "3.1.0",
+        "hub": true,
+        "tiles": [
+          {
+            "label": "受注登録",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/16/"
+          },
+          {
+            "label": "外注出庫",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/27/"
+          },
+          {
+            "label": "和裁士出庫",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/74/"
+          },
+          {
+            "label": "外注入庫",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/78/"
+          },
+          {
+            "label": "海外出庫",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/28/"
+          },
+          {
+            "label": "完了登録",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/30/"
+          },
+          {
+            "label": "納品書",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/19/"
+          },
+          {
+            "label": "請求書",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/35/"
+          },
+          {
+            "label": "納期",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=deadline"
+          },
+          {
+            "label": "店舗",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+          },
+          {
+            "label": "工場",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+          },
+          {
+            "label": "マスタ",
+            "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=masters"
+          }
+        ],
+        "count": 12
+      }
+    }
+  },
+  "ok": true,
+  "portalOk": true,
+  "appOk": true
+}

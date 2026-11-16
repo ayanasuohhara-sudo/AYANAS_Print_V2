@@ -31,12 +31,12 @@ const assert = (name, cond) => {
     console.error('FAIL ' + name);
 };
 
-assert('VERSION 3.0.0', C.VERSION === '3.0.0');
+assert('VERSION 3.1.0', C.VERSION === '3.1.0');
 assert('App91', C.BUSINESS_MENU_APP_ID === 91);
 assert('DEFAULT home', C.DEFAULT_CATEGORY === 'home');
 assert('USE_HUB_NAV', C.USE_HUB_NAV === true);
 
-assert('11項目 MENU_ITEMS', Array.isArray(C.MENU_ITEMS) && C.MENU_ITEMS.length === 11);
+assert('12項目 MENU_ITEMS', Array.isArray(C.MENU_ITEMS) && C.MENU_ITEMS.length === 12);
 
 const expectedOrder = [
     ['order', 'direct', 16],
@@ -44,6 +44,7 @@ const expectedOrder = [
     ['wasai_out', 'direct', 74],
     ['inbound', 'direct', 78],
     ['overseas_out', 'direct', 28],
+    ['complete', 'direct', 30],
     ['delivery', 'direct', 19],
     ['invoice', 'direct', 35],
     ['deadline', 'menu', null],
@@ -63,10 +64,11 @@ expectedOrder.forEach(([id, mode, appId], index) => {
 
 assert('ラベル 受注登録', C.MENU_ITEMS[0].label === '受注登録');
 assert('ラベル 外注入庫', C.MENU_ITEMS[3].label === '外注入庫');
-assert('ラベル 納期', C.MENU_ITEMS[7].label === '納期');
-assert('ラベル 店舗', C.MENU_ITEMS[8].label === '店舗');
-assert('ラベル 工場', C.MENU_ITEMS[9].label === '工場');
-assert('ラベル マスタ', C.MENU_ITEMS[10].label === 'マスタ');
+assert('ラベル 完了登録', C.MENU_ITEMS[5].label === '完了登録');
+assert('ラベル 納期', C.MENU_ITEMS[8].label === '納期');
+assert('ラベル 店舗', C.MENU_ITEMS[9].label === '店舗');
+assert('ラベル 工場', C.MENU_ITEMS[10].label === '工場');
+assert('ラベル マスタ', C.MENU_ITEMS[11].label === 'マスタ');
 
 const byId = Object.fromEntries(C.MENU_ITEMS.map((item) => [item.id, item]));
 assert('店舗は1件のみ', C.MENU_ITEMS.filter((i) => i.id === 'store').length === 1);
@@ -113,17 +115,18 @@ assert('工場メニューに App98',
 assert('工場メニューに App86 維持',
     F.SECTIONS.some((s) => (s.items || []).some((i) => i.appId === 86)));
 
-assert('ポータル VERSION 3.0.0', P.VERSION === '3.0.0');
-assert('ポータルは11枠', Array.isArray(P.CATEGORIES) && P.CATEGORIES.length === 11);
+assert('ポータル VERSION 3.1.0', P.VERSION === '3.1.0');
+assert('ポータルは12枠', Array.isArray(P.CATEGORIES) && P.CATEGORIES.length === 12);
 assert('ポータル01 受注→16', P.CATEGORIES[0].label === '受注登録' && P.CATEGORIES[0].appId === 16);
 assert('ポータル04 外注入庫→78', P.CATEGORIES[3].label === '外注入庫' && P.CATEGORIES[3].appId === 78);
-assert('ポータル08 納期 menu', P.CATEGORIES[7].label === '納期' && P.CATEGORIES[7].mode === 'menu'
-    && P.CATEGORIES[7].cat === 'deadline');
-assert('ポータル09 店舗→87', P.CATEGORIES[8].label === '店舗' && P.CATEGORIES[8].appId === 87
-    && P.CATEGORIES[8].hub === true);
-assert('ポータル10 工場→90', P.CATEGORIES[9].label === '工場' && P.CATEGORIES[9].appId === 90
+assert('ポータル06 完了登録→30', P.CATEGORIES[5].label === '完了登録' && P.CATEGORIES[5].appId === 30);
+assert('ポータル09 納期 menu', P.CATEGORIES[8].label === '納期' && P.CATEGORIES[8].mode === 'menu'
+    && P.CATEGORIES[8].cat === 'deadline');
+assert('ポータル10 店舗→87', P.CATEGORIES[9].label === '店舗' && P.CATEGORIES[9].appId === 87
     && P.CATEGORIES[9].hub === true);
-assert('ポータル11 マスタ', P.CATEGORIES[10].label === 'マスタ' && P.CATEGORIES[10].cat === 'masters');
+assert('ポータル11 工場→90', P.CATEGORIES[10].label === '工場' && P.CATEGORIES[10].appId === 90
+    && P.CATEGORIES[10].hub === true);
+assert('ポータル12 マスタ', P.CATEGORIES[11].label === 'マスタ' && P.CATEGORIES[11].cat === 'masters');
 assert('ポータル店舗・工場は各1',
     P.CATEGORIES.filter((c) => c.appId === 87).length === 1
     && P.CATEGORIES.filter((c) => c.appId === 90).length === 1);

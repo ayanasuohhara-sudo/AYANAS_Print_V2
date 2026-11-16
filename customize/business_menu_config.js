@@ -2,16 +2,16 @@
     'use strict';
 
     /**
-     * AYANASU 業務メニュー — 11項目フラット構成（共通 TOP = App91）
+     * AYANASU 業務メニュー — 12項目フラット構成（共通 TOP = App91）
      *
-     * - ホーム: 11ボタンを一覧表示（直接アプリ or サブメニュー）
+     * - ホーム: 12ボタンを一覧表示（直接アプリ or サブメニュー）
      * - URL: /k/91/ または /k/91/?cat={masters|deadline|…}
      * - 旧 cat（store / factory 等）は CATEGORY_ALIASES でホームへ吸収
      * - App85 等の削除済み入庫アプリには接続しない
      * - 店舗・工場ポータル内部は変更しない（各1ボタンで App87 / App90）
      */
 
-    const BUSINESS_MENU_VERSION = '3.0.0';
+    const BUSINESS_MENU_VERSION = '3.1.0';
 
     const CAYANAS_BUSINESS_MENU = {
         VERSION: BUSINESS_MENU_VERSION,
@@ -25,7 +25,7 @@
         USE_HUB_NAV: true,
 
         QUERY_KEY: 'cat',
-        /** ホーム（11項目グリッド） */
+        /** ホーム（12項目グリッド） */
         DEFAULT_CATEGORY: 'home',
 
         /**
@@ -49,7 +49,7 @@
         },
 
         /**
-         * ホームに並べる11項目（表示順固定）。
+         * ホームに並べる12項目（表示順固定）。
          * mode:
          *   - direct … アプリへ直接遷移（home グリッドの href）
          *   - menu   … ?cat=id でサブ一覧
@@ -94,6 +94,14 @@
                 icon: 'overseas',
                 mode: 'direct',
                 directAppId: 28,
+            },
+            {
+                id: 'complete',
+                label: '完了登録',
+                shortLabel: '完了登録',
+                icon: 'complete',
+                mode: 'direct',
+                directAppId: 30,
             },
             {
                 id: 'delivery',

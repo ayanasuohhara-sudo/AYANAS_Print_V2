@@ -29,7 +29,7 @@ const APP91 = {
     'business_menu_desktop.js',
   ],
   css: ['hub_nav.css', 'business_menu.css'],
-  expect: { global: 'CAYANAS_BUSINESS_MENU_VERSION', ver: '3.0.0' },
+  expect: { global: 'CAYANAS_BUSINESS_MENU_VERSION', ver: '3.1.0' },
 };
 
 const PORTAL_FILES = {
@@ -433,10 +433,10 @@ async function verify() {
 
   const p = report.steps.verify.portal || {};
   const a = report.steps.verify.app91 || {};
-  const portalOk = p.ver === '3.0.0' && p.count === 11
+  const portalOk = p.ver === '3.1.0' && p.count === 12
     && Array.isArray(p.labels) && p.labels[0] === '受注登録' && p.labels[3] === '外注入庫'
-    && p.labels[8] === '店舗' && p.labels[9] === '工場';
-  const appOk = a.ver === '3.0.0' && a.count === 11 && a.hub === true;
+    && p.labels[5] === '完了登録' && p.labels[9] === '店舗' && p.labels[10] === '工場';
+  const appOk = a.ver === '3.1.0' && a.count === 12 && a.hub === true;
   report.ok = !!(portalOk && appOk);
   report.portalOk = portalOk;
   report.appOk = appOk;

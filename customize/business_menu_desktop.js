@@ -2,7 +2,7 @@
     'use strict';
 
     /**
-     * AYANASU 業務メニュー — 11項目フラット一覧（App91）。
+     * AYANASU 業務メニュー — 12項目フラット一覧（App91）。
      * 既存アプリのレコードは更新しない。同一タブで業務アプリへ遷移する。
      * スタイルは JS 内でも注入する（CSS 差し替え遅延時の保険）。
      */
@@ -210,7 +210,7 @@
 
     const bodyHtml = (viewId) => {
         if (viewId === 'home') {
-            return '<div class="cayan-bm-home" aria-label="業務メニュー11項目">'
+            return '<div class="cayan-bm-home" aria-label="業務メニュー">'
                 + menuItems().map(homeTileHtml).join('')
                 + '</div>';
         }
