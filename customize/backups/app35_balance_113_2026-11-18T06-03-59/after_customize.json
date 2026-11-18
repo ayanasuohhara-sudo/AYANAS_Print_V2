@@ -1,0 +1,78 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026111806040664D3D54AB45E40568D0658222793B687339",
+          "name": "app_nav_banner_config.js",
+          "contentType": "text/javascript; charset=utf-8",
+          "size": "2635"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026111806040684550BAF1DD14F9C8DB957EE02114626282",
+          "name": "app_nav_banner.js",
+          "contentType": "text/javascript; charset=utf-8",
+          "size": "6659"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261118060407BEDAC0C1C3CE4F30A26547C793AA023C227",
+          "name": "payment_create.js",
+          "contentType": "text/javascript; charset=utf-8",
+          "size": "59046"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026111806040766502FBC4C9647C085A07A38A70D9F76151",
+          "name": "invoice_balance_desktop.js",
+          "contentType": "text/javascript",
+          "size": "21072"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261118060406F7669A69BFA54490BC7D85035B0ADBBB151",
+          "name": "app_nav_banner.css",
+          "contentType": "text/css; charset=utf-8",
+          "size": "4473"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261118060406774775B47BCF4A79B43D97CCDA9F6A37302",
+          "name": "payment_create.js",
+          "contentType": "text/javascript; charset=utf-8",
+          "size": "59046"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261118060407A8FEEB7A4EA3483D918E286EF8887528325",
+          "name": "invoice_balance_desktop.js",
+          "contentType": "text/javascript",
+          "size": "21072"
+        }
+      }
+    ],
+    "css": []
+  },
+  "revision": "42"
+}
