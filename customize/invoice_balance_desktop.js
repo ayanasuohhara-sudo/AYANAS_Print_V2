@@ -4,7 +4,7 @@
     /**
      * 請求書 App 35 — 前回請求額・入金の自動引き継ぎ
      * 前提: payment_create.js を先に読み込む（PaymentCreateV2）
-     * INVOICE_BALANCE_JS_VERSION: 1.1.2
+     * INVOICE_BALANCE_JS_VERSION: 1.1.3
      *
      * トリガー:
      * - 新規作成・編集画面表示（customer_code あり）
@@ -15,7 +15,7 @@
      * - InvoiceCreate / BulkInvoiceCreate が存在する場合は一括作成の 0 固定をパッチ
      */
 
-    const INVOICE_BALANCE_JS_VERSION = '1.1.2';
+    const INVOICE_BALANCE_JS_VERSION = '1.1.3';
     const INVOICE_APP_ID = 35;
     const REFRESH_BUTTON_ID = 'ayanas-invoice-balance-refresh-button';
     const IMPORT_BUTTON_ID = 'ayanas-invoice-import-button';
@@ -505,9 +505,11 @@
                 InvoiceCreate.__ayanasBulkEnrichWrapped = true;
             }
 
-            // kintone POST を一時ラップして enrich 完了を待つ
+            // kintone POST を一時ラップして enrich 完了を待つ。
+            // InvoiceUtils.kintoneApi はコールバック式 kintone.api(path, method, body, success, fail)
+            // のため、第4/5引数を落とすと Promise が永遠に settle せず「処理中...」固着になる。
             const originalApi = kintone.api;
-            const wrappedApi = async (url, method, body) => {
+            const wrappedApi = (url, method, body, success, fail) => {
 
                 const path = typeof url === 'string' ? url : String(url);
                 const isRecordPost = method === 'POST'
@@ -516,11 +518,49 @@
                     && path.indexOf('/k/v1/record') !== -1
                     && Number(body.app) === INVOICE_APP_ID;
 
-                if (isRecordPost) {
-                    await ensurePayloadEnriched(body.record);
+                const hasCallbacks = typeof success === 'function' || typeof fail === 'function';
+
+                if (!isRecordPost) {
+                    return originalApi(url, method, body, success, fail);
                 }
 
-                return originalApi(url, method, body);
+                const pending = Promise.resolve()
+                    .then(() => ensurePayloadEnriched(body.record))
+                    .then(() => {
+                        if (!hasCallbacks) {
+                            return originalApi(url, method, body);
+                        }
+                        return new Promise((resolve, reject) => {
+                            originalApi(
+                                url,
+                                method,
+                                body,
+                                (resp) => {
+                                    resolve(resp);
+                                },
+                                (err) => {
+                                    reject(err);
+                                }
+                            );
+                        });
+                    });
+
+                if (hasCallbacks) {
+                    pending.then(
+                        (resp) => {
+                            if (typeof success === 'function') {
+                                success(resp);
+                            }
+                        },
+                        (err) => {
+                            if (typeof fail === 'function') {
+                                fail(err);
+                            }
+                        }
+                    );
+                }
+
+                return pending;
 
             };
 

@@ -1,0 +1,49 @@
+{
+  "patched": true,
+  "results": {
+    "nativeKintoneApi": {
+      "label": "1-native-kintoneApi",
+      "status": "resolved",
+      "elapsedHintMs": 8000,
+      "appName": "10_請求書作成",
+      "appId": "35"
+    },
+    "asyncWrapNoCb": {
+      "label": "2-async-wrap-no-callbacks",
+      "status": "timeout",
+      "ms": 5000
+    },
+    "forwardWrap": {
+      "label": "3-callback-forwarding-wrap",
+      "status": "resolved",
+      "elapsedHintMs": 8000,
+      "appName": "10_請求書作成",
+      "appId": "35"
+    },
+    "promiseUnderAsyncWrap": {
+      "label": "4-promise-under-async-wrap",
+      "status": "resolved",
+      "elapsedHintMs": 8000,
+      "appName": "10_請求書作成",
+      "appId": "35"
+    },
+    "patchedRun": {
+      "label": "5-patched-runIndividual",
+      "status": "timeout",
+      "ms": 6000
+    },
+    "afterHangApiState": {
+      "apiStillSameObjectAsBeforeRun": false,
+      "apiIsNative": false,
+      "apiLooksWrapped": true,
+      "apiSrcHead": "async (url, method, body) => {\n\n                const path = typeof url === 'string' ? url : String(url);\n                const isRecordPost = method === 'POST'\n                    && body\n           "
+    },
+    "afterForceRestoreNative": {
+      "label": "6-native-after-force-restore",
+      "status": "resolved",
+      "elapsedHintMs": 8000,
+      "appName": "10_請求書作成",
+      "appId": "35"
+    }
+  }
+}
