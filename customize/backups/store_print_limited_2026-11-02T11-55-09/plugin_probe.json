@@ -1,0 +1,32 @@
+{
+  "app16": {
+    "plugins": [
+      {
+        "id": "pblhdbfbejjlplejiiihlnabolagcfhh",
+        "name": "AYANAS Print",
+        "enabled": true
+      },
+      {
+        "id": "fcplajbmmmageldnjelfmdjhbbgbmgoe",
+        "name": "kintone Lookup Bridge plug-in",
+        "enabled": true
+      }
+    ],
+    "revision": "498"
+  },
+  "app19": {
+    "plugins": [
+      {
+        "id": "pblhdbfbejjlplejiiihlnabolagcfhh",
+        "name": "AYANAS Print",
+        "enabled": true
+      },
+      {
+        "id": "oajlgmmcihjikhogpnjkmpmckdblbipm",
+        "name": "AYANAS Invoice",
+        "enabled": true
+      }
+    ],
+    "revision": "281"
+  }
+}

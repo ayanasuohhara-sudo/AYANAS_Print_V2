@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "deployFields": {
+    "app": "96",
+    "status": "SUCCESS"
+  },
+  "deployLayout": {
+    "app": "96",
+    "status": "SUCCESS"
+  },
+  "hasTable": true,
+  "innerCount": 20,
+  "layoutHasTable": true,
+  "insertAt": 17
+}

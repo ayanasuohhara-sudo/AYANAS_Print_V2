@@ -1,0 +1,69 @@
+{
+  "name": "工場作業状況ポータル",
+  "customize": {
+    "scope": "ALL",
+    "desktop": {
+      "js": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202610291127035620DC27CA1C453CA115482290EA15F4141",
+            "name": "floor_portal_config.js",
+            "contentType": "text/javascript",
+            "size": "4264"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202610291127030725E4A0D1AB4142B24248E7A2977E80346",
+            "name": "floor_portal_engine.js",
+            "contentType": "text/javascript",
+            "size": "14356"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "2026102911270394ABF5553E444A5E9A485B20B29CB8B0015",
+            "name": "floor_portal_desktop.js",
+            "contentType": "text/javascript",
+            "size": "17731"
+          }
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "2026102911270322F121B2BD704D908C77251A1D3B34BB334",
+            "name": "floor_portal.css",
+            "contentType": "text/css",
+            "size": "3692"
+          }
+        }
+      ]
+    },
+    "mobile": {
+      "js": [],
+      "css": []
+    },
+    "revision": "10"
+  },
+  "aclSummary": [
+    {
+      "type": "CREATOR",
+      "code": null,
+      "view": true,
+      "add": true,
+      "edit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "everyone",
+      "view": true,
+      "add": true,
+      "edit": true
+    }
+  ]
+}

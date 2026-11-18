@@ -1,0 +1,116 @@
+{
+  "stamp": "2026-11-02T16-54-53",
+  "fields": {
+    "ok": true,
+    "deployFields": null,
+    "deployLayout": {
+      "app": "16",
+      "status": "SUCCESS"
+    },
+    "layoutAction": "updated",
+    "added": [],
+    "hasKana": true,
+    "hasStatus": true,
+    "layoutHasKana": true,
+    "layoutHasSpace": true,
+    "statusOptions": [
+      "確認済",
+      "不明",
+      "未確認"
+    ]
+  },
+  "app88": {
+    "ok": true,
+    "deploy": {
+      "app": "88",
+      "status": "SUCCESS"
+    },
+    "desktopJs": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "kana_normalize.js",
+      "order_search_config.js",
+      "order_search_engine.js",
+      "order_search_desktop.js"
+    ],
+    "desktopCss": [
+      "app_nav_banner.css",
+      "order_search.css"
+    ]
+  },
+  "app16": {
+    "ok": true,
+    "deploy": {
+      "app": "16",
+      "status": "SUCCESS"
+    },
+    "insertedAfter": "order_customer_search.js",
+    "inserted": true,
+    "desktopJs": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "saiban.js",
+      "saiban1.js",
+      "price_master_search11.js",
+      "category.js",
+      "order_customer_search.js",
+      "kana_normalize.js",
+      "order_client_kana_config.js",
+      "order_client_kana_engine.js",
+      "order_client_kana_desktop.js",
+      "price_master_register.js",
+      "order_record_form.js",
+      "additional_item_engine.js",
+      "order_price_unconfirmed_clear.js",
+      "schedule_customer.js",
+      "order_pcm_config.js",
+      "order_pcm_engine.js",
+      "order_pcm_desktop.js"
+    ],
+    "desktopCss": [
+      "app_nav_banner.css",
+      "order_record_form.css",
+      "order_pcm.css",
+      "order_client_kana.css"
+    ]
+  },
+  "verify": {
+    "app88": {
+      "ver": "1.1.0",
+      "kanaVer": "1.0.0",
+      "hasKanaInput": true,
+      "hasExcludeA550": true,
+      "hasKimono": true,
+      "title": "受注検索"
+    },
+    "app16": {
+      "kanaVer": "1.0.0",
+      "normalizeVer": "1.0.0",
+      "hasPanel": true,
+      "hasKanaField": true,
+      "fieldCodes": null,
+      "panelText": "お客様名ふりがな",
+      "note": "電話問い合わせ用。読み候補はスタッフが確認してから確定してください。同姓同名は統合しません。",
+      "kanaInputEnabled": true
+    },
+    "app16fields": {
+      "client_name_kana": {
+        "label": "お客様名ふりがな",
+        "type": "SINGLE_LINE_TEXT"
+      },
+      "client_name_kana_status": {
+        "label": "ふりがな確認状態",
+        "options": [
+          "確認済",
+          "不明",
+          "未確認"
+        ]
+      }
+    },
+    "kanaQuery": {
+      "ok": true,
+      "totalCount": 0
+    }
+  },
+  "ok": true
+}

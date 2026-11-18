@@ -1,0 +1,715 @@
+{
+  "count": 40,
+  "fields": [
+    {
+      "code": "aggregation_status",
+      "label": "集計状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "取消",
+        "有効"
+      ],
+      "fields": null
+    },
+    {
+      "code": "category",
+      "label": "大分類",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "client_name",
+      "label": "お客様名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "client_name_kana",
+      "label": "お客様名ふりがな",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "client_name_kana_status",
+      "label": "ふりがな確認状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "確認済",
+        "不明",
+        "未確認"
+      ],
+      "fields": null
+    },
+    {
+      "code": "closing_date",
+      "label": "締日",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "３０日",
+        "10.20.31締め",
+        "１０日",
+        "２０日",
+        "３１日",
+        "都度払い"
+      ],
+      "fields": null
+    },
+    {
+      "code": "completion_date",
+      "label": "完了日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": {
+        "relatedApp": {
+          "app": "8",
+          "code": ""
+        },
+        "relatedKeyField": "customer_code",
+        "fieldMappings": [
+          {
+            "field": "customer_name",
+            "relatedField": "customer_name"
+          },
+          {
+            "field": "closing_date",
+            "relatedField": "closing_date"
+          }
+        ],
+        "lookupPickerFields": [
+          "customer_code",
+          "customer_name"
+        ],
+        "filterCond": "",
+        "sort": "レコード番号 desc"
+      },
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "deadline",
+      "label": "納期",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_date",
+      "label": "納品日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_no",
+      "label": "納品番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_status",
+      "label": "納品状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "納品待ち",
+        "引き取り待ち",
+        "納品済",
+        "未納品"
+      ],
+      "fields": null
+    },
+    {
+      "code": "detail_table",
+      "label": "加工内容",
+      "type": "SUBTABLE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": [
+        "item_code",
+        "amount",
+        "qty",
+        "item_name",
+        "unit_price",
+        "price_unconfirmed"
+      ]
+    },
+    {
+      "code": "in_charge",
+      "label": "得意先担当・係",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "invoice_no",
+      "label": "請求番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "kimono_spec",
+      "label": "着物仕様",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "単衣",
+        "胴抜き",
+        "袷",
+        "紗",
+        "絽",
+        "袖無双"
+      ],
+      "fields": null
+    },
+    {
+      "code": "kimono_type",
+      "label": "着物種類名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "kimono_type_code",
+      "label": "着物種類コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": {
+        "relatedApp": {
+          "app": "11",
+          "code": ""
+        },
+        "relatedKeyField": "kimono_type_code",
+        "fieldMappings": [
+          {
+            "field": "kimono_type",
+            "relatedField": "kimono_type"
+          }
+        ],
+        "lookupPickerFields": [
+          "kimono_type",
+          "kimono_type_code"
+        ],
+        "filterCond": "",
+        "sort": "レコード番号 desc"
+      },
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "location_status",
+      "label": "保管場所ステータス",
+      "type": "DROP_DOWN",
+      "required": true,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "海外",
+        "工場",
+        "納品済",
+        "和裁士",
+        "店舗",
+        "外注先",
+        "本社"
+      ],
+      "fields": null
+    },
+    {
+      "code": "manage_no",
+      "label": "管理番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "order_date",
+      "label": "受注日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "outsource_in_date",
+      "label": "外注入庫日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "overseas_in_date",
+      "label": "海外入庫日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "personal_customer_id",
+      "label": "個人顧客ID",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "process_status",
+      "label": "工程ステータス",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "外注中",
+        "完了",
+        "外注戻り",
+        "海外戻り",
+        "検品仕上中",
+        "海外外注中",
+        "店舗作業中",
+        "工場作業中",
+        "和裁士戻り",
+        "受注",
+        "問合中",
+        "和裁士作業中"
+      ],
+      "fields": null
+    },
+    {
+      "code": "remark",
+      "label": "備考",
+      "type": "MULTI_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "slip_no",
+      "label": "得意先伝票番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "store_payment_status",
+      "label": "入金状況",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "入金済み",
+        "未入金",
+        "一部入金"
+      ],
+      "fields": null
+    },
+    {
+      "code": "subcategory",
+      "label": "中分類",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "wasai_in_date",
+      "label": "和裁士入庫日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "work_status",
+      "label": "作業ステータス",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "仕上げ中",
+        "しみ抜き中",
+        "丸洗い待ち",
+        "未着",
+        "問合せ・見積り",
+        "仕上げ完了",
+        "再直し中",
+        "丸洗い中・乾燥",
+        "修理中"
+      ],
+      "fields": null
+    },
+    {
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "type": "CATEGORY",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "ステータス",
+      "label": "ステータス",
+      "type": "STATUS",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "レコード番号",
+      "label": "レコード番号",
+      "type": "RECORD_NUMBER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作成日時",
+      "label": "作成日時",
+      "type": "CREATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作成者",
+      "label": "作成者",
+      "type": "CREATOR",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作業者",
+      "label": "作業者",
+      "type": "STATUS_ASSIGNEE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "更新日時",
+      "label": "更新日時",
+      "type": "UPDATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "更新者",
+      "label": "更新者",
+      "type": "MODIFIER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    }
+  ],
+  "interesting": [
+    {
+      "code": "client_name",
+      "label": "お客様名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "client_name_kana",
+      "label": "お客様名ふりがな",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "client_name_kana_status",
+      "label": "ふりがな確認状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "確認済",
+        "不明",
+        "未確認"
+      ],
+      "fields": null
+    },
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": {
+        "relatedApp": {
+          "app": "8",
+          "code": ""
+        },
+        "relatedKeyField": "customer_code",
+        "fieldMappings": [
+          {
+            "field": "customer_name",
+            "relatedField": "customer_name"
+          },
+          {
+            "field": "closing_date",
+            "relatedField": "closing_date"
+          }
+        ],
+        "lookupPickerFields": [
+          "customer_code",
+          "customer_name"
+        ],
+        "filterCond": "",
+        "sort": "レコード番号 desc"
+      },
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_date",
+      "label": "納品日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_no",
+      "label": "納品番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "delivery_status",
+      "label": "納品状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "納品待ち",
+        "引き取り待ち",
+        "納品済",
+        "未納品"
+      ],
+      "fields": null
+    },
+    {
+      "code": "kimono_spec",
+      "label": "着物仕様",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "単衣",
+        "胴抜き",
+        "袷",
+        "紗",
+        "絽",
+        "袖無双"
+      ],
+      "fields": null
+    },
+    {
+      "code": "kimono_type",
+      "label": "着物種類名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "kimono_type_code",
+      "label": "着物種類コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": {
+        "relatedApp": {
+          "app": "11",
+          "code": ""
+        },
+        "relatedKeyField": "kimono_type_code",
+        "fieldMappings": [
+          {
+            "field": "kimono_type",
+            "relatedField": "kimono_type"
+          }
+        ],
+        "lookupPickerFields": [
+          "kimono_type",
+          "kimono_type_code"
+        ],
+        "filterCond": "",
+        "sort": "レコード番号 desc"
+      },
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "order_date",
+      "label": "受注日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "personal_customer_id",
+      "label": "個人顧客ID",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "store_payment_status",
+      "label": "入金状況",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "入金済み",
+        "未入金",
+        "一部入金"
+      ],
+      "fields": null
+    }
+  ]
+}

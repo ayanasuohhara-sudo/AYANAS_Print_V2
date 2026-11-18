@@ -1,0 +1,1026 @@
+{
+  "forms": {
+    "8": {
+      "count": 23,
+      "interesting": [
+        {
+          "code": "customer_code",
+          "label": "顧客コード",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": true,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "customer_name",
+          "label": "顧客名",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": true,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        }
+      ]
+    },
+    "16": {
+      "count": 40,
+      "interesting": [
+        {
+          "code": "client_name",
+          "label": "お客様名",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "client_name_kana",
+          "label": "お客様名ふりがな",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "client_name_kana_status",
+          "label": "ふりがな確認状態",
+          "type": "DROP_DOWN",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": [
+            "確認済",
+            "不明",
+            "未確認"
+          ],
+          "fields": null
+        },
+        {
+          "code": "customer_code",
+          "label": "顧客コード",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": {
+            "relatedApp": {
+              "app": "8",
+              "code": ""
+            },
+            "relatedKeyField": "customer_code",
+            "fieldMappings": [
+              {
+                "field": "customer_name",
+                "relatedField": "customer_name"
+              },
+              {
+                "field": "closing_date",
+                "relatedField": "closing_date"
+              }
+            ],
+            "lookupPickerFields": [
+              "customer_code",
+              "customer_name"
+            ],
+            "filterCond": "",
+            "sort": "レコード番号 desc"
+          },
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "customer_name",
+          "label": "顧客名",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "delivery_date",
+          "label": "納品日",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "delivery_no",
+          "label": "納品番号",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "delivery_status",
+          "label": "納品状態",
+          "type": "DROP_DOWN",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": [
+            "納品待ち",
+            "引き取り待ち",
+            "納品済",
+            "未納品"
+          ],
+          "fields": null
+        },
+        {
+          "code": "kimono_spec",
+          "label": "着物仕様",
+          "type": "DROP_DOWN",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": [
+            "単衣",
+            "胴抜き",
+            "袷",
+            "紗",
+            "絽",
+            "袖無双"
+          ],
+          "fields": null
+        },
+        {
+          "code": "kimono_type",
+          "label": "着物種類名",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "kimono_type_code",
+          "label": "着物種類コード",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": {
+            "relatedApp": {
+              "app": "11",
+              "code": ""
+            },
+            "relatedKeyField": "kimono_type_code",
+            "fieldMappings": [
+              {
+                "field": "kimono_type",
+                "relatedField": "kimono_type"
+              }
+            ],
+            "lookupPickerFields": [
+              "kimono_type",
+              "kimono_type_code"
+            ],
+            "filterCond": "",
+            "sort": "レコード番号 desc"
+          },
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "order_date",
+          "label": "受注日",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "personal_customer_id",
+          "label": "個人顧客ID",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "store_payment_status",
+          "label": "入金状況",
+          "type": "DROP_DOWN",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": [
+            "入金済み",
+            "未入金",
+            "一部入金"
+          ],
+          "fields": null
+        }
+      ]
+    },
+    "19": {
+      "count": 21,
+      "interesting": [
+        {
+          "code": "barcode_input",
+          "label": "バーコード入力",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "customer_code",
+          "label": "顧客コード",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "customer_name",
+          "label": "顧客名",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "delivery_date",
+          "label": "納品日",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "delivery_detail",
+          "label": "納品明細テーブル",
+          "type": "SUBTABLE",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": [
+            "amount",
+            "slip_no",
+            "qty",
+            "in_charge",
+            "manage_no",
+            "kimono_spec",
+            "item_name",
+            "kimono_type",
+            "unit_price",
+            "client_name"
+          ]
+        },
+        {
+          "code": "delivery_no",
+          "label": "納品番号",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "delivery_type",
+          "label": "納品方法",
+          "type": "DROP_DOWN",
+          "required": true,
+          "unique": false,
+          "lookup": null,
+          "options": [
+            "工場引渡し",
+            "発送",
+            "本社納品",
+            "店舗引渡し"
+          ],
+          "fields": null
+        },
+        {
+          "code": "sales_date",
+          "label": "納品書作成日",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "total_amount",
+          "label": "税込合計",
+          "type": "CALC",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        }
+      ]
+    },
+    "87": {
+      "count": 8,
+      "interesting": []
+    },
+    "96": {
+      "count": 39,
+      "interesting": [
+        {
+          "code": "building_name",
+          "label": "建物名",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "customer_kana",
+          "label": "ふりがな",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "customer_name",
+          "label": "氏名",
+          "type": "SINGLE_LINE_TEXT",
+          "required": true,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "customer_note",
+          "label": "顧客メモ",
+          "type": "MULTI_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "email",
+          "label": "メールアドレス",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "email_permission",
+          "label": "メール配信同意",
+          "type": "DROP_DOWN",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": [
+            "未設定",
+            "同意",
+            "不同意"
+          ],
+          "fields": null
+        },
+        {
+          "code": "first_order_date",
+          "label": "初回利用日",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "last_order_date",
+          "label": "最終利用日",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "lifetime_amount",
+          "label": "累計利用金額(App16未連携)",
+          "type": "NUMBER",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "member_expiry_date",
+          "label": "有効期限",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "member_no",
+          "label": "会員番号",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "member_start_date",
+          "label": "入会日",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "member_status",
+          "label": "会員状態",
+          "type": "DROP_DOWN",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": [
+            "非会員",
+            "退会",
+            "停止",
+            "会員"
+          ],
+          "fields": null
+        },
+        {
+          "code": "member_type",
+          "label": "会員区分",
+          "type": "DROP_DOWN",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": [
+            "優待",
+            "一般",
+            "店舗会員",
+            "その他"
+          ],
+          "fields": null
+        },
+        {
+          "code": "mobile_phone",
+          "label": "携帯電話",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "order_count",
+          "label": "利用回数(App16未連携)",
+          "type": "NUMBER",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "personal_customer_id",
+          "label": "個人顧客ID",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": true,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "phone",
+          "label": "電話番号",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        },
+        {
+          "code": "postal_code",
+          "label": "郵便番号",
+          "type": "SINGLE_LINE_TEXT",
+          "required": false,
+          "unique": false,
+          "lookup": null,
+          "options": null,
+          "fields": null
+        }
+      ]
+    }
+  },
+  "samples": {
+    "app8Sample": {
+      "records": [
+        {
+          "文字列__1行__2": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "0742-26-3390"
+          },
+          "レコード番号": {
+            "type": "RECORD_NUMBER",
+            "value": "82"
+          },
+          "文字列__1行__3": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": ""
+          },
+          "ドロップダウン_0": {
+            "type": "DROP_DOWN",
+            "value": "本社"
+          },
+          "文字列__1行__8": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": ""
+          },
+          "文字列__1行_": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": ""
+          },
+          "ドロップダウン": {
+            "type": "DROP_DOWN",
+            "value": "法人"
+          },
+          "customer_name": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "ニューサンドライクリーニング"
+          },
+          "ドロップダウン_2": {
+            "type": "DROP_DOWN",
+            "value": "都度払い"
+          },
+          "customer_code": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "C008"
+          }
+        },
+        {
+          "文字列__1行__2": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "0742-22-6004"
+          },
+          "レコード番号": {
+            "type": "RECORD_NUMBER",
+            "value": "80"
+          },
+          "文字列__1行__3": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": ""
+          },
+          "ドロップダウン_0": {
+            "type": "DROP_DOWN",
+            "value": "本社"
+          },
+          "文字列__1行__8": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": ""
+          },
+          "文字列__1行_": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": ""
+          },
+          "ドロップダウン": {
+            "type": "DROP_DOWN",
+            "value": "法人"
+          },
+          "customer_name": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "山口屋クリーニング"
+          },
+          "ドロップダウン_2": {
+            "type": "DROP_DOWN",
+            "value": "締め払い"
+          },
+          "customer_code": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "C007"
+          }
+        },
+        {
+          "文字列__1行__2": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": ""
+          },
+          "レコード番号": {
+            "type": "RECORD_NUMBER",
+            "value": "79"
+          },
+          "文字列__1行__3": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "090-8212-9482"
+          },
+          "ドロップダウン_0": {
+            "type": "DROP_DOWN",
+            "value": "本社"
+          },
+          "文字列__1行__8": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": ""
+          },
+          "文字列__1行_": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "katuyukidomon@gmail.com"
+          },
+          "ドロップダウン": {
+            "type": "DROP_DOWN",
+            "value": "法人"
+          },
+          "customer_name": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "染と織　やまいち"
+          },
+          "ドロップダウン_2": {
+            "type": "DROP_DOWN",
+            "value": "都度払い"
+          },
+          "customer_code": {
+            "type": "SINGLE_LINE_TEXT",
+            "value": "B007"
+          }
+        }
+      ],
+      "totalCount": "78"
+    },
+    "app96Sample": {
+      "error": "[object Object]"
+    },
+    "a16a550": {
+      "totalCount": "134",
+      "records": [
+        {
+          "manage_no": "111226683",
+          "order_date": "2026-11-12",
+          "customer_code": "A550",
+          "customer_name": "ayanasu",
+          "client_name": "吉岡彩香",
+          "client_name_kana": "",
+          "kimono_type": "訪問着",
+          "kimono_spec": "袷",
+          "detailCount": 1,
+          "detailSample": [
+            {
+              "item_code": "006",
+              "item_name": "しみ抜き",
+              "amount": "3000",
+              "qty": "1"
+            }
+          ]
+        },
+        {
+          "manage_no": "111226681",
+          "order_date": "2026-11-12",
+          "customer_code": "A550",
+          "customer_name": "ayanasu",
+          "client_name": "仲宗根理穂",
+          "client_name_kana": "",
+          "kimono_type": "色留袖",
+          "kimono_spec": "袷",
+          "detailCount": 1,
+          "detailSample": [
+            {
+              "item_code": "032",
+              "item_name": "プレス",
+              "amount": "2000",
+              "qty": "1"
+            }
+          ]
+        },
+        {
+          "manage_no": "111226680",
+          "order_date": "2026-11-12",
+          "customer_code": "A550",
+          "customer_name": "ayanasu",
+          "client_name": "福井",
+          "client_name_kana": "",
+          "kimono_type": "訪問着",
+          "kimono_spec": "袷",
+          "detailCount": 1,
+          "detailSample": [
+            {
+              "item_code": "032",
+              "item_name": "プレス",
+              "amount": "2000",
+              "qty": "1"
+            }
+          ]
+        },
+        {
+          "manage_no": "110726586",
+          "order_date": "2026-11-07",
+          "customer_code": "A550",
+          "customer_name": "ayanasu",
+          "client_name": "寺西純代",
+          "client_name_kana": "",
+          "kimono_type": "絞り訪問着",
+          "kimono_spec": "袷",
+          "detailCount": 1,
+          "detailSample": [
+            {
+              "item_code": "006-02",
+              "item_name": "変色直し",
+              "amount": "4000",
+              "qty": "1"
+            }
+          ]
+        },
+        {
+          "manage_no": "110726585",
+          "order_date": "2026-11-07",
+          "customer_code": "A550",
+          "customer_name": "ayanasu",
+          "client_name": "寺西純代",
+          "client_name_kana": "",
+          "kimono_type": "訪問着",
+          "kimono_spec": "単衣",
+          "detailCount": 1,
+          "detailSample": [
+            {
+              "item_code": "006",
+              "item_name": "しみ抜き",
+              "amount": "3500",
+              "qty": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "measureLike": [],
+    "clientLike": [
+      "client_name",
+      "customer_code",
+      "client_name_kana_status",
+      "client_name_kana",
+      "personal_customer_id",
+      "customer_name"
+    ],
+    "a19rel": [
+      "delivery_detail",
+      "sales_date",
+      "delivery_no",
+      "delivery_date",
+      "total_amount",
+      "delivery_type",
+      "customer_name",
+      "customer_code"
+    ],
+    "lookups16": [
+      {
+        "code": "customer_code",
+        "label": "顧客コード",
+        "relatedApp": {
+          "app": "8",
+          "code": ""
+        },
+        "relatedKey": "customer_code",
+        "fieldMappings": [
+          {
+            "from": "customer_name",
+            "to": "customer_name"
+          },
+          {
+            "from": "closing_date",
+            "to": "closing_date"
+          }
+        ]
+      },
+      {
+        "code": "kimono_type_code",
+        "label": "着物種類コード",
+        "relatedApp": {
+          "app": "11",
+          "code": ""
+        },
+        "relatedKey": "kimono_type_code",
+        "fieldMappings": [
+          {
+            "from": "kimono_type",
+            "to": "kimono_type"
+          }
+        ]
+      }
+    ],
+    "lookups8": []
+  },
+  "app87": {
+    "js": [
+      "work_status_labels.js",
+      "hub_nav_config.js",
+      "hub_nav.js",
+      "floor_portal_config.js",
+      "floor_portal_engine.js",
+      "floor_portal_desktop.js"
+    ],
+    "css": [
+      "hub_nav.css",
+      "floor_portal.css"
+    ],
+    "fields": [
+      {
+        "code": "カテゴリー",
+        "label": "カテゴリー",
+        "type": "CATEGORY"
+      },
+      {
+        "code": "レコード番号",
+        "label": "レコード番号",
+        "type": "RECORD_NUMBER"
+      },
+      {
+        "code": "作業者",
+        "label": "作業者",
+        "type": "STATUS_ASSIGNEE"
+      },
+      {
+        "code": "更新者",
+        "label": "更新者",
+        "type": "MODIFIER"
+      },
+      {
+        "code": "作成者",
+        "label": "作成者",
+        "type": "CREATOR"
+      },
+      {
+        "code": "ステータス",
+        "label": "ステータス",
+        "type": "STATUS"
+      },
+      {
+        "code": "更新日時",
+        "label": "更新日時",
+        "type": "UPDATED_TIME"
+      },
+      {
+        "code": "作成日時",
+        "label": "作成日時",
+        "type": "CREATED_TIME"
+      }
+    ]
+  },
+  "deliverySummary": {
+    "totalCount": "638",
+    "dateish": [
+      {
+        "code": "delivery_detail",
+        "label": "納品明細テーブル",
+        "type": "SUBTABLE",
+        "sub": [
+          {
+            "code": "amount",
+            "label": "金額",
+            "type": "CALC"
+          },
+          {
+            "code": "slip_no",
+            "label": "得意先伝票番号",
+            "type": "SINGLE_LINE_TEXT"
+          },
+          {
+            "code": "qty",
+            "label": "数量",
+            "type": "NUMBER"
+          },
+          {
+            "code": "in_charge",
+            "label": "担当・係",
+            "type": "SINGLE_LINE_TEXT"
+          },
+          {
+            "code": "manage_no",
+            "label": "管理番号",
+            "type": "SINGLE_LINE_TEXT"
+          },
+          {
+            "code": "kimono_spec",
+            "label": "着物仕様",
+            "type": "DROP_DOWN"
+          },
+          {
+            "code": "item_name",
+            "label": "商品名",
+            "type": "SINGLE_LINE_TEXT"
+          },
+          {
+            "code": "kimono_type",
+            "label": "着物種類名",
+            "type": "SINGLE_LINE_TEXT"
+          },
+          {
+            "code": "unit_price",
+            "label": "単価",
+            "type": "NUMBER"
+          },
+          {
+            "code": "client_name",
+            "label": "お客様名",
+            "type": "SINGLE_LINE_TEXT"
+          }
+        ]
+      },
+      {
+        "code": "sales_date",
+        "label": "納品書作成日",
+        "type": "DATE",
+        "sub": null
+      },
+      {
+        "code": "delivery_no",
+        "label": "納品番号",
+        "type": "SINGLE_LINE_TEXT",
+        "sub": null
+      },
+      {
+        "code": "更新日時",
+        "label": "更新日時",
+        "type": "UPDATED_TIME",
+        "sub": null
+      },
+      {
+        "code": "delivery_date",
+        "label": "納品日",
+        "type": "DATE",
+        "sub": null
+      },
+      {
+        "code": "delivery_type",
+        "label": "納品方法",
+        "type": "DROP_DOWN",
+        "sub": null
+      },
+      {
+        "code": "作成日時",
+        "label": "作成日時",
+        "type": "CREATED_TIME",
+        "sub": null
+      }
+    ],
+    "sampleKeys": [
+      "レコード番号",
+      "delivery_detail",
+      "更新者",
+      "sales_date",
+      "作成者",
+      "tax",
+      "$revision",
+      "delivery_no",
+      "更新日時",
+      "barcode_input",
+      "delivery_date",
+      "total_amount",
+      "delivery_type",
+      "subtotal",
+      "aggregation_status",
+      "customer_name",
+      "customer_code",
+      "作成日時",
+      "invoice_status",
+      "$id"
+    ]
+  }
+}

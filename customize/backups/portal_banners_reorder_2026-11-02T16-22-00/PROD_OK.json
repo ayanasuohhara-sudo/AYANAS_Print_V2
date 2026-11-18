@@ -1,0 +1,131 @@
+{
+  "ok": true,
+  "expectVer": "1.1.1",
+  "labels": [
+    "01:受注登録・検索",
+    "02:出庫・入庫",
+    "03:納品書・請求書・入金",
+    "04:作業進捗・完了登録",
+    "05:納期・作業負荷状況",
+    "06:納期・納品スケジュール管理",
+    "07:各種データ・集計",
+    "08:マスタ登録",
+    "09:工場ポータル（業務）",
+    "10:店舗ポータル（業務）"
+  ],
+  "verify": {
+    "ver": "1.1.1",
+    "items": [
+      {
+        "no": "01",
+        "label": "受注登録・検索",
+        "hub": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=order"
+      },
+      {
+        "no": "02",
+        "label": "出庫・入庫",
+        "hub": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=logistics"
+      },
+      {
+        "no": "03",
+        "label": "納品書・請求書・入金",
+        "hub": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=billing"
+      },
+      {
+        "no": "04",
+        "label": "作業進捗・完了登録",
+        "hub": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=work"
+      },
+      {
+        "no": "05",
+        "label": "納期・作業負荷状況",
+        "hub": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/89/"
+      },
+      {
+        "no": "06",
+        "label": "納期・納品スケジュール管理",
+        "hub": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/94/"
+      },
+      {
+        "no": "07",
+        "label": "各種データ・集計",
+        "hub": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=analytics"
+      },
+      {
+        "no": "08",
+        "label": "マスタ登録",
+        "hub": false,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/91/?cat=masters"
+      },
+      {
+        "no": "09",
+        "label": "工場ポータル（業務）",
+        "hub": true,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+      },
+      {
+        "no": "10",
+        "label": "店舗ポータル（業務）",
+        "hub": true,
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+      }
+    ]
+  },
+  "deployed": {
+    "ok": true,
+    "updateSample": "{\"result\":{\"executable\":true,\"configurable\":true,\"scripts\":[{\"id\":\"50\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"14774\",\"hash\":\"f312eb33d50a5e47db0269e3d93ebad94b2a38e4\",\"name\":\"portal_business_banners_config.js\",\"size\":3322,\"contentUrl\":null,\"sortOrder\":0},{\"id\":\"51\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"14775\",\"hash\":\"7cf41906400e283678c0834fbf39b79066210da7\",\"name\":\"port",
+    "after": {
+      "executable": true,
+      "configurable": true,
+      "scripts": [
+        {
+          "id": "50",
+          "type": "DESKTOP",
+          "locationType": "BLOB",
+          "contentId": "14774",
+          "hash": "f312eb33d50a5e47db0269e3d93ebad94b2a38e4",
+          "name": "portal_business_banners_config.js",
+          "size": 3322,
+          "contentUrl": null,
+          "sortOrder": 0
+        },
+        {
+          "id": "51",
+          "type": "DESKTOP",
+          "locationType": "BLOB",
+          "contentId": "14775",
+          "hash": "7cf41906400e283678c0834fbf39b79066210da7",
+          "name": "portal_business_banners.js",
+          "size": 8794,
+          "contentUrl": null,
+          "sortOrder": 1
+        },
+        {
+          "id": "52",
+          "type": "DESKTOP_CSS",
+          "locationType": "BLOB",
+          "contentId": "14776",
+          "hash": "0e712a5b346bfc59b9af299e0f826ad8c6b55293",
+          "name": "portal_business_banners.css",
+          "size": 2844,
+          "contentUrl": null,
+          "sortOrder": 0
+        }
+      ],
+      "scope": "ALL",
+      "active": true
+    },
+    "keys": {
+      "kConfig": "2e1f31e2-e2b7-4c95-8cb2-e632e5fd9dc6",
+      "kJs": "240892c8-4410-4ba4-b02b-5db75c745483",
+      "kCss": "64344229-f2e1-446b-bc0e-3420c8e6761f"
+    }
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "at": "2026-11-02T15:52:50.330Z",
+  "ok": true,
+  "dir": "/workspace/customize/backups/business_menu_opt_2026-11-02T15-52-03",
+  "deployResults": {
+    "86": {
+      "ok": true,
+      "deploy": {
+        "app": "86",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "work_status_labels.js",
+        "floor_portal_config.js",
+        "floor_portal_engine.js",
+        "floor_portal_desktop.js"
+      ],
+      "desktopCss": [
+        "floor_portal.css"
+      ]
+    },
+    "87": {
+      "ok": true,
+      "deploy": {
+        "app": "87",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "work_status_labels.js",
+        "floor_portal_config.js",
+        "floor_portal_engine.js",
+        "floor_portal_desktop.js"
+      ],
+      "desktopCss": [
+        "floor_portal.css"
+      ]
+    },
+    "90": {
+      "ok": true,
+      "deploy": {
+        "app": "90",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "factory_menu_config.js",
+        "factory_menu_desktop.js"
+      ],
+      "desktopCss": [
+        "factory_menu.css"
+      ]
+    },
+    "91": {
+      "ok": true,
+      "deploy": {
+        "app": "91",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "business_menu_config.js",
+        "business_menu_desktop.js"
+      ],
+      "desktopCss": [
+        "business_menu.css"
+      ]
+    }
+  },
+  "app91": {
+    "work": {
+      "ver": "1.1.0",
+      "title": "AYANAS 業務メニュー",
+      "labels": [
+        "工場作業状況ポータル",
+        "店舗ポータル（A550）",
+        "社内作業登録",
+        "検品・仕上げ完了"
+      ],
+      "hasFactoryPortal": true,
+      "hasStorePortal": true,
+      "hasInternalWork": true,
+      "hasComplete": true,
+      "noOldWorkLabel": true,
+      "noApp85": true
+    },
+    "logistics": {
+      "labels": [
+        "保管場所移動",
+        "外注出庫",
+        "海外外注出庫",
+        "和裁士出庫",
+        "外注入庫"
+      ],
+      "first": "保管場所移動",
+      "hasLocationMove": true,
+      "noOldInbound": true
+    },
+    "masters": {
+      "labels": [
+        "顧客マスタ",
+        "個人顧客マスタ",
+        "着物種類マスタ",
+        "商品マスタ",
+        "価格マスタ",
+        "外注加工マスタ",
+        "外注先マスタ",
+        "和裁士マスタ"
+      ],
+      "hasPcm": true,
+      "hasPcmLink": true
+    }
+  },
+  "app90": {
+    "ver": "1.1.1",
+    "labels": [
+      "工場作業状況ポータル",
+      "納期負荷カレンダー",
+      "受注検索",
+      "受注登録",
+      "受注明細",
+      "検品・仕上げ完了",
+      "社内作業登録",
+      "外注入庫",
+      "国内外注出庫",
+      "国内和裁士出庫",
+      "保管場所移動",
+      "納品書作成",
+      "請求書作成"
+    ],
+    "hasLocationMove": true,
+    "hasInternalWork": true,
+    "hasComplete": true
+  },
+  "app86": {
+    "ver": "1.4.2",
+    "links": [
+      "保管場所移動",
+      "社内作業登録",
+      "検品・仕上げ完了"
+    ],
+    "hasLocationMove": true,
+    "noOldInbound": true
+  }
+}

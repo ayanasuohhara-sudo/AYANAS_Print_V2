@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>工場ポータル</title>
+  <link rel="stylesheet" href="../../../customize/floor_portal.css" />
+  <style>body{margin:0;background:#94a3b8}</style>
+</head>
+<body>
+  <div class="cayan-fp-root cayan-fp-root--factory" data-mode="factory">
+    <header class="cayan-fp-header">
+      <div class="cayan-fp-header__main">
+        <div class="cayan-fp-title-row">
+          <span class="cayan-fp-mode-badge">工場</span>
+          <h1 class="cayan-fp-title">工場 作業状況</h1>
+        </div>
+      </div>
+      <div class="cayan-fp-header__side"><button type="button" class="cayan-fp-btn">更新</button></div>
+    </header>
+    <nav class="cayan-fp-links" aria-label="工場ショートカット">
+      <a class="cayan-fp-btn" href="#">保管場所移動</a>
+      <a class="cayan-fp-btn" href="#">社内作業登録</a>
+      <a class="cayan-fp-btn" href="#">検品・仕上げ完了</a>
+    </nav>
+    <section class="cayan-fp-summary">
+      <h2 class="cayan-fp-summary__title">本日の工場状況</h2>
+      <div class="cayan-fp-summary__cards">
+        <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">本日の工場受注</span><span class="cayan-fp-summary-card__value">0件</span></div>
+        <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">本日納期件数</span><span class="cayan-fp-summary-card__value">13件</span></div>
+        <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">納品待ち</span><span class="cayan-fp-summary-card__value">1件</span></div>
+        <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">納期超過件数</span><span class="cayan-fp-summary-card__value">3件</span></div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

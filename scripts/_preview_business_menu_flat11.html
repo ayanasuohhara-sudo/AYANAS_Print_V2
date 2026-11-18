@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App91 業務メニュー ローカルプレビュー（flat-11）</title>
+  <link rel="stylesheet" href="../customize/hub_nav.css" />
+  <link rel="stylesheet" href="../customize/business_menu.css" />
+  <style>
+    body { margin: 0; background: #eef1f5; }
+    .preview-banner {
+      background: #12304f; color: #fff; padding: 10px 16px; font: 14px/1.4 sans-serif;
+    }
+    .preview-banner code { background: rgba(255,255,255,.15); padding: 2px 6px; border-radius: 4px; }
+    .contents-gaia { min-height: 100vh; }
+    .link-check {
+      max-width: 1120px; margin: 0 auto 24px; padding: 0 20px;
+      font: 14px/1.5 sans-serif; color: #333;
+    }
+    .link-check table { width: 100%; border-collapse: collapse; background: #fff; }
+    .link-check th, .link-check td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+    .link-check th { background: #f5f7fa; }
+    .ok { color: #0a7a3e; font-weight: 700; }
+    .ng { color: #b00020; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="preview-banner">
+    ローカルプレビュー — App91 flat-11（本番未反映）。
+    クエリ: <code>?cat=home</code> / <code>?cat=deadline</code> / <code>?cat=masters</code>
+    （旧 <code>?cat=store</code> 等は home へ吸収）
+  </div>
+  <div class="contents-gaia"></div>
+  <div class="link-check" id="link-check"></div>
+
+  <script>
+    window.kintone = {
+      app: { getId: function () { return 91; } },
+      events: {
+        _handlers: {},
+        on: function (name, fn) {
+          this._handlers[name] = this._handlers[name] || [];
+          this._handlers[name].push(fn);
+        },
+        trigger: function (name, event) {
+          (this._handlers[name] || []).forEach(function (fn) { fn(event || {}); });
+        }
+      }
+    };
+  </script>
+  <script src="../customize/hub_nav_config.js"></script>
+  <script src="../customize/hub_nav.js"></script>
+  <script src="../customize/business_menu_config.js"></script>
+  <script src="../customize/business_menu_desktop.js"></script>
+  <script>
+    (function () {
+      kintone.events.trigger('app.record.index.show', {});
+
+      const C = window.CAYANAS_BUSINESS_MENU;
+      const rows = [];
+      const check = (label, href, expected) => {
+        const ok = href.indexOf(expected) !== -1;
+        rows.push('<tr><td>' + label + '</td><td><code>' + href + '</code></td><td class="'
+          + (ok ? 'ok">OK' : 'ng">NG') + '</td></tr>');
+        return ok;
+      };
+
+      let allOk = true;
+      const tiles = document.querySelectorAll('.cayan-bm-home__tile');
+      const expected = [
+        ['受注登録', '/k/16/'],
+        ['外注出庫', '/k/27/'],
+        ['和裁士出庫', '/k/74/'],
+        ['外注入庫', '/k/78/'],
+        ['海外出庫', '/k/28/'],
+        ['納品書', '/k/19/'],
+        ['請求書', '/k/35/'],
+        ['納期', 'cat=deadline'],
+        ['店舗', '/k/87/'],
+        ['工場', '/k/90/'],
+        ['マスタ', 'cat=masters'],
+      ];
+
+      allOk = tiles.length === 11 && allOk;
+      rows.push('<tr><td>ホームタイル数</td><td>' + tiles.length + '</td><td class="'
+        + (tiles.length === 11 ? 'ok">OK' : 'ng">NG') + '</td></tr>');
+
+      expected.forEach(function (pair, i) {
+        const tile = tiles[i];
+        const href = tile ? tile.getAttribute('href') : '';
+        const label = tile ? tile.querySelector('.cayan-bm-home__label').textContent : '(missing)';
+        const labelOk = label.indexOf(pair[0]) !== -1;
+        rows.push('<tr><td>#' + (i + 1) + ' ラベル</td><td>' + label + '</td><td class="'
+          + (labelOk ? 'ok">OK' : 'ng">NG') + '</td></tr>');
+        allOk = check('#' + (i + 1) + ' href', href || '', pair[1]) && labelOk && allOk;
+      });
+
+      const hub = document.querySelector('.cayan-hub-nav');
+      allOk = !!hub && allOk;
+      rows.push('<tr><td>共通ハブナビ</td><td>' + (hub ? 'あり' : 'なし') + '</td><td class="'
+        + (hub ? 'ok">OK' : 'ng">NG') + '</td></tr>');
+
+      const banned = [85, 95, 99];
+      const html = document.getElementById('ayanas-business-menu-root').innerHTML;
+      banned.forEach(function (id) {
+        const hit = html.indexOf('/k/' + id + '/') !== -1;
+        allOk = !hit && allOk;
+        rows.push('<tr><td>削除済み App' + id + ' 非接続</td><td>'
+          + (hit ? '接続あり' : 'なし') + '</td><td class="'
+          + (!hit ? 'ok">OK' : 'ng">NG') + '</td></tr>');
+      });
+
+      document.getElementById('link-check').innerHTML =
+        '<h3>リンク検証（ホーム） VERSION ' + C.VERSION + '</h3>'
+        + '<p class="' + (allOk ? 'ok' : 'ng') + '">'
+        + (allOk ? 'すべて OK — 本番反映前のローカル確認完了' : 'NG あり')
+        + '</p>'
+        + '<table><thead><tr><th>項目</th><th>値</th><th>結果</th></tr></thead><tbody>'
+        + rows.join('') + '</tbody></table>'
+        + '<p>サブ画面: <a href="?cat=deadline">納期</a> / <a href="?cat=masters">マスタ</a> / <a href="?cat=home">ホーム</a></p>';
+    }());
+  </script>
+</body>
+</html>

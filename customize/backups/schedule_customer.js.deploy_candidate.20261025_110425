@@ -1,0 +1,120 @@
+(function (global) {
+  'use strict';
+
+  /**
+   * App16 一覧「顧客別納期スケジュール」(VIEW 5521026)
+   * 顧客コード検索。納品済は除外し、未納品・納品待ち・空欄を表示する。
+   * process_status は条件に含めない。
+   */
+
+  const APP_ID = 16;
+  const VIEW_ID = 5521026;
+  const DELIVERY_DONE = '納品済';
+
+  const escapeQueryValue = (value) => String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"');
+
+  const quote = (value) => '"' + escapeQueryValue(value) + '"';
+
+  /**
+   * 顧客コード検索用クエリ。納品済を除外（ドロップダウンは != 不可）。
+   * @param {string} customerCode
+   * @returns {string}
+   */
+  const buildCustomerSearchQuery = (customerCode) => {
+    const code = String(customerCode ?? '').trim();
+    if (!code) {
+      return '';
+    }
+    return (
+      'customer_code = ' + quote(code)
+      + ' and (delivery_status not in (' + quote(DELIVERY_DONE) + ')'
+      + ' or delivery_status in (""))'
+    );
+  };
+
+  const buildViewUrl = (query) => {
+    let url = location.origin + '/k/' + APP_ID + '/?view=' + VIEW_ID;
+    if (query) {
+      url += '&query=' + encodeURIComponent(query);
+    }
+    return url;
+  };
+
+  const api = {
+    APP_ID: APP_ID,
+    VIEW_ID: VIEW_ID,
+    DELIVERY_DONE: DELIVERY_DONE,
+    escapeQueryValue: escapeQueryValue,
+    buildCustomerSearchQuery: buildCustomerSearchQuery,
+  };
+
+  if (typeof global !== 'undefined') {
+    global.CAYANAS_ScheduleCustomer = api;
+  }
+
+  if (typeof kintone === 'undefined') {
+    return;
+  }
+
+  kintone.events.on('app.record.index.show', function (event) {
+
+    if (event.viewId !== VIEW_ID) {
+      return event;
+    }
+
+    if (document.getElementById('customer-code-search')) {
+      return event;
+    }
+
+    const space = kintone.app.getHeaderMenuSpaceElement();
+
+    const label = document.createElement('span');
+    label.innerText = '顧客コード：';
+    label.style.marginRight = '5px';
+
+    const input = document.createElement('input');
+    input.id = 'customer-code-search';
+    input.type = 'text';
+    input.placeholder = 'm032';
+    input.style.height = '34px';
+    input.style.width = '120px';
+    input.style.marginRight = '5px';
+
+    const btn = document.createElement('button');
+    btn.innerText = '検索';
+    btn.style.marginRight = '5px';
+
+    const btnAll = document.createElement('button');
+    btnAll.innerText = '全件';
+
+    btn.onclick = function () {
+      const code = input.value.trim();
+      if (!code) {
+        alert('顧客コードを入力してください');
+        return;
+      }
+      location.href = buildViewUrl(buildCustomerSearchQuery(code));
+    };
+
+    btnAll.onclick = function () {
+      location.href = buildViewUrl('');
+    };
+
+    input.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        btn.click();
+      }
+    });
+
+    space.appendChild(label);
+    space.appendChild(input);
+    space.appendChild(btn);
+    space.appendChild(btnAll);
+
+    return event;
+
+  });
+
+})(typeof window !== 'undefined' ? window : global);

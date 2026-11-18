@@ -1,0 +1,639 @@
+{
+  "settings": {
+    "name": "96_和裁士マスタ",
+    "description": "",
+    "icon": {
+      "type": "PRESET",
+      "key": "APP67"
+    },
+    "theme": "WHITE",
+    "titleField": {
+      "selectionMode": "AUTO",
+      "code": "wasai_code"
+    },
+    "enableThumbnails": true,
+    "enableBulkDeletion": false,
+    "enableComments": true,
+    "enableDuplicateRecord": true,
+    "enableInlineRecordEditing": true,
+    "numberPrecision": {
+      "digits": "16",
+      "decimalPlaces": "4",
+      "roundingMode": "HALF_EVEN"
+    },
+    "firstMonthOfFiscalYear": "4",
+    "revision": "7"
+  },
+  "fields": {
+    "revision": "7",
+    "properties": {
+      "payment_closing_date": {
+        "type": "DROP_DOWN",
+        "code": "payment_closing_date",
+        "label": "支払締日",
+        "noLabel": false,
+        "required": false,
+        "options": {
+          "10日締め": {
+            "label": "10日締め",
+            "index": "1"
+          },
+          "月末締め": {
+            "label": "月末締め",
+            "index": "0"
+          },
+          "20日締め": {
+            "label": "20日締め",
+            "index": "2"
+          },
+          "その他": {
+            "label": "その他",
+            "index": "3"
+          }
+        },
+        "defaultValue": "月末締め"
+      },
+      "bank_branch": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "bank_branch",
+        "label": "支店名",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "レコード番号": {
+        "type": "RECORD_NUMBER",
+        "code": "レコード番号",
+        "label": "レコード番号",
+        "noLabel": false
+      },
+      "prefecture": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "prefecture",
+        "label": "都道府県",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "city": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "city",
+        "label": "市区町村",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "更新者": {
+        "type": "MODIFIER",
+        "code": "更新者",
+        "label": "更新者",
+        "noLabel": false
+      },
+      "ステータス": {
+        "type": "STATUS",
+        "code": "ステータス",
+        "label": "ステータス",
+        "enabled": false
+      },
+      "bank_account_holder": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "bank_account_holder",
+        "label": "口座名義",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "building": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "building",
+        "label": "ビル名",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "trade_name": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "trade_name",
+        "label": "屋号",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "wasai_code": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "wasai_code",
+        "label": "和裁士コード",
+        "noLabel": false,
+        "required": true,
+        "minLength": "",
+        "maxLength": "64",
+        "expression": "",
+        "hideExpression": false,
+        "unique": true,
+        "defaultValue": ""
+      },
+      "カテゴリー": {
+        "type": "CATEGORY",
+        "code": "カテゴリー",
+        "label": "カテゴリー",
+        "enabled": false
+      },
+      "payment_due_rule": {
+        "type": "DROP_DOWN",
+        "code": "payment_due_rule",
+        "label": "支払日",
+        "noLabel": false,
+        "required": false,
+        "options": {
+          "翌月15日払い": {
+            "label": "翌月15日払い",
+            "index": "3"
+          },
+          "翌月末払い": {
+            "label": "翌月末払い",
+            "index": "0"
+          },
+          "翌月10日払い": {
+            "label": "翌月10日払い",
+            "index": "2"
+          },
+          "当月末払い": {
+            "label": "当月末払い",
+            "index": "1"
+          },
+          "その他": {
+            "label": "その他",
+            "index": "4"
+          }
+        },
+        "defaultValue": "翌月末払い"
+      },
+      "bank_name": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "bank_name",
+        "label": "振込先銀行名",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "tel": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "tel",
+        "label": "電話番号",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "bank_account_type": {
+        "type": "DROP_DOWN",
+        "code": "bank_account_type",
+        "label": "口座種別",
+        "noLabel": false,
+        "required": false,
+        "options": {
+          "普通": {
+            "label": "普通",
+            "index": "0"
+          },
+          "当座": {
+            "label": "当座",
+            "index": "1"
+          }
+        },
+        "defaultValue": "普通"
+      },
+      "email": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "email",
+        "label": "メール",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "作業者": {
+        "type": "STATUS_ASSIGNEE",
+        "code": "作業者",
+        "label": "作業者",
+        "enabled": false
+      },
+      "address": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "address",
+        "label": "番地以下",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "registration_statu": {
+        "type": "DROP_DOWN",
+        "code": "registration_statu",
+        "label": "登録状態",
+        "noLabel": false,
+        "required": false,
+        "options": {
+          "休止": {
+            "label": "休止",
+            "index": "1"
+          },
+          "退会": {
+            "label": "退会",
+            "index": "2"
+          },
+          "有効": {
+            "label": "有効",
+            "index": "0"
+          }
+        },
+        "defaultValue": "有効"
+      },
+      "作成者": {
+        "type": "CREATOR",
+        "code": "作成者",
+        "label": "作成者",
+        "noLabel": false
+      },
+      "bank_account_no": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "bank_account_no",
+        "label": "口座番号",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "wasai_name": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "wasai_name",
+        "label": "氏名",
+        "noLabel": false,
+        "required": true,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "更新日時": {
+        "type": "UPDATED_TIME",
+        "code": "更新日時",
+        "label": "更新日時",
+        "noLabel": false
+      },
+      "post_no": {
+        "type": "SINGLE_LINE_TEXT",
+        "code": "post_no",
+        "label": "郵便番号",
+        "noLabel": false,
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "expression": "",
+        "hideExpression": false,
+        "unique": false,
+        "defaultValue": ""
+      },
+      "作成日時": {
+        "type": "CREATED_TIME",
+        "code": "作成日時",
+        "label": "作成日時",
+        "noLabel": false
+      },
+      "remarks": {
+        "type": "MULTI_LINE_TEXT",
+        "code": "remarks",
+        "label": "備考",
+        "noLabel": false,
+        "required": false,
+        "defaultValue": ""
+      }
+    }
+  },
+  "layout": {
+    "layout": [
+      {
+        "type": "ROW",
+        "fields": [
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "wasai_code",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "wasai_name",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "trade_name",
+            "size": {
+              "width": "193"
+            }
+          }
+        ]
+      },
+      {
+        "type": "ROW",
+        "fields": [
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "post_no",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "prefecture",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "city",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "address",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "building",
+            "size": {
+              "width": "193"
+            }
+          }
+        ]
+      },
+      {
+        "type": "ROW",
+        "fields": [
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "tel",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "email",
+            "size": {
+              "width": "193"
+            }
+          }
+        ]
+      },
+      {
+        "type": "ROW",
+        "fields": [
+          {
+            "type": "DROP_DOWN",
+            "code": "payment_closing_date",
+            "size": {
+              "width": "196"
+            }
+          },
+          {
+            "type": "DROP_DOWN",
+            "code": "payment_due_rule",
+            "size": {
+              "width": "196"
+            }
+          }
+        ]
+      },
+      {
+        "type": "ROW",
+        "fields": [
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "bank_name",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "bank_branch",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "DROP_DOWN",
+            "code": "bank_account_type",
+            "size": {
+              "width": "196"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "bank_account_no",
+            "size": {
+              "width": "193"
+            }
+          },
+          {
+            "type": "SINGLE_LINE_TEXT",
+            "code": "bank_account_holder",
+            "size": {
+              "width": "193"
+            }
+          }
+        ]
+      },
+      {
+        "type": "ROW",
+        "fields": [
+          {
+            "type": "DROP_DOWN",
+            "code": "registration_statu",
+            "size": {
+              "width": "196"
+            }
+          },
+          {
+            "type": "MULTI_LINE_TEXT",
+            "code": "remarks",
+            "size": {
+              "width": "713",
+              "innerHeight": "125"
+            }
+          }
+        ]
+      }
+    ],
+    "revision": "7"
+  },
+  "customize": {
+    "scope": "ALL",
+    "desktop": {
+      "js": [],
+      "css": []
+    },
+    "mobile": {
+      "js": [],
+      "css": []
+    },
+    "revision": "7"
+  },
+  "masters": [
+    {
+      "wasai_code": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "001"
+      },
+      "registration_statu": {
+        "type": "DROP_DOWN",
+        "value": "有効"
+      },
+      "wasai_name": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "髙田まや"
+      },
+      "$id": {
+        "type": "__ID__",
+        "value": "1"
+      }
+    },
+    {
+      "wasai_code": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "002"
+      },
+      "registration_statu": {
+        "type": "DROP_DOWN",
+        "value": "有効"
+      },
+      "wasai_name": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "西口陽子"
+      },
+      "$id": {
+        "type": "__ID__",
+        "value": "2"
+      }
+    },
+    {
+      "wasai_code": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "003"
+      },
+      "registration_statu": {
+        "type": "DROP_DOWN",
+        "value": "有効"
+      },
+      "wasai_name": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "秋津　京"
+      },
+      "$id": {
+        "type": "__ID__",
+        "value": "3"
+      }
+    },
+    {
+      "wasai_code": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "004"
+      },
+      "registration_statu": {
+        "type": "DROP_DOWN",
+        "value": "有効"
+      },
+      "wasai_name": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "中田路子"
+      },
+      "$id": {
+        "type": "__ID__",
+        "value": "4"
+      }
+    },
+    {
+      "wasai_code": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "005"
+      },
+      "registration_statu": {
+        "type": "DROP_DOWN",
+        "value": "有効"
+      },
+      "wasai_name": {
+        "type": "SINGLE_LINE_TEXT",
+        "value": "中村紅美"
+      },
+      "$id": {
+        "type": "__ID__",
+        "value": "5"
+      }
+    }
+  ]
+}

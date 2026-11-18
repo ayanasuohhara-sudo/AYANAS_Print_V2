@@ -1,0 +1,81 @@
+{
+  "at": "2026-11-02T14:17:07.828Z",
+  "timezoneNote": "Asia/Tokyo",
+  "ok": true,
+  "dir": "/workspace/customize/backups/store_ops_ga_2026-11-02T14-16-52",
+  "mode": "app92",
+  "app97": {
+    "ok": true,
+    "revision": "15",
+    "everyoneViewable": true,
+    "everyoneAddable": true,
+    "everyoneEditable": true,
+    "everyoneDeletable": false,
+    "rightsSummary": [
+      {
+        "type": "USER",
+        "code": "info@ayanas.co.jp",
+        "view": true,
+        "add": true,
+        "edit": true,
+        "del": false,
+        "appEdit": true
+      },
+      {
+        "type": "GROUP",
+        "code": "Administrators",
+        "view": true,
+        "add": true,
+        "edit": true,
+        "del": true,
+        "appEdit": true
+      },
+      {
+        "type": "CREATOR",
+        "code": null,
+        "view": true,
+        "add": true,
+        "edit": true,
+        "del": false,
+        "appEdit": true
+      },
+      {
+        "type": "GROUP",
+        "code": "everyone",
+        "view": true,
+        "add": true,
+        "edit": true,
+        "del": false,
+        "appEdit": false
+      }
+    ]
+  },
+  "app92Deploy": {
+    "ok": true,
+    "deploy": {
+      "app": "92",
+      "status": "SUCCESS"
+    },
+    "desktopJs": [
+      "store_deadline_config.js",
+      "store_deadline_engine.js",
+      "store_payment_config.js",
+      "store_payment_engine.js",
+      "store_pickup_shared.js",
+      "store_pickup_api.js",
+      "store_deadline_desktop.js",
+      "store_deadline_pickup.js"
+    ],
+    "desktopCss": [
+      "store_deadline.css"
+    ]
+  },
+  "app92Ui": {
+    "ver": "1.3.0",
+    "allow": null,
+    "panel": true,
+    "title": "バーコード引き取り",
+    "denied": false,
+    "hasInput": true
+  }
+}

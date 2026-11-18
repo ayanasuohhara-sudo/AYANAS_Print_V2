@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AYANASU 業務メニュー再構成 — ローカルプレビュー</title>
+  <link rel="stylesheet" href="../../../customize/hub_nav.css" />
+  <link rel="stylesheet" href="../../../customize/business_menu.css" />
+  <style>
+    body { margin: 0; background: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .preview-wrap { max-width: 1120px; margin: 0 auto; padding: 16px; }
+    .preview-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+    .preview-panel h2 { margin: 0 0 8px; font-size: 18px; }
+    .preview-note { color: #64748b; font-size: 13px; margin: 0 0 12px; }
+    .fake-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+    .fake-btn { display: flex; align-items: center; min-height: 52px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; font-weight: 700; font-size: 14px; }
+    .cat-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .cat-tabs span { padding: 8px 12px; border-radius: 8px; background: #e2e8f0; font-size: 13px; font-weight: 700; }
+    .cat-tabs span.on { background: #1e293b; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="preview-wrap">
+    <p class="preview-note">ローカル確認用。本番反映は未実施。共通ナビの active 状態を3パターン表示します。</p>
+
+    <div class="preview-panel">
+      <h2>App91 TOP（active=TOP）</h2>
+      <div id="nav-top"></div>
+      <div class="cat-tabs">
+        <span class="on">店舗業務</span><span>工場業務</span><span>外注管理</span>
+        <span>売上・経理</span><span>予定・納期</span><span>マスタ・設定</span>
+      </div>
+      <div class="fake-grid" id="items-store"></div>
+    </div>
+
+    <div class="preview-panel">
+      <h2>App87 店舗（active=店舗）</h2>
+      <div id="nav-store"></div>
+      <div class="fake-grid" id="items-store-portal"></div>
+    </div>
+
+    <div class="preview-panel">
+      <h2>App90 工場（active=工場）</h2>
+      <div id="nav-factory"></div>
+      <div class="fake-grid" id="items-factory"></div>
+    </div>
+  </div>
+
+  <script src="../../../customize/hub_nav_config.js"></script>
+  <script src="../../../customize/hub_nav.js"></script>
+  <script src="../../../customize/business_menu_config.js"></script>
+  <script src="../../../customize/factory_menu_config.js"></script>
+  <script src="../../../customize/floor_portal_config.js"></script>
+  <script>
+    document.getElementById('nav-top').innerHTML = CAYANAS_HubNav.renderHtml({ activeAppId: 91 });
+    document.getElementById('nav-store').innerHTML = CAYANAS_HubNav.renderHtml({ activeAppId: 87 });
+    document.getElementById('nav-factory').innerHTML = CAYANAS_HubNav.renderHtml({ activeAppId: 90 });
+
+    const fill = (el, labels) => {
+      el.innerHTML = labels.map((l) => '<div class="fake-btn">' + l + '</div>').join('');
+    };
+
+    const storeCat = CAYANAS_BUSINESS_MENU.CATEGORIES.find((c) => c.id === 'store');
+    fill(document.getElementById('items-store'), storeCat.items.map((i) => i.label + ' → ' + i.appId));
+
+    const storeGroups = CAYANAS_FLOOR_PORTAL.STORE_MENU_GROUPS.flatMap((g) =>
+      g.links.map((l) => g.label + ' / ' + l.label)
+    );
+    fill(document.getElementById('items-store-portal'), storeGroups);
+
+    const factoryItems = CAYANAS_FACTORY_MENU.SECTIONS.flatMap((s) =>
+      s.items.map((i) => s.label + ' / ' + i.label + ' → ' + i.appId)
+    );
+    fill(document.getElementById('items-factory'), factoryItems);
+  </script>
+</body>
+</html>

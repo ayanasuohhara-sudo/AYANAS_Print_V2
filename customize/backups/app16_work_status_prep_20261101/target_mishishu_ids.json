@@ -1,0 +1,4035 @@
+{
+  "count": 403,
+  "records": [
+    {
+      "id": "2259",
+      "revision": "5",
+      "manage_no": "090126259",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2260",
+      "revision": "5",
+      "manage_no": "090126260",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2261",
+      "revision": "5",
+      "manage_no": "090126261",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2262",
+      "revision": "5",
+      "manage_no": "090126262",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2263",
+      "revision": "5",
+      "manage_no": "090126263",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2264",
+      "revision": "4",
+      "manage_no": "090126264",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2265",
+      "revision": "4",
+      "manage_no": "090126265",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2266",
+      "revision": "6",
+      "manage_no": "090126266",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2267",
+      "revision": "5",
+      "manage_no": "090126267",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2268",
+      "revision": "6",
+      "manage_no": "090126268",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2269",
+      "revision": "5",
+      "manage_no": "090126269",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2270",
+      "revision": "4",
+      "manage_no": "090126270",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2271",
+      "revision": "4",
+      "manage_no": "090126271",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2272",
+      "revision": "4",
+      "manage_no": "090126272",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2273",
+      "revision": "4",
+      "manage_no": "090126273",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2274",
+      "revision": "4",
+      "manage_no": "090126274",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M100"
+    },
+    {
+      "id": "2815",
+      "revision": "4",
+      "manage_no": "100326815",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "2816",
+      "revision": "4",
+      "manage_no": "100326816",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "2899",
+      "revision": "5",
+      "manage_no": "100626899",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A732"
+    },
+    {
+      "id": "2900",
+      "revision": "5",
+      "manage_no": "100626900",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A732"
+    },
+    {
+      "id": "2901",
+      "revision": "4",
+      "manage_no": "100626901",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "2908",
+      "revision": "4",
+      "manage_no": "100626908",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A120"
+    },
+    {
+      "id": "2917",
+      "revision": "3",
+      "manage_no": "100726917",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "B001"
+    },
+    {
+      "id": "2918",
+      "revision": "3",
+      "manage_no": "100726918",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "B001"
+    },
+    {
+      "id": "2919",
+      "revision": "2",
+      "manage_no": "100726919",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "B001"
+    },
+    {
+      "id": "2920",
+      "revision": "2",
+      "manage_no": "100726920",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "B001"
+    },
+    {
+      "id": "2921",
+      "revision": "2",
+      "manage_no": "100726921",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "B001"
+    },
+    {
+      "id": "2922",
+      "revision": "2",
+      "manage_no": "100726922",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "B001"
+    },
+    {
+      "id": "2923",
+      "revision": "2",
+      "manage_no": "100726923",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "B001"
+    },
+    {
+      "id": "2927",
+      "revision": "5",
+      "manage_no": "100826927",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M070"
+    },
+    {
+      "id": "2932",
+      "revision": "3",
+      "manage_no": "100826932",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "2933",
+      "revision": "3",
+      "manage_no": "100826933",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "2934",
+      "revision": "3",
+      "manage_no": "100826934",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "2935",
+      "revision": "3",
+      "manage_no": "100826935",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "2936",
+      "revision": "3",
+      "manage_no": "100826936",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "2937",
+      "revision": "6",
+      "manage_no": "100826937",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2938",
+      "revision": "5",
+      "manage_no": "100826938",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2939",
+      "revision": "6",
+      "manage_no": "100826939",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2940",
+      "revision": "4",
+      "manage_no": "100826940",
+      "work_status": "未着手",
+      "process_status": "外注戻り",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2941",
+      "revision": "5",
+      "manage_no": "100826941",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2943",
+      "revision": "6",
+      "manage_no": "100826943",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2944",
+      "revision": "4",
+      "manage_no": "100826944",
+      "work_status": "未着手",
+      "process_status": "外注戻り",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2947",
+      "revision": "5",
+      "manage_no": "100826947",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2948",
+      "revision": "5",
+      "manage_no": "100826948",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2949",
+      "revision": "5",
+      "manage_no": "100826949",
+      "work_status": "未着手",
+      "process_status": "外注戻り",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2950",
+      "revision": "6",
+      "manage_no": "100826950",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2951",
+      "revision": "3",
+      "manage_no": "100826951",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "2952",
+      "revision": "5",
+      "manage_no": "100926952",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2953",
+      "revision": "4",
+      "manage_no": "100926953",
+      "work_status": "未着手",
+      "process_status": "外注戻り",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "2954",
+      "revision": "4",
+      "manage_no": "100926954",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M079"
+    },
+    {
+      "id": "2956",
+      "revision": "3",
+      "manage_no": "100926956",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "2957",
+      "revision": "4",
+      "manage_no": "100926957",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A545"
+    },
+    {
+      "id": "2958",
+      "revision": "3",
+      "manage_no": "100926958",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "2959",
+      "revision": "2",
+      "manage_no": "100926959",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2961",
+      "revision": "2",
+      "manage_no": "101026961",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2962",
+      "revision": "2",
+      "manage_no": "101026962",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2963",
+      "revision": "3",
+      "manage_no": "101026963",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2964",
+      "revision": "2",
+      "manage_no": "101026964",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2965",
+      "revision": "2",
+      "manage_no": "101026965",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2966",
+      "revision": "2",
+      "manage_no": "101026966",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2967",
+      "revision": "2",
+      "manage_no": "101026967",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2968",
+      "revision": "2",
+      "manage_no": "101026968",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2969",
+      "revision": "2",
+      "manage_no": "101026969",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2970",
+      "revision": "2",
+      "manage_no": "101026970",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2971",
+      "revision": "2",
+      "manage_no": "101026971",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2972",
+      "revision": "2",
+      "manage_no": "101026972",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2973",
+      "revision": "2",
+      "manage_no": "101026973",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2974",
+      "revision": "2",
+      "manage_no": "101026974",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2975",
+      "revision": "2",
+      "manage_no": "101026975",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2976",
+      "revision": "2",
+      "manage_no": "101026976",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2977",
+      "revision": "2",
+      "manage_no": "101026977",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2978",
+      "revision": "2",
+      "manage_no": "101026978",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2979",
+      "revision": "2",
+      "manage_no": "101026979",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2980",
+      "revision": "2",
+      "manage_no": "101026980",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2981",
+      "revision": "2",
+      "manage_no": "101026981",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2982",
+      "revision": "2",
+      "manage_no": "101026982",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2983",
+      "revision": "2",
+      "manage_no": "101026983",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2984",
+      "revision": "2",
+      "manage_no": "101026984",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2985",
+      "revision": "2",
+      "manage_no": "101026985",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2986",
+      "revision": "2",
+      "manage_no": "101026986",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2987",
+      "revision": "2",
+      "manage_no": "101026987",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2988",
+      "revision": "2",
+      "manage_no": "101026988",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2989",
+      "revision": "2",
+      "manage_no": "101026989",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2990",
+      "revision": "2",
+      "manage_no": "101026990",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2991",
+      "revision": "2",
+      "manage_no": "101026991",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2992",
+      "revision": "2",
+      "manage_no": "101026992",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2993",
+      "revision": "2",
+      "manage_no": "101026993",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2994",
+      "revision": "2",
+      "manage_no": "101026994",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2995",
+      "revision": "2",
+      "manage_no": "101026995",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "2999",
+      "revision": "4",
+      "manage_no": "101326999",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3000",
+      "revision": "6",
+      "manage_no": "101326000",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3001",
+      "revision": "3",
+      "manage_no": "101326001",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3002",
+      "revision": "3",
+      "manage_no": "101326002",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3003",
+      "revision": "3",
+      "manage_no": "101326003",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3004",
+      "revision": "3",
+      "manage_no": "101326004",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A318"
+    },
+    {
+      "id": "3005",
+      "revision": "5",
+      "manage_no": "101326005",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3006",
+      "revision": "3",
+      "manage_no": "101326006",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3007",
+      "revision": "3",
+      "manage_no": "101326007",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3008",
+      "revision": "3",
+      "manage_no": "101326008",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3009",
+      "revision": "5",
+      "manage_no": "101326009",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3010",
+      "revision": "3",
+      "manage_no": "101326010",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3011",
+      "revision": "3",
+      "manage_no": "101326011",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3012",
+      "revision": "3",
+      "manage_no": "101326012",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3013",
+      "revision": "4",
+      "manage_no": "101326013",
+      "work_status": "未着手",
+      "process_status": "外注戻り",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3014",
+      "revision": "5",
+      "manage_no": "101326014",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3015",
+      "revision": "4",
+      "manage_no": "101326015",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3016",
+      "revision": "4",
+      "manage_no": "101326016",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3017",
+      "revision": "4",
+      "manage_no": "101426017",
+      "work_status": "未着手",
+      "process_status": "和裁士作業中",
+      "location_status": "和裁士",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3018",
+      "revision": "5",
+      "manage_no": "101426018",
+      "work_status": "未着手",
+      "process_status": "和裁士作業中",
+      "location_status": "和裁士",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3020",
+      "revision": "3",
+      "manage_no": "101426020",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3021",
+      "revision": "3",
+      "manage_no": "101426021",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3022",
+      "revision": "6",
+      "manage_no": "101426022",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3023",
+      "revision": "4",
+      "manage_no": "101426023",
+      "work_status": "未着手",
+      "process_status": "和裁士作業中",
+      "location_status": "和裁士",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3024",
+      "revision": "3",
+      "manage_no": "101426024",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "B002"
+    },
+    {
+      "id": "3025",
+      "revision": "4",
+      "manage_no": "101426025",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3026",
+      "revision": "4",
+      "manage_no": "101426026",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3032",
+      "revision": "4",
+      "manage_no": "101526032",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3033",
+      "revision": "3",
+      "manage_no": "101526033",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3034",
+      "revision": "3",
+      "manage_no": "101526034",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3036",
+      "revision": "3",
+      "manage_no": "101526036",
+      "work_status": "未着手",
+      "process_status": "工場作業中",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3043",
+      "revision": "3",
+      "manage_no": "101526043",
+      "work_status": "未着手",
+      "process_status": "和裁士作業中",
+      "location_status": "和裁士",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3044",
+      "revision": "3",
+      "manage_no": "101526044",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3045",
+      "revision": "3",
+      "manage_no": "101526045",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3046",
+      "revision": "2",
+      "manage_no": "101526046",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3047",
+      "revision": "2",
+      "manage_no": "101526047",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3048",
+      "revision": "3",
+      "manage_no": "101526048",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3049",
+      "revision": "3",
+      "manage_no": "101526049",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3050",
+      "revision": "3",
+      "manage_no": "101526050",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3051",
+      "revision": "3",
+      "manage_no": "101526051",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3052",
+      "revision": "3",
+      "manage_no": "101526052",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3053",
+      "revision": "3",
+      "manage_no": "101526053",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3054",
+      "revision": "3",
+      "manage_no": "101526054",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3055",
+      "revision": "4",
+      "manage_no": "101526055",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3056",
+      "revision": "3",
+      "manage_no": "101526056",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3057",
+      "revision": "3",
+      "manage_no": "101526057",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3058",
+      "revision": "3",
+      "manage_no": "101526058",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3059",
+      "revision": "3",
+      "manage_no": "101526059",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3060",
+      "revision": "3",
+      "manage_no": "101526060",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3061",
+      "revision": "3",
+      "manage_no": "101526061",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3062",
+      "revision": "3",
+      "manage_no": "101526062",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3063",
+      "revision": "3",
+      "manage_no": "101526063",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3064",
+      "revision": "3",
+      "manage_no": "101526064",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3065",
+      "revision": "3",
+      "manage_no": "101526065",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3066",
+      "revision": "3",
+      "manage_no": "101526066",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3067",
+      "revision": "3",
+      "manage_no": "101526067",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3068",
+      "revision": "3",
+      "manage_no": "101526068",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3069",
+      "revision": "3",
+      "manage_no": "101526069",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3070",
+      "revision": "3",
+      "manage_no": "101526070",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3071",
+      "revision": "3",
+      "manage_no": "101526071",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3072",
+      "revision": "2",
+      "manage_no": "101526072",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3073",
+      "revision": "7",
+      "manage_no": "101526073",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3074",
+      "revision": "3",
+      "manage_no": "101526074",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3075",
+      "revision": "4",
+      "manage_no": "101526075",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3076",
+      "revision": "5",
+      "manage_no": "101526076",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3077",
+      "revision": "3",
+      "manage_no": "101526077",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3078",
+      "revision": "6",
+      "manage_no": "101526078",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3079",
+      "revision": "3",
+      "manage_no": "101526079",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3080",
+      "revision": "5",
+      "manage_no": "101526080",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3081",
+      "revision": "3",
+      "manage_no": "101526081",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3082",
+      "revision": "4",
+      "manage_no": "101526082",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3083",
+      "revision": "3",
+      "manage_no": "101526083",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3084",
+      "revision": "3",
+      "manage_no": "101526084",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3085",
+      "revision": "3",
+      "manage_no": "101526085",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3098",
+      "revision": "3",
+      "manage_no": "101626098",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A552"
+    },
+    {
+      "id": "3099",
+      "revision": "5",
+      "manage_no": "101626099",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A552"
+    },
+    {
+      "id": "3100",
+      "revision": "4",
+      "manage_no": "101626100",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A755"
+    },
+    {
+      "id": "3101",
+      "revision": "4",
+      "manage_no": "101626101",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A755"
+    },
+    {
+      "id": "3102",
+      "revision": "3",
+      "manage_no": "101626102",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A657"
+    },
+    {
+      "id": "3103",
+      "revision": "4",
+      "manage_no": "101626103",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A657"
+    },
+    {
+      "id": "3104",
+      "revision": "5",
+      "manage_no": "101626104",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3105",
+      "revision": "5",
+      "manage_no": "101626105",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3106",
+      "revision": "5",
+      "manage_no": "101626106",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3107",
+      "revision": "5",
+      "manage_no": "101626107",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3108",
+      "revision": "6",
+      "manage_no": "101626108",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M037"
+    },
+    {
+      "id": "3109",
+      "revision": "6",
+      "manage_no": "101626109",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3110",
+      "revision": "2",
+      "manage_no": "101626110",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3111",
+      "revision": "3",
+      "manage_no": "101626111",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M079"
+    },
+    {
+      "id": "3112",
+      "revision": "2",
+      "manage_no": "101626112",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M050"
+    },
+    {
+      "id": "3113",
+      "revision": "2",
+      "manage_no": "101626113",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3114",
+      "revision": "3",
+      "manage_no": "101626114",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3115",
+      "revision": "3",
+      "manage_no": "101626115",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3116",
+      "revision": "3",
+      "manage_no": "101626116",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3117",
+      "revision": "5",
+      "manage_no": "101626117",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3118",
+      "revision": "5",
+      "manage_no": "101626118",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A913"
+    },
+    {
+      "id": "3119",
+      "revision": "3",
+      "manage_no": "101626119",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A913"
+    },
+    {
+      "id": "3120",
+      "revision": "3",
+      "manage_no": "101626120",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "3121",
+      "revision": "3",
+      "manage_no": "101626121",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "3122",
+      "revision": "7",
+      "manage_no": "101626122",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3123",
+      "revision": "3",
+      "manage_no": "101726123",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3124",
+      "revision": "3",
+      "manage_no": "101926124",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A997"
+    },
+    {
+      "id": "3125",
+      "revision": "3",
+      "manage_no": "101926125",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A997"
+    },
+    {
+      "id": "3126",
+      "revision": "6",
+      "manage_no": "101926126",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3127",
+      "revision": "6",
+      "manage_no": "101926127",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3128",
+      "revision": "6",
+      "manage_no": "101926128",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3129",
+      "revision": "5",
+      "manage_no": "101926129",
+      "work_status": "未着手",
+      "process_status": "外注戻り",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3130",
+      "revision": "5",
+      "manage_no": "101926130",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3131",
+      "revision": "3",
+      "manage_no": "101926131",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A755"
+    },
+    {
+      "id": "3132",
+      "revision": "3",
+      "manage_no": "101926132",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A755"
+    },
+    {
+      "id": "3133",
+      "revision": "3",
+      "manage_no": "101926133",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A755"
+    },
+    {
+      "id": "3134",
+      "revision": "3",
+      "manage_no": "101926134",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A755"
+    },
+    {
+      "id": "3135",
+      "revision": "3",
+      "manage_no": "101926135",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A755"
+    },
+    {
+      "id": "3136",
+      "revision": "3",
+      "manage_no": "102026136",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3137",
+      "revision": "3",
+      "manage_no": "102026137",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3138",
+      "revision": "3",
+      "manage_no": "102026138",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3139",
+      "revision": "3",
+      "manage_no": "102026139",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3140",
+      "revision": "3",
+      "manage_no": "102026140",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3141",
+      "revision": "3",
+      "manage_no": "102026141",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3142",
+      "revision": "3",
+      "manage_no": "102026142",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3143",
+      "revision": "3",
+      "manage_no": "102026143",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3144",
+      "revision": "5",
+      "manage_no": "102026144",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A755"
+    },
+    {
+      "id": "3145",
+      "revision": "2",
+      "manage_no": "102026145",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A730"
+    },
+    {
+      "id": "3146",
+      "revision": "2",
+      "manage_no": "102026146",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A730"
+    },
+    {
+      "id": "3147",
+      "revision": "3",
+      "manage_no": "102026147",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A730"
+    },
+    {
+      "id": "3148",
+      "revision": "4",
+      "manage_no": "102026148",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A730"
+    },
+    {
+      "id": "3149",
+      "revision": "2",
+      "manage_no": "102026149",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A730"
+    },
+    {
+      "id": "3150",
+      "revision": "3",
+      "manage_no": "102026150",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A730"
+    },
+    {
+      "id": "3153",
+      "revision": "5",
+      "manage_no": "102026153",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M070"
+    },
+    {
+      "id": "3154",
+      "revision": "4",
+      "manage_no": "102026154",
+      "work_status": "未着手",
+      "process_status": "外注戻り",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3155",
+      "revision": "5",
+      "manage_no": "102026155",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M037"
+    },
+    {
+      "id": "3156",
+      "revision": "5",
+      "manage_no": "102026156",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3157",
+      "revision": "3",
+      "manage_no": "102126157",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A552"
+    },
+    {
+      "id": "3158",
+      "revision": "5",
+      "manage_no": "102126158",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3159",
+      "revision": "5",
+      "manage_no": "102126159",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3160",
+      "revision": "3",
+      "manage_no": "102126160",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3161",
+      "revision": "3",
+      "manage_no": "102126161",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3162",
+      "revision": "3",
+      "manage_no": "102126162",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3172",
+      "revision": "4",
+      "manage_no": "102126172",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3174",
+      "revision": "6",
+      "manage_no": "102226174",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3175",
+      "revision": "5",
+      "manage_no": "102226175",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M070"
+    },
+    {
+      "id": "3176",
+      "revision": "5",
+      "manage_no": "102226176",
+      "work_status": "未着手",
+      "process_status": "外注戻り",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M070"
+    },
+    {
+      "id": "3177",
+      "revision": "3",
+      "manage_no": "102226177",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A602"
+    },
+    {
+      "id": "3178",
+      "revision": "2",
+      "manage_no": "102226178",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3179",
+      "revision": "2",
+      "manage_no": "102226179",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3180",
+      "revision": "3",
+      "manage_no": "102226180",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3181",
+      "revision": "2",
+      "manage_no": "102226181",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3182",
+      "revision": "4",
+      "manage_no": "102226182",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A545"
+    },
+    {
+      "id": "3183",
+      "revision": "2",
+      "manage_no": "102226183",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3184",
+      "revision": "2",
+      "manage_no": "102226184",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3185",
+      "revision": "2",
+      "manage_no": "102226185",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3186",
+      "revision": "2",
+      "manage_no": "102226186",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3187",
+      "revision": "2",
+      "manage_no": "102226187",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3188",
+      "revision": "2",
+      "manage_no": "102226188",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3189",
+      "revision": "3",
+      "manage_no": "102226189",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3190",
+      "revision": "2",
+      "manage_no": "102226190",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3191",
+      "revision": "2",
+      "manage_no": "102226191",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3192",
+      "revision": "2",
+      "manage_no": "102226192",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3193",
+      "revision": "2",
+      "manage_no": "102226193",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3194",
+      "revision": "2",
+      "manage_no": "102226194",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3195",
+      "revision": "2",
+      "manage_no": "102226195",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3196",
+      "revision": "7",
+      "manage_no": "102226196",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "3197",
+      "revision": "2",
+      "manage_no": "102226197",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "3198",
+      "revision": "2",
+      "manage_no": "102226198",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "3199",
+      "revision": "2",
+      "manage_no": "102226199",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "3200",
+      "revision": "2",
+      "manage_no": "102226200",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "3203",
+      "revision": "4",
+      "manage_no": "102326203",
+      "work_status": "未着手",
+      "process_status": "和裁士作業中",
+      "location_status": "和裁士",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3204",
+      "revision": "3",
+      "manage_no": "102326204",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3205",
+      "revision": "6",
+      "manage_no": "102326205",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3206",
+      "revision": "6",
+      "manage_no": "102326206",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3207",
+      "revision": "5",
+      "manage_no": "102326207",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3208",
+      "revision": "5",
+      "manage_no": "102326208",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3209",
+      "revision": "5",
+      "manage_no": "102326209",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3210",
+      "revision": "2",
+      "manage_no": "102326210",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M078"
+    },
+    {
+      "id": "3212",
+      "revision": "2",
+      "manage_no": "102326212",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3213",
+      "revision": "2",
+      "manage_no": "102326213",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3214",
+      "revision": "4",
+      "manage_no": "102326214",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3215",
+      "revision": "4",
+      "manage_no": "102326215",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3216",
+      "revision": "4",
+      "manage_no": "102326216",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3217",
+      "revision": "3",
+      "manage_no": "102326217",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3218",
+      "revision": "3",
+      "manage_no": "102326218",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A199"
+    },
+    {
+      "id": "3219",
+      "revision": "3",
+      "manage_no": "102326219",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A199"
+    },
+    {
+      "id": "3220",
+      "revision": "3",
+      "manage_no": "102326220",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A732"
+    },
+    {
+      "id": "3226",
+      "revision": "7",
+      "manage_no": "102426226",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3227",
+      "revision": "5",
+      "manage_no": "102426227",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3228",
+      "revision": "5",
+      "manage_no": "102426228",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3229",
+      "revision": "5",
+      "manage_no": "102426229",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3230",
+      "revision": "5",
+      "manage_no": "102426230",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3231",
+      "revision": "4",
+      "manage_no": "102426231",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3232",
+      "revision": "3",
+      "manage_no": "102426232",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A328"
+    },
+    {
+      "id": "3240",
+      "revision": "3",
+      "manage_no": "102626240",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A328"
+    },
+    {
+      "id": "3241",
+      "revision": "4",
+      "manage_no": "102626241",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3242",
+      "revision": "4",
+      "manage_no": "102626242",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3243",
+      "revision": "4",
+      "manage_no": "102626243",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A622"
+    },
+    {
+      "id": "3244",
+      "revision": "2",
+      "manage_no": "102626244",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3245",
+      "revision": "4",
+      "manage_no": "102626245",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3246",
+      "revision": "3",
+      "manage_no": "102626246",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3247",
+      "revision": "3",
+      "manage_no": "102626247",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3248",
+      "revision": "3",
+      "manage_no": "102626248",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3249",
+      "revision": "4",
+      "manage_no": "102626249",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3250",
+      "revision": "3",
+      "manage_no": "102626250",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3251",
+      "revision": "2",
+      "manage_no": "102626251",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3252",
+      "revision": "2",
+      "manage_no": "102626252",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A645"
+    },
+    {
+      "id": "3258",
+      "revision": "3",
+      "manage_no": "102726258",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "B005"
+    },
+    {
+      "id": "3259",
+      "revision": "3",
+      "manage_no": "102726259",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "B005"
+    },
+    {
+      "id": "3260",
+      "revision": "4",
+      "manage_no": "102726260",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A318"
+    },
+    {
+      "id": "3261",
+      "revision": "4",
+      "manage_no": "102726261",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A318"
+    },
+    {
+      "id": "3262",
+      "revision": "4",
+      "manage_no": "102726262",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3263",
+      "revision": "3",
+      "manage_no": "102726263",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3264",
+      "revision": "3",
+      "manage_no": "102726264",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3265",
+      "revision": "3",
+      "manage_no": "102726265",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3266",
+      "revision": "3",
+      "manage_no": "102726266",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3267",
+      "revision": "5",
+      "manage_no": "102726267",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3268",
+      "revision": "4",
+      "manage_no": "102726268",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3269",
+      "revision": "4",
+      "manage_no": "102726269",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3270",
+      "revision": "4",
+      "manage_no": "102726270",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3273",
+      "revision": "2",
+      "manage_no": "102726273",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "C002"
+    },
+    {
+      "id": "3274",
+      "revision": "2",
+      "manage_no": "102726274",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "C002"
+    },
+    {
+      "id": "3275",
+      "revision": "2",
+      "manage_no": "102726275",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "C002"
+    },
+    {
+      "id": "3276",
+      "revision": "3",
+      "manage_no": "102726276",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "C005"
+    },
+    {
+      "id": "3277",
+      "revision": "3",
+      "manage_no": "102726277",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "C005"
+    },
+    {
+      "id": "3278",
+      "revision": "2",
+      "manage_no": "102726278",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "C005"
+    },
+    {
+      "id": "3281",
+      "revision": "2",
+      "manage_no": "102726281",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "工場",
+      "delivery_status": "未納品",
+      "customer_code": "C003"
+    },
+    {
+      "id": "3283",
+      "revision": "3",
+      "manage_no": "102726283",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A318"
+    },
+    {
+      "id": "3284",
+      "revision": "3",
+      "manage_no": "102726284",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A318"
+    },
+    {
+      "id": "3285",
+      "revision": "3",
+      "manage_no": "102726285",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3286",
+      "revision": "3",
+      "manage_no": "102726286",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3287",
+      "revision": "3",
+      "manage_no": "102726287",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3288",
+      "revision": "3",
+      "manage_no": "102726288",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3289",
+      "revision": "3",
+      "manage_no": "102726289",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A680"
+    },
+    {
+      "id": "3290",
+      "revision": "3",
+      "manage_no": "102726290",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3291",
+      "revision": "3",
+      "manage_no": "102726291",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3292",
+      "revision": "3",
+      "manage_no": "102726292",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3293",
+      "revision": "3",
+      "manage_no": "102826293",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3294",
+      "revision": "3",
+      "manage_no": "102826294",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A913"
+    },
+    {
+      "id": "3295",
+      "revision": "3",
+      "manage_no": "102826295",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A913"
+    },
+    {
+      "id": "3296",
+      "revision": "3",
+      "manage_no": "102826296",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M070"
+    },
+    {
+      "id": "3297",
+      "revision": "4",
+      "manage_no": "102826297",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3298",
+      "revision": "3",
+      "manage_no": "102826298",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3299",
+      "revision": "5",
+      "manage_no": "102826299",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3300",
+      "revision": "5",
+      "manage_no": "102826300",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3301",
+      "revision": "5",
+      "manage_no": "102826301",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3302",
+      "revision": "3",
+      "manage_no": "102826302",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3303",
+      "revision": "3",
+      "manage_no": "102826303",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3304",
+      "revision": "3",
+      "manage_no": "102826304",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A700"
+    },
+    {
+      "id": "3305",
+      "revision": "3",
+      "manage_no": "102826305",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3306",
+      "revision": "3",
+      "manage_no": "102826306",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3307",
+      "revision": "3",
+      "manage_no": "102826307",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3308",
+      "revision": "3",
+      "manage_no": "102826308",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3309",
+      "revision": "2",
+      "manage_no": "102826309",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "3310",
+      "revision": "2",
+      "manage_no": "102826310",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M025"
+    },
+    {
+      "id": "3311",
+      "revision": "2",
+      "manage_no": "102826311",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3312",
+      "revision": "2",
+      "manage_no": "102826312",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3313",
+      "revision": "2",
+      "manage_no": "102826313",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3314",
+      "revision": "2",
+      "manage_no": "102826314",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3315",
+      "revision": "2",
+      "manage_no": "102826315",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3316",
+      "revision": "2",
+      "manage_no": "102826316",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3317",
+      "revision": "2",
+      "manage_no": "102826317",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3318",
+      "revision": "2",
+      "manage_no": "102826318",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3319",
+      "revision": "2",
+      "manage_no": "102826319",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3320",
+      "revision": "2",
+      "manage_no": "102826320",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3321",
+      "revision": "2",
+      "manage_no": "102826321",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3322",
+      "revision": "2",
+      "manage_no": "102826322",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3323",
+      "revision": "2",
+      "manage_no": "102826323",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3324",
+      "revision": "2",
+      "manage_no": "102826324",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3325",
+      "revision": "2",
+      "manage_no": "102826325",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A335"
+    },
+    {
+      "id": "3333",
+      "revision": "2",
+      "manage_no": "102926333",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A997"
+    },
+    {
+      "id": "3334",
+      "revision": "2",
+      "manage_no": "102926334",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A997"
+    },
+    {
+      "id": "3336",
+      "revision": "3",
+      "manage_no": "102926336",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A997"
+    },
+    {
+      "id": "3337",
+      "revision": "3",
+      "manage_no": "103026337",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A660"
+    },
+    {
+      "id": "3338",
+      "revision": "3",
+      "manage_no": "103026338",
+      "work_status": "未着手",
+      "process_status": "海外外注中",
+      "location_status": "海外",
+      "delivery_status": "未納品",
+      "customer_code": "A660"
+    },
+    {
+      "id": "3339",
+      "revision": "2",
+      "manage_no": "103026339",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3340",
+      "revision": "2",
+      "manage_no": "103026340",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3341",
+      "revision": "2",
+      "manage_no": "103026341",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3342",
+      "revision": "3",
+      "manage_no": "103026342",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3343",
+      "revision": "2",
+      "manage_no": "103026343",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3344",
+      "revision": "4",
+      "manage_no": "103026344",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "A755"
+    },
+    {
+      "id": "3345",
+      "revision": "6",
+      "manage_no": "103026345",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3346",
+      "revision": "5",
+      "manage_no": "103026346",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3347",
+      "revision": "2",
+      "manage_no": "103026347",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3348",
+      "revision": "2",
+      "manage_no": "103026348",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3349",
+      "revision": "2",
+      "manage_no": "103026349",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3350",
+      "revision": "2",
+      "manage_no": "103026350",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3351",
+      "revision": "2",
+      "manage_no": "103026351",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3352",
+      "revision": "2",
+      "manage_no": "103026352",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3353",
+      "revision": "4",
+      "manage_no": "103026353",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3354",
+      "revision": "3",
+      "manage_no": "103126354",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3355",
+      "revision": "3",
+      "manage_no": "103126355",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3356",
+      "revision": "3",
+      "manage_no": "103126356",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3357",
+      "revision": "2",
+      "manage_no": "103126357",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3358",
+      "revision": "2",
+      "manage_no": "103126358",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3359",
+      "revision": "3",
+      "manage_no": "103126359",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3360",
+      "revision": "3",
+      "manage_no": "103126360",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M079"
+    },
+    {
+      "id": "3361",
+      "revision": "4",
+      "manage_no": "103126361",
+      "work_status": "未着手",
+      "process_status": "外注中",
+      "location_status": "外注先",
+      "delivery_status": "未納品",
+      "customer_code": "M079"
+    },
+    {
+      "id": "3362",
+      "revision": "2",
+      "manage_no": "103126362",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M079"
+    },
+    {
+      "id": "3363",
+      "revision": "2",
+      "manage_no": "103126363",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3364",
+      "revision": "2",
+      "manage_no": "103126364",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3365",
+      "revision": "2",
+      "manage_no": "103126365",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3366",
+      "revision": "2",
+      "manage_no": "103126366",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3367",
+      "revision": "2",
+      "manage_no": "103126367",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3368",
+      "revision": "2",
+      "manage_no": "103126368",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3369",
+      "revision": "2",
+      "manage_no": "103126369",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3370",
+      "revision": "2",
+      "manage_no": "103126370",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3371",
+      "revision": "2",
+      "manage_no": "103126371",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3372",
+      "revision": "2",
+      "manage_no": "103126372",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A657"
+    },
+    {
+      "id": "3373",
+      "revision": "2",
+      "manage_no": "103126373",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "1101"
+    },
+    {
+      "id": "3374",
+      "revision": "2",
+      "manage_no": "103126374",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3375",
+      "revision": "2",
+      "manage_no": "103126375",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3376",
+      "revision": "2",
+      "manage_no": "103126376",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3377",
+      "revision": "2",
+      "manage_no": "103126377",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A505"
+    },
+    {
+      "id": "3378",
+      "revision": "2",
+      "manage_no": "103126378",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "M032"
+    },
+    {
+      "id": "3379",
+      "revision": "3",
+      "manage_no": "103126379",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "店舗",
+      "delivery_status": "未納品",
+      "customer_code": "A550"
+    },
+    {
+      "id": "3380",
+      "revision": "2",
+      "manage_no": "103126380",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A623"
+    },
+    {
+      "id": "3381",
+      "revision": "2",
+      "manage_no": "103126381",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A622"
+    },
+    {
+      "id": "3382",
+      "revision": "2",
+      "manage_no": "103126382",
+      "work_status": "未着手",
+      "process_status": "受注",
+      "location_status": "本社",
+      "delivery_status": "未納品",
+      "customer_code": "A545"
+    }
+  ]
+}

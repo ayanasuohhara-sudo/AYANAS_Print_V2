@@ -1,0 +1,23 @@
+{
+  "add": false,
+  "reason": "App19新規作成＋プラグイン店舗納品書で足りる。store_order_create_link は任意導線のため限定反映では見送り",
+  "current": {
+    "names": [
+      "saiban.js",
+      "saiban1.js",
+      "price_master_search11.js",
+      "category.js",
+      "order_customer_search.js",
+      "price_master_register.js",
+      "order_record_form.js",
+      "additional_item_engine.js",
+      "order_price_unconfirmed_clear.js",
+      "schedule_customer.js",
+      "order_pcm_config.js",
+      "order_pcm_engine.js",
+      "order_pcm_desktop.js"
+    ],
+    "hasCreateLink": false,
+    "hasSimilar": false
+  }
+}

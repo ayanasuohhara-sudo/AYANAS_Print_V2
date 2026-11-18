@@ -1,0 +1,68 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060103F2395A53B928417EB3FB72396D0BAD68200",
+          "name": "hub_nav_config.js",
+          "contentType": "text/javascript",
+          "size": "1015"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026111406010497DC1EC0E81D4BC28E089203051E06B4275",
+          "name": "hub_nav.js",
+          "contentType": "text/javascript",
+          "size": "2700"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611140601040D1E1E9AE5674069BB832E11BA34EDA7110",
+          "name": "business_menu_config.js",
+          "contentType": "text/javascript",
+          "size": "6434"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060104512709E96A3441E38D8D759321DFEF3B162",
+          "name": "business_menu_desktop.js",
+          "contentType": "text/javascript",
+          "size": "21210"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060103CC25BA56A5B34FFE95B18D88BBA6AE66287",
+          "name": "hub_nav.css",
+          "contentType": "text/css",
+          "size": "2153"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060104F14841EEB22D4D61893DFBC641DF3335153",
+          "name": "business_menu.css",
+          "contentType": "text/css",
+          "size": "4777"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "12"
+}

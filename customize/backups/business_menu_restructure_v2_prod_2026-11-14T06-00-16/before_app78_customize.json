@@ -1,0 +1,77 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021613205AE36818DEDA42DA93DE2E83902E4387192",
+          "name": "app_nav_banner_config.js",
+          "contentType": "text/javascript",
+          "size": "2747"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161320929FD4E23928493AA3811729069DDEFC326",
+          "name": "app_nav_banner.js",
+          "contentType": "text/javascript",
+          "size": "6659"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216132006C8CB34A18240D8B9C25DCF8612D094316",
+          "name": "wasai_config.js",
+          "contentType": "text/javascript",
+          "size": "17719"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021613207B4F2782FC9345AD9D152E8817DAEF7A034",
+          "name": "inbound_unified_config.js",
+          "contentType": "text/javascript",
+          "size": "7931"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161321946D9CFF443E467E9F1D0F10E527B7AA043",
+          "name": "inbound_unified_engine.js",
+          "contentType": "text/javascript",
+          "size": "54765"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161321C0CC365F397E44B88E96D2D49B85C001000",
+          "name": "inbound_unified_desktop.js",
+          "contentType": "text/javascript",
+          "size": "33666"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216132016AAE7320DC7491D839193867C5DAA26143",
+          "name": "app_nav_banner.css",
+          "contentType": "text/css",
+          "size": "4473"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "34"
+}

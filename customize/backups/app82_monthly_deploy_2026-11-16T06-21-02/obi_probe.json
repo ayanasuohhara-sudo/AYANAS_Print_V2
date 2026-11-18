@@ -1,0 +1,220 @@
+{
+  "ok": true,
+  "dataStartDate": "2026-03-24",
+  "fiscalLabel": "2026年度",
+  "yearTotalKimono": 1069,
+  "series": [
+    {
+      "key": "2026-08",
+      "status": "ready",
+      "overseas": 263,
+      "domestic": 34,
+      "total": 297
+    },
+    {
+      "key": "2026-09",
+      "status": "ready",
+      "overseas": 216,
+      "domestic": 35,
+      "total": 251
+    },
+    {
+      "key": "2026-10",
+      "status": "ready",
+      "overseas": 304,
+      "domestic": 31,
+      "total": 335
+    },
+    {
+      "key": "2026-11",
+      "status": "ready",
+      "overseas": 154,
+      "domestic": 32,
+      "total": 186
+    },
+    {
+      "key": "2026-12",
+      "status": "future",
+      "overseas": null,
+      "domestic": null,
+      "total": null
+    },
+    {
+      "key": "2027-01",
+      "status": "future",
+      "overseas": null,
+      "domestic": null,
+      "total": null
+    },
+    {
+      "key": "2027-02",
+      "status": "future",
+      "overseas": null,
+      "domestic": null,
+      "total": null
+    },
+    {
+      "key": "2027-03",
+      "status": "future",
+      "overseas": null,
+      "domestic": null,
+      "total": null
+    },
+    {
+      "key": "2027-04",
+      "status": "future",
+      "overseas": null,
+      "domestic": null,
+      "total": null
+    },
+    {
+      "key": "2027-05",
+      "status": "future",
+      "overseas": null,
+      "domestic": null,
+      "total": null
+    },
+    {
+      "key": "2027-06",
+      "status": "future",
+      "overseas": null,
+      "domestic": null,
+      "total": null
+    },
+    {
+      "key": "2027-07",
+      "status": "future",
+      "overseas": null,
+      "domestic": null,
+      "total": null
+    }
+  ],
+  "selected": {
+    "key": "2026-11",
+    "overseas": 154,
+    "domestic": 32,
+    "total": 186,
+    "orderTotal": 2157500,
+    "tailorAmount": 1895050,
+    "addonAmount": 262450,
+    "amountSeparable": true,
+    "inseparableCount": 0
+  },
+  "backlog": 469,
+  "matrixRows": 0,
+  "overseasYearTotal": 937,
+  "customerFilter": null,
+  "obiSplit": {
+    "byMonth": {
+      "2026-08": {
+        "domesticKimonoOnly": 8,
+        "obiOnly": 26,
+        "domesticAndObi": 0,
+        "overseas": 263,
+        "domesticInclObi": 34,
+        "withObiLine": 26
+      },
+      "2026-09": {
+        "domesticKimonoOnly": 9,
+        "obiOnly": 26,
+        "domesticAndObi": 0,
+        "overseas": 216,
+        "domesticInclObi": 35,
+        "withObiLine": 26
+      },
+      "2026-10": {
+        "domesticKimonoOnly": 12,
+        "obiOnly": 19,
+        "domesticAndObi": 0,
+        "overseas": 304,
+        "domesticInclObi": 31,
+        "withObiLine": 19
+      },
+      "2026-11": {
+        "domesticKimonoOnly": 1,
+        "obiOnly": 31,
+        "domesticAndObi": 0,
+        "overseas": 154,
+        "domesticInclObi": 32,
+        "withObiLine": 31
+      },
+      "2026-12": {
+        "domesticKimonoOnly": 0,
+        "obiOnly": 0,
+        "domesticAndObi": 0,
+        "overseas": 0,
+        "domesticInclObi": 0,
+        "withObiLine": 0
+      },
+      "2027-01": {
+        "domesticKimonoOnly": 0,
+        "obiOnly": 0,
+        "domesticAndObi": 0,
+        "overseas": 0,
+        "domesticInclObi": 0,
+        "withObiLine": 0
+      },
+      "2027-02": {
+        "domesticKimonoOnly": 0,
+        "obiOnly": 0,
+        "domesticAndObi": 0,
+        "overseas": 0,
+        "domesticInclObi": 0,
+        "withObiLine": 0
+      },
+      "2027-03": {
+        "domesticKimonoOnly": 0,
+        "obiOnly": 0,
+        "domesticAndObi": 0,
+        "overseas": 0,
+        "domesticInclObi": 0,
+        "withObiLine": 0
+      },
+      "2027-04": {
+        "domesticKimonoOnly": 0,
+        "obiOnly": 0,
+        "domesticAndObi": 0,
+        "overseas": 0,
+        "domesticInclObi": 0,
+        "withObiLine": 0
+      },
+      "2027-05": {
+        "domesticKimonoOnly": 0,
+        "obiOnly": 0,
+        "domesticAndObi": 0,
+        "overseas": 0,
+        "domesticInclObi": 0,
+        "withObiLine": 0
+      },
+      "2027-06": {
+        "domesticKimonoOnly": 0,
+        "obiOnly": 0,
+        "domesticAndObi": 0,
+        "overseas": 0,
+        "domesticInclObi": 0,
+        "withObiLine": 0
+      },
+      "2027-07": {
+        "domesticKimonoOnly": 0,
+        "obiOnly": 0,
+        "domesticAndObi": 0,
+        "overseas": 0,
+        "domesticInclObi": 0,
+        "withObiLine": 0
+      }
+    },
+    "totals": {
+      "domesticKimonoOnly": 30,
+      "obiOnly": 102,
+      "domesticAndObi": 0,
+      "overseas": 937,
+      "domesticInclObi": 132,
+      "withObiLine": 102,
+      "tailorTotal": 1069,
+      "manageNos": 1875
+    }
+  },
+  "canSeparateInUI": false,
+  "canSeparateInData": true,
+  "note": "エンジンは帯仕立を国内仕立に合算。App13サブカテゴリで国内着物仕立と帯仕立はデータ上分離可能。UIは未分離。"
+}

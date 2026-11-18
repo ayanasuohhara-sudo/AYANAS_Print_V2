@@ -1,0 +1,95 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101154443E795DC75BB764E5696F98B16E13A7519271",
+          "name": "store_payment_config.js",
+          "contentType": "text/javascript",
+          "size": "4396"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101154443DA58F43F59214CE48FB2824E0074ABD9116",
+          "name": "store_payment_engine.js",
+          "contentType": "text/javascript",
+          "size": "23886"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011544437A3662F1C41B427FB566F3E82DBCFC3A183",
+          "name": "store_payment_numbering.js",
+          "contentType": "text/javascript",
+          "size": "2360"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110115444333CC094CD582467589E8890451AE048C210",
+          "name": "store_pickup_shared.js",
+          "contentType": "text/javascript",
+          "size": "9988"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011544430D3B81CA50E241159CC2B4D96E1B5B75167",
+          "name": "store_pickup_api.js",
+          "contentType": "text/javascript",
+          "size": "8297"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110115444431518AF20F554F4E8AC28EB3D5351B14351",
+          "name": "store_payment_api.js",
+          "contentType": "text/javascript",
+          "size": "16402"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011544440C94F1B4830A427EAADAA5B6FA3734A6134",
+          "name": "store_payment_desktop.js",
+          "contentType": "text/javascript",
+          "size": "6394"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101154444EFA58D30236646FF9FDC8EBE31DC6323009",
+          "name": "store_payment_ui.js",
+          "contentType": "text/javascript",
+          "size": "20781"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110115444357990BBBA93A48B1A94C0CADD40D0C4A121",
+          "name": "store_payment.css",
+          "contentType": "text/css",
+          "size": "4495"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "12"
+}

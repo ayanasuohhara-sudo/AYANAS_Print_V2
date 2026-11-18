@@ -1,0 +1,95 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161303FDF48E2498DB44B2BD1413DD57BC7BBC162",
+          "name": "app_nav_banner_config.js",
+          "contentType": "text/javascript",
+          "size": "2747"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161303BDA758B6C798471CA3E4DC870B96A850108",
+          "name": "app_nav_banner.js",
+          "contentType": "text/javascript",
+          "size": "6659"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161303E8DFA51B3FB84CC39FA0A89593C5F0AC257",
+          "name": "internal_ops_config.js",
+          "contentType": "text/javascript",
+          "size": "4315"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161304474019B0CDF34B9DBB9B1B60C47BBFD9323",
+          "name": "store_pickup_shared.js",
+          "contentType": "text/javascript",
+          "size": "9988"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161304872FCA96C099431EABAF9FBD1D13A74B193",
+          "name": "barcode_batch_core.js",
+          "contentType": "text/javascript",
+          "size": "1549"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021613045272AA43F36E48D094E118CC9F61FEA3356",
+          "name": "barcode_batch_ui.js",
+          "contentType": "text/javascript",
+          "size": "2237"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161304D759CB52A8C3499AB3528A7B95C62F3E191",
+          "name": "location_inbound_engine.js",
+          "contentType": "text/javascript",
+          "size": "4732"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161304A8BAEDA6BE484521B7285A76B8B9F446083",
+          "name": "location_inbound_desktop.js",
+          "contentType": "text/javascript",
+          "size": "15038"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161303525C9AB966324BABB14962B6DAC822F3040",
+          "name": "app_nav_banner.css",
+          "contentType": "text/css",
+          "size": "4473"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "22"
+}

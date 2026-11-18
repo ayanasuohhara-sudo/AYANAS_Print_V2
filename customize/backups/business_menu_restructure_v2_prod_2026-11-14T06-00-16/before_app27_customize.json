@@ -1,0 +1,78 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021612452B931643BA874AE9B6ADDD2B7359972C111",
+          "name": "app_nav_banner_config.js",
+          "contentType": "text/javascript",
+          "size": "2747"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161245887FB40125BC4BD8B3F21F0EC593E7EF041",
+          "name": "app_nav_banner.js",
+          "contentType": "text/javascript",
+          "size": "6659"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161246F4031C7C2C1A411D95844449E6E528D2032",
+          "name": "gaityuusyuko.js",
+          "contentType": "text/javascript",
+          "size": "3294"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216124617BAC11B87FA4D6F9C9A6A538742E530077",
+          "name": "additional_item_engine.js",
+          "contentType": "text/javascript",
+          "size": "26476"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021612468585D06AF64940079EDD7403640016EA352",
+          "name": "outsource_additional_item_sync.js",
+          "contentType": "text/javascript",
+          "size": "2253"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021612454A18CD785DDE485E9B52EA8DE8D620BD257",
+          "name": "app_nav_banner.css",
+          "contentType": "text/css",
+          "size": "4473"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161245891B340A4D5344B5A882BDFBA9439B33106",
+          "name": "gaityuusyuko.js",
+          "contentType": "text/javascript",
+          "size": "3294"
+        }
+      }
+    ],
+    "css": []
+  },
+  "revision": "56"
+}

@@ -18,6 +18,12 @@
         invoiceRegistrationNo: 'T7150001017765',
     };
 
+    const BANK_LINES = [
+        '三井住友銀行\u3000奈良支店\u3000普通\u30001591678',
+        '三菱UFJ銀行\u3000富雄出張所\u3000普通\u30000083302',
+        'ゆうちょ銀行\u3000四五八\u3000普通\u30002155204',
+    ];
+
     const esc = (value) => Format.escapeHtml(value);
 
     const resolveSealImageUrl = (sealImage, config = {}) => {
@@ -64,6 +70,18 @@
     };
 
     const formatYen = (value) => `${Format.formatMoney(value)}円`;
+
+    const formatPostal = (value) => {
+
+        const raw = String(value ?? '').trim();
+
+        if (!raw) {
+            return '';
+        }
+
+        return raw.startsWith('〒') ? raw : `〒${raw}`;
+
+    };
 
     const formatBillingPeriodLabel = (header) => {
 
@@ -125,6 +143,41 @@
             </tbody>
         </table>`;
 
+    const buildAddresseeHtml = (header) => {
+
+        const postal = formatPostal(header.customer_postal_code);
+        const address = String(header.customer_address ?? '').trim();
+        const addressee = String(header.addressee ?? '').trim();
+
+        return `
+            <div class="matsuba-summary__addressee-block">
+                ${postal ? `<p class="matsuba-summary__postal">${esc(postal)}</p>` : ''}
+                ${address ? `<p class="matsuba-summary__address">${esc(address)}</p>` : ''}
+                ${addressee ? `<p class="matsuba-summary__addressee">${esc(addressee)}</p>` : ''}
+            </div>`;
+
+    };
+
+    const buildBankHtml = () => {
+
+        const [firstLine, ...restLines] = BANK_LINES;
+        const restRowsHtml = restLines.map((line) => (
+            `<tr><td class="matsuba-summary__bank-account">${esc(line)}</td></tr>`
+        )).join('');
+
+        return `
+        <table class="matsuba-summary__bank">
+            <tbody>
+                <tr>
+                    <th class="matsuba-summary__bank-label" rowspan="${BANK_LINES.length}">振込先</th>
+                    <td class="matsuba-summary__bank-account">${esc(firstLine)}</td>
+                </tr>
+                ${restRowsHtml}
+            </tbody>
+        </table>`;
+
+    };
+
     const buildTotalsHtml = (summary) => `
         <table class="matsuba-summary__totals">
             <tbody>
@@ -156,21 +209,25 @@
             const { header, details, summary } = data;
             const company = getCompanyInfo(layout, config);
             const periodLabel = formatBillingPeriodLabel(header);
-            const addressee = String(header.addressee ?? '').trim();
+            const invoiceDate = String(header.invoice_date ?? '').trim();
 
             const content = `
 <header class="matsuba-summary__header">
     <div class="matsuba-summary__header-left">
-        <p class="matsuba-summary__addressee">${esc(addressee)}</p>
+        ${buildAddresseeHtml(header)}
         ${periodLabel ? `<p class="matsuba-summary__period">請求対象期間：${esc(periodLabel)}</p>` : ''}
     </div>
     <div class="matsuba-summary__header-right">
         <h1 class="matsuba-summary__title">合計請求書</h1>
+        ${invoiceDate ? `<p class="matsuba-summary__invoice-date">請求日：${esc(Format.formatDate(invoiceDate))}</p>` : ''}
         ${buildCompanyHtml(company)}
     </div>
 </header>
 ${buildTableHtml(details)}
-${buildTotalsHtml(summary)}`;
+<div class="matsuba-summary__footer">
+    ${buildBankHtml()}
+    ${buildTotalsHtml(summary)}
+</div>`;
 
             return Common.buildDocumentHtml({
                 title: '合計請求書',

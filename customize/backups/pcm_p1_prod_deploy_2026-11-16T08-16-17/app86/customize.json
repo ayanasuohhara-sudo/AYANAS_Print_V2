@@ -1,0 +1,86 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060125E316B28E7DC045438F6D715440302B5A029",
+          "name": "work_status_labels.js",
+          "contentType": "text/javascript",
+          "size": "2771"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060125E997FA68AB7A45DDB2742FB49C30EEC8225",
+          "name": "hub_nav_config.js",
+          "contentType": "text/javascript",
+          "size": "1015"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611140601261EF22AE6D920483DABB2C7A86BD35693165",
+          "name": "hub_nav.js",
+          "contentType": "text/javascript",
+          "size": "2700"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060126F0E8949CDD7F4A49BC07F220A4600F3D299",
+          "name": "floor_portal_config.js",
+          "contentType": "text/javascript",
+          "size": "11144"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611140601268A0ABB03808345208E236A38519A92FC176",
+          "name": "floor_portal_engine.js",
+          "contentType": "text/javascript",
+          "size": "21194"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611140601263435886216534CD6819585D30E2CD14A047",
+          "name": "floor_portal_desktop.js",
+          "contentType": "text/javascript",
+          "size": "27777"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026111406012593EE5911F899472092B54C4C918194C0018",
+          "name": "hub_nav.css",
+          "contentType": "text/css",
+          "size": "2153"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060126EE4A2404CB4C4B0EA7EC4C1A9A6A4E8F014",
+          "name": "floor_portal.css",
+          "contentType": "text/css",
+          "size": "7976"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "18"
+}

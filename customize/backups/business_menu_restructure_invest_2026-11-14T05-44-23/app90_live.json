@@ -1,0 +1,176 @@
+{
+  "appId": 90,
+  "factoryVersion": "1.2.0",
+  "factoryTitle": "工場業務メニュー",
+  "sections": [
+    {
+      "id": "factory",
+      "label": "工場管理",
+      "items": [
+        {
+          "appId": 86,
+          "label": "工場作業状況ポータル",
+          "path": ""
+        },
+        {
+          "appId": 89,
+          "label": "納期負荷カレンダー",
+          "path": ""
+        },
+        {
+          "appId": 88,
+          "label": "受注検索",
+          "path": ""
+        }
+      ]
+    },
+    {
+      "id": "daily",
+      "label": "受注・日常業務",
+      "items": [
+        {
+          "appId": 16,
+          "label": "受注登録",
+          "path": "edit"
+        },
+        {
+          "appId": 16,
+          "label": "受注明細",
+          "path": ""
+        },
+        {
+          "appId": 30,
+          "label": "検品・仕上げ完了",
+          "path": ""
+        },
+        {
+          "appId": 84,
+          "label": "社内作業登録",
+          "path": ""
+        },
+        {
+          "appId": 78,
+          "label": "外注入庫",
+          "path": ""
+        },
+        {
+          "appId": 27,
+          "label": "国内外注出庫",
+          "path": ""
+        },
+        {
+          "appId": 74,
+          "label": "国内和裁士出庫",
+          "path": ""
+        },
+        {
+          "appId": 34,
+          "label": "保管場所移動",
+          "path": ""
+        }
+      ]
+    },
+    {
+      "id": "billing",
+      "label": "納品・請求",
+      "items": [
+        {
+          "appId": 19,
+          "label": "納品書作成",
+          "path": ""
+        },
+        {
+          "appId": 35,
+          "label": "請求書作成",
+          "path": ""
+        }
+      ]
+    }
+  ],
+  "domLinks": [
+    {
+      "text": "大原健嗣",
+      "href": "/k/#/people/user/info%40ayanas.co.jp"
+    },
+    {
+      "text": "工場ポータル",
+      "href": "/k/90/"
+    },
+    {
+      "text": "New record",
+      "href": "/k/90/edit"
+    },
+    {
+      "text": "App settings",
+      "href": "/k/admin/app/flow?app=90#section=form"
+    },
+    {
+      "text": "AYANAS 業務メニュー",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/"
+    },
+    {
+      "text": "店舗業務メニュー",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+    },
+    {
+      "text": "ポータルTOP",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/#/portal"
+    },
+    {
+      "text": "工場作業状況ポータル",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/86/"
+    },
+    {
+      "text": "納期負荷カレンダー",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/89/"
+    },
+    {
+      "text": "受注検索",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/88/"
+    },
+    {
+      "text": "受注登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/edit/"
+    },
+    {
+      "text": "受注明細",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/"
+    },
+    {
+      "text": "検品・仕上げ完了",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/30/"
+    },
+    {
+      "text": "社内作業登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/84/"
+    },
+    {
+      "text": "外注入庫",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/78/"
+    },
+    {
+      "text": "国内外注出庫",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/27/"
+    },
+    {
+      "text": "国内和裁士出庫",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/74/"
+    },
+    {
+      "text": "保管場所移動",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/34/"
+    },
+    {
+      "text": "納品書作成",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/19/"
+    },
+    {
+      "text": "請求書作成",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/35/"
+    },
+    {
+      "text": "Help",
+      "href": "/k/help/k/user/app_collectdata/filter_records.html"
+    }
+  ]
+}

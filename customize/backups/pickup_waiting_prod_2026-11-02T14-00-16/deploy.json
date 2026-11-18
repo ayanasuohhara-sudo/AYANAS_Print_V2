@@ -1,0 +1,82 @@
+{
+  "at": "2026-11-02T14:00:36.633Z",
+  "apps": {
+    "19": {
+      "ok": true,
+      "deploy": {
+        "app": "19",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "internal_ops_config.js",
+        "complete_register_engine.js",
+        "delivery_completion_guard.js",
+        "store_delivery_pcm.js",
+        "barcode_delivery.js",
+        "store_pickup_shared.js",
+        "delivery_complete_sync.js",
+        "delivery_a550_edit_guard.js",
+        "price_master_register.js",
+        "delivery_additional_item_guard.js",
+        "additional_item_engine.js"
+      ],
+      "desktopCss": []
+    },
+    "34": {
+      "ok": true,
+      "deploy": {
+        "app": "34",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "internal_ops_config.js",
+        "store_pickup_shared.js",
+        "barcode_batch_core.js",
+        "barcode_batch_ui.js",
+        "location_inbound_engine.js",
+        "location_inbound_desktop.js"
+      ],
+      "desktopCss": []
+    },
+    "92": {
+      "ok": true,
+      "deploy": {
+        "app": "92",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "store_deadline_config.js",
+        "store_deadline_engine.js",
+        "store_payment_config.js",
+        "store_payment_engine.js",
+        "store_pickup_shared.js",
+        "store_pickup_api.js",
+        "store_deadline_desktop.js",
+        "store_deadline_pickup.js"
+      ],
+      "desktopCss": [
+        "store_deadline.css"
+      ]
+    },
+    "97": {
+      "ok": true,
+      "deploy": {
+        "app": "97",
+        "status": "SUCCESS"
+      },
+      "desktopJs": [
+        "store_payment_config.js",
+        "store_payment_engine.js",
+        "store_payment_numbering.js",
+        "store_pickup_shared.js",
+        "store_pickup_api.js",
+        "store_payment_api.js",
+        "store_payment_desktop.js",
+        "store_payment_ui.js"
+      ],
+      "desktopCss": [
+        "store_payment.css"
+      ]
+    }
+  }
+}

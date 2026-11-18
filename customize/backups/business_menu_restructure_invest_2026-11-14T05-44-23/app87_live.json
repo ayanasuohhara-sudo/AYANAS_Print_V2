@@ -1,0 +1,256 @@
+{
+  "appId": 87,
+  "floorVersion": "1.6.1",
+  "storeGroups": [
+    {
+      "id": "reception",
+      "label": "受付・顧客",
+      "links": [
+        {
+          "appKey": "personalCustomer",
+          "label": "個人顧客管理"
+        },
+        {
+          "appKey": "order",
+          "label": "受注登録",
+          "featured": true
+        },
+        {
+          "appKey": "orderSearch",
+          "label": "受注検索",
+          "featured": true
+        }
+      ]
+    },
+    {
+      "id": "work",
+      "label": "作業・移動",
+      "links": [
+        {
+          "appKey": "locationInbound",
+          "label": "保管場所移動",
+          "note": "App34"
+        },
+        {
+          "appKey": "internalWork",
+          "label": "社内作業登録",
+          "note": "作業＋場所可"
+        },
+        {
+          "appKey": "completeRegister",
+          "label": "仕上げ完了",
+          "note": "App30"
+        }
+      ]
+    },
+    {
+      "id": "delivery_accounting",
+      "label": "納品・会計",
+      "links": [
+        {
+          "appKey": "deliverySlip",
+          "label": "納品書作成"
+        },
+        {
+          "appKey": "storeDeadline",
+          "label": "店舗納期カレンダー",
+          "note": "引き取り",
+          "featured": true
+        },
+        {
+          "appKey": "storePayment",
+          "label": "入金登録",
+          "featured": true
+        }
+      ]
+    }
+  ],
+  "appMap": {
+    "factoryPortal": 86,
+    "storePortal": 87,
+    "locationInbound": 34,
+    "internalWork": 84,
+    "completeRegister": 30,
+    "personalCustomer": 96,
+    "order": 16,
+    "orderSearch": 88,
+    "deliverySlip": 19,
+    "storeDeadline": 92,
+    "storePayment": 97
+  },
+  "uiTitle": "kintone",
+  "domLinks": [
+    {
+      "text": "大原健嗣",
+      "href": "/k/#/people/user/info%40ayanas.co.jp"
+    },
+    {
+      "text": "店舗ポータル",
+      "href": "/k/87/"
+    },
+    {
+      "text": "New record",
+      "href": "/k/87/edit"
+    },
+    {
+      "text": "App settings",
+      "href": "/k/admin/app/flow?app=87#section=form"
+    },
+    {
+      "text": "AYANAS 業務メニュー",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/91/"
+    },
+    {
+      "text": "工場業務メニュー",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/90/"
+    },
+    {
+      "text": "店舗業務メニュー",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/87/"
+    },
+    {
+      "text": "ポータルTOP",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/#/portal"
+    },
+    {
+      "text": "個人顧客管理",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/96/"
+    },
+    {
+      "text": "受注登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/"
+    },
+    {
+      "text": "受注検索",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/88/"
+    },
+    {
+      "text": "保管場所移動App34",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/34/"
+    },
+    {
+      "text": "社内作業登録作業＋場所可",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/84/"
+    },
+    {
+      "text": "仕上げ完了App30",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/30/"
+    },
+    {
+      "text": "納品書作成",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/19/"
+    },
+    {
+      "text": "店舗納期カレンダー引き取り",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/92/"
+    },
+    {
+      "text": "入金登録",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/97/"
+    },
+    {
+      "text": "091026379",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=2379"
+    },
+    {
+      "text": "110226480",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3480"
+    },
+    {
+      "text": "111226681",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3681"
+    },
+    {
+      "text": "103026341",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3341"
+    },
+    {
+      "text": "103026342",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3342"
+    },
+    {
+      "text": "103026343",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3343"
+    },
+    {
+      "text": "103026345",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3345"
+    },
+    {
+      "text": "103026346",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3346"
+    },
+    {
+      "text": "103026351",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3351"
+    },
+    {
+      "text": "103026352",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3352"
+    },
+    {
+      "text": "103126357",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3357"
+    },
+    {
+      "text": "103126358",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3358"
+    },
+    {
+      "text": "103126363",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3363"
+    },
+    {
+      "text": "103126364",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3364"
+    },
+    {
+      "text": "103126365",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3365"
+    },
+    {
+      "text": "103126366",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3366"
+    },
+    {
+      "text": "103126367",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3367"
+    },
+    {
+      "text": "103126368",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3368"
+    },
+    {
+      "text": "103126369",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3369"
+    },
+    {
+      "text": "103026339",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3339"
+    },
+    {
+      "text": "103026340",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3340"
+    },
+    {
+      "text": "103126379",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3379"
+    },
+    {
+      "text": "110326506",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3506"
+    },
+    {
+      "text": "110326507",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3507"
+    },
+    {
+      "text": "110326508",
+      "href": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3508"
+    },
+    {
+      "text": "Help",
+      "href": "/k/help/k/user/app_collectdata/filter_records.html"
+    }
+  ]
+}

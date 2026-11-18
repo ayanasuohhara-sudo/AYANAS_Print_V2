@@ -1,0 +1,25 @@
+{
+  "name": "店舗ポータル",
+  "description": "",
+  "icon": {
+    "type": "PRESET",
+    "key": "APP39"
+  },
+  "theme": "WHITE",
+  "titleField": {
+    "selectionMode": "AUTO",
+    "code": "レコード番号"
+  },
+  "enableThumbnails": true,
+  "enableBulkDeletion": false,
+  "enableComments": true,
+  "enableDuplicateRecord": true,
+  "enableInlineRecordEditing": true,
+  "numberPrecision": {
+    "digits": "16",
+    "decimalPlaces": "4",
+    "roundingMode": "HALF_EVEN"
+  },
+  "firstMonthOfFiscalYear": "4",
+  "revision": "22"
+}

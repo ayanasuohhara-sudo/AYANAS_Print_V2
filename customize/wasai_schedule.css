@@ -1,0 +1,398 @@
+body.ayanas-wasai-schedule-active .recordlist-gaia,
+body.ayanas-wasai-schedule-active .recordlist-header-gaia,
+body.ayanas-wasai-schedule-active .gaia-argoui-app-index-pager {
+  display: none !important;
+}
+
+.cayan-ws-root {
+  box-sizing: border-box;
+  padding: 12px 16px 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.cayan-ws-root * {
+  box-sizing: border-box;
+}
+
+.cayan-ws-header {
+  margin-bottom: 12px;
+}
+
+.cayan-ws-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.cayan-ws-lead {
+  margin: 4px 0 0;
+  color: #475569;
+}
+
+.cayan-ws-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-bottom: 12px;
+}
+
+.cayan-ws-label {
+  font-weight: 700;
+}
+
+.cayan-ws-select {
+  min-width: 220px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+}
+
+.cayan-ws-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.cayan-ws-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cayan-ws-month {
+  margin: 0;
+  min-width: 8em;
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.cayan-ws-btn {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.cayan-ws-btn.is-primary {
+  background: #1e293b;
+  border-color: #1e293b;
+  color: #fff;
+}
+
+.cayan-ws-btn:disabled,
+.cayan-ws-select:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.cayan-ws-btn:focus,
+.cayan-ws-cell:focus,
+.cayan-ws-select:focus {
+  outline: 2px solid #334155;
+  outline-offset: 1px;
+}
+
+.cayan-ws-totals-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cayan-ws-capacity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.cayan-ws-capacity-main {
+  font-size: 16px;
+}
+
+.cayan-ws-capacity-main strong {
+  font-variant-numeric: tabular-nums;
+  font-size: 20px;
+  color: #1e293b;
+}
+
+.cayan-ws-capacity-main strong.is-unset {
+  color: #94a3b8;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cayan-ws-capacity-hint {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.cayan-ws-totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.cayan-ws-totals strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.cayan-ws-message {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.cayan-ws-message.is-info {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+}
+
+.cayan-ws-message.is-warn {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+}
+
+.cayan-ws-message.is-error {
+  background: #fff1f2;
+  border: 1px solid #fda4af;
+}
+
+.cayan-ws-cal-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.cayan-ws-grid,
+.cayan-ws-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(132px, 1fr));
+  min-width: 980px;
+}
+
+.cayan-ws-dow {
+  padding: 8px;
+  background: #e2e8f0;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cayan-ws-dow.is-sat,
+.cayan-ws-cell.is-sat .cayan-ws-day {
+  color: #1d4ed8;
+}
+
+.cayan-ws-dow.is-sun,
+.cayan-ws-cell.is-sun .cayan-ws-day {
+  color: #be123c;
+}
+
+.cayan-ws-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  min-height: 112px;
+  padding: 8px;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cayan-ws-cell.is-blank {
+  background: #f8fafc;
+  cursor: default;
+}
+
+.cayan-ws-cell.is-today {
+  background: #e2e8f0;
+  box-shadow: inset 0 0 0 2px #334155;
+}
+
+.cayan-ws-cell.is-selected {
+  background: #dbeafe;
+}
+
+.cayan-ws-day {
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cayan-ws-count {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cayan-ws-detail {
+  padding: 4px 0 24px;
+}
+
+.cayan-ws-detail-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.cayan-ws-detail-count {
+  margin: 4px 0 8px;
+  font-weight: 700;
+}
+
+.cayan-ws-group {
+  margin: 0 0 20px;
+}
+
+.cayan-ws-group-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cayan-ws-empty {
+  margin: 0;
+  color: #475569;
+}
+
+.cayan-ws-table-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.cayan-ws-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.cayan-ws-table th,
+.cayan-ws-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.cayan-ws-table th {
+  background: #e2e8f0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cayan-ws-key {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cayan-ws-link {
+  color: #1d4ed8;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.cayan-ws-linkbtn {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #1d4ed8;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cayan-ws-plan {
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.cayan-ws-plan-title {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+
+.cayan-ws-plan-note {
+  margin: 0 0 10px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.cayan-ws-plan-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px 12px;
+  align-items: end;
+}
+
+.cayan-ws-plan-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cayan-ws-plan-form input {
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font: inherit;
+}
+
+@media (max-width: 720px) {
+  .cayan-ws-root {
+    padding: 10px 10px 32px;
+  }
+
+  .cayan-ws-title {
+    font-size: 20px;
+  }
+
+  .cayan-ws-grid,
+  .cayan-ws-week {
+    min-width: 720px;
+  }
+}

@@ -1,0 +1,279 @@
+{
+  "ok": true,
+  "out": {
+    "2025": {
+      "selectedMonth": "2026-07",
+      "selectedMonthTailor": 347,
+      "rankingTailor": 37,
+      "rankingNote": "customerRanking は選択月のみ",
+      "matrixRow": {
+        "customerName": "大進ホンダ株式会社",
+        "months": {
+          "2026-05": 40,
+          "2026-06": 42,
+          "2026-07": 37
+        },
+        "total": 119,
+        "keys": [
+          "customerCode",
+          "customerName",
+          "months",
+          "yearTotal"
+        ]
+      },
+      "filteredSeries": [
+        {
+          "key": "2025-08",
+          "status": "before_data",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2025-09",
+          "status": "before_data",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2025-10",
+          "status": "before_data",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2025-11",
+          "status": "before_data",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2025-12",
+          "status": "before_data",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2026-01",
+          "status": "before_data",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2026-02",
+          "status": "before_data",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2026-03",
+          "status": "ready",
+          "tailor": 0,
+          "filtered": 0,
+          "overseas": 0,
+          "domestic": 0,
+          "obi": 0
+        },
+        {
+          "key": "2026-04",
+          "status": "ready",
+          "tailor": 0,
+          "filtered": 0,
+          "overseas": 0,
+          "domestic": 0,
+          "obi": 0
+        },
+        {
+          "key": "2026-05",
+          "status": "ready",
+          "tailor": 40,
+          "filtered": 40,
+          "overseas": 36,
+          "domestic": 4,
+          "obi": 0
+        },
+        {
+          "key": "2026-06",
+          "status": "ready",
+          "tailor": 42,
+          "filtered": 42,
+          "overseas": 39,
+          "domestic": 3,
+          "obi": 0
+        },
+        {
+          "key": "2026-07",
+          "status": "ready",
+          "tailor": 37,
+          "filtered": 37,
+          "overseas": 37,
+          "domestic": 0,
+          "obi": 0
+        }
+      ],
+      "filteredYearTailor": 119,
+      "filteredSelected": {
+        "key": "2026-07",
+        "tailor": 37
+      }
+    },
+    "2026": {
+      "selectedMonth": "2026-11",
+      "selectedMonthTailor": 197,
+      "rankingTailor": 17,
+      "rankingNote": "customerRanking は選択月のみ",
+      "matrixRow": {
+        "customerName": "大進ホンダ株式会社",
+        "months": {
+          "2026-08": 34,
+          "2026-09": 38,
+          "2026-10": 43,
+          "2026-11": 17
+        },
+        "total": 132,
+        "keys": [
+          "customerCode",
+          "customerName",
+          "months",
+          "yearTotal"
+        ]
+      },
+      "filteredSeries": [
+        {
+          "key": "2026-08",
+          "status": "ready",
+          "tailor": 34,
+          "filtered": 34,
+          "overseas": 27,
+          "domestic": 7,
+          "obi": 0
+        },
+        {
+          "key": "2026-09",
+          "status": "ready",
+          "tailor": 38,
+          "filtered": 38,
+          "overseas": 29,
+          "domestic": 9,
+          "obi": 0
+        },
+        {
+          "key": "2026-10",
+          "status": "ready",
+          "tailor": 43,
+          "filtered": 43,
+          "overseas": 33,
+          "domestic": 10,
+          "obi": 0
+        },
+        {
+          "key": "2026-11",
+          "status": "ready",
+          "tailor": 17,
+          "filtered": 17,
+          "overseas": 16,
+          "domestic": 1,
+          "obi": 0
+        },
+        {
+          "key": "2026-12",
+          "status": "future",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2027-01",
+          "status": "future",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2027-02",
+          "status": "future",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2027-03",
+          "status": "future",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2027-04",
+          "status": "future",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2027-05",
+          "status": "future",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2027-06",
+          "status": "future",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        },
+        {
+          "key": "2027-07",
+          "status": "future",
+          "tailor": null,
+          "filtered": null,
+          "overseas": null,
+          "domestic": null,
+          "obi": null
+        }
+      ],
+      "filteredYearTailor": 132,
+      "filteredSelected": {
+        "key": "2026-11",
+        "tailor": 17
+      }
+    }
+  },
+  "dataStart": "2026-03-24"
+}

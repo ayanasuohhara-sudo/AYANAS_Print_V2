@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "verify": {
+    "has148": true,
+    "sample": [
+      "AYANAS Print",
+      "AYANAS Print Plugin V148 (store order barcode/table x2 on left)"
+    ],
+    "versions": [
+      "Version: 148",
+      "Version: 725",
+      "Version: 3",
+      "Version: 3",
+      "Version: 2"
+    ]
+  },
+  "zip": "/tmp/ayanas-print-v148.zip",
+  "work": "/workspace/customize/backups/store_order_v148_2026-11-02T13-31-51",
+  "at": "2026-11-02T13:32:06.249Z"
+}

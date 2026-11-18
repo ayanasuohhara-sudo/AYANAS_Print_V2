@@ -1,0 +1,1104 @@
+{
+  "ok": true,
+  "customer": {
+    "code": "M032",
+    "name": "大進ホンダ株式会社"
+  },
+  "dataStart": "2026-03-24",
+  "fy": {
+    "start": "2025-08-01",
+    "end": "2026-07-31"
+  },
+  "productCount": 168,
+  "orderCount": 303,
+  "summary": {
+    "total": 303,
+    "cancelled": 0,
+    "beforeDataStart": 0,
+    "outsideFy": 153,
+    "tailorRoutes": 251,
+    "countedInDashboard": 119,
+    "other": 51,
+    "conflict": 1,
+    "byRoute": {
+      "overseas": 217,
+      "other": 51,
+      "domestic": 34,
+      "conflict": 1
+    },
+    "byMonth": {
+      "2026-05": 40,
+      "2026-06": 42,
+      "2026-07": 37
+    }
+  },
+  "otherSamples": [
+    {
+      "manageNo": "050726-14",
+      "orderDate": "2026-05-07",
+      "kimonoType": "小紋",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "(未解決)",
+        "湯のし",
+        "ガード"
+      ],
+      "lines": [
+        "海外仕立て=>(未解決)",
+        "ゆのし=>湯のし",
+        "ガード加工　丸巻=>ガード"
+      ]
+    },
+    {
+      "manageNo": "050726-13",
+      "orderDate": "2026-05-07",
+      "kimonoType": "小紋",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "(未解決)",
+        "湯のし",
+        "ガード"
+      ],
+      "lines": [
+        "海外仕立て=>(未解決)",
+        "ゆのし=>湯のし",
+        "ガード加工　丸巻=>ガード"
+      ]
+    },
+    {
+      "manageNo": "050826-07",
+      "orderDate": "2026-05-08",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "(未解決)",
+        "湯のし"
+      ],
+      "lines": [
+        "海外仕立て=>(未解決)",
+        "湯通し=>湯のし"
+      ]
+    },
+    {
+      "manageNo": "050826-11",
+      "orderDate": "2026-05-08",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "(未解決)"
+      ],
+      "lines": [
+        "海外仕立て=>(未解決)",
+        "解き洗張り=>(未解決)"
+      ]
+    },
+    {
+      "manageNo": "050826-10",
+      "orderDate": "2026-05-08",
+      "kimonoType": "大島紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "クレーム=>修理"
+      ]
+    },
+    {
+      "manageNo": "050826-09",
+      "orderDate": "2026-05-08",
+      "kimonoType": "羽織",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "(未解決)",
+        "ガード"
+      ],
+      "lines": [
+        "海外仕立て=>(未解決)",
+        "ゆのしガード=>ガード"
+      ]
+    },
+    {
+      "manageNo": "050826-06",
+      "orderDate": "2026-05-08",
+      "kimonoType": "大島紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理",
+        "その他加工"
+      ],
+      "lines": [
+        "修理=>修理",
+        "プレス=>その他加工"
+      ]
+    },
+    {
+      "manageNo": "050926-57",
+      "orderDate": "2026-05-09",
+      "kimonoType": "小紋",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "(未解決)",
+        "ガード"
+      ],
+      "lines": [
+        "海外仕立て=>(未解決)",
+        "ゆのしガード=>ガード"
+      ]
+    },
+    {
+      "manageNo": "051926-07",
+      "orderDate": "2026-05-19",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "051926-06",
+      "orderDate": "2026-05-19",
+      "kimonoType": "訪問着",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "051926-04",
+      "orderDate": "2026-05-19",
+      "kimonoType": "長襦袢",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "丸洗い",
+        "修理"
+      ],
+      "lines": [
+        "丸洗い=>丸洗い",
+        "クレーム=>修理"
+      ]
+    },
+    {
+      "manageNo": "052226-42",
+      "orderDate": "2026-05-22",
+      "kimonoType": "長襦袢",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "053026-05",
+      "orderDate": "2026-05-30",
+      "kimonoType": "羽織",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "(未解決)"
+      ],
+      "lines": [
+        "返品=>(未解決)"
+      ]
+    },
+    {
+      "manageNo": "060626-09",
+      "orderDate": "2026-06-06",
+      "kimonoType": "附下",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "丸洗い",
+        "ガード",
+        "修理"
+      ],
+      "lines": [
+        "丸洗い=>丸洗い",
+        "仕立上がりガード加工=>ガード",
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "061726015",
+      "orderDate": "2026-06-17",
+      "kimonoType": "長襦袢",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "061926046",
+      "orderDate": "2026-06-19",
+      "kimonoType": "羽織",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "062526167",
+      "orderDate": "2026-06-25",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "丸洗い",
+        "修理"
+      ],
+      "lines": [
+        "丸洗い=>丸洗い",
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "062626174",
+      "orderDate": "2026-06-26",
+      "kimonoType": "長襦袢",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "クレーム=>修理"
+      ]
+    },
+    {
+      "manageNo": "070126293",
+      "orderDate": "2026-07-01",
+      "kimonoType": "羽織",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "070626394",
+      "orderDate": "2026-07-06",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "070626393",
+      "orderDate": "2026-07-06",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "丸洗い",
+        "修理"
+      ],
+      "lines": [
+        "丸洗い=>丸洗い",
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "070826405",
+      "orderDate": "2026-07-08",
+      "kimonoType": "羽織",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "072126578",
+      "orderDate": "2026-07-15",
+      "kimonoType": "長襦袢",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "クレーム=>修理"
+      ]
+    },
+    {
+      "manageNo": "071526488",
+      "orderDate": "2026-07-15",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "丸洗い",
+        "しみぬき"
+      ],
+      "lines": [
+        "丸洗い=>丸洗い",
+        "汗抜き=>しみぬき",
+        "しみ抜き=>しみぬき"
+      ]
+    },
+    {
+      "manageNo": "071526482",
+      "orderDate": "2026-07-15",
+      "kimonoType": "二部式コート",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "072226607",
+      "orderDate": "2026-07-22",
+      "kimonoType": "名古屋帯",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "丸洗い"
+      ],
+      "lines": [
+        "丸洗い=>丸洗い"
+      ]
+    },
+    {
+      "manageNo": "072226606",
+      "orderDate": "2026-07-22",
+      "kimonoType": "長襦袢",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "丸洗い"
+      ],
+      "lines": [
+        "丸洗い=>丸洗い"
+      ]
+    },
+    {
+      "manageNo": "072226605",
+      "orderDate": "2026-07-22",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "丸洗い"
+      ],
+      "lines": [
+        "丸洗い=>丸洗い"
+      ]
+    },
+    {
+      "manageNo": "072326664",
+      "orderDate": "2026-07-23",
+      "kimonoType": "色無地",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "(未解決)"
+      ],
+      "lines": [
+        "返品=>(未解決)"
+      ]
+    },
+    {
+      "manageNo": "073026730",
+      "orderDate": "2026-07-29",
+      "kimonoType": "長襦袢",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "クレーム=>修理"
+      ]
+    },
+    {
+      "manageNo": "080126801",
+      "orderDate": "2026-07-31",
+      "kimonoType": "羽織",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "ガード"
+      ],
+      "lines": [
+        "仕立上がりガード加工=>ガード"
+      ]
+    },
+    {
+      "manageNo": "080626903",
+      "orderDate": "2026-08-06",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "081826978",
+      "orderDate": "2026-08-18",
+      "kimonoType": "羽織",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "湯のし"
+      ],
+      "lines": [
+        "ゆのし=>湯のし"
+      ]
+    },
+    {
+      "manageNo": "081926037",
+      "orderDate": "2026-08-19",
+      "kimonoType": "小紋",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "クレーム=>修理"
+      ]
+    },
+    {
+      "manageNo": "082726159",
+      "orderDate": "2026-08-27",
+      "kimonoType": "結城紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "洗張り",
+        "(未解決)"
+      ],
+      "lines": [
+        "解き洗張り②=>洗張り",
+        "返品=>(未解決)"
+      ]
+    },
+    {
+      "manageNo": "090226288",
+      "orderDate": "2026-09-02",
+      "kimonoType": "小紋",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "クレーム=>修理"
+      ]
+    },
+    {
+      "manageNo": "090726356",
+      "orderDate": "2026-09-03",
+      "kimonoType": "訪問着",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "修理"
+      ],
+      "lines": [
+        "クレーム=>修理"
+      ]
+    },
+    {
+      "manageNo": "090526350",
+      "orderDate": "2026-09-05",
+      "kimonoType": "紬着物",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "洗張り"
+      ],
+      "lines": [
+        "解き洗張り①=>洗張り"
+      ]
+    },
+    {
+      "manageNo": "090826360",
+      "orderDate": "2026-09-08",
+      "kimonoType": "小紋",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "丸洗い",
+        "修理"
+      ],
+      "lines": [
+        "丸洗い=>丸洗い",
+        "修理=>修理"
+      ]
+    },
+    {
+      "manageNo": "091126398",
+      "orderDate": "2026-09-11",
+      "kimonoType": "訪問着",
+      "aggregationStatus": "(空)",
+      "lineSubs": [
+        "洗張り"
+      ],
+      "lines": [
+        "解き洗張り①=>洗張り"
+      ]
+    }
+  ],
+  "countedSamples": [
+    {
+      "manageNo": "051426-27",
+      "orderDate": "2026-05-01",
+      "route": "overseas",
+      "kimonoType": "小紋",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "050826-03",
+      "orderDate": "2026-05-08",
+      "route": "overseas",
+      "kimonoType": "紬着物",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし"
+      ]
+    },
+    {
+      "manageNo": "050926-59",
+      "orderDate": "2026-05-09",
+      "route": "overseas",
+      "kimonoType": "羽織",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "050926-58",
+      "orderDate": "2026-05-09",
+      "route": "overseas",
+      "kimonoType": "色無地",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "063026267",
+      "orderDate": "2026-05-11",
+      "route": "overseas",
+      "kimonoType": "訪問着",
+      "lineSubs": [
+        "海外仕立",
+        "洗張り"
+      ]
+    },
+    {
+      "manageNo": "062626175",
+      "orderDate": "2026-05-11",
+      "route": "overseas",
+      "kimonoType": "小紋",
+      "lineSubs": [
+        "海外仕立",
+        "洗張り"
+      ]
+    },
+    {
+      "manageNo": "051226-14",
+      "orderDate": "2026-05-12",
+      "route": "overseas",
+      "kimonoType": "色無地",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "051226-13",
+      "orderDate": "2026-05-12",
+      "route": "overseas",
+      "kimonoType": "色無地",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "051226-12",
+      "orderDate": "2026-05-12",
+      "route": "overseas",
+      "kimonoType": "羽織",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "051226-10",
+      "orderDate": "2026-05-12",
+      "route": "overseas",
+      "kimonoType": "紬着物",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし"
+      ]
+    },
+    {
+      "manageNo": "051226-08",
+      "orderDate": "2026-05-12",
+      "route": "overseas",
+      "kimonoType": "小紋",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "051326-05",
+      "orderDate": "2026-05-13",
+      "route": "overseas",
+      "kimonoType": "紬着物",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし"
+      ]
+    },
+    {
+      "manageNo": "051326-04",
+      "orderDate": "2026-05-13",
+      "route": "overseas",
+      "kimonoType": "紬着物",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし"
+      ]
+    },
+    {
+      "manageNo": "051326-03",
+      "orderDate": "2026-05-13",
+      "route": "overseas",
+      "kimonoType": "小紋",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "051526-05",
+      "orderDate": "2026-05-15",
+      "route": "overseas",
+      "kimonoType": "長襦袢",
+      "lineSubs": [
+        "海外仕立"
+      ]
+    },
+    {
+      "manageNo": "051526-04",
+      "orderDate": "2026-05-15",
+      "route": "overseas",
+      "kimonoType": "長襦袢",
+      "lineSubs": [
+        "海外仕立"
+      ]
+    },
+    {
+      "manageNo": "051626-18",
+      "orderDate": "2026-05-16",
+      "route": "overseas",
+      "kimonoType": "小紋",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "051626-15",
+      "orderDate": "2026-05-16",
+      "route": "overseas",
+      "kimonoType": "紬着物",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし"
+      ]
+    },
+    {
+      "manageNo": "051826-15",
+      "orderDate": "2026-05-18",
+      "route": "overseas",
+      "kimonoType": "長襦袢",
+      "lineSubs": [
+        "海外仕立",
+        "その他加工"
+      ]
+    },
+    {
+      "manageNo": "051626-17",
+      "orderDate": "2026-05-18",
+      "route": "overseas",
+      "kimonoType": "附下",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "051626-16",
+      "orderDate": "2026-05-18",
+      "route": "overseas",
+      "kimonoType": "紬着物",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし"
+      ]
+    },
+    {
+      "manageNo": "051926-24",
+      "orderDate": "2026-05-19",
+      "route": "overseas",
+      "kimonoType": "小紋",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし"
+      ]
+    },
+    {
+      "manageNo": "051926-08",
+      "orderDate": "2026-05-19",
+      "route": "overseas",
+      "kimonoType": "着物衿コート",
+      "lineSubs": [
+        "海外仕立",
+        "ガード",
+        "その他加工"
+      ]
+    },
+    {
+      "manageNo": "051926-03",
+      "orderDate": "2026-05-19",
+      "route": "overseas",
+      "kimonoType": "色無地",
+      "lineSubs": [
+        "海外仕立",
+        "ガード",
+        "紋入れ"
+      ]
+    },
+    {
+      "manageNo": "052226-41",
+      "orderDate": "2026-05-22",
+      "route": "domestic",
+      "kimonoType": "小紋",
+      "lineSubs": [
+        "国内仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "052226-40",
+      "orderDate": "2026-05-22",
+      "route": "overseas",
+      "kimonoType": "長襦袢",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし",
+        "その他加工"
+      ]
+    },
+    {
+      "manageNo": "052226-38",
+      "orderDate": "2026-05-22",
+      "route": "overseas",
+      "kimonoType": "紬着物",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし"
+      ]
+    },
+    {
+      "manageNo": "052226-37",
+      "orderDate": "2026-05-22",
+      "route": "overseas",
+      "kimonoType": "紬着物",
+      "lineSubs": [
+        "海外仕立",
+        "湯のし",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "052226-36",
+      "orderDate": "2026-05-22",
+      "route": "overseas",
+      "kimonoType": "色無地",
+      "lineSubs": [
+        "海外仕立",
+        "ガード"
+      ]
+    },
+    {
+      "manageNo": "052626-25",
+      "orderDate": "2026-05-26",
+      "route": "overseas",
+      "kimonoType": "長襦袢",
+      "lineSubs": [
+        "海外仕立"
+      ]
+    }
+  ],
+  "excludedSamples": {
+    "cancelled": [],
+    "beforeData": [],
+    "otherButHasLines": [
+      {
+        "manageNo": "050726-14",
+        "orderDate": "2026-05-07",
+        "kimonoType": "小紋",
+        "lines": [
+          "海外仕立て=>(未解決)",
+          "ゆのし=>湯のし",
+          "ガード加工　丸巻=>ガード"
+        ]
+      },
+      {
+        "manageNo": "050726-13",
+        "orderDate": "2026-05-07",
+        "kimonoType": "小紋",
+        "lines": [
+          "海外仕立て=>(未解決)",
+          "ゆのし=>湯のし",
+          "ガード加工　丸巻=>ガード"
+        ]
+      },
+      {
+        "manageNo": "050826-07",
+        "orderDate": "2026-05-08",
+        "kimonoType": "紬着物",
+        "lines": [
+          "海外仕立て=>(未解決)",
+          "湯通し=>湯のし"
+        ]
+      },
+      {
+        "manageNo": "050826-11",
+        "orderDate": "2026-05-08",
+        "kimonoType": "紬着物",
+        "lines": [
+          "海外仕立て=>(未解決)",
+          "解き洗張り=>(未解決)"
+        ]
+      },
+      {
+        "manageNo": "050826-10",
+        "orderDate": "2026-05-08",
+        "kimonoType": "大島紬着物",
+        "lines": [
+          "クレーム=>修理"
+        ]
+      },
+      {
+        "manageNo": "050826-09",
+        "orderDate": "2026-05-08",
+        "kimonoType": "羽織",
+        "lines": [
+          "海外仕立て=>(未解決)",
+          "ゆのしガード=>ガード"
+        ]
+      },
+      {
+        "manageNo": "050826-06",
+        "orderDate": "2026-05-08",
+        "kimonoType": "大島紬着物",
+        "lines": [
+          "修理=>修理",
+          "プレス=>その他加工"
+        ]
+      },
+      {
+        "manageNo": "050926-57",
+        "orderDate": "2026-05-09",
+        "kimonoType": "小紋",
+        "lines": [
+          "海外仕立て=>(未解決)",
+          "ゆのしガード=>ガード"
+        ]
+      },
+      {
+        "manageNo": "051926-07",
+        "orderDate": "2026-05-19",
+        "kimonoType": "紬着物",
+        "lines": [
+          "修理=>修理"
+        ]
+      },
+      {
+        "manageNo": "051926-06",
+        "orderDate": "2026-05-19",
+        "kimonoType": "訪問着",
+        "lines": [
+          "修理=>修理"
+        ]
+      },
+      {
+        "manageNo": "051926-04",
+        "orderDate": "2026-05-19",
+        "kimonoType": "長襦袢",
+        "lines": [
+          "丸洗い=>丸洗い",
+          "クレーム=>修理"
+        ]
+      },
+      {
+        "manageNo": "052226-42",
+        "orderDate": "2026-05-22",
+        "kimonoType": "長襦袢",
+        "lines": [
+          "修理=>修理"
+        ]
+      },
+      {
+        "manageNo": "053026-05",
+        "orderDate": "2026-05-30",
+        "kimonoType": "羽織",
+        "lines": [
+          "返品=>(未解決)"
+        ]
+      },
+      {
+        "manageNo": "060626-09",
+        "orderDate": "2026-06-06",
+        "kimonoType": "附下",
+        "lines": [
+          "丸洗い=>丸洗い",
+          "仕立上がりガード加工=>ガード",
+          "修理=>修理"
+        ]
+      },
+      {
+        "manageNo": "061726015",
+        "orderDate": "2026-06-17",
+        "kimonoType": "長襦袢",
+        "lines": [
+          "修理=>修理"
+        ]
+      },
+      {
+        "manageNo": "061926046",
+        "orderDate": "2026-06-19",
+        "kimonoType": "羽織",
+        "lines": [
+          "修理=>修理"
+        ]
+      },
+      {
+        "manageNo": "062526167",
+        "orderDate": "2026-06-25",
+        "kimonoType": "紬着物",
+        "lines": [
+          "丸洗い=>丸洗い",
+          "修理=>修理"
+        ]
+      },
+      {
+        "manageNo": "062626174",
+        "orderDate": "2026-06-26",
+        "kimonoType": "長襦袢",
+        "lines": [
+          "クレーム=>修理"
+        ]
+      },
+      {
+        "manageNo": "070126293",
+        "orderDate": "2026-07-01",
+        "kimonoType": "羽織",
+        "lines": [
+          "修理=>修理"
+        ]
+      },
+      {
+        "manageNo": "070626394",
+        "orderDate": "2026-07-06",
+        "kimonoType": "紬着物",
+        "lines": [
+          "修理=>修理"
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "customer_code = \"M32\"": {
+      "total": 0,
+      "sample": []
+    },
+    "customer_code like \"M032%\"": {
+      "total": 303,
+      "sample": [
+        {
+          "manageNo": "111426732",
+          "code": "M032",
+          "name": "大進ホンダ株式会社",
+          "date": "2026-11-14"
+        },
+        {
+          "manageNo": "111126669",
+          "code": "M032",
+          "name": "大進ホンダ株式会社",
+          "date": "2026-11-11"
+        },
+        {
+          "manageNo": "111126665",
+          "code": "M032",
+          "name": "大進ホンダ株式会社",
+          "date": "2026-11-11"
+        },
+        {
+          "manageNo": "111126664",
+          "code": "M032",
+          "name": "大進ホンダ株式会社",
+          "date": "2026-11-11"
+        },
+        {
+          "manageNo": "111026641",
+          "code": "M032",
+          "name": "大進ホンダ株式会社",
+          "date": "2026-11-10"
+        }
+      ]
+    },
+    "customer_name like \"M032%\"": {
+      "total": 0,
+      "sample": []
+    }
+  },
+  "engineMeta": {
+    "version": "1.2.0",
+    "keys": [
+      "VERSION",
+      "todayYmdJst",
+      "normalizeSubcategory",
+      "classifyKimonoRoute",
+      "classifyTailorRouteDetail",
+      "analyzeOrder",
+      "fiscalYearRange",
+      "listFiscalYears",
+      "monthStatus",
+      "buildProductLookup",
+      "buildMonthlyReport",
+      "shiftMonthKey",
+      "listMonthKeysEnding",
+      "lastCompletedMonthKey",
+      "buildComparisonWindows",
+      "classifyDeclineStatus",
+      "buildCustomerMasterLookup",
+      "prepareMonthlySource",
+      "buildDeclineReport"
+    ]
+  },
+  "engineCustomer": null,
+  "monthlyVersion": "1.2.0"
+}

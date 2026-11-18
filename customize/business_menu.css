@@ -1,0 +1,282 @@
+/* AYANASU 業務メニュー — 11項目フラット。一覧レコードは隠す。ツールバー／アプリ設定は触らない */
+body.ayanas-bm-v1 .recordlist-gaia,
+body.ayanas-bm-v1 .recordlist-header-gaia,
+body.ayanas-bm-v1 .gaia-argoui-app-index-pager {
+  display: none !important;
+}
+
+.cayan-bm-root {
+  box-sizing: border-box;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 20px 40px;
+  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif;
+  font-size: 18px;
+  line-height: 1.45;
+  color: #1a1a1a;
+  background: #ffffff;
+  overflow-x: hidden;
+}
+
+.cayan-bm-root * {
+  box-sizing: border-box;
+}
+
+.cayan-bm-topbar {
+  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.cayan-bm-top-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 10px 20px;
+  border: 1px solid #c5ced9;
+  border-radius: 8px;
+  background: #f5f7fa;
+  color: #1a3a5c;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.cayan-bm-top-link:hover,
+.cayan-bm-top-link:focus {
+  background: #ffffff;
+  border-color: #2f5f8a;
+  outline: none;
+}
+
+.cayan-bm-header {
+  margin: 0 0 16px;
+  padding: 0 0 14px;
+  border-bottom: 2px solid #e8e8e8;
+}
+
+.cayan-bm-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #111111;
+}
+
+.cayan-bm-lead {
+  margin: 6px 0 0;
+  font-size: 16px;
+  color: #555555;
+}
+
+.cayan-bm-sublead {
+  margin: 0 0 16px;
+  font-size: 15px;
+  color: #555555;
+}
+
+.cayan-bm-section__title {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #222222;
+}
+
+/* ホーム 11項目: PC 4列 */
+.cayan-bm-home {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.cayan-bm-home__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+  min-height: 96px;
+  padding: 16px 18px;
+  border: 1px solid #c5ced9;
+  border-radius: 10px;
+  background: #f5f7fa;
+  color: #111111;
+  text-decoration: none;
+}
+
+.cayan-bm-home__tile:hover,
+.cayan-bm-home__tile:focus {
+  background: #ffffff;
+  border-color: #2f5f8a;
+  box-shadow: 0 0 0 2px rgba(47, 95, 138, 0.18);
+  outline: none;
+}
+
+.cayan-bm-home__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  pointer-events: none;
+}
+
+.cayan-bm-home__icon svg {
+  width: 26px;
+  height: 26px;
+  fill: #2f5f8a;
+}
+
+.cayan-bm-home__label {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  word-break: break-word;
+  pointer-events: none;
+}
+
+/* サブメニュー（納期・マスタ）: 2列 */
+.cayan-bm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cayan-bm-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 80px;
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid #c5ced9;
+  border-radius: 10px;
+  background: #f5f7fa;
+  color: #111111;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cayan-bm-btn:hover,
+.cayan-bm-btn:focus {
+  background: #ffffff;
+  border-color: #2f5f8a;
+  box-shadow: 0 0 0 2px rgba(47, 95, 138, 0.18);
+  outline: none;
+}
+
+.cayan-bm-btn__icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  pointer-events: none;
+}
+
+.cayan-bm-btn__icon svg {
+  width: 32px;
+  height: 32px;
+  fill: #2f5f8a;
+}
+
+.cayan-bm-btn__text {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.cayan-bm-btn__label {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.cayan-bm-btn__note {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555555;
+}
+
+.cayan-bm-soon {
+  padding: 28px 20px;
+  border: 1px dashed #c5c5c5;
+  border-radius: 10px;
+  background: #fafafa;
+  text-align: center;
+}
+
+.cayan-bm-soon__title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.cayan-bm-soon__text {
+  margin: 0;
+  color: #555555;
+  font-size: 16px;
+}
+
+@media (max-width: 960px) {
+  .cayan-bm-home {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* iPad / 狭い幅: 2列。文字サイズは縮小しない */
+@media (max-width: 900px) {
+  .cayan-bm-root {
+    padding: 14px 12px 32px;
+    font-size: 18px;
+  }
+
+  .cayan-bm-title {
+    font-size: 24px;
+  }
+
+  .cayan-bm-top-link {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .cayan-bm-home {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .cayan-bm-home__tile {
+    min-height: 88px;
+  }
+
+  .cayan-bm-home__label {
+    font-size: 17px;
+  }
+
+  .cayan-bm-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .cayan-bm-btn {
+    min-height: 80px;
+  }
+
+  .cayan-bm-btn__label {
+    font-size: 20px;
+  }
+}

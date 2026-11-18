@@ -1,0 +1,107 @@
+[
+  {
+    "kind": "js",
+    "index": 0,
+    "name": "saiban.js",
+    "fileKey": "202611011544104FAA01EFA02D406CAC06C20472F1A309002",
+    "file": "desktop_js1_saiban.js"
+  },
+  {
+    "kind": "js",
+    "index": 1,
+    "name": "saiban1.js",
+    "fileKey": "20261101154410DFF63C88F40844E6826E3E9ABD1546D3064",
+    "file": "desktop_js2_saiban1.js"
+  },
+  {
+    "kind": "js",
+    "index": 2,
+    "name": "price_master_search11.js",
+    "fileKey": "2026110115441093AAFC9A75734F7B8C6FA8DBAC8B5433148",
+    "file": "desktop_js3_price_master_search11.js"
+  },
+  {
+    "kind": "js",
+    "index": 3,
+    "name": "category.js",
+    "fileKey": "20261101154411D4208EAF893848B28D0FC57681FB38DC160",
+    "file": "desktop_js4_category.js"
+  },
+  {
+    "kind": "js",
+    "index": 4,
+    "name": "order_customer_search.js",
+    "fileKey": "20261101154411D0ADD9DE45244970B4401F806E0A9815023",
+    "file": "desktop_js5_order_customer_search.js"
+  },
+  {
+    "kind": "js",
+    "index": 5,
+    "name": "price_master_register.js",
+    "fileKey": "20261101154411B7D652E1F7E04B27B7445E9D5E116D20170",
+    "file": "desktop_js6_price_master_register.js"
+  },
+  {
+    "kind": "js",
+    "index": 6,
+    "name": "order_record_form.js",
+    "fileKey": "20261101154411B4C5853206EF4BC2B93B85683FDD46A7241",
+    "file": "desktop_js7_order_record_form.js"
+  },
+  {
+    "kind": "js",
+    "index": 7,
+    "name": "additional_item_engine.js",
+    "fileKey": "20261101154411DF256CB6FCB44CD6A152A1E06164B97F023",
+    "file": "desktop_js8_additional_item_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 8,
+    "name": "order_price_unconfirmed_clear.js",
+    "fileKey": "20261101154411FAE34C96440D420EBE14767083D55792173",
+    "file": "desktop_js9_order_price_unconfirmed_clear.js"
+  },
+  {
+    "kind": "js",
+    "index": 9,
+    "name": "schedule_customer.js",
+    "fileKey": "2026110115441198CA31497AC74C02B3343A7EF5FFE533344",
+    "file": "desktop_js10_schedule_customer.js"
+  },
+  {
+    "kind": "js",
+    "index": 10,
+    "name": "order_pcm_config.js",
+    "fileKey": "20261101154411C62391CA6FAB41DE9CBA939F43A871A6028",
+    "file": "desktop_js11_order_pcm_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 11,
+    "name": "order_pcm_engine.js",
+    "fileKey": "202611011544129A68B8001C6C47AFB99105C003F4E4A2314",
+    "file": "desktop_js12_order_pcm_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 12,
+    "name": "order_pcm_desktop.js",
+    "fileKey": "20261101154412D2A48F1D88554288B5DBFDBC95CB2485314",
+    "file": "desktop_js13_order_pcm_desktop.js"
+  },
+  {
+    "kind": "css",
+    "index": 0,
+    "name": "order_record_form.css",
+    "fileKey": "202611011544108368047896A2447C9560B4B2E28DF6FD014",
+    "file": "desktop_css1_order_record_form.css"
+  },
+  {
+    "kind": "css",
+    "index": 1,
+    "name": "order_pcm.css",
+    "fileKey": "20261101154410317FAB3E914F4E37B9D06BE9278C3810261",
+    "file": "desktop_css2_order_pcm.css"
+  }
+]

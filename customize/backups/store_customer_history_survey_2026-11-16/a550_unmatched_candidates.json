@@ -1,0 +1,2173 @@
+{
+  "ok": true,
+  "pcmCount": 71,
+  "linkedCount": 64,
+  "summary": {
+    "totalUnmatched": 70,
+    "fetchedUnmatched": 70,
+    "uniqueNames": 41,
+    "exactName1": 24,
+    "exactNameMulti": 0,
+    "kanaOnly1": 0,
+    "multiWeak": 0,
+    "noCandidate": 46,
+    "nameConflictsWithLinked": 2
+  },
+  "groups": [
+    {
+      "clientName": "佐保山素子",
+      "orderCount": 9,
+      "grades": {
+        "exact_name_1": 9
+      },
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "103126369",
+          "orderDate": "2026-10-30",
+          "recordId": "3369",
+          "grade": "exact_name_1"
+        },
+        {
+          "manageNo": "103126368",
+          "orderDate": "2026-10-30",
+          "recordId": "3368",
+          "grade": "exact_name_1"
+        },
+        {
+          "manageNo": "103126367",
+          "orderDate": "2026-10-30",
+          "recordId": "3367",
+          "grade": "exact_name_1"
+        },
+        {
+          "manageNo": "103126366",
+          "orderDate": "2026-10-30",
+          "recordId": "3366",
+          "grade": "exact_name_1"
+        },
+        {
+          "manageNo": "103126365",
+          "orderDate": "2026-10-30",
+          "recordId": "3365",
+          "grade": "exact_name_1"
+        },
+        {
+          "manageNo": "103126364",
+          "orderDate": "2026-10-30",
+          "recordId": "3364",
+          "grade": "exact_name_1"
+        },
+        {
+          "manageNo": "103126363",
+          "orderDate": "2026-10-30",
+          "recordId": "3363",
+          "grade": "exact_name_1"
+        },
+        {
+          "manageNo": "103126358",
+          "orderDate": "2026-10-30",
+          "recordId": "3358",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "平城京天平行列実行委員会",
+      "orderCount": 5,
+      "grades": {
+        "none": 5
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "102426225",
+          "orderDate": "2026-10-24",
+          "recordId": "3225",
+          "grade": "none"
+        },
+        {
+          "manageNo": "102426224",
+          "orderDate": "2026-10-24",
+          "recordId": "3224",
+          "grade": "none"
+        },
+        {
+          "manageNo": "102426223",
+          "orderDate": "2026-10-24",
+          "recordId": "3223",
+          "grade": "none"
+        },
+        {
+          "manageNo": "102426222",
+          "orderDate": "2026-10-24",
+          "recordId": "3222",
+          "grade": "none"
+        },
+        {
+          "manageNo": "102426221",
+          "orderDate": "2026-10-24",
+          "recordId": "3221",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "田上早百合",
+      "orderCount": 3,
+      "grades": {
+        "none": 3
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "102326204",
+          "orderDate": "2026-10-23",
+          "recordId": "3204",
+          "grade": "none"
+        },
+        {
+          "manageNo": "091026377",
+          "orderDate": "2026-09-10",
+          "recordId": "2377",
+          "grade": "none"
+        },
+        {
+          "manageNo": "071426478",
+          "orderDate": "2026-07-14",
+          "recordId": "1478",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "細谷美智子",
+      "orderCount": 2,
+      "grades": {
+        "none": 2
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "052126-03",
+          "orderDate": "2026-05-21",
+          "recordId": "359",
+          "grade": "none"
+        },
+        {
+          "manageNo": "052126-02",
+          "orderDate": "2026-05-21",
+          "recordId": "358",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "山口母",
+      "orderCount": 2,
+      "grades": {
+        "none": 2
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "052326-05",
+          "orderDate": "2026-05-23",
+          "recordId": "432",
+          "grade": "none"
+        },
+        {
+          "manageNo": "052326-04",
+          "orderDate": "2026-05-23",
+          "recordId": "431",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "山村若瑞",
+      "orderCount": 2,
+      "grades": {
+        "exact_name_1": 2
+      },
+      "candidates": [
+        {
+          "pid": "P000034",
+          "name": "山村若瑞",
+          "kana": "やまむらわかみずき",
+          "match": "name",
+          "pcmRecordId": "30"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "092626611",
+          "orderDate": "2026-09-26",
+          "recordId": "2611",
+          "grade": "exact_name_1"
+        },
+        {
+          "manageNo": "060126-15",
+          "orderDate": "2026-06-01",
+          "recordId": "565",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "松村美保",
+      "orderCount": 2,
+      "grades": {
+        "exact_name_1": 2
+      },
+      "candidates": [
+        {
+          "pid": "P000042",
+          "name": "松村美保",
+          "kana": "まつむらみほ",
+          "match": "name",
+          "pcmRecordId": "38"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "103026352",
+          "orderDate": "2026-10-30",
+          "recordId": "3352",
+          "grade": "exact_name_1"
+        },
+        {
+          "manageNo": "103026351",
+          "orderDate": "2026-10-30",
+          "recordId": "3351",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "大門素子",
+      "orderCount": 2,
+      "grades": {
+        "none": 2
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101526045",
+          "orderDate": "2026-10-15",
+          "recordId": "3045",
+          "grade": "none"
+        },
+        {
+          "manageNo": "101526044",
+          "orderDate": "2026-10-15",
+          "recordId": "3044",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "猪熊友美",
+      "orderCount": 2,
+      "grades": {
+        "none": 2
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101426022",
+          "orderDate": "2026-10-14",
+          "recordId": "3022",
+          "grade": "none"
+        },
+        {
+          "manageNo": "101426019",
+          "orderDate": "2026-10-14",
+          "recordId": "3019",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "平田孝子",
+      "orderCount": 2,
+      "grades": {
+        "none": 2
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101526043",
+          "orderDate": "2026-10-15",
+          "recordId": "3043",
+          "grade": "none"
+        },
+        {
+          "manageNo": "060126-14",
+          "orderDate": "2026-06-01",
+          "recordId": "564",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "木村多美子(文香",
+      "orderCount": 2,
+      "grades": {
+        "none": 2
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "100626903",
+          "orderDate": "2026-10-06",
+          "recordId": "2903",
+          "grade": "none"
+        },
+        {
+          "manageNo": "100626902",
+          "orderDate": "2026-10-06",
+          "recordId": "2902",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "和田真代",
+      "orderCount": 2,
+      "grades": {
+        "none": 2
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "070326306",
+          "orderDate": "2026-07-03",
+          "recordId": "1306",
+          "grade": "none"
+        },
+        {
+          "manageNo": "070326305",
+          "orderDate": "2026-07-03",
+          "recordId": "1305",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "おかの素子",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101426018",
+          "orderDate": "2026-10-14",
+          "recordId": "3018",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "奥田直美",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "091726485",
+          "orderDate": "2026-09-17",
+          "recordId": "2485",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "吉村小佳代",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "091026378",
+          "orderDate": "2026-09-10",
+          "recordId": "2378",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "軽井佐和子",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "091726486",
+          "orderDate": "2026-09-17",
+          "recordId": "2486",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "後藤里恵",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "082826195",
+          "orderDate": "2026-08-28",
+          "recordId": "2195",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "高谷知代",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "060126-20",
+          "orderDate": "2026-06-01",
+          "recordId": "570",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "高塚",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101426027",
+          "orderDate": "2026-10-14",
+          "recordId": "3027",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "今西靖子",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101426023",
+          "orderDate": "2026-10-14",
+          "recordId": "3023",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "三井田",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "102726282",
+          "orderDate": "2026-10-27",
+          "recordId": "3282",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "三原尚子",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000012",
+          "name": "三原尚子",
+          "kana": "みはらなおこ",
+          "match": "name",
+          "pcmRecordId": "8"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "052126-01",
+          "orderDate": "2026-05-21",
+          "recordId": "357",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "山根規義",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "091426448",
+          "orderDate": "2026-09-14",
+          "recordId": "2448",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "山崎",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "100626907",
+          "orderDate": "2026-10-06",
+          "recordId": "2907",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "山村若女①",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000035",
+          "name": "山村若女",
+          "kana": "やまむらわかめ",
+          "match": "name",
+          "pcmRecordId": "31"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "100626904",
+          "orderDate": "2026-10-06",
+          "recordId": "2904",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "山村若女②",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000035",
+          "name": "山村若女",
+          "kana": "やまむらわかめ",
+          "match": "name",
+          "pcmRecordId": "31"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "100626905",
+          "orderDate": "2026-10-06",
+          "recordId": "2905",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "山村若女③",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000035",
+          "name": "山村若女",
+          "kana": "やまむらわかめ",
+          "match": "name",
+          "pcmRecordId": "31"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "100626906",
+          "orderDate": "2026-10-06",
+          "recordId": "2906",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "山村若瑞②",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000034",
+          "name": "山村若瑞",
+          "kana": "やまむらわかみずき",
+          "match": "name",
+          "pcmRecordId": "30"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "060126-16",
+          "orderDate": "2026-06-01",
+          "recordId": "566",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "山村若瑞③",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000034",
+          "name": "山村若瑞",
+          "kana": "やまむらわかみずき",
+          "match": "name",
+          "pcmRecordId": "30"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "060126-17",
+          "orderDate": "2026-06-01",
+          "recordId": "567",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "山村若瑞④",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000034",
+          "name": "山村若瑞",
+          "kana": "やまむらわかみずき",
+          "match": "name",
+          "pcmRecordId": "30"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "060126-18",
+          "orderDate": "2026-06-01",
+          "recordId": "568",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "主代千津代",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000038",
+          "name": "主代千津代",
+          "kana": "ぬしろちづよ",
+          "match": "name",
+          "pcmRecordId": "34"
+        }
+      ],
+      "conflictWithLinkedPids": [
+        "P000038"
+      ],
+      "sampleOrders": [
+        {
+          "manageNo": "103026342",
+          "orderDate": "2026-10-30",
+          "recordId": "3342",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "松村ヤスエ",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101426026",
+          "orderDate": "2026-10-14",
+          "recordId": "3026",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "上林昌代",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "100626901",
+          "orderDate": "2026-10-06",
+          "recordId": "2901",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "新谷佳世",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000046",
+          "name": "新谷佳世",
+          "kana": "しんたにかよ",
+          "match": "name",
+          "pcmRecordId": "42"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "103126379",
+          "orderDate": "2026-10-31",
+          "recordId": "3379",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "諏訪ひかる",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "052126-04",
+          "orderDate": "2026-05-21",
+          "recordId": "360",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "清長京子",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101426025",
+          "orderDate": "2026-10-14",
+          "recordId": "3025",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "川田和代",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101426020",
+          "orderDate": "2026-10-14",
+          "recordId": "3020",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "川野亜矢",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101426021",
+          "orderDate": "2026-10-14",
+          "recordId": "3021",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "浅田綾",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000067",
+          "name": "浅田綾",
+          "kana": "あさだあや",
+          "match": "name",
+          "pcmRecordId": "63"
+        }
+      ],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "080426835",
+          "orderDate": "2026-08-04",
+          "recordId": "1835",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "大川郁子",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "101426017",
+          "orderDate": "2026-10-14",
+          "recordId": "3017",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "中西和代",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "060126-21",
+          "orderDate": "2026-06-01",
+          "recordId": "571",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "田上　早百合",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "051426-23",
+          "orderDate": "2026-05-11",
+          "recordId": "242",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "渡邉裕加",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "052126-05",
+          "orderDate": "2026-05-21",
+          "recordId": "361",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "藤井みつる",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "071426479",
+          "orderDate": "2026-07-14",
+          "recordId": "1479",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "徳田敦子",
+      "orderCount": 1,
+      "grades": {
+        "exact_name_1": 1
+      },
+      "candidates": [
+        {
+          "pid": "P000040",
+          "name": "徳田敦子",
+          "kana": "とくだあつこ",
+          "match": "name",
+          "pcmRecordId": "36"
+        }
+      ],
+      "conflictWithLinkedPids": [
+        "P000040"
+      ],
+      "sampleOrders": [
+        {
+          "manageNo": "070326304",
+          "orderDate": "2026-07-03",
+          "recordId": "1304",
+          "grade": "exact_name_1"
+        }
+      ]
+    },
+    {
+      "clientName": "冨岡　多歌子",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "102326203",
+          "orderDate": "2026-10-23",
+          "recordId": "3203",
+          "grade": "none"
+        }
+      ]
+    },
+    {
+      "clientName": "髙塚",
+      "orderCount": 1,
+      "grades": {
+        "none": 1
+      },
+      "candidates": [],
+      "conflictWithLinkedPids": [],
+      "sampleOrders": [
+        {
+          "manageNo": "091026379",
+          "orderDate": "2026-09-10",
+          "recordId": "2379",
+          "grade": "none"
+        }
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "recordId": "3379",
+      "manageNo": "103126379",
+      "orderDate": "2026-10-31",
+      "clientName": "新谷佳世",
+      "clientKana": "",
+      "kimonoType": "訪問着",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000046",
+          "name": "新谷佳世",
+          "kana": "しんたにかよ",
+          "match": "name",
+          "pcmRecordId": "42"
+        }
+      ]
+    },
+    {
+      "recordId": "3369",
+      "manageNo": "103126369",
+      "orderDate": "2026-10-30",
+      "clientName": "佐保山素子",
+      "clientKana": "",
+      "kimonoType": "色無地",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ]
+    },
+    {
+      "recordId": "3368",
+      "manageNo": "103126368",
+      "orderDate": "2026-10-30",
+      "clientName": "佐保山素子",
+      "clientKana": "",
+      "kimonoType": "着物",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ]
+    },
+    {
+      "recordId": "3367",
+      "manageNo": "103126367",
+      "orderDate": "2026-10-30",
+      "clientName": "佐保山素子",
+      "clientKana": "",
+      "kimonoType": "着物",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ]
+    },
+    {
+      "recordId": "3366",
+      "manageNo": "103126366",
+      "orderDate": "2026-10-30",
+      "clientName": "佐保山素子",
+      "clientKana": "",
+      "kimonoType": "着物",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ]
+    },
+    {
+      "recordId": "3365",
+      "manageNo": "103126365",
+      "orderDate": "2026-10-30",
+      "clientName": "佐保山素子",
+      "clientKana": "",
+      "kimonoType": "名古屋帯",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ]
+    },
+    {
+      "recordId": "3364",
+      "manageNo": "103126364",
+      "orderDate": "2026-10-30",
+      "clientName": "佐保山素子",
+      "clientKana": "",
+      "kimonoType": "名古屋帯",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ]
+    },
+    {
+      "recordId": "3363",
+      "manageNo": "103126363",
+      "orderDate": "2026-10-30",
+      "clientName": "佐保山素子",
+      "clientKana": "",
+      "kimonoType": "名古屋帯",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ]
+    },
+    {
+      "recordId": "3358",
+      "manageNo": "103126358",
+      "orderDate": "2026-10-30",
+      "clientName": "佐保山素子",
+      "clientKana": "",
+      "kimonoType": "名古屋帯",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ]
+    },
+    {
+      "recordId": "3357",
+      "manageNo": "103126357",
+      "orderDate": "2026-10-30",
+      "clientName": "佐保山素子",
+      "clientKana": "",
+      "kimonoType": "名古屋帯",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000044",
+          "name": "佐保山素子",
+          "kana": "さほやまもとこ",
+          "match": "name",
+          "pcmRecordId": "40"
+        }
+      ]
+    },
+    {
+      "recordId": "3352",
+      "manageNo": "103026352",
+      "orderDate": "2026-10-30",
+      "clientName": "松村美保",
+      "clientKana": "",
+      "kimonoType": "着物",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000042",
+          "name": "松村美保",
+          "kana": "まつむらみほ",
+          "match": "name",
+          "pcmRecordId": "38"
+        }
+      ]
+    },
+    {
+      "recordId": "3351",
+      "manageNo": "103026351",
+      "orderDate": "2026-10-30",
+      "clientName": "松村美保",
+      "clientKana": "",
+      "kimonoType": "着物",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000042",
+          "name": "松村美保",
+          "kana": "まつむらみほ",
+          "match": "name",
+          "pcmRecordId": "38"
+        }
+      ]
+    },
+    {
+      "recordId": "3342",
+      "manageNo": "103026342",
+      "orderDate": "2026-10-30",
+      "clientName": "主代千津代",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [
+        "P000038"
+      ],
+      "candidates": [
+        {
+          "pid": "P000038",
+          "name": "主代千津代",
+          "kana": "ぬしろちづよ",
+          "match": "name",
+          "pcmRecordId": "34"
+        }
+      ]
+    },
+    {
+      "recordId": "3282",
+      "manageNo": "102726282",
+      "orderDate": "2026-10-27",
+      "clientName": "三井田",
+      "clientKana": "",
+      "kimonoType": "紬着物",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3225",
+      "manageNo": "102426225",
+      "orderDate": "2026-10-24",
+      "clientName": "平城京天平行列実行委員会",
+      "clientKana": "",
+      "kimonoType": "行列衣装",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3224",
+      "manageNo": "102426224",
+      "orderDate": "2026-10-24",
+      "clientName": "平城京天平行列実行委員会",
+      "clientKana": "",
+      "kimonoType": "行列衣装",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3223",
+      "manageNo": "102426223",
+      "orderDate": "2026-10-24",
+      "clientName": "平城京天平行列実行委員会",
+      "clientKana": "",
+      "kimonoType": "行列衣装",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3222",
+      "manageNo": "102426222",
+      "orderDate": "2026-10-24",
+      "clientName": "平城京天平行列実行委員会",
+      "clientKana": "",
+      "kimonoType": "行列衣装",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3221",
+      "manageNo": "102426221",
+      "orderDate": "2026-10-24",
+      "clientName": "平城京天平行列実行委員会",
+      "clientKana": "",
+      "kimonoType": "行列衣装",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3204",
+      "manageNo": "102326204",
+      "orderDate": "2026-10-23",
+      "clientName": "田上早百合",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3203",
+      "manageNo": "102326203",
+      "orderDate": "2026-10-23",
+      "clientName": "冨岡　多歌子",
+      "clientKana": "",
+      "kimonoType": "色留袖",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3045",
+      "manageNo": "101526045",
+      "orderDate": "2026-10-15",
+      "clientName": "大門素子",
+      "clientKana": "",
+      "kimonoType": "長襦袢",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3044",
+      "manageNo": "101526044",
+      "orderDate": "2026-10-15",
+      "clientName": "大門素子",
+      "clientKana": "",
+      "kimonoType": "大島紬着物",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3043",
+      "manageNo": "101526043",
+      "orderDate": "2026-10-15",
+      "clientName": "平田孝子",
+      "clientKana": "",
+      "kimonoType": "羽織",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3027",
+      "manageNo": "101426027",
+      "orderDate": "2026-10-14",
+      "clientName": "高塚",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3026",
+      "manageNo": "101426026",
+      "orderDate": "2026-10-14",
+      "clientName": "松村ヤスエ",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3025",
+      "manageNo": "101426025",
+      "orderDate": "2026-10-14",
+      "clientName": "清長京子",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3023",
+      "manageNo": "101426023",
+      "orderDate": "2026-10-14",
+      "clientName": "今西靖子",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3022",
+      "manageNo": "101426022",
+      "orderDate": "2026-10-14",
+      "clientName": "猪熊友美",
+      "clientKana": "",
+      "kimonoType": "色無地",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3021",
+      "manageNo": "101426021",
+      "orderDate": "2026-10-14",
+      "clientName": "川野亜矢",
+      "clientKana": "",
+      "kimonoType": "紬着物",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3020",
+      "manageNo": "101426020",
+      "orderDate": "2026-10-14",
+      "clientName": "川田和代",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3019",
+      "manageNo": "101426019",
+      "orderDate": "2026-10-14",
+      "clientName": "猪熊友美",
+      "clientKana": "",
+      "kimonoType": "附下",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3018",
+      "manageNo": "101426018",
+      "orderDate": "2026-10-14",
+      "clientName": "おかの素子",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "3017",
+      "manageNo": "101426017",
+      "orderDate": "2026-10-14",
+      "clientName": "大川郁子",
+      "clientKana": "",
+      "kimonoType": "喪服",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2907",
+      "manageNo": "100626907",
+      "orderDate": "2026-10-06",
+      "clientName": "山崎",
+      "clientKana": "",
+      "kimonoType": "喪服",
+      "deliveryStatus": "納品待ち",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2906",
+      "manageNo": "100626906",
+      "orderDate": "2026-10-06",
+      "clientName": "山村若女③",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000035",
+          "name": "山村若女",
+          "kana": "やまむらわかめ",
+          "match": "name",
+          "pcmRecordId": "31"
+        }
+      ]
+    },
+    {
+      "recordId": "2905",
+      "manageNo": "100626905",
+      "orderDate": "2026-10-06",
+      "clientName": "山村若女②",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000035",
+          "name": "山村若女",
+          "kana": "やまむらわかめ",
+          "match": "name",
+          "pcmRecordId": "31"
+        }
+      ]
+    },
+    {
+      "recordId": "2904",
+      "manageNo": "100626904",
+      "orderDate": "2026-10-06",
+      "clientName": "山村若女①",
+      "clientKana": "",
+      "kimonoType": "紬着物",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000035",
+          "name": "山村若女",
+          "kana": "やまむらわかめ",
+          "match": "name",
+          "pcmRecordId": "31"
+        }
+      ]
+    },
+    {
+      "recordId": "2903",
+      "manageNo": "100626903",
+      "orderDate": "2026-10-06",
+      "clientName": "木村多美子(文香",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2902",
+      "manageNo": "100626902",
+      "orderDate": "2026-10-06",
+      "clientName": "木村多美子(文香",
+      "clientKana": "",
+      "kimonoType": "色無地",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2901",
+      "manageNo": "100626901",
+      "orderDate": "2026-10-06",
+      "clientName": "上林昌代",
+      "clientKana": "",
+      "kimonoType": "着物衿コート",
+      "deliveryStatus": "未納品",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2611",
+      "manageNo": "092626611",
+      "orderDate": "2026-09-26",
+      "clientName": "山村若瑞",
+      "clientKana": "",
+      "kimonoType": "浴衣",
+      "deliveryStatus": "納品待ち",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000034",
+          "name": "山村若瑞",
+          "kana": "やまむらわかみずき",
+          "match": "name",
+          "pcmRecordId": "30"
+        }
+      ]
+    },
+    {
+      "recordId": "2486",
+      "manageNo": "091726486",
+      "orderDate": "2026-09-17",
+      "clientName": "軽井佐和子",
+      "clientKana": "",
+      "kimonoType": "色無地",
+      "deliveryStatus": "納品待ち",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2485",
+      "manageNo": "091726485",
+      "orderDate": "2026-09-17",
+      "clientName": "奥田直美",
+      "clientKana": "",
+      "kimonoType": "子供着物",
+      "deliveryStatus": "納品待ち",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2448",
+      "manageNo": "091426448",
+      "orderDate": "2026-09-14",
+      "clientName": "山根規義",
+      "clientKana": "",
+      "kimonoType": "男児祝着",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2379",
+      "manageNo": "091026379",
+      "orderDate": "2026-09-10",
+      "clientName": "髙塚",
+      "clientKana": "",
+      "kimonoType": "附下",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2378",
+      "manageNo": "091026378",
+      "orderDate": "2026-09-10",
+      "clientName": "吉村小佳代",
+      "clientKana": "",
+      "kimonoType": "大島紬着物",
+      "deliveryStatus": "納品待ち",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2377",
+      "manageNo": "091026377",
+      "orderDate": "2026-09-10",
+      "clientName": "田上早百合",
+      "clientKana": "",
+      "kimonoType": "紬着物",
+      "deliveryStatus": "納品待ち",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "2195",
+      "manageNo": "082826195",
+      "orderDate": "2026-08-28",
+      "clientName": "後藤里恵",
+      "clientKana": "",
+      "kimonoType": "浴衣",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "1835",
+      "manageNo": "080426835",
+      "orderDate": "2026-08-04",
+      "clientName": "浅田綾",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000067",
+          "name": "浅田綾",
+          "kana": "あさだあや",
+          "match": "name",
+          "pcmRecordId": "63"
+        }
+      ]
+    },
+    {
+      "recordId": "1479",
+      "manageNo": "071426479",
+      "orderDate": "2026-07-14",
+      "clientName": "藤井みつる",
+      "clientKana": "",
+      "kimonoType": "訪問着",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "1478",
+      "manageNo": "071426478",
+      "orderDate": "2026-07-14",
+      "clientName": "田上早百合",
+      "clientKana": "",
+      "kimonoType": "訪問着",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "1306",
+      "manageNo": "070326306",
+      "orderDate": "2026-07-03",
+      "clientName": "和田真代",
+      "clientKana": "",
+      "kimonoType": "長襦袢",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "1305",
+      "manageNo": "070326305",
+      "orderDate": "2026-07-03",
+      "clientName": "和田真代",
+      "clientKana": "",
+      "kimonoType": "色無地",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "1304",
+      "manageNo": "070326304",
+      "orderDate": "2026-07-03",
+      "clientName": "徳田敦子",
+      "clientKana": "",
+      "kimonoType": "長襦袢",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [
+        "P000040"
+      ],
+      "candidates": [
+        {
+          "pid": "P000040",
+          "name": "徳田敦子",
+          "kana": "とくだあつこ",
+          "match": "name",
+          "pcmRecordId": "36"
+        }
+      ]
+    },
+    {
+      "recordId": "571",
+      "manageNo": "060126-21",
+      "orderDate": "2026-06-01",
+      "clientName": "中西和代",
+      "clientKana": "",
+      "kimonoType": "結城紬着物",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "570",
+      "manageNo": "060126-20",
+      "orderDate": "2026-06-01",
+      "clientName": "高谷知代",
+      "clientKana": "",
+      "kimonoType": "訪問着",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "568",
+      "manageNo": "060126-18",
+      "orderDate": "2026-06-01",
+      "clientName": "山村若瑞④",
+      "clientKana": "",
+      "kimonoType": "長襦袢",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000034",
+          "name": "山村若瑞",
+          "kana": "やまむらわかみずき",
+          "match": "name",
+          "pcmRecordId": "30"
+        }
+      ]
+    },
+    {
+      "recordId": "567",
+      "manageNo": "060126-17",
+      "orderDate": "2026-06-01",
+      "clientName": "山村若瑞③",
+      "clientKana": "",
+      "kimonoType": "長襦袢",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000034",
+          "name": "山村若瑞",
+          "kana": "やまむらわかみずき",
+          "match": "name",
+          "pcmRecordId": "30"
+        }
+      ]
+    },
+    {
+      "recordId": "566",
+      "manageNo": "060126-16",
+      "orderDate": "2026-06-01",
+      "clientName": "山村若瑞②",
+      "clientKana": "",
+      "kimonoType": "長襦袢",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000034",
+          "name": "山村若瑞",
+          "kana": "やまむらわかみずき",
+          "match": "name",
+          "pcmRecordId": "30"
+        }
+      ]
+    },
+    {
+      "recordId": "565",
+      "manageNo": "060126-15",
+      "orderDate": "2026-06-01",
+      "clientName": "山村若瑞",
+      "clientKana": "",
+      "kimonoType": "長襦袢",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000034",
+          "name": "山村若瑞",
+          "kana": "やまむらわかみずき",
+          "match": "name",
+          "pcmRecordId": "30"
+        }
+      ]
+    },
+    {
+      "recordId": "564",
+      "manageNo": "060126-14",
+      "orderDate": "2026-06-01",
+      "clientName": "平田孝子",
+      "clientKana": "",
+      "kimonoType": "紬着物",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "432",
+      "manageNo": "052326-05",
+      "orderDate": "2026-05-23",
+      "clientName": "山口母",
+      "clientKana": "",
+      "kimonoType": "初着　下着",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "431",
+      "manageNo": "052326-04",
+      "orderDate": "2026-05-23",
+      "clientName": "山口母",
+      "clientKana": "",
+      "kimonoType": "初着　上着",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "361",
+      "manageNo": "052126-05",
+      "orderDate": "2026-05-21",
+      "clientName": "渡邉裕加",
+      "clientKana": "",
+      "kimonoType": "紬着物",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "360",
+      "manageNo": "052126-04",
+      "orderDate": "2026-05-21",
+      "clientName": "諏訪ひかる",
+      "clientKana": "",
+      "kimonoType": "浴衣",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "359",
+      "manageNo": "052126-03",
+      "orderDate": "2026-05-21",
+      "clientName": "細谷美智子",
+      "clientKana": "",
+      "kimonoType": "長襦袢",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "358",
+      "manageNo": "052126-02",
+      "orderDate": "2026-05-21",
+      "clientName": "細谷美智子",
+      "clientKana": "",
+      "kimonoType": "紬着物",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    },
+    {
+      "recordId": "357",
+      "manageNo": "052126-01",
+      "orderDate": "2026-05-21",
+      "clientName": "三原尚子",
+      "clientKana": "",
+      "kimonoType": "結城紬着物",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "exact_name_1",
+      "conflictWithLinkedPids": [],
+      "candidates": [
+        {
+          "pid": "P000012",
+          "name": "三原尚子",
+          "kana": "みはらなおこ",
+          "match": "name",
+          "pcmRecordId": "8"
+        }
+      ]
+    },
+    {
+      "recordId": "242",
+      "manageNo": "051426-23",
+      "orderDate": "2026-05-11",
+      "clientName": "田上　早百合",
+      "clientKana": "",
+      "kimonoType": "小紋",
+      "deliveryStatus": "納品済",
+      "aggregationStatus": null,
+      "grade": "none",
+      "conflictWithLinkedPids": [],
+      "candidates": []
+    }
+  ]
+}

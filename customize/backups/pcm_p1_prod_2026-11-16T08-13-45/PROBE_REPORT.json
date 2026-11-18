@@ -1,0 +1,85 @@
+{
+  "stamp": "2026-11-16T08-13-45",
+  "workDir": "/workspace/customize/backups/pcm_p1_prod_2026-11-16T08-13-45",
+  "app96": {
+    "name": "個人顧客マスタ",
+    "revision": "11",
+    "desktopJs": [
+      "pcm_config.js",
+      "pcm_numbering.js",
+      "pcm_engine.js",
+      "pcm_desktop.js",
+      "pcm_order_history.js"
+    ],
+    "desktopCss": [
+      "pcm.css"
+    ],
+    "sampleRecords": [
+      {
+        "id": "71",
+        "pid": "P000075",
+        "name": "土蔵菜摘",
+        "phone": "",
+        "orderCount": ""
+      },
+      {
+        "id": "70",
+        "pid": "P000074",
+        "name": "木村奈穂",
+        "phone": "",
+        "orderCount": ""
+      },
+      {
+        "id": "69",
+        "pid": "P000073",
+        "name": "吉岡彩香",
+        "phone": "",
+        "orderCount": ""
+      }
+    ],
+    "fieldCount": 39,
+    "hasMeasureHistory": false
+  },
+  "app87": {
+    "name": "店舗ポータル",
+    "desktopJs": [
+      "work_status_labels.js",
+      "hub_nav_config.js",
+      "hub_nav.js",
+      "floor_portal_config.js",
+      "floor_portal_engine.js",
+      "floor_portal_desktop.js"
+    ],
+    "desktopCss": [
+      "hub_nav.css",
+      "floor_portal.css"
+    ]
+  },
+  "collisions": [],
+  "proposedTop": [
+    "measure_history"
+  ],
+  "proposedInner": [
+    "measured_at",
+    "measure_kind",
+    "garment_type",
+    "measure_label",
+    "is_current",
+    "manage_no",
+    "height_cm",
+    "mitake_cm",
+    "yuki_cm",
+    "katahaba_cm",
+    "sode_cm",
+    "sodehaba_cm",
+    "maehaba_cm",
+    "ushirohaba_cm",
+    "suso_cm",
+    "eri_cm",
+    "bust_cm",
+    "waist_cm",
+    "hip_cm",
+    "measure_note"
+  ],
+  "safeToAdd": true
+}

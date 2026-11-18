@@ -1,0 +1,58 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202610251558168908685757804A1487F9791C81AE9113309",
+          "name": "internal_ops_config.js",
+          "contentType": "text/javascript",
+          "size": "2475"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261025155816B9744E36DCD24B89B4B808FBEEEC8EF4169",
+          "name": "barcode_batch_core.js",
+          "contentType": "text/javascript",
+          "size": "1616"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202610251558165DDD12E2D6564BF3B0004CAB3250EBA0118",
+          "name": "barcode_batch_ui.js",
+          "contentType": "text/javascript",
+          "size": "2285"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202610251558167C19968AC8384EFB8395082568F5AADD322",
+          "name": "location_inbound_engine.js",
+          "contentType": "text/javascript",
+          "size": "2401"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026102515581781740D627D6E40829EF6CCEF28DBBEF7096",
+          "name": "location_inbound_desktop.js",
+          "contentType": "text/javascript",
+          "size": "15177"
+        }
+      }
+    ],
+    "css": []
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "19"
+}

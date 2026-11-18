@@ -1,0 +1,9 @@
+{
+  "at": "2026-11-01T12:39:36.138Z",
+  "app": 16,
+  "total": 3214,
+  "jsonl": "/workspace/customize/backups/app16_work_status_full_20261101/records.jsonl",
+  "gzip": "/workspace/customize/backups/app16_work_status_full_20261101/records.jsonl.gz",
+  "fields": "/workspace/customize/backups/app16_work_status_full_20261101/fields.json",
+  "layout": "/workspace/customize/backups/app16_work_status_full_20261101/layout.json"
+}

@@ -1,0 +1,225 @@
+{
+  "stamp": "2026-11-14T04-22-38",
+  "checks": {
+    "app92": {
+      "statusVer": "1.1.0",
+      "pickupVer": "1.2.0",
+      "smaregiMsg": "スマレジで残金の支払いを確認しましたか？",
+      "putKeys": [
+        "delivery_status"
+      ],
+      "putValue": "納品済",
+      "patterns": {
+        "paid": {
+          "ok": true,
+          "code": null,
+          "alreadyDone": false
+        },
+        "unpaidNoConfirm": {
+          "ok": false,
+          "code": "needs_smaregi_confirm",
+          "alreadyDone": false
+        },
+        "unpaidWithConfirm": {
+          "ok": true,
+          "code": null,
+          "alreadyDone": false
+        },
+        "partialNoConfirm": {
+          "ok": false,
+          "code": "needs_smaregi_confirm",
+          "alreadyDone": false
+        },
+        "partialWithConfirm": {
+          "ok": true,
+          "code": null,
+          "alreadyDone": false
+        },
+        "emptyAsUnpaid": {
+          "ok": false,
+          "code": "needs_smaregi_confirm",
+          "alreadyDone": false
+        },
+        "emptyWithConfirm": {
+          "ok": true,
+          "code": null,
+          "alreadyDone": false
+        },
+        "adminException": {
+          "ok": true,
+          "code": null,
+          "alreadyDone": false
+        },
+        "corporate": {
+          "ok": false,
+          "code": "not_store_customer",
+          "alreadyDone": false
+        }
+      },
+      "candUnpaid": {
+        "canComplete": true,
+        "needsSmaregiConfirm": true,
+        "paid": false
+      },
+      "candPaid": {
+        "canComplete": true,
+        "needsSmaregiConfirm": false,
+        "paid": true
+      },
+      "batchMsg": "以下は未入金または一部入金です。\nA（未入金）\nB（一部入金）\n\nスマレジで残金の支払いを確認しましたか？",
+      "batchListsTargets": true
+    },
+    "app16": {
+      "fieldOptions": [
+        "入金済み",
+        "未入金",
+        "一部入金"
+      ],
+      "defaultValue": "未入金",
+      "emptyMapped": [
+        {
+          "id": "3699",
+          "manage_no": "111326699",
+          "raw": "",
+          "normalized": "未入金",
+          "process": "受注",
+          "location": "工場",
+          "work": "仕上げ中",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3696",
+          "manage_no": "111326696",
+          "raw": "",
+          "normalized": "未入金",
+          "process": "受注",
+          "location": "工場",
+          "work": "仕上げ中",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3695",
+          "manage_no": "111226695",
+          "raw": "",
+          "normalized": "未入金",
+          "process": "受注",
+          "location": "工場",
+          "work": "丸洗い待ち",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3694",
+          "manage_no": "111226694",
+          "raw": "",
+          "normalized": "未入金",
+          "process": "受注",
+          "location": "工場",
+          "work": "丸洗い待ち",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3693",
+          "manage_no": "111226693",
+          "raw": "",
+          "normalized": "未入金",
+          "process": "受注",
+          "location": "工場",
+          "work": "丸洗い待ち",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3685",
+          "manage_no": "111226685",
+          "raw": "",
+          "normalized": "未入金",
+          "process": "受注",
+          "location": "本社",
+          "work": "未着",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3684",
+          "manage_no": "111226684",
+          "raw": "",
+          "normalized": "未入金",
+          "process": "受注",
+          "location": "本社",
+          "work": "未着",
+          "delivery": "未納品"
+        },
+        {
+          "id": "3683",
+          "manage_no": "111226683",
+          "raw": "",
+          "normalized": "未入金",
+          "process": "受注",
+          "location": "工場",
+          "work": "仕上げ中",
+          "delivery": "未納品"
+        }
+      ],
+      "roundTrip": {
+        "id": "3699",
+        "manage_no": "111326699",
+        "original": "",
+        "results": {
+          "未入金": {
+            "status": "未入金",
+            "process": "受注",
+            "location": "工場",
+            "work": "仕上げ中",
+            "delivery": "未納品"
+          },
+          "一部入金": {
+            "status": "一部入金",
+            "process": "受注",
+            "location": "工場",
+            "work": "仕上げ中",
+            "delivery": "未納品"
+          },
+          "入金済み": {
+            "status": "入金済み",
+            "process": "受注",
+            "location": "工場",
+            "work": "仕上げ中",
+            "delivery": "未納品"
+          }
+        },
+        "restoredStatus": null,
+        "axesBefore": {
+          "process": "受注",
+          "location": "工場",
+          "work": "仕上げ中",
+          "delivery": "未納品",
+          "revision": "2"
+        },
+        "axesIntact": true
+      },
+      "corporateSample": {
+        "id": "3736",
+        "customer_code": "M078",
+        "payment": "",
+        "delivery": "未納品",
+        "location": "外注先"
+      },
+      "app97Count": "19",
+      "app19HasDeliverySync": true,
+      "app19Js": [
+        "app_nav_banner_config.js",
+        "app_nav_banner.js",
+        "internal_ops_config.js",
+        "complete_register_engine.js",
+        "delivery_completion_guard.js",
+        "store_delivery_pcm.js",
+        "barcode_delivery.js",
+        "store_pickup_shared.js",
+        "delivery_complete_sync.js",
+        "delivery_a550_edit_guard.js",
+        "price_master_register.js",
+        "delivery_additional_item_guard.js",
+        "additional_item_engine.js"
+      ]
+    }
+  },
+  "ok": true
+}

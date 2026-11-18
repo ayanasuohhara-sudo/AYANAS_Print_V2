@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title> </title>
+<link rel="stylesheet" href="https://o5nppg7kb4ly.cybozu.com/k/api/plugin/content/download.do?pluginId=pblhdbfbejjlplejiiihlnabolagcfhh&type=DESKTOP_CSS&contentId=14096">
+<style>@page { size: A4 portrait; margin: 0; }</style>
+</head>
+<body class="report-store-delivery">
+<div class="page store-delivery-page">
+<header class="store-delivery-header">
+  <div class="store-delivery-header__left">
+    <p class="store-delivery-eyebrow">A550 店舗</p>
+    <h1 class="store-delivery-title">納 品 書</h1>
+    <p class="store-delivery-customer">[TEST]山田花子 様</p>
+    <p class="store-delivery-pcm">PCM：P000002</p>
+  </div>
+  <div class="store-delivery-header__right">
+    <p>納品番号：—</p>
+    <p>納品日：2026/11/02</p>
+    <p class="store-delivery-page">1 / 1</p>
+  </div>
+</header>
+<table class="store-delivery-table">
+  <thead>
+    <tr>
+      <th>管理番号</th>
+      <th>商品</th>
+      <th>加工内容</th>
+      <th>金額</th>
+      <th>入金状態</th>
+      <th>残額</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="store-delivery-row"><td>TSP815835U</td><td><br><span class="store-delivery-sub"></span></td><td>[TEST]</td><td class="num">3,000</td><td class="store-delivery-pay is-unpaid">未入金</td><td class="num">3,300</td></tr><tr class="store-delivery-row"><td>TSP801856X</td><td><br><span class="store-delivery-sub"></span></td><td>[TEST]</td><td class="num">3,000</td><td class="store-delivery-pay is-unpaid">未入金</td><td class="num">1,650</td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr><tr class="store-delivery-row store-delivery-row--empty"><td colspan="6"></td></tr>
+  </tbody>
+</table>
+<footer class="store-delivery-footer">
+  <table class="store-delivery-summary">
+    <thead>
+      <tr>
+        <th>点数</th>
+        <th>税抜合計</th>
+        <th>税</th>
+        <th>税込合計</th>
+        <th>入金額</th>
+        <th>未入金残</th>
+        <th>状態</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2</td>
+        <td>4,500</td>
+        <td>450</td>
+        <td>4,950</td>
+        <td>0</td>
+        <td>4,950</td>
+        <td class="is-unpaid">未入金</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <p class="store-delivery-note">本紙に含まれない商品の納品状態は変更していません。印刷のみでは App16 を更新しません。</p>
+</footer></div>
+
+
+<div class="buttons">
+    <button type="button" id="ayanas-print-btn">印刷</button>
+    <button type="button" id="ayanas-close-btn">閉じる</button>
+</div>
+
+
+<script>
+(function () {
+
+
+    function runPrint() {
+        var savedTitle = document.title;
+        document.title = ' ';
+        var restoreTitle = function () {
+            document.title = savedTitle;
+            window.removeEventListener('afterprint', restoreTitle);
+        };
+        window.addEventListener('afterprint', restoreTitle);
+        window.print();
+    }
+
+    document.getElementById('ayanas-print-btn').addEventListener('click', runPrint);
+
+    document.getElementById('ayanas-close-btn').addEventListener('click', function () {
+        window.close();
+    });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+{
+  "stamp": "2026-11-16T04-40-41",
+  "workDir": "/agent/repos/AYANAS_Print_V2/customize/backups/app35_carry_2026-11-16T04-40-41",
+  "deployed": {
+    "status": "SUCCESS",
+    "revision": "41",
+    "desktopJs": [
+      "app_nav_banner_config.js",
+      "app_nav_banner.js",
+      "payment_create.js",
+      "invoice_balance_desktop.js"
+    ],
+    "mobileJs": [
+      "payment_create.js",
+      "invoice_balance_desktop.js"
+    ],
+    "payIdx": 2,
+    "balIdx": 3
+  },
+  "versions": {
+    "url": "https://o5nppg7kb4ly.cybozu.com/k/35/",
+    "payment": "2.0.17",
+    "balance": "1.1.2"
+  },
+  "diffsBefore": {
+    "payment_create.js": {
+      "status": "IDENTICAL",
+      "prodBytes": 59046,
+      "localBytes": 59046,
+      "prodVer": "2.0.17",
+      "localVer": "2.0.17",
+      "fileKey": "202611160438023839F206734C42D79BE42E208A5294EA119"
+    },
+    "invoice_balance_desktop.js": {
+      "status": "DIFFERS",
+      "prodBytes": 19168,
+      "localBytes": 19369,
+      "prodVer": "1.1.1",
+      "localVer": "1.1.2",
+      "fileKey": "202611160438035E2DCFFFD1BC4BB19A21CDC48F7A6082262"
+    }
+  },
+  "sample": {
+    "mode": "read_only_simulation",
+    "currentInvoice": {
+      "id": "225",
+      "invoice_no": "2611-026",
+      "invoice_date": "2026-11-14",
+      "customer_code": "M100",
+      "customer_name": "個人",
+      "status": "請求済",
+      "stored": {
+        "carry_over": "0",
+        "payment_amount": "0",
+        "balance": "54670",
+        "invoice_amount": "54670",
+        "total": "54670"
+      }
+    },
+    "asIfRebuildThisInvoice": {
+      "priorInvoiceNo": "2610-049",
+      "priorInvoiceDate": "2026-10-30",
+      "priorInvoiceStatus": "請求済",
+      "note": "直前請求済 2610-049 の税込請求額を carry_over、その充当合計を payment_amount",
+      "前回請求額_carry_over": 120450,
+      "入金額_payment_amount": 0,
+      "繰越額": 120450,
+      "今回売上": 54670,
+      "今回請求額_print": 175120,
+      "balance_field": 175120
+    },
+    "asIfCreateNextInvoiceHeader": {
+      "priorInvoiceNo": "2611-026",
+      "priorInvoiceDate": "2026-11-14",
+      "priorInvoiceStatus": "請求済",
+      "note": "直前請求済 2611-026 の税込請求額を carry_over、その充当合計を payment_amount",
+      "前回請求額_carry_over": 54670,
+      "入金額_payment_amount": 0,
+      "繰越額": 54670
+    },
+    "idempotent": true,
+    "paymentVersion": "2.0.17",
+    "balanceVersion": "1.1.2"
+  },
+  "expect": {
+    "payment": "2.0.17",
+    "balance": "1.1.2"
+  }
+}

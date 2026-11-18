@@ -1,0 +1,44 @@
+[
+  {
+    "kind": "js",
+    "index": 0,
+    "name": "internal_ops_config.js",
+    "fileKey": "202611011544275B430F2D4A9B4FF6922BAA49673D8632154",
+    "file": "desktop_js1_internal_ops_config.js"
+  },
+  {
+    "kind": "js",
+    "index": 1,
+    "name": "store_pickup_shared.js",
+    "fileKey": "20261101154427C1CBDEE1A5BD46D1BFC66EF2A9923C00214",
+    "file": "desktop_js2_store_pickup_shared.js"
+  },
+  {
+    "kind": "js",
+    "index": 2,
+    "name": "barcode_batch_core.js",
+    "fileKey": "20261101154427B0D43A9780B346FAA6EB706513E10EF7020",
+    "file": "desktop_js3_barcode_batch_core.js"
+  },
+  {
+    "kind": "js",
+    "index": 3,
+    "name": "barcode_batch_ui.js",
+    "fileKey": "202611011544271D878ED025294DAF874E307A933C8C8A017",
+    "file": "desktop_js4_barcode_batch_ui.js"
+  },
+  {
+    "kind": "js",
+    "index": 4,
+    "name": "location_inbound_engine.js",
+    "fileKey": "20261101154428CAE1A513876C4574BD53824E8F997071079",
+    "file": "desktop_js5_location_inbound_engine.js"
+  },
+  {
+    "kind": "js",
+    "index": 5,
+    "name": "location_inbound_desktop.js",
+    "fileKey": "202611011544286112C99B55E140A8BEFE2E6BF7B4AD46215",
+    "file": "desktop_js6_location_inbound_desktop.js"
+  }
+]

@@ -1,0 +1,115 @@
+/* AYANASU 共通ハブナビ — App91 / 87 / 90 /（任意）86 */
+
+.cayan-hub-nav {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  min-height: 56px;
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+  color: #0f172a;
+}
+
+.cayan-hub-nav *,
+.cayan-hub-nav *::before,
+.cayan-hub-nav *::after {
+  box-sizing: border-box;
+}
+
+.cayan-hub-nav__brand {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #334155;
+  margin-right: 4px;
+}
+
+.cayan-hub-nav__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1 1 auto;
+}
+
+.cayan-hub-nav__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 72px;
+  padding: 8px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #0f172a;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cayan-hub-nav__btn:hover,
+.cayan-hub-nav__btn:focus {
+  outline: 2px solid #334155;
+  outline-offset: 1px;
+}
+
+.cayan-hub-nav__btn.is-active {
+  cursor: default;
+  box-shadow: inset 0 0 0 2px #0f172a;
+}
+
+.cayan-hub-nav__btn.is-amber.is-active {
+  background: #fef3c7;
+  border-color: #d97706;
+  color: #92400e;
+}
+
+.cayan-hub-nav__btn.is-teal.is-active {
+  background: #ccfbf1;
+  border-color: #0d9488;
+  color: #115e59;
+}
+
+.cayan-hub-nav__btn.is-slate.is-active {
+  background: #e2e8f0;
+  border-color: #475569;
+  color: #1e293b;
+}
+
+.cayan-hub-nav__btn.is-amber:not(.is-active) {
+  border-color: #f59e0b;
+}
+
+.cayan-hub-nav__btn.is-teal:not(.is-active) {
+  border-color: #14b8a6;
+}
+
+.cayan-hub-nav__btn.is-slate:not(.is-active) {
+  border-color: #64748b;
+}
+
+@media (max-width: 720px) {
+  .cayan-hub-nav {
+    padding: 8px;
+  }
+
+  .cayan-hub-nav__links {
+    width: 100%;
+  }
+
+  .cayan-hub-nav__btn {
+    flex: 1 1 calc(33.33% - 8px);
+    min-width: 0;
+    padding: 10px 8px;
+  }
+}

@@ -1,0 +1,940 @@
+{
+  "ok": true,
+  "monthlyVersion": "1.2.0",
+  "timingMs": {
+    "prepareSource": 4939,
+    "declineOnly": 3,
+    "total": 4942
+  },
+  "windows": {
+    "recent": "2026-08ã2026-10",
+    "prior": "2026-05ã2026-07",
+    "recentEnd": "2026-10",
+    "insufficient": false
+  },
+  "summary": {
+    "totalCustomers": 57,
+    "stopped": 13,
+    "majorDown": 12,
+    "down": 7,
+    "stable": 8,
+    "up": 17
+  },
+  "conflictCount": 1,
+  "topDecline": [
+    {
+      "code": "M074",
+      "name": "株式会社松葉　橋本店",
+      "prior": 51,
+      "recent": 13,
+      "delta": -38,
+      "rate": -0.7450980392156863,
+      "status": "major_down",
+      "recentAmount": 138960,
+      "lastOrderDate": "2026-11-07"
+    },
+    {
+      "code": "A645",
+      "name": "株式会社Office K",
+      "prior": 42,
+      "recent": 14,
+      "delta": -28,
+      "rate": -0.6666666666666666,
+      "status": "major_down",
+      "recentAmount": 143750,
+      "lastOrderDate": "2026-11-16"
+    },
+    {
+      "code": "M061",
+      "name": "株式会社西織",
+      "prior": 18,
+      "recent": 0,
+      "delta": -18,
+      "rate": -1,
+      "status": "stopped",
+      "recentAmount": 0,
+      "lastOrderDate": "2026-06-11"
+    },
+    {
+      "code": "A611",
+      "name": "合資会社三國屋呉服店",
+      "prior": 21,
+      "recent": 3,
+      "delta": -18,
+      "rate": -0.8571428571428571,
+      "status": "major_down",
+      "recentAmount": 42000,
+      "lastOrderDate": "2026-11-10"
+    },
+    {
+      "code": "A623",
+      "name": "株式会社きものあさ川",
+      "prior": 37,
+      "recent": 20,
+      "delta": -17,
+      "rate": -0.4594594594594595,
+      "status": "down",
+      "recentAmount": 252500,
+      "lastOrderDate": "2026-11-16"
+    },
+    {
+      "code": "M100",
+      "name": "個人",
+      "prior": 14,
+      "recent": 0,
+      "delta": -14,
+      "rate": -1,
+      "status": "stopped",
+      "recentAmount": 0,
+      "lastOrderDate": "2026-09-01"
+    },
+    {
+      "code": "A732",
+      "name": "染と織山中",
+      "prior": 20,
+      "recent": 6,
+      "delta": -14,
+      "rate": -0.7,
+      "status": "major_down",
+      "recentAmount": 60000,
+      "lastOrderDate": "2026-11-14"
+    },
+    {
+      "code": "A336",
+      "name": "有）松川調整所　奈良店こだなや",
+      "prior": 20,
+      "recent": 6,
+      "delta": -14,
+      "rate": -0.7,
+      "status": "major_down",
+      "recentAmount": 68000,
+      "lastOrderDate": "2026-09-02"
+    },
+    {
+      "code": "A318",
+      "name": "株式会社井野屋フレップ下関店",
+      "prior": 29,
+      "recent": 15,
+      "delta": -14,
+      "rate": -0.4827586206896552,
+      "status": "down",
+      "recentAmount": 235460,
+      "lastOrderDate": "2026-11-02"
+    },
+    {
+      "code": "A680",
+      "name": "株式会社本嶋呉服店",
+      "prior": 29,
+      "recent": 15,
+      "delta": -14,
+      "rate": -0.4827586206896552,
+      "status": "down",
+      "recentAmount": 182900,
+      "lastOrderDate": "2026-11-10"
+    },
+    {
+      "code": "A997",
+      "name": "日本和装きものリフレッシュセンター",
+      "prior": 24,
+      "recent": 11,
+      "delta": -13,
+      "rate": -0.5416666666666666,
+      "status": "major_down",
+      "recentAmount": 219000,
+      "lastOrderDate": "2026-10-29"
+    },
+    {
+      "code": "A250",
+      "name": "株式会社山和",
+      "prior": 11,
+      "recent": 0,
+      "delta": -11,
+      "rate": -1,
+      "status": "stopped",
+      "recentAmount": 0,
+      "lastOrderDate": "2026-06-03"
+    },
+    {
+      "code": "M025",
+      "name": "わただ",
+      "prior": 16,
+      "recent": 7,
+      "delta": -9,
+      "rate": -0.5625,
+      "status": "major_down",
+      "recentAmount": 112300,
+      "lastOrderDate": "2026-11-07"
+    },
+    {
+      "code": "A545",
+      "name": "西川株式会社",
+      "prior": 42,
+      "recent": 33,
+      "delta": -9,
+      "rate": -0.21428571428571427,
+      "status": "down",
+      "recentAmount": 467600,
+      "lastOrderDate": "2026-11-14"
+    },
+    {
+      "code": "M037",
+      "name": "大進ホンダ株式会社　神戸店",
+      "prior": 22,
+      "recent": 15,
+      "delta": -7,
+      "rate": -0.3181818181818182,
+      "status": "down",
+      "recentAmount": 237200,
+      "lastOrderDate": "2026-11-11"
+    }
+  ],
+  "sampleStopped": [
+    {
+      "customerCode": "M061",
+      "customerName": "株式会社西織",
+      "priorCount": 18,
+      "recentCount": 0,
+      "delta": -18,
+      "rate": -1,
+      "status": "stopped",
+      "recentAmount": 0,
+      "lastOrderDate": "2026-06-11",
+      "conflictCount": 0,
+      "priorBreakdown": {
+        "overseasKimono": 18,
+        "domesticKimono": 0,
+        "obiKimono": 0,
+        "tailorKimono": 18,
+        "orderTotal": 251470
+      },
+      "recentBreakdown": {
+        "overseasKimono": 0,
+        "domesticKimono": 0,
+        "obiKimono": 0,
+        "tailorKimono": 0,
+        "orderTotal": 0
+      },
+      "trend": [
+        {
+          "key": "2025-11",
+          "label": "11æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2025-12",
+          "label": "12æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-01",
+          "label": "1æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-02",
+          "label": "2æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-03",
+          "label": "3æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-04",
+          "label": "4æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-05",
+          "label": "5æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-06",
+          "label": "6æ",
+          "overseasKimono": 18,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 18,
+          "filteredKimono": 18,
+          "orderTotal": 251470
+        },
+        {
+          "key": "2026-07",
+          "label": "7æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-08",
+          "label": "8æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-09",
+          "label": "9æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-10",
+          "label": "10æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        }
+      ],
+      "orderAppQuery": "customer_code = \"M061\""
+    },
+    {
+      "customerCode": "M100",
+      "customerName": "個人",
+      "priorCount": 14,
+      "recentCount": 0,
+      "delta": -14,
+      "rate": -1,
+      "status": "stopped",
+      "recentAmount": 0,
+      "lastOrderDate": "2026-09-01",
+      "conflictCount": 0,
+      "priorBreakdown": {
+        "overseasKimono": 14,
+        "domesticKimono": 0,
+        "obiKimono": 0,
+        "tailorKimono": 14,
+        "orderTotal": 268200
+      },
+      "recentBreakdown": {
+        "overseasKimono": 0,
+        "domesticKimono": 0,
+        "obiKimono": 0,
+        "tailorKimono": 0,
+        "orderTotal": 0
+      },
+      "trend": [
+        {
+          "key": "2025-11",
+          "label": "11æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2025-12",
+          "label": "12æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-01",
+          "label": "1æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-02",
+          "label": "2æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-03",
+          "label": "3æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-04",
+          "label": "4æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-05",
+          "label": "5æ",
+          "overseasKimono": 12,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 12,
+          "filteredKimono": 12,
+          "orderTotal": 246100
+        },
+        {
+          "key": "2026-06",
+          "label": "6æ",
+          "overseasKimono": 2,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 2,
+          "filteredKimono": 2,
+          "orderTotal": 22100
+        },
+        {
+          "key": "2026-07",
+          "label": "7æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-08",
+          "label": "8æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-09",
+          "label": "9æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-10",
+          "label": "10æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        }
+      ],
+      "orderAppQuery": "customer_code = \"M100\""
+    },
+    {
+      "customerCode": "A250",
+      "customerName": "株式会社山和",
+      "priorCount": 11,
+      "recentCount": 0,
+      "delta": -11,
+      "rate": -1,
+      "status": "stopped",
+      "recentAmount": 0,
+      "lastOrderDate": "2026-06-03",
+      "conflictCount": 0,
+      "priorBreakdown": {
+        "overseasKimono": 11,
+        "domesticKimono": 0,
+        "obiKimono": 0,
+        "tailorKimono": 11,
+        "orderTotal": 161010
+      },
+      "recentBreakdown": {
+        "overseasKimono": 0,
+        "domesticKimono": 0,
+        "obiKimono": 0,
+        "tailorKimono": 0,
+        "orderTotal": 0
+      },
+      "trend": [
+        {
+          "key": "2025-11",
+          "label": "11æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2025-12",
+          "label": "12æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-01",
+          "label": "1æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-02",
+          "label": "2æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-03",
+          "label": "3æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-04",
+          "label": "4æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-05",
+          "label": "5æ",
+          "overseasKimono": 8,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 8,
+          "filteredKimono": 8,
+          "orderTotal": 117510
+        },
+        {
+          "key": "2026-06",
+          "label": "6æ",
+          "overseasKimono": 3,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 3,
+          "filteredKimono": 3,
+          "orderTotal": 43500
+        },
+        {
+          "key": "2026-07",
+          "label": "7æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-08",
+          "label": "8æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-09",
+          "label": "9æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-10",
+          "label": "10æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        }
+      ],
+      "orderAppQuery": "customer_code = \"A250\""
+    },
+    {
+      "customerCode": "A650",
+      "customerName": "株式会社まるき",
+      "priorCount": 4,
+      "recentCount": 0,
+      "delta": -4,
+      "rate": -1,
+      "status": "stopped",
+      "recentAmount": 0,
+      "lastOrderDate": "2026-11-02",
+      "conflictCount": 0,
+      "priorBreakdown": {
+        "overseasKimono": 0,
+        "domesticKimono": 1,
+        "obiKimono": 3,
+        "tailorKimono": 4,
+        "orderTotal": 12600
+      },
+      "recentBreakdown": {
+        "overseasKimono": 0,
+        "domesticKimono": 0,
+        "obiKimono": 0,
+        "tailorKimono": 0,
+        "orderTotal": 0
+      },
+      "trend": [
+        {
+          "key": "2025-11",
+          "label": "11æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2025-12",
+          "label": "12æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-01",
+          "label": "1æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-02",
+          "label": "2æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-03",
+          "label": "3æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-04",
+          "label": "4æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-05",
+          "label": "5æ",
+          "overseasKimono": 0,
+          "domesticKimono": 1,
+          "obiKimono": 0,
+          "tailorKimono": 1,
+          "filteredKimono": 1,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-06",
+          "label": "6æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-07",
+          "label": "7æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 3,
+          "tailorKimono": 3,
+          "filteredKimono": 3,
+          "orderTotal": 12600
+        },
+        {
+          "key": "2026-08",
+          "label": "8æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-09",
+          "label": "9æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-10",
+          "label": "10æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        }
+      ],
+      "orderAppQuery": "customer_code = \"A650\""
+    },
+    {
+      "customerCode": "A156",
+      "customerName": "株式会社　新健勝苑相生営業所",
+      "priorCount": 3,
+      "recentCount": 0,
+      "delta": -3,
+      "rate": -1,
+      "status": "stopped",
+      "recentAmount": 0,
+      "lastOrderDate": "2026-07-25",
+      "conflictCount": 0,
+      "priorBreakdown": {
+        "overseasKimono": 3,
+        "domesticKimono": 0,
+        "obiKimono": 0,
+        "tailorKimono": 3,
+        "orderTotal": 34000
+      },
+      "recentBreakdown": {
+        "overseasKimono": 0,
+        "domesticKimono": 0,
+        "obiKimono": 0,
+        "tailorKimono": 0,
+        "orderTotal": 0
+      },
+      "trend": [
+        {
+          "key": "2025-11",
+          "label": "11æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2025-12",
+          "label": "12æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-01",
+          "label": "1æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-02",
+          "label": "2æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-03",
+          "label": "3æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-04",
+          "label": "4æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-05",
+          "label": "5æ",
+          "overseasKimono": 2,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 2,
+          "filteredKimono": 2,
+          "orderTotal": 24000
+        },
+        {
+          "key": "2026-06",
+          "label": "6æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-07",
+          "label": "7æ",
+          "overseasKimono": 1,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 1,
+          "filteredKimono": 1,
+          "orderTotal": 10000
+        },
+        {
+          "key": "2026-08",
+          "label": "8æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-09",
+          "label": "9æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        },
+        {
+          "key": "2026-10",
+          "label": "10æ",
+          "overseasKimono": 0,
+          "domesticKimono": 0,
+          "obiKimono": 0,
+          "tailorKimono": 0,
+          "filteredKimono": 0,
+          "orderTotal": 0
+        }
+      ],
+      "orderAppQuery": "customer_code = \"A156\""
+    }
+  ],
+  "analyzedCount": 3556,
+  "customerMasterSize": 78
+}

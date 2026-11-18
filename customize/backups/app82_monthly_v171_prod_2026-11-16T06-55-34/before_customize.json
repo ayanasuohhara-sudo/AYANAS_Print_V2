@@ -1,0 +1,70 @@
+{
+  "scope": "ALL",
+  "js": [
+    {
+      "type": "FILE",
+      "name": "business_dashboard_config.js",
+      "fileKey": "20261116062109BED618D21E4F40C1891790301393B62E359",
+      "contentType": "text/javascript",
+      "size": "14062"
+    },
+    {
+      "type": "FILE",
+      "name": "ar_config.js",
+      "fileKey": "20261116062109A2AD78C1076E45478B4E2D746D5E878F337",
+      "contentType": "text/javascript",
+      "size": "1886"
+    },
+    {
+      "type": "FILE",
+      "name": "payment_create.js",
+      "fileKey": "202611160621099D7A042F1B794BEE851B46534BB12948258",
+      "contentType": "text/javascript",
+      "size": "49476"
+    },
+    {
+      "type": "FILE",
+      "name": "ar_engine.js",
+      "fileKey": "2026111606210914520BEB832A414AAF7E152E59B17F4D022",
+      "contentType": "text/javascript",
+      "size": "17148"
+    },
+    {
+      "type": "FILE",
+      "name": "business_dashboard_engine.js",
+      "fileKey": "202611160621092DA45C07D1B04AF3923D65563613B9F6237",
+      "contentType": "text/javascript",
+      "size": "64912"
+    },
+    {
+      "type": "FILE",
+      "name": "business_dashboard_monthly_engine.js",
+      "fileKey": "20261116062110940BB8B6A87F41EC9D4A85A6235ABFE6109",
+      "contentType": "text/javascript",
+      "size": "27893"
+    },
+    {
+      "type": "FILE",
+      "name": "business_dashboard_money.js",
+      "fileKey": "202611160621108DDC9C1B19844A6999F60C6815A2AED0276",
+      "contentType": "text/javascript",
+      "size": "19266"
+    },
+    {
+      "type": "FILE",
+      "name": "business_dashboard_desktop.js",
+      "fileKey": "20261116062110F494EDF158F444C4BEC8D148D2FF83E4192",
+      "contentType": "text/javascript",
+      "size": "59259"
+    }
+  ],
+  "css": [
+    {
+      "type": "FILE",
+      "name": "business_dashboard.css",
+      "fileKey": "20261116062109E00A7D3A47D345FAA24689907C9FBFBB122",
+      "contentType": "text/css",
+      "size": "8248"
+    }
+  ]
+}

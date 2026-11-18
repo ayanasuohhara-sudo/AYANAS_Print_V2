@@ -1,0 +1,221 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021655247A826243D9DB48C9919E0B932FB43EF6249",
+          "name": "app_nav_banner_config.js",
+          "contentType": "text/javascript",
+          "size": "2747"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021655245F4F612857A14ACBB4342EF8BEE59E8D340",
+          "name": "app_nav_banner.js",
+          "contentType": "text/javascript",
+          "size": "6659"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165524E901BC7AFE2F4DC0ACF1AED5A64DA9F7038",
+          "name": "saiban.js",
+          "contentType": "application/octet-stream",
+          "size": "1158"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021655249A05ADBC44414B3EA285359A043A10C1198",
+          "name": "saiban1.js",
+          "contentType": "application/octet-stream",
+          "size": "201"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216552517855E185A714E348638537EE55936EF103",
+          "name": "price_master_search11.js",
+          "contentType": "application/octet-stream",
+          "size": "2927"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216552517BB737F21254B518593F46DF79FE80C056",
+          "name": "category.js",
+          "contentType": "application/octet-stream",
+          "size": "1205"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165525DF4DABE5E8834FA4BB72415E4E3F8F61038",
+          "name": "order_customer_search.js",
+          "contentType": "application/octet-stream",
+          "size": "12403"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165525FC5B4E3A4DA6451D92908847975FA18B113",
+          "name": "kana_normalize.js",
+          "contentType": "text/javascript",
+          "size": "1922"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165525E265E6179A1644C288C435FDE5E0533D216",
+          "name": "order_client_kana_config.js",
+          "contentType": "text/javascript",
+          "size": "1577"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216552515E076619D61485C9B4B00951F9C901F281",
+          "name": "order_client_kana_engine.js",
+          "contentType": "text/javascript",
+          "size": "3356"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165525B684716A1B5346348016A2AEAD5D30EC353",
+          "name": "order_client_kana_desktop.js",
+          "contentType": "text/javascript",
+          "size": "7799"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165525FB7A835E336D4FD891778972463BA140126",
+          "name": "price_master_register.js",
+          "contentType": "application/octet-stream",
+          "size": "13465"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216552541F89890A4BD4A19B80EBF697951413D131",
+          "name": "order_record_form.js",
+          "contentType": "application/octet-stream",
+          "size": "3169"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165525589CF0FEB5D64C22BDA6F0C97578BFA1050",
+          "name": "additional_item_engine.js",
+          "contentType": "application/octet-stream",
+          "size": "25384"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021655250506487B155E4B43A40B3EE155DF95C0084",
+          "name": "order_price_unconfirmed_clear.js",
+          "contentType": "application/octet-stream",
+          "size": "5545"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165526347E824BA3984782990FB8FA90843004176",
+          "name": "schedule_customer.js",
+          "contentType": "application/octet-stream",
+          "size": "7562"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216552692787336CF9E456994C5C2B08B517B34046",
+          "name": "order_pcm_config.js",
+          "contentType": "application/octet-stream",
+          "size": "1595"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216552699ED71A05F7E405ABF54F338C5C5E443074",
+          "name": "order_pcm_engine.js",
+          "contentType": "application/octet-stream",
+          "size": "8075"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021655265229A63FAE1346FE8C49F3DD8C6DFE65345",
+          "name": "order_pcm_desktop.js",
+          "contentType": "application/octet-stream",
+          "size": "17749"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165524B95FFD58AA384B858506FAF8119EFC69320",
+          "name": "app_nav_banner.css",
+          "contentType": "text/css",
+          "size": "4473"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021655246E2BFA0E219B4C15A0EBC4759F112432192",
+          "name": "order_record_form.css",
+          "contentType": "application/octet-stream",
+          "size": "4918"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165524D60EF4BF893B4B19A3FD6928662A2041188",
+          "name": "order_pcm.css",
+          "contentType": "application/octet-stream",
+          "size": "2600"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102165524400AC7E08ED74F3984AB1FCFBBF86D22273",
+          "name": "order_client_kana.css",
+          "contentType": "text/css",
+          "size": "1410"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "504"
+}

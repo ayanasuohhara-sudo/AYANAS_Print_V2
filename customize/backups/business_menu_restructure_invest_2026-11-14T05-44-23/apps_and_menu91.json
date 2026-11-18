@@ -1,0 +1,435 @@
+{
+  "apps": [
+    {
+      "id": 8,
+      "name": "90_顧客マスタ",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 11,
+      "name": "93_着物種類マスタ",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 13,
+      "name": "92_商品マスタ",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 14,
+      "name": "91_価格マスタ",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 16,
+      "name": "01_受注明細管理",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 17,
+      "ok": false,
+      "error": "The app (ID: 17) not found. The app may have been deleted."
+    },
+    {
+      "id": 19,
+      "name": "09_納品書作成",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 21,
+      "name": "11_入金管理",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 22,
+      "name": "13_売掛一覧",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 23,
+      "name": "95_外注加工マスタ",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 26,
+      "name": "94_外注先マスタ",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 27,
+      "name": "02_外注出庫",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 28,
+      "name": "03_海外外注出庫",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 30,
+      "name": "06_仕上げ完了登録",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 34,
+      "name": "07_社内入庫登録",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 35,
+      "name": "10_請求書作成",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 36,
+      "ok": false,
+      "error": "The app (ID: 36) not found. The app may have been deleted."
+    },
+    {
+      "id": 37,
+      "ok": false,
+      "error": "The app (ID: 37) not found. The app may have been deleted."
+    },
+    {
+      "id": 38,
+      "ok": false,
+      "error": "The app (ID: 38) not found. The app may have been deleted."
+    },
+    {
+      "id": 39,
+      "ok": false,
+      "error": "The app (ID: 39) not found. The app may have been deleted."
+    },
+    {
+      "id": 73,
+      "name": "96_和裁士マスタ",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 74,
+      "name": "04_和裁士出庫",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 75,
+      "name": "12_和裁士支払明細",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 78,
+      "name": "05_外注入庫",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 82,
+      "name": "14_業務ダッシュボード",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 84,
+      "name": "08_社内作業登録",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 85,
+      "ok": false,
+      "error": "The app (ID: 85) not found. The app may have been deleted."
+    },
+    {
+      "id": 86,
+      "name": "工場作業状況ポータル",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 87,
+      "name": "店舗ポータル",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 88,
+      "name": "受注検索",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 89,
+      "name": "納期負荷カレンダー",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 90,
+      "name": "工場ポータル",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 91,
+      "name": "AYANASU 業務メニュー",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 92,
+      "name": "店舗納期カレンダー",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 93,
+      "ok": false,
+      "error": "The app (ID: 93) not found. The app may have been deleted."
+    },
+    {
+      "id": 94,
+      "name": "納期・納品スケジュール管理",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 95,
+      "name": "個人顧客ID採番",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 96,
+      "name": "個人顧客マスタ",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 97,
+      "name": "店舗入金管理",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 98,
+      "name": "和裁士別仕事予定カレンダー",
+      "description": "",
+      "ok": true
+    },
+    {
+      "id": 99,
+      "name": "和裁士仕事予定管理",
+      "description": "",
+      "ok": true
+    }
+  ],
+  "menus": {
+    "business": "1.2.0",
+    "businessCats": [
+      {
+        "id": "order",
+        "label": "受注登録・検索",
+        "mode": "menu",
+        "items": [
+          {
+            "appId": 16,
+            "label": "受注登録・明細一覧",
+            "path": ""
+          },
+          {
+            "appId": 88,
+            "label": "受注検索",
+            "path": ""
+          }
+        ]
+      },
+      {
+        "id": "logistics",
+        "label": "出庫・入庫",
+        "mode": "menu",
+        "items": [
+          {
+            "appId": 34,
+            "label": "保管場所移動",
+            "path": ""
+          },
+          {
+            "appId": 27,
+            "label": "外注出庫",
+            "path": ""
+          },
+          {
+            "appId": 28,
+            "label": "海外外注出庫",
+            "path": ""
+          },
+          {
+            "appId": 74,
+            "label": "和裁士出庫",
+            "path": ""
+          },
+          {
+            "appId": 78,
+            "label": "外注入庫",
+            "path": ""
+          }
+        ]
+      },
+      {
+        "id": "billing",
+        "label": "納品書・請求書・入金",
+        "mode": "menu",
+        "items": [
+          {
+            "appId": 19,
+            "label": "納品書作成",
+            "path": ""
+          },
+          {
+            "appId": 35,
+            "label": "請求書作成",
+            "path": ""
+          },
+          {
+            "appId": 21,
+            "label": "入金登録",
+            "path": "edit"
+          },
+          {
+            "appId": 21,
+            "label": "入金一覧",
+            "path": ""
+          },
+          {
+            "appId": 22,
+            "label": "売掛一覧",
+            "path": ""
+          }
+        ]
+      },
+      {
+        "id": "work",
+        "label": "作業進捗・完了登録",
+        "mode": "menu",
+        "items": [
+          {
+            "appId": 86,
+            "label": "工場作業状況ポータル",
+            "path": ""
+          },
+          {
+            "appId": 87,
+            "label": "店舗ポータル（A550）",
+            "path": ""
+          },
+          {
+            "appId": 84,
+            "label": "社内作業登録",
+            "path": ""
+          },
+          {
+            "appId": 30,
+            "label": "検品・仕上げ完了",
+            "path": ""
+          }
+        ]
+      },
+      {
+        "id": "deadline",
+        "label": "納期・作業負荷状況",
+        "mode": "direct",
+        "direct": 89,
+        "items": []
+      },
+      {
+        "id": "customer_schedule",
+        "label": "納期・納品スケジュール管理",
+        "mode": "direct",
+        "direct": 94,
+        "items": []
+      },
+      {
+        "id": "analytics",
+        "label": "各種データ・集計",
+        "mode": "menu",
+        "items": [
+          {
+            "appId": 82,
+            "label": "業務ダッシュボード",
+            "path": ""
+          },
+          {
+            "appId": 75,
+            "label": "和裁士支払明細",
+            "path": ""
+          }
+        ]
+      },
+      {
+        "id": "masters",
+        "label": "マスタ登録",
+        "mode": "menu",
+        "items": [
+          {
+            "appId": 8,
+            "label": "顧客マスタ",
+            "path": ""
+          },
+          {
+            "appId": 96,
+            "label": "個人顧客マスタ",
+            "path": ""
+          },
+          {
+            "appId": 11,
+            "label": "着物種類マスタ",
+            "path": ""
+          },
+          {
+            "appId": 13,
+            "label": "商品マスタ",
+            "path": ""
+          },
+          {
+            "appId": 14,
+            "label": "価格マスタ",
+            "path": ""
+          },
+          {
+            "appId": 23,
+            "label": "外注加工マスタ",
+            "path": ""
+          },
+          {
+            "appId": 26,
+            "label": "外注先マスタ",
+            "path": ""
+          },
+          {
+            "appId": 73,
+            "label": "和裁士マスタ",
+            "path": ""
+          }
+        ]
+      }
+    ],
+    "title": "kintone"
+  }
+}

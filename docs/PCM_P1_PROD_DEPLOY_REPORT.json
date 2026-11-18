@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "timezoneNote": "stamp fields below are UTC; local Asia/Tokyo = UTC+9",
+  "deployStampUtc": "2026-11-16T08-16-17",
+  "verifyStampUtc": "2026-11-16T08-18-38",
+  "backupDir": "customize/backups/pcm_p1_prod_deploy_2026-11-16T08-16-17",
+  "verifyDir": "customize/backups/pcm_p1_prod_verify_2026-11-16T08-18-38",
+  "app96": {
+    "fieldsAdded": ["measure_history"],
+    "innerFieldCount": 20,
+    "js": [
+      "pcm_config.js",
+      "pcm_numbering.js",
+      "pcm_engine.js",
+      "pcm_measure_engine.js",
+      "pcm_desktop.js",
+      "pcm_order_history.js",
+      "pcm_measure_panel.js"
+    ],
+    "css": ["pcm.css"],
+    "version": "1.2.0-p1-measure"
+  },
+  "app87": { "floorPortalVersion": "1.8.1" },
+  "app86": { "floorPortalVersion": "1.8.1", "note": "synced with App87" },
+  "tests": {
+    "existingCustomerOpen": true,
+    "orderHistoryColumns": true,
+    "measureCreate": true,
+    "multiHistory": true,
+    "currentSummary": true,
+    "currentFlagDedupe": true,
+    "historyPreserved": true,
+    "portalKarteLink": true,
+    "testRecord": { "id": "72", "pid": "P000076", "name": "[TEST]PCM_P1_MEASURE" }
+  },
+  "notChanged": [
+    "bulk existing customer updates",
+    "unmatched 70 A550 links",
+    "App8/16/19 fields",
+    "saiban.js"
+  ]
+}

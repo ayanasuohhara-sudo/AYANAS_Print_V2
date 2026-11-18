@@ -1,0 +1,61 @@
+{
+  "ok": true,
+  "update": {
+    "status": 200,
+    "text": "{\"result\":{\"executable\":true,\"configurable\":true,\"scripts\":[{\"id\":\"53\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"15084\",\"hash\":\"b4b8484f1bbeb4d119c63425df0aafcc937ca300\",\"name\":\"portal_business_banners_config.js\",\"size\":2815,\"contentUrl\":null,\"sortOrder\":0},{\"id\":\"54\",\"type\":\"DESKTOP\",\"locationType\":\"BLOB\",\"contentId\":\"15085\",\"hash\":\"7cf41906400e283678c0834fbf39b79066210da7\",\"name\":\"portal_business_banners.js\",\"size\":8794,\"contentUrl\":null,\"sortOrder\":1},{\"id\":\"55\",\"type\":\"DESKTOP_CSS\",\"locationType\":\"BLOB\",\"contentId\":\"15086\",\"hash\":\"0e712a5b346bfc59b9af299e0f826ad8c6b55293\",\"name\":\"portal_business_banners.css\",\"size\":2844,\"contentUrl\":null,\"sortOrder\":0}],\"scope\":\"ALL\",\"active\":true},\"success\":true}",
+    "json": {
+      "result": {
+        "executable": true,
+        "configurable": true,
+        "scripts": [
+          {
+            "id": "53",
+            "type": "DESKTOP",
+            "locationType": "BLOB",
+            "contentId": "15084",
+            "hash": "b4b8484f1bbeb4d119c63425df0aafcc937ca300",
+            "name": "portal_business_banners_config.js",
+            "size": 2815,
+            "contentUrl": null,
+            "sortOrder": 0
+          },
+          {
+            "id": "54",
+            "type": "DESKTOP",
+            "locationType": "BLOB",
+            "contentId": "15085",
+            "hash": "7cf41906400e283678c0834fbf39b79066210da7",
+            "name": "portal_business_banners.js",
+            "size": 8794,
+            "contentUrl": null,
+            "sortOrder": 1
+          },
+          {
+            "id": "55",
+            "type": "DESKTOP_CSS",
+            "locationType": "BLOB",
+            "contentId": "15086",
+            "hash": "0e712a5b346bfc59b9af299e0f826ad8c6b55293",
+            "name": "portal_business_banners.css",
+            "size": 2844,
+            "contentUrl": null,
+            "sortOrder": 0
+          }
+        ],
+        "scope": "ALL",
+        "active": true
+      },
+      "success": true
+    }
+  },
+  "beforeScripts": [
+    "portal_business_banners_config.js",
+    "portal_business_banners.js",
+    "portal_business_banners.css"
+  ],
+  "afterScripts": [
+    "portal_business_banners_config.js",
+    "portal_business_banners.js",
+    "portal_business_banners.css"
+  ]
+}

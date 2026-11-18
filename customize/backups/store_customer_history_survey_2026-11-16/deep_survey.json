@@ -1,0 +1,1040 @@
+{
+  "app8": [
+    {
+      "code": "closing_date",
+      "label": "締日",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "options": [
+        "10.20.月末",
+        "３０日",
+        "１０日",
+        "２０日",
+        "１５日",
+        "月末",
+        "都度払い"
+      ]
+    },
+    {
+      "code": "レコード番号",
+      "label": "レコード番号",
+      "type": "RECORD_NUMBER",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "作業者",
+      "label": "作業者",
+      "type": "STATUS_ASSIGNEE",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "address",
+      "label": "番地以下",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "prefecture",
+      "label": "都道府県",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "city",
+      "label": "市区町村",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "更新者",
+      "label": "更新者",
+      "type": "MODIFIER",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "作成者",
+      "label": "作成者",
+      "type": "CREATOR",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "文字列__1行_",
+      "label": "担当者",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "ステータス",
+      "label": "ステータス",
+      "type": "STATUS",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "ドロップダウン",
+      "label": "顧客区分",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "options": [
+        "一般",
+        "法人"
+      ]
+    },
+    {
+      "code": "更新日時",
+      "label": "更新日時",
+      "type": "UPDATED_TIME",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "post_no",
+      "label": "〒",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "building",
+      "label": "ビル名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "type": "CATEGORY",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "文字列__1行__2",
+      "label": "電話",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "文字列__1行__3",
+      "label": "携帯電話",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "ドロップダウン_0",
+      "label": "部門",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "options": [
+        "店舗",
+        "本社"
+      ]
+    },
+    {
+      "code": "文字列__1行__8",
+      "label": "FAX",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true
+    },
+    {
+      "code": "ドロップダウン_2",
+      "label": "支払区分",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "options": [
+        "締め払い",
+        "都度払い"
+      ]
+    },
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true
+    },
+    {
+      "code": "作成日時",
+      "label": "作成日時",
+      "type": "CREATED_TIME",
+      "required": false,
+      "unique": false
+    }
+  ],
+  "a550": {
+    "closing_date": "月末",
+    "address": "富雄元町1-13-41",
+    "prefecture": "奈良県",
+    "city": "奈良市",
+    "文字列__1行_": "",
+    "ドロップダウン": "法人",
+    "post_no": "6310078",
+    "building": "",
+    "文字列__1行__2": "0742478390",
+    "文字列__1行__3": "",
+    "ドロップダウン_0": "店舗",
+    "文字列__1行__8": "",
+    "customer_name": "ayanasu",
+    "ドロップダウン_2": "締め払い",
+    "customer_code": "A550",
+    "$id": "19"
+  },
+  "app16": [
+    {
+      "code": "closing_date",
+      "label": "締日",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "レコード番号",
+      "label": "レコード番号",
+      "type": "RECORD_NUMBER",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "更新者",
+      "label": "更新者",
+      "type": "MODIFIER",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "outsource_in_date",
+      "label": "外注入庫日",
+      "type": "DATE",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "ステータス",
+      "label": "ステータス",
+      "type": "STATUS",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "remark",
+      "label": "備考",
+      "type": "MULTI_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "overseas_in_date",
+      "label": "海外入庫日",
+      "type": "DATE",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "type": "CATEGORY",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "slip_no",
+      "label": "得意先伝票番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "in_charge",
+      "label": "得意先担当・係",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "aggregation_status",
+      "label": "集計状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "manage_no",
+      "label": "管理番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true
+    },
+    {
+      "code": "store_payment_status",
+      "label": "入金状況",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "deadline",
+      "label": "納期",
+      "type": "DATE",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "work_status",
+      "label": "作業ステータス",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "client_name",
+      "label": "お客様名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookupApp": "8"
+    },
+    {
+      "code": "detail_table",
+      "label": "加工内容",
+      "type": "SUBTABLE",
+      "required": false,
+      "unique": false,
+      "subfields": [
+        {
+          "code": "item_code",
+          "label": "商品コード",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "amount",
+          "label": "金額",
+          "type": "CALC"
+        },
+        {
+          "code": "qty",
+          "label": "数量",
+          "type": "NUMBER"
+        },
+        {
+          "code": "item_name",
+          "label": "商品名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "unit_price",
+          "label": "単価",
+          "type": "NUMBER"
+        },
+        {
+          "code": "price_unconfirmed",
+          "label": "価格未定",
+          "type": "CHECK_BOX"
+        }
+      ]
+    },
+    {
+      "code": "location_status",
+      "label": "保管場所ステータス",
+      "type": "DROP_DOWN",
+      "required": true,
+      "unique": false
+    },
+    {
+      "code": "client_name_kana_status",
+      "label": "ふりがな確認状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "作業者",
+      "label": "作業者",
+      "type": "STATUS_ASSIGNEE",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "作成者",
+      "label": "作成者",
+      "type": "CREATOR",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "invoice_no",
+      "label": "請求番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true
+    },
+    {
+      "code": "client_name_kana",
+      "label": "お客様名ふりがな",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "wasai_in_date",
+      "label": "和裁士入庫日",
+      "type": "DATE",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "delivery_no",
+      "label": "納品番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "更新日時",
+      "label": "更新日時",
+      "type": "UPDATED_TIME",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "order_date",
+      "label": "受注日",
+      "type": "DATE",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "delivery_date",
+      "label": "納品日",
+      "type": "DATE",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "personal_customer_id",
+      "label": "個人顧客ID",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "kimono_type_code",
+      "label": "着物種類コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookupApp": "11"
+    },
+    {
+      "code": "process_status",
+      "label": "工程ステータス",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "kimono_spec",
+      "label": "着物仕様",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "completion_date",
+      "label": "完了日",
+      "type": "DATE",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "kimono_type",
+      "label": "着物種類名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "category",
+      "label": "大分類",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "subcategory",
+      "label": "中分類",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "作成日時",
+      "label": "作成日時",
+      "type": "CREATED_TIME",
+      "required": false,
+      "unique": false
+    },
+    {
+      "code": "delivery_status",
+      "label": "納品状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false
+    }
+  ],
+  "withPid": {
+    "records": [
+      {
+        "order_date": {
+          "type": "DATE",
+          "value": "2026-11-12"
+        },
+        "personal_customer_id": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "P000073"
+        },
+        "manage_no": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "111226683"
+        },
+        "client_name_kana": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "client_name": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "吉岡彩香"
+        },
+        "customer_code": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "A550"
+        }
+      },
+      {
+        "order_date": {
+          "type": "DATE",
+          "value": "2026-11-12"
+        },
+        "personal_customer_id": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "P000072"
+        },
+        "manage_no": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "111226681"
+        },
+        "client_name_kana": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "client_name": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "仲宗根理穂"
+        },
+        "customer_code": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "A550"
+        }
+      },
+      {
+        "order_date": {
+          "type": "DATE",
+          "value": "2026-11-12"
+        },
+        "personal_customer_id": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "P000071"
+        },
+        "manage_no": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "111226680"
+        },
+        "client_name_kana": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "client_name": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "福井"
+        },
+        "customer_code": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "A550"
+        }
+      },
+      {
+        "order_date": {
+          "type": "DATE",
+          "value": "2026-11-07"
+        },
+        "personal_customer_id": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "P000055"
+        },
+        "manage_no": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "110726586"
+        },
+        "client_name_kana": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "client_name": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "寺西純代"
+        },
+        "customer_code": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "A550"
+        }
+      },
+      {
+        "order_date": {
+          "type": "DATE",
+          "value": "2026-11-07"
+        },
+        "personal_customer_id": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "P000055"
+        },
+        "manage_no": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "110726585"
+        },
+        "client_name_kana": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "client_name": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "寺西純代"
+        },
+        "customer_code": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "A550"
+        }
+      }
+    ],
+    "totalCount": "64"
+  },
+  "emptyPidA550": {
+    "records": [
+      {
+        "closing_date": {
+          "type": "DROP_DOWN",
+          "value": null
+        },
+        "レコード番号": {
+          "type": "RECORD_NUMBER",
+          "value": "3379"
+        },
+        "更新者": {
+          "type": "MODIFIER",
+          "value": {
+            "code": "info@ayanas.co.jp",
+            "name": "大原健嗣"
+          }
+        },
+        "outsource_in_date": {
+          "type": "DATE",
+          "value": null
+        },
+        "remark": {
+          "type": "MULTI_LINE_TEXT",
+          "value": ""
+        },
+        "overseas_in_date": {
+          "type": "DATE",
+          "value": null
+        },
+        "slip_no": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "in_charge": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "aggregation_status": {
+          "type": "DROP_DOWN",
+          "value": null
+        },
+        "manage_no": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "103126379"
+        },
+        "store_payment_status": {
+          "type": "DROP_DOWN",
+          "value": null
+        },
+        "deadline": {
+          "type": "DATE",
+          "value": "2026-12-26"
+        },
+        "work_status": {
+          "type": "DROP_DOWN",
+          "value": "未着"
+        },
+        "client_name": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "新谷佳世"
+        },
+        "customer_code": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "A550"
+        },
+        "detail_table": {
+          "type": "SUBTABLE",
+          "value": [
+            {
+              "id": "29439",
+              "value": {
+                "item_code": {
+                  "type": "SINGLE_LINE_TEXT",
+                  "value": "006-02"
+                },
+                "amount": {
+                  "type": "CALC",
+                  "value": "8000"
+                },
+                "qty": {
+                  "type": "NUMBER",
+                  "value": "1"
+                },
+                "item_name": {
+                  "type": "SINGLE_LINE_TEXT",
+                  "value": "変色直し"
+                },
+                "unit_price": {
+                  "type": "NUMBER",
+                  "value": "8000"
+                },
+                "price_unconfirmed": {
+                  "type": "CHECK_BOX",
+                  "value": []
+                }
+              }
+            }
+          ]
+        },
+        "location_status": {
+          "type": "DROP_DOWN",
+          "value": "店舗"
+        },
+        "client_name_kana_status": {
+          "type": "DROP_DOWN",
+          "value": null
+        },
+        "作成者": {
+          "type": "CREATOR",
+          "value": {
+            "code": "ayanas20126@gmail.com",
+            "name": "ayanas三条通店"
+          }
+        },
+        "invoice_no": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "client_name_kana": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "$revision": {
+          "type": "__REVISION__",
+          "value": "4"
+        },
+        "wasai_in_date": {
+          "type": "DATE",
+          "value": null
+        },
+        "delivery_no": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "更新日時": {
+          "type": "UPDATED_TIME",
+          "value": "2026-11-01T12:54:00Z"
+        },
+        "order_date": {
+          "type": "DATE",
+          "value": "2026-10-31"
+        },
+        "delivery_date": {
+          "type": "DATE",
+          "value": null
+        },
+        "personal_customer_id": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": ""
+        },
+        "kimono_type_code": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "208"
+        },
+        "process_status": {
+          "type": "DROP_DOWN",
+          "value": "受注"
+        },
+        "kimono_spec": {
+          "type": "DROP_DOWN",
+          "value": "袷"
+        },
+        "completion_date": {
+          "type": "DATE",
+          "value": null
+        },
+        "customer_name": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "ayanasu"
+        },
+        "kimono_type": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "訪問着"
+        },
+        "category": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "悉皆"
+        },
+        "subcategory": {
+          "type": "SINGLE_LINE_TEXT",
+          "value": "しみぬき"
+        },
+        "作成日時": {
+          "type": "CREATED_TIME",
+          "value": "2026-10-31T07:26:00Z"
+        },
+        "delivery_status": {
+          "type": "DROP_DOWN",
+          "value": "未納品"
+        },
+        "$id": {
+          "type": "__ID__",
+          "value": "3379"
+        }
+      }
+    ],
+    "totalCount": "70"
+  },
+  "a550allTotal": "134",
+  "app19": [
+    {
+      "code": "レコード番号",
+      "label": "レコード番号",
+      "type": "RECORD_NUMBER"
+    },
+    {
+      "code": "作業者",
+      "label": "作業者",
+      "type": "STATUS_ASSIGNEE"
+    },
+    {
+      "code": "delivery_detail",
+      "label": "納品明細テーブル",
+      "type": "SUBTABLE",
+      "subfields": [
+        {
+          "code": "amount",
+          "label": "金額",
+          "type": "CALC"
+        },
+        {
+          "code": "slip_no",
+          "label": "得意先伝票番号",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "qty",
+          "label": "数量",
+          "type": "NUMBER"
+        },
+        {
+          "code": "in_charge",
+          "label": "担当・係",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "manage_no",
+          "label": "管理番号",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "kimono_spec",
+          "label": "着物仕様",
+          "type": "DROP_DOWN"
+        },
+        {
+          "code": "item_name",
+          "label": "商品名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "kimono_type",
+          "label": "着物種類名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "unit_price",
+          "label": "単価",
+          "type": "NUMBER"
+        },
+        {
+          "code": "client_name",
+          "label": "お客様名",
+          "type": "SINGLE_LINE_TEXT"
+        }
+      ]
+    },
+    {
+      "code": "更新者",
+      "label": "更新者",
+      "type": "MODIFIER"
+    },
+    {
+      "code": "sales_date",
+      "label": "納品書作成日",
+      "type": "DATE"
+    },
+    {
+      "code": "作成者",
+      "label": "作成者",
+      "type": "CREATOR"
+    },
+    {
+      "code": "ステータス",
+      "label": "ステータス",
+      "type": "STATUS"
+    },
+    {
+      "code": "tax",
+      "label": "消費税",
+      "type": "CALC"
+    },
+    {
+      "code": "delivery_no",
+      "label": "納品番号",
+      "type": "SINGLE_LINE_TEXT"
+    },
+    {
+      "code": "更新日時",
+      "label": "更新日時",
+      "type": "UPDATED_TIME"
+    },
+    {
+      "code": "barcode_input",
+      "label": "バーコード入力",
+      "type": "SINGLE_LINE_TEXT"
+    },
+    {
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "type": "CATEGORY"
+    },
+    {
+      "code": "delivery_date",
+      "label": "納品日",
+      "type": "DATE"
+    },
+    {
+      "code": "total_amount",
+      "label": "税込合計",
+      "type": "CALC"
+    },
+    {
+      "code": "delivery_type",
+      "label": "納品方法",
+      "type": "DROP_DOWN"
+    },
+    {
+      "code": "subtotal",
+      "label": "税抜合計",
+      "type": "CALC"
+    },
+    {
+      "code": "aggregation_status",
+      "label": "集計状態",
+      "type": "DROP_DOWN"
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT"
+    },
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT"
+    },
+    {
+      "code": "作成日時",
+      "label": "作成日時",
+      "type": "CREATED_TIME"
+    },
+    {
+      "code": "invoice_status",
+      "label": "請求状態",
+      "type": "DROP_DOWN"
+    }
+  ],
+  "deliveryHits": [],
+  "recentNos": [
+    "111226683",
+    "111226681",
+    "111226680",
+    "110726586",
+    "110726585",
+    "110726584",
+    "110726583",
+    "110726582",
+    "110726581",
+    "110726580"
+  ],
+  "app96": {
+    "error": "Specified field (レコード番号) not found.",
+    "code": "GAIA_IQ11"
+  },
+  "measureScan": {
+    "8": [],
+    "16": [],
+    "19": [],
+    "35": [],
+    "88": [],
+    "92": [],
+    "96": []
+  }
+}

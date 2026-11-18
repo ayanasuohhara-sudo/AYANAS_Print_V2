@@ -1,0 +1,216 @@
+{
+  "at": "2026-11-02T15:47:13.965Z",
+  "ok": true,
+  "dir": "/workspace/customize/backups/store_portal_prod_2026-11-02T15-46-46",
+  "expectVer": "1.4.1",
+  "deploy87": {
+    "ok": true,
+    "deploy": {
+      "app": "87",
+      "status": "SUCCESS"
+    },
+    "desktopJs": [
+      "work_status_labels.js",
+      "floor_portal_config.js",
+      "floor_portal_engine.js",
+      "floor_portal_desktop.js"
+    ],
+    "desktopCss": [
+      "floor_portal.css"
+    ]
+  },
+  "deploy86": {
+    "ok": true,
+    "deploy": {
+      "app": "86",
+      "status": "SUCCESS"
+    },
+    "desktopJs": [
+      "work_status_labels.js",
+      "floor_portal_config.js",
+      "floor_portal_engine.js",
+      "floor_portal_desktop.js"
+    ],
+    "desktopCss": [
+      "floor_portal.css"
+    ]
+  },
+  "store": {
+    "app": 87,
+    "ver": "1.4.1",
+    "title": "店舗ポータル（A550）",
+    "rootFontSize": "15px",
+    "titleFontSize": "24px",
+    "hasMenu": true,
+    "hasSummary": true,
+    "summaryTitle": "本日の店舗状況",
+    "has85": false,
+    "hasLocationMove": true,
+    "hasInternalWork": true,
+    "flatLinks": [],
+    "workLabels": [
+      "在庫総数",
+      "未着",
+      "問合せ・見積り",
+      "しみ抜き中",
+      "修理中",
+      "再直し中",
+      "仕上げ中",
+      "納品待ち"
+    ],
+    "hasDeliveryWaitingCard": true,
+    "links": [
+      {
+        "text": "個人顧客マスタ",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/96/",
+        "note": "",
+        "fontSize": "16px"
+      },
+      {
+        "text": "受注登録",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/16/",
+        "note": "",
+        "fontSize": "16px"
+      },
+      {
+        "text": "保管場所移動",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/34/",
+        "note": "App34",
+        "fontSize": "16px"
+      },
+      {
+        "text": "社内作業登録",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/84/",
+        "note": "作業＋場所可",
+        "fontSize": "16px"
+      },
+      {
+        "text": "検品・仕上げ完了",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/30/",
+        "note": "工程完了",
+        "fontSize": "16px"
+      },
+      {
+        "text": "納品書作成",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/19/",
+        "note": "",
+        "fontSize": "16px"
+      },
+      {
+        "text": "納期・引き取り在庫",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/92/",
+        "note": "",
+        "fontSize": "16px"
+      },
+      {
+        "text": "店舗入金管理",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/97/",
+        "note": "",
+        "fontSize": "16px"
+      }
+    ],
+    "summary": [
+      {
+        "label": "本日の店舗受注",
+        "value": "0件",
+        "unavailable": false
+      },
+      {
+        "label": "本日納期",
+        "value": "0件",
+        "unavailable": false
+      },
+      {
+        "label": "引き取り待ち",
+        "value": "1件",
+        "unavailable": false
+      },
+      {
+        "label": "本日入金金額",
+        "value": "未取得",
+        "unavailable": true
+      },
+      {
+        "label": "納期超過",
+        "value": "1件",
+        "unavailable": false
+      }
+    ]
+  },
+  "factory": {
+    "app": 86,
+    "ver": "1.4.1",
+    "title": "工場 作業状況",
+    "rootFontSize": "15px",
+    "titleFontSize": "24px",
+    "hasMenu": false,
+    "hasSummary": true,
+    "summaryTitle": "本日の工場状況",
+    "has85": false,
+    "hasLocationMove": false,
+    "hasInternalWork": true,
+    "flatLinks": [
+      "社内入庫登録",
+      "社内作業登録",
+      "検品・仕上げ完了"
+    ],
+    "workLabels": [
+      "在庫総数",
+      "未着",
+      "問合せ・見積り",
+      "丸洗い待ち",
+      "丸洗い中・乾燥",
+      "しみ抜き中",
+      "修理中",
+      "再直し中",
+      "仕上げ中",
+      "納品待ち",
+      "その他"
+    ],
+    "hasDeliveryWaitingCard": true,
+    "links": [
+      {
+        "text": "社内入庫登録",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/34/",
+        "note": "",
+        "fontSize": "15px"
+      },
+      {
+        "text": "社内作業登録",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/84/",
+        "note": "",
+        "fontSize": "15px"
+      },
+      {
+        "text": "検品・仕上げ完了",
+        "href": "https://o5nppg7kb4ly.cybozu.com/k/30/",
+        "note": "",
+        "fontSize": "15px"
+      }
+    ],
+    "summary": [
+      {
+        "label": "本日の工場受注",
+        "value": "0件",
+        "unavailable": false
+      },
+      {
+        "label": "本日納期",
+        "value": "13件",
+        "unavailable": false
+      },
+      {
+        "label": "納品待ち",
+        "value": "1件",
+        "unavailable": false
+      },
+      {
+        "label": "納期超過",
+        "value": "3件",
+        "unavailable": false
+      }
+    ]
+  },
+  "published": true,
+  "aclChanged": false
+}

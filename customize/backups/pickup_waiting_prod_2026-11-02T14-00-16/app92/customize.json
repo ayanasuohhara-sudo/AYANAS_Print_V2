@@ -1,0 +1,95 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110115443487DDE13BEA4041DC873475E76D6C642D083",
+          "name": "store_deadline_config.js",
+          "contentType": "text/javascript",
+          "size": "6704"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011544347761EFD65C884ED6BD8042E2F63D482B147",
+          "name": "store_deadline_engine.js",
+          "contentType": "text/javascript",
+          "size": "26957"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101154434DC4B89408021496385736104CB650F39192",
+          "name": "store_payment_config.js",
+          "contentType": "text/javascript",
+          "size": "4396"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101154435A4A3232346EB4D94AEC4D51A42AF201E311",
+          "name": "store_payment_engine.js",
+          "contentType": "text/javascript",
+          "size": "23886"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011544355BF0156B2CD945E3B62BF8456F41C88A033",
+          "name": "store_pickup_shared.js",
+          "contentType": "text/javascript",
+          "size": "9988"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611011544358C30227E707A4F7CB60B9620DB1074D0099",
+          "name": "store_pickup_api.js",
+          "contentType": "text/javascript",
+          "size": "8297"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110115443531CEC0FE0B8943BE940CD002CD2DAA70146",
+          "name": "store_deadline_desktop.js",
+          "contentType": "text/javascript",
+          "size": "23761"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261101154435E6B9A1D1BBD146D9AE96DFF41ED5D8A6221",
+          "name": "store_deadline_pickup.js",
+          "contentType": "text/javascript",
+          "size": "11448"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110115443451EDFC859CFA493EB7637B13EDFB825A256",
+          "name": "store_deadline.css",
+          "contentType": "text/css",
+          "size": "7226"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "15"
+}
