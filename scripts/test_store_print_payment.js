@@ -220,10 +220,10 @@ const storeOrderHtml = global.StoreOrderTemplate.render({
 
 assert('store_order has manage_no', storeOrderHtml.indexOf('PKTEST1') !== -1);
 assert('store_order has payment checks', storeOrderHtml.indexOf('☑ 入金済み') !== -1
-  && storeOrderHtml.indexOf('□ 黒字') !== -1
   && storeOrderHtml.indexOf('□ 未入金') !== -1
-  && storeOrderHtml.indexOf('□ 一部入金') !== -1);
-assert('store_order payment label', storeOrderHtml.indexOf('入金状態') !== -1);
+  && storeOrderHtml.indexOf('□ 一部入金') !== -1
+  && storeOrderHtml.indexOf('黒字') === -1);
+assert('store_order payment label', storeOrderHtml.indexOf('入金状況') !== -1);
 assert('store_order has barcode svg', /order-detail-barcode__svg/.test(storeOrderHtml));
 assert('store_order landscape page', storeOrderHtml.indexOf('order-detail-page') !== -1
   && storeOrderHtml.indexOf('store-order-page') !== -1);
@@ -262,14 +262,14 @@ assert('store_order partial keeps checkbox', (() => {
   }, {}, { reportType: 'store_order' });
   return partialHtml.indexOf('☑ 一部入金') !== -1
     && partialHtml.indexOf('□ 未入金') !== -1
-    && partialHtml.indexOf('□ 黒字') !== -1
-    && partialHtml.indexOf('□ 入金済み') !== -1;
+    && partialHtml.indexOf('□ 入金済み') !== -1
+    && partialHtml.indexOf('黒字') === -1;
 })());
-assert('store_order credit maps to 黒字', (() => {
+assert('store_order overpay maps to 入金済み', (() => {
   const creditHtml = global.StoreOrderTemplate.render({
     header: {
       manage_no: 'PKCREDIT',
-      pcm_customer_name: '黒字太郎',
+      pcm_customer_name: '完済太郎',
       payment_state: '過剰入金',
       payment_balance: -500,
       payment_exclusive: 5000,
@@ -280,8 +280,28 @@ assert('store_order credit maps to 黒字', (() => {
     details: [{ item_name: '丸洗い', amount: 5500 }],
     summary: {},
   }, {}, { reportType: 'store_order' });
-  return creditHtml.indexOf('☑ 黒字') !== -1
-    && creditHtml.indexOf('□ 入金済み') !== -1;
+  return creditHtml.indexOf('☑ 入金済み') !== -1
+    && creditHtml.indexOf('□ 未入金') !== -1
+    && creditHtml.indexOf('黒字') === -1;
+})());
+assert('store_order reflects App16 入金状況', (() => {
+  const unpaidHtml = global.StoreOrderTemplate.render({
+    header: {
+      manage_no: 'PKAPP16',
+      pcm_customer_name: '状況花子',
+      payment_state: '未入金',
+      store_payment_status: '未入金',
+      payment_balance: 5500,
+      payment_exclusive: 5000,
+      payment_tax: 500,
+      payment_billed_inclusive: 5500,
+      payment_paid: 0,
+    },
+    details: [{ item_name: '丸洗い', amount: 5500 }],
+    summary: {},
+  }, {}, { reportType: 'store_order' });
+  return unpaidHtml.indexOf('☑ 未入金') !== -1
+    && unpaidHtml.indexOf('入金状況') !== -1;
 })());
 
 const manyDetails = [];
@@ -334,7 +354,7 @@ assert('print does not PUT delivery_status', desktopJs.indexOf('store_order') !=
   && !/store_order[\s\S]{0,200}delivery_status/.test(desktopJs));
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
-assert('manifest v150', manifest.version === 150);
+assert('manifest v151', manifest.version === 151);
 assert('manifest desktop/js <= 30', Array.isArray(manifest.desktop.js) && manifest.desktop.js.length <= 30);
 assert('manifest includes store print bundle',
   manifest.desktop.js.indexOf('js/store_print_bundle.js') !== -1);

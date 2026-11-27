@@ -4,14 +4,15 @@
     /**
      * 店舗受注表（A550専用）
      * 構成は受注明細表（order_detail）と同じ A4横・左右2面。
-     * 追加: 作業チェック3項目、入金状態（黒字／入金済み／未入金／一部入金）。
+     * 追加: 作業チェック3項目、入金状況（App16 store_payment_status を自動反映）。
      * 主表から顧客名／得意先伝票番号／得意先担当・係を除外。
      * 左右とも下部はバーコードのみ（袖タグ表なし）。
      */
 
-    const STORE_ORDER_TEMPLATE_VERSION = '150';
+    const STORE_ORDER_TEMPLATE_VERSION = '151';
 
-    const PAYMENT_CHECK_OPTIONS = ['黒字', '入金済み', '未入金', '一部入金'];
+    /** App16 入金状況の選択肢と同一 */
+    const PAYMENT_CHECK_OPTIONS = ['入金済み', '未入金', '一部入金'];
 
     const esc = (value) => Format.escapeHtml(value);
 
@@ -22,13 +23,10 @@
         return String(value ?? '');
     };
 
-    /** 店舗受注表の入金状態（黒字／入金済み／未入金／一部入金） */
+    /** App16 入金状況（入金済み／未入金／一部入金）へ正規化 */
     const toPaymentCheckState = (state, balance) => {
         const s = String(state ?? '').trim();
-        if (s === '黒字' || s === '過剰入金') {
-            return '黒字';
-        }
-        if (s === '入金済' || s === '入金済み') {
+        if (s === '入金済' || s === '入金済み' || s === '過剰入金' || s === '黒字') {
             return '入金済み';
         }
         if (s === '一部入金') {
@@ -39,11 +37,11 @@
         }
         const bal = Number(balance);
         if (Number.isFinite(bal)) {
-            if (bal < -0.0001) {
-                return '黒字';
-            }
             if (bal <= 0.0001 && s !== '') {
                 return '入金済み';
+            }
+            if (bal > 0.0001 && s === '') {
+                return '未入金';
             }
         }
         return '未入金';
@@ -175,7 +173,7 @@
     const buildPaymentBlockHtml = (header, paymentState) => (
         '<div class="store-order-payment">'
         + '<div class="store-order-payment__head">'
-        + '<span class="store-order-payment__label">入金状態</span>'
+        + '<span class="store-order-payment__label">入金状況</span>'
         + buildPaymentChecksHtml(paymentState)
         + '</div>'
         + '<table class="store-order-payment-table">'

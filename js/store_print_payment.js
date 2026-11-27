@@ -3,8 +3,8 @@
 
     /**
      * 店舗帳票用 — 入金状況表示（更新しない）
-     * 正本: App16 store_payment_status。金額参考: App97（任意・履歴）。
-     * store_payment_engine.getOrderBalance と同型の税込計算。
+     * 正本: App16 store_payment_status（入金済み／未入金／一部入金）を帳票へ自動反映。
+     * 金額参考: App97（任意・履歴）。store_payment_engine.getOrderBalance と同型の税込計算。
      */
 
     const StorePrintPayment = {};
@@ -118,18 +118,19 @@
     };
 
     const resolveDisplayPaymentState = (orderRecord, balanceState) => {
-        // 過剰入金（残額マイナス）は帳票上「黒字」
-        if (balanceState === '過剰入金' || balanceState === '黒字') {
-            return '黒字';
-        }
+        // 正本: App16 入金状況（store_payment_status）をそのまま反映
         const fromApp16 = readStorePaymentStatus(orderRecord);
         if (fromApp16) {
             return fromApp16;
         }
-        if (balanceState === '入金済') {
+        // 未設定時のみ残高から推定（過剰入金は入金済み扱い）
+        if (balanceState === '過剰入金' || balanceState === '黒字' || balanceState === '入金済') {
             return '入金済み';
         }
-        return balanceState || '未入金';
+        if (balanceState === '一部入金' || balanceState === '未入金') {
+            return balanceState;
+        }
+        return '未入金';
     };
 
     const buildBalance = (billedInclusive, paid) => {
@@ -406,16 +407,14 @@
             header.general_client_name = pcmName;
         }
         header.payment_note = paymentNote;
-        const statusVotes = { '未入金': 0, '一部入金': 0, '入金済み': 0, '黒字': 0 };
+        const statusVotes = { '未入金': 0, '一部入金': 0, '入金済み': 0 };
         enrichedDetails.forEach((d) => {
             const st = d.payment_state;
             if (Object.prototype.hasOwnProperty.call(statusVotes, st)) {
                 statusVotes[st] += 1;
             }
         });
-        if (statusVotes['黒字'] > 0 || sumBalance < -0.0001) {
-            header.payment_state = '黒字';
-        } else if (statusVotes['一部入金'] > 0) {
+        if (statusVotes['一部入金'] > 0) {
             header.payment_state = '一部入金';
         } else if (statusVotes['未入金'] > 0 && statusVotes['入金済み'] === 0) {
             header.payment_state = '未入金';
@@ -425,11 +424,9 @@
         } else if (statusVotes['入金済み'] > 0 && statusVotes['未入金'] > 0) {
             header.payment_state = '一部入金';
         } else {
-            header.payment_state = sumBalance < -0.0001
-                ? '黒字'
-                : (sumBalance <= 0.0001 && sumBilled > 0
-                    ? '入金済み'
-                    : (sumPaid > 0 ? (sumBalance > 0 ? '一部入金' : '入金済み') : '未入金'));
+            header.payment_state = sumBalance <= 0.0001 && sumBilled > 0
+                ? '入金済み'
+                : (sumPaid > 0 ? (sumBalance > 0 ? '一部入金' : '入金済み') : '未入金');
         }
         header.store_payment_status = header.payment_state;
 

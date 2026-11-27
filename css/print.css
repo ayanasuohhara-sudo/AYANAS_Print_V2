@@ -3772,6 +3772,7 @@ body {
     max-width: 136mm;
     margin: 0 auto 1mm;
     box-sizing: border-box;
+    color: #000000;
 }
 
 .report-store-order .store-order-payment__head {
@@ -3780,11 +3781,13 @@ body {
     flex-wrap: wrap;
     gap: 4px 8px;
     margin-bottom: 0.8mm;
+    color: #000000;
 }
 
 .report-store-order .store-order-payment__label {
     font-size: 10pt;
     font-weight: 700;
+    color: #000000;
 }
 
 .report-store-order .store-order-payment__checks {
@@ -3792,12 +3795,14 @@ body {
     align-items: center;
     flex-wrap: wrap;
     gap: 2px 10px;
+    color: #000000;
 }
 
 .report-store-order .store-order-payment__check {
     font-size: 10pt;
     font-weight: 700;
     white-space: nowrap;
+    color: #000000;
 }
 
 .report-store-order .store-order-payment-table {

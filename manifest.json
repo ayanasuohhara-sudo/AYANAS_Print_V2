@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/kintone/js-sdk/main/packages/cli-kintone/schemas/plugin-manifest.schema.json",
   "manifest_version": 1,
-  "version": 150,
+  "version": 151,
   "type": "APP",
   "name": {
     "ja": "AYANAS Print",
     "en": "AYANAS Print"
   },
   "description": {
-    "ja": "AYANAS専用帳票印刷プラグイン Version 150（店舗受注表・入金状態チェックボックス）",
-    "en": "AYANAS Print Plugin V150 (store order payment status checkboxes)"
+    "ja": "AYANAS専用帳票印刷プラグイン Version 151（店舗受注表・入金状況をApp16から自動反映）",
+    "en": "AYANAS Print Plugin V151 (store order payment status from App16)"
   },
   "desktop": {
     "js": [
