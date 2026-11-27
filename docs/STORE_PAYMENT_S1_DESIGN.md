@@ -97,7 +97,7 @@
 
 | App | 税の扱い |
 |-----|----------|
-| App19 納品 | `subtotal = SUM(unit_price)`, `tax = subtotal*0.1`, `total = subtotal+tax`（CALC。端数は kintone 計算の既定） |
+| App19 納品 | **正:** `subtotal = SUM(amount)`（`amount = unit_price*qty`）、`tax = subtotal*0.1`、`total = subtotal+tax`（CALC）。**旧バグ:** `SUM(unit_price)` → 数量未反映（`docs/APP19_SUBTOTAL_QTY_BUG.md`） |
 | App35 請求 | `subtotal` / `tax` / `total` / `invoice_amount` は数値（プラグインが設定）。入金消込の正は**税込請求額** |
 | App21 | 充当先は `invoice_no`。店舗 manage_no 非対応 |
 

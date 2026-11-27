@@ -1,0 +1,67 @@
+{
+  "revision": "285",
+  "formulas": {
+    "subtotal": {
+      "type": "CALC",
+      "label": "税抜合計",
+      "expression": "SUM(unit_price)",
+      "format": "NUMBER_DIGIT"
+    },
+    "tax": {
+      "type": "CALC",
+      "label": "消費税",
+      "expression": "subtotal*0.1",
+      "format": "NUMBER"
+    },
+    "total_amount": {
+      "type": "CALC",
+      "label": "税込合計",
+      "expression": "subtotal+tax",
+      "format": "NUMBER_DIGIT"
+    },
+    "amount": {
+      "type": "CALC",
+      "label": "金額",
+      "expression": "unit_price * qty",
+      "format": "NUMBER_DIGIT"
+    },
+    "qty": {
+      "type": "NUMBER"
+    },
+    "unit_price": {
+      "type": "NUMBER"
+    }
+  },
+  "formulas35": {
+    "subtotal": {
+      "type": "NUMBER",
+      "label": "税抜合計",
+      "expression": null,
+      "format": null
+    },
+    "tax": {
+      "type": "NUMBER",
+      "label": "消費税",
+      "expression": null,
+      "format": null
+    },
+    "total": {
+      "type": "NUMBER",
+      "label": "税込合計",
+      "expression": null,
+      "format": null
+    },
+    "amount": {
+      "type": "CALC",
+      "label": "金額",
+      "expression": "unit_price*qty",
+      "format": "NUMBER"
+    },
+    "qty": {
+      "type": "NUMBER"
+    },
+    "unit_price": {
+      "type": "NUMBER"
+    }
+  }
+}

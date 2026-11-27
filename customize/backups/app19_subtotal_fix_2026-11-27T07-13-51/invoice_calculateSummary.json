@@ -1,0 +1,50 @@
+{
+  "hasInvoiceCreate": true,
+  "hasCalc": true,
+  "summaryResult": {
+    "item_count": 2,
+    "qty_total": 20,
+    "subtotal": 3100,
+    "tax": 310,
+    "total": 3410,
+    "count": 2
+  },
+  "summaryResult2": {
+    "item_count": 4,
+    "qty_total": 0,
+    "subtotal": 8300,
+    "tax": 830,
+    "total": 9130,
+    "count": 4
+  },
+  "pluginHits": [
+    {
+      "contentId": "9302",
+      "size": 45640
+    },
+    {
+      "contentId": "9303",
+      "size": 30269
+    },
+    {
+      "contentId": "9309",
+      "size": 5984
+    },
+    {
+      "contentId": "9312",
+      "size": 15353
+    },
+    {
+      "contentId": "9319",
+      "size": 51232
+    },
+    {
+      "contentId": "9320",
+      "size": 13675
+    },
+    {
+      "contentId": "9324",
+      "size": 8184
+    }
+  ]
+}

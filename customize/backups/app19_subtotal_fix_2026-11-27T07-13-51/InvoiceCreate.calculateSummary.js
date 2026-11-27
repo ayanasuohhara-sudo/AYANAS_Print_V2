@@ -1,0 +1,1 @@
+(...args) => InvoiceCalc[method](...args)

@@ -1,0 +1,125 @@
+{
+  "stamp": "2026-11-27T07-13-51",
+  "workDir": "/agent/repos/AYANAS_Print_V2/customize/backups/app19_subtotal_fix_2026-11-27T07-13-51",
+  "dryRun": false,
+  "before": {
+    "subtotal": {
+      "type": "CALC",
+      "label": "税抜合計",
+      "expression": "SUM(unit_price)",
+      "format": "NUMBER_DIGIT"
+    },
+    "tax": {
+      "type": "CALC",
+      "label": "消費税",
+      "expression": "subtotal*0.1",
+      "format": "NUMBER"
+    },
+    "total_amount": {
+      "type": "CALC",
+      "label": "税込合計",
+      "expression": "subtotal+tax",
+      "format": "NUMBER_DIGIT"
+    },
+    "amount": {
+      "type": "CALC",
+      "label": "金額",
+      "expression": "unit_price * qty",
+      "format": "NUMBER_DIGIT"
+    },
+    "qty": {
+      "type": "NUMBER"
+    },
+    "unit_price": {
+      "type": "NUMBER"
+    }
+  },
+  "afterFields": {
+    "revision": "286",
+    "subtotal": "SUM(amount)",
+    "tax": "subtotal*0.1",
+    "total_amount": "subtotal+tax",
+    "amount": "unit_price * qty"
+  },
+  "sampleBefore": {
+    "id": "735",
+    "delivery_no": "N20261126-735",
+    "invoice_status": "未請求",
+    "stored": {
+      "subtotal": "5510",
+      "tax": "551",
+      "total_amount": "6061"
+    },
+    "rows": [
+      {
+        "manage_no": "112626949",
+        "qty": 10,
+        "unit_price": 160,
+        "amount": 1600,
+        "qtyTimesUnit": 1600
+      },
+      {
+        "manage_no": "112626949",
+        "qty": 10,
+        "unit_price": 150,
+        "amount": 1500,
+        "qtyTimesUnit": 1500
+      },
+      {
+        "manage_no": "110726576",
+        "qty": 1,
+        "unit_price": 3000,
+        "amount": 3000,
+        "qtyTimesUnit": 3000
+      },
+      {
+        "manage_no": "110726577",
+        "qty": 1,
+        "unit_price": 2200,
+        "amount": 2200,
+        "qtyTimesUnit": 2200
+      }
+    ],
+    "sumUnitPrice": 5510,
+    "sumAmount": 8300,
+    "storedEqualsSumUnit": true,
+    "storedEqualsSumAmount": false
+  },
+  "invoice": {
+    "formulas35": {
+      "subtotal": {
+        "type": "NUMBER",
+        "label": "税抜合計",
+        "expression": null,
+        "format": null
+      },
+      "tax": {
+        "type": "NUMBER",
+        "label": "消費税",
+        "expression": null,
+        "format": null
+      },
+      "total": {
+        "type": "NUMBER",
+        "label": "税込合計",
+        "expression": null,
+        "format": null
+      },
+      "amount": {
+        "type": "CALC",
+        "label": "金額",
+        "expression": "unit_price*qty",
+        "format": "NUMBER"
+      },
+      "qty": {
+        "type": "NUMBER"
+      },
+      "unit_price": {
+        "type": "NUMBER"
+      }
+    },
+    "calculateSummarySrcLen": 41,
+    "calculateSummaryUsesAmount": false
+  },
+  "ok": true
+}
