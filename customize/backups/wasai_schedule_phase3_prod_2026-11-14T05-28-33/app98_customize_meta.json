@@ -1,0 +1,59 @@
+{
+  "settings": {
+    "name": "和裁士別仕事予定カレンダー",
+    "description": "",
+    "icon": {
+      "type": "PRESET",
+      "key": "APP39"
+    },
+    "theme": "WHITE",
+    "titleField": {
+      "selectionMode": "AUTO",
+      "code": "Record_number"
+    },
+    "enableThumbnails": true,
+    "enableBulkDeletion": false,
+    "enableComments": true,
+    "enableDuplicateRecord": true,
+    "enableInlineRecordEditing": true,
+    "numberPrecision": {
+      "digits": "16",
+      "decimalPlaces": "4",
+      "roundingMode": "HALF_EVEN"
+    },
+    "firstMonthOfFiscalYear": "4",
+    "revision": "3"
+  },
+  "js": [
+    {
+      "type": "FILE",
+      "name": "wasai_schedule_config.js",
+      "fileKey": "20261114051321D20F1773E7BF49FFBA8488088A87E59D154",
+      "contentType": "text/javascript",
+      "size": "3800"
+    },
+    {
+      "type": "FILE",
+      "name": "wasai_schedule_engine.js",
+      "fileKey": "20261114051321C947611A44F14AFAA83A7FCFD8031895120",
+      "contentType": "text/javascript",
+      "size": "19879"
+    },
+    {
+      "type": "FILE",
+      "name": "wasai_schedule_desktop.js",
+      "fileKey": "2026111405132231FFCF4AECA0470385D9BBA7B490E4E9201",
+      "contentType": "text/javascript",
+      "size": "17898"
+    }
+  ],
+  "css": [
+    {
+      "type": "FILE",
+      "name": "wasai_schedule.css",
+      "fileKey": "20261114051321A5B0794076664595A09201004F48EEF7022",
+      "contentType": "text/css",
+      "size": "6028"
+    }
+  ]
+}

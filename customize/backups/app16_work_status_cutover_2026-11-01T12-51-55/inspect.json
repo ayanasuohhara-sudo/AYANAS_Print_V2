@@ -1,0 +1,235 @@
+{
+  "at": "2026-11-01T12:51:35.474Z",
+  "apps": {
+    "16": {
+      "name": "01_受注明細管理",
+      "js": [
+        {
+          "type": "FILE",
+          "name": "saiban.js"
+        },
+        {
+          "type": "FILE",
+          "name": "saiban1.js"
+        },
+        {
+          "type": "FILE",
+          "name": "price_master_search11.js"
+        },
+        {
+          "type": "FILE",
+          "name": "category.js"
+        },
+        {
+          "type": "FILE",
+          "name": "order_customer_search.js"
+        },
+        {
+          "type": "FILE",
+          "name": "price_master_register.js"
+        },
+        {
+          "type": "FILE",
+          "name": "order_record_form.js"
+        },
+        {
+          "type": "FILE",
+          "name": "additional_item_engine.js"
+        },
+        {
+          "type": "FILE",
+          "name": "order_price_unconfirmed_clear.js"
+        },
+        {
+          "type": "FILE",
+          "name": "schedule_customer.js"
+        },
+        {
+          "type": "FILE",
+          "name": "order_pcm_config.js"
+        },
+        {
+          "type": "FILE",
+          "name": "order_pcm_engine.js"
+        },
+        {
+          "type": "FILE",
+          "name": "order_pcm_desktop.js"
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "name": "order_record_form.css"
+        },
+        {
+          "type": "FILE",
+          "name": "order_pcm.css"
+        }
+      ]
+    },
+    "30": {
+      "name": "06_仕上げ完了登録",
+      "js": [
+        {
+          "type": "FILE",
+          "name": "internal_ops_config.js"
+        },
+        {
+          "type": "FILE",
+          "name": "barcode_batch_core.js"
+        },
+        {
+          "type": "FILE",
+          "name": "barcode_batch_ui.js"
+        },
+        {
+          "type": "FILE",
+          "name": "complete_register_engine.js"
+        },
+        {
+          "type": "FILE",
+          "name": "complete_register_desktop.js"
+        }
+      ],
+      "css": []
+    },
+    "84": {
+      "name": "08_社内作業登録",
+      "js": [
+        {
+          "type": "FILE",
+          "name": "internal_ops_config.js"
+        },
+        {
+          "type": "FILE",
+          "name": "barcode_batch_core.js"
+        },
+        {
+          "type": "FILE",
+          "name": "barcode_batch_ui.js"
+        },
+        {
+          "type": "FILE",
+          "name": "internal_work_engine.js"
+        },
+        {
+          "type": "FILE",
+          "name": "internal_work_desktop.js"
+        }
+      ],
+      "css": []
+    },
+    "85": {
+      "error": "The app (ID: 85) not found. The app may have been deleted."
+    },
+    "87": {
+      "name": "店舗作業状況ポータル",
+      "js": [
+        {
+          "type": "FILE",
+          "name": "floor_portal_config.js"
+        },
+        {
+          "type": "FILE",
+          "name": "floor_portal_engine.js"
+        },
+        {
+          "type": "FILE",
+          "name": "floor_portal_desktop.js"
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "name": "floor_portal.css"
+        }
+      ]
+    },
+    "92": {
+      "name": "店舗納期カレンダー",
+      "js": [
+        {
+          "type": "FILE",
+          "name": "store_deadline_config.js"
+        },
+        {
+          "type": "FILE",
+          "name": "store_deadline_engine.js"
+        },
+        {
+          "type": "FILE",
+          "name": "store_deadline_desktop.js"
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "name": "store_deadline.css"
+        }
+      ]
+    },
+    "97": {
+      "name": "店舗入金管理",
+      "js": [
+        {
+          "type": "FILE",
+          "name": "store_payment_config.js"
+        },
+        {
+          "type": "FILE",
+          "name": "store_payment_engine.js"
+        },
+        {
+          "type": "FILE",
+          "name": "store_payment_numbering.js"
+        },
+        {
+          "type": "FILE",
+          "name": "store_payment_api.js"
+        },
+        {
+          "type": "FILE",
+          "name": "store_payment_desktop.js"
+        },
+        {
+          "type": "FILE",
+          "name": "store_payment_ui.js"
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "name": "store_payment.css"
+        }
+      ]
+    }
+  },
+  "work_status": {
+    "defaultValue": "未着手",
+    "labels": [
+      "未着手",
+      "問合せ・見積り",
+      "丸洗い待ち",
+      "丸洗い中・乾燥",
+      "しみ抜き待ち",
+      "修理中",
+      "再直し中",
+      "仕上げ中",
+      "仕上げ完了"
+    ],
+    "counts": {
+      "未着手": 403,
+      "問合せ・見積り": 0,
+      "丸洗い待ち": 3,
+      "丸洗い中・乾燥": 27,
+      "しみ抜き待ち": 0,
+      "修理中": 0,
+      "再直し中": 0,
+      "仕上げ中": 98,
+      "仕上げ完了": 624,
+      "__empty__": 2059,
+      "__total__": 3214
+    }
+  }
+}

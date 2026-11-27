@@ -1,0 +1,88 @@
+(function() {
+  'use strict';
+
+  const APP_ID = 16;
+  const VIEW_ID = 5521026;
+
+  kintone.events.on('app.record.index.show', function(event) {
+
+    if (event.viewId !== VIEW_ID) {
+      return event;
+    }
+
+    if (document.getElementById('customer-code-search')) {
+      return event;
+    }
+
+    const space = kintone.app.getHeaderMenuSpaceElement();
+
+    const label = document.createElement('span');
+    label.innerText = '顧客コード：';
+    label.style.marginRight = '5px';
+
+    const input = document.createElement('input');
+    input.id = 'customer-code-search';
+    input.type = 'text';
+    input.placeholder = 'm032';
+    input.style.height = '34px';
+    input.style.width = '120px';
+    input.style.marginRight = '5px';
+
+    const btn = document.createElement('button');
+    btn.innerText = '検索';
+    btn.style.marginRight = '5px';
+
+    const btnAll = document.createElement('button');
+    btnAll.innerText = '全件';
+
+    btn.onclick = function() {
+
+      const code = input.value.trim();
+
+      if (!code) {
+        alert('顧客コードを入力してください');
+        return;
+      }
+
+      location.href =
+        location.origin +
+        '/k/' +
+        APP_ID +
+        '/?view=' +
+        VIEW_ID +
+        '&query=' +
+        encodeURIComponent(
+          'customer_code="' + code + '"'
+        );
+
+    };
+
+    btnAll.onclick = function() {
+
+      location.href =
+        location.origin +
+        '/k/' +
+        APP_ID +
+        '/?view=' +
+        VIEW_ID;
+
+    };
+
+    input.addEventListener('keypress', function(e) {
+
+      if (e.key === 'Enter') {
+        btn.click();
+      }
+
+    });
+
+    space.appendChild(label);
+    space.appendChild(input);
+    space.appendChild(btn);
+    space.appendChild(btnAll);
+
+    return event;
+
+  });
+
+})();

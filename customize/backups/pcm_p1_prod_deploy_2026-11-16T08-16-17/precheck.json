@@ -1,0 +1,20 @@
+{
+  "collisions": [],
+  "alreadyHasMeasureHistory": false,
+  "app96Js": [
+    "pcm_config.js",
+    "pcm_numbering.js",
+    "pcm_engine.js",
+    "pcm_desktop.js",
+    "pcm_order_history.js"
+  ],
+  "app87Js": [
+    "work_status_labels.js",
+    "hub_nav_config.js",
+    "hub_nav.js",
+    "floor_portal_config.js",
+    "floor_portal_engine.js",
+    "floor_portal_desktop.js"
+  ],
+  "safe": true
+}

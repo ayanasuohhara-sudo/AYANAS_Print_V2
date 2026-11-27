@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "98",
+    "status": "SUCCESS"
+  },
+  "beforeJs": [
+    "wasai_schedule_config.js",
+    "wasai_schedule_engine.js",
+    "wasai_schedule_desktop.js"
+  ],
+  "js": [
+    "wasai_schedule_config.js",
+    "wasai_schedule_engine.js",
+    "wasai_schedule_desktop.js"
+  ],
+  "css": [
+    "wasai_schedule.css"
+  ]
+}

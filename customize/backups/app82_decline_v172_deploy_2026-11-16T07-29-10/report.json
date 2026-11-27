@@ -1,0 +1,448 @@
+{
+  "stamp": "2026-11-16T07-29-10",
+  "backup": "/agent/repos/AYANAS_Print_V2/customize/backups/app82_decline_v172_prod_2026-11-16T07-29-10",
+  "work": "/agent/repos/AYANAS_Print_V2/customize/backups/app82_decline_v172_deploy_2026-11-16T07-29-10",
+  "expectedMonthly": {
+    "overseas": 947,
+    "domestic": 30,
+    "obi": 102,
+    "tailor": 1079,
+    "conflicts": 1,
+    "overall": 1080,
+    "months": {
+      "2026-08": 297,
+      "2026-09": 250,
+      "2026-10": 335,
+      "2026-11": 197
+    },
+    "conflictManageNo": "090526327"
+  },
+  "expectedDecline": {
+    "totalCustomers": 57,
+    "stopped": 13,
+    "majorDown": 12,
+    "down": 7,
+    "stable": 8,
+    "up": 17,
+    "recent": "2026-08〜2026-10",
+    "prior": "2026-05〜2026-07",
+    "recentEnd": "2026-10",
+    "conflictCount": 1
+  },
+  "steps": {
+    "backup": {
+      "stamp": "2026-11-16T07-29-10",
+      "backup": "/agent/repos/AYANAS_Print_V2/customize/backups/app82_decline_v172_prod_2026-11-16T07-29-10",
+      "files": {
+        "business_dashboard_config.js": {
+          "size": 14970,
+          "sha1": "fb975f329f3389a7f8440dfbde841cb3396dbcf4"
+        },
+        "ar_config.js": {
+          "size": 1886,
+          "sha1": "9d4fd699d9ecda7b36f805dc8ee10307a763ac94"
+        },
+        "payment_create.js": {
+          "size": 49476,
+          "sha1": "0a0dde0befe171982424134fbfe495afef9458fb"
+        },
+        "ar_engine.js": {
+          "size": 17148,
+          "sha1": "65f44ae6f0523157f4c7fc694760e70c12caef82"
+        },
+        "business_dashboard_engine.js": {
+          "size": 64912,
+          "sha1": "d4c539a293045def8a2794fad662d55ca202adf6"
+        },
+        "business_dashboard_monthly_engine.js": {
+          "size": 31391,
+          "sha1": "570cae12eb2c9604c469d26b49956e082f2dc204"
+        },
+        "business_dashboard_money.js": {
+          "size": 19266,
+          "sha1": "605e61635431fc5b297ec5cd14a0fd7b53c1bc4e"
+        },
+        "business_dashboard_desktop.js": {
+          "size": 62953,
+          "sha1": "862b2a906e14878b101ab1eba97a77f7260f3614"
+        },
+        "business_dashboard.css": {
+          "size": 8248,
+          "sha1": "3269bb9918d6bf51ffc395db2d5a0299efe9afd3"
+        }
+      },
+      "jsOrder": [
+        "business_dashboard_config.js",
+        "ar_config.js",
+        "payment_create.js",
+        "ar_engine.js",
+        "business_dashboard_engine.js",
+        "business_dashboard_monthly_engine.js",
+        "business_dashboard_money.js",
+        "business_dashboard_desktop.js"
+      ],
+      "cssOrder": [
+        "business_dashboard.css"
+      ],
+      "monthlyBeforeDesktop": true,
+      "diff": {
+        "business_dashboard_config.js": {
+          "status": "different",
+          "localSha": "3cf2ddac5e3a9c777ae6c77381292139a499957d",
+          "prodSha": "fb975f329f3389a7f8440dfbde841cb3396dbcf4",
+          "action": "override_local"
+        },
+        "ar_config.js": {
+          "status": "different",
+          "localSha": "013847d95c84915937786c6fc7932bbe20ab7cdd",
+          "prodSha": "9d4fd699d9ecda7b36f805dc8ee10307a763ac94",
+          "action": "keep_prod"
+        },
+        "payment_create.js": {
+          "status": "different",
+          "localSha": "524331affdd5630ba77485d466bc18961220feda",
+          "prodSha": "0a0dde0befe171982424134fbfe495afef9458fb",
+          "action": "keep_prod"
+        },
+        "ar_engine.js": {
+          "status": "different",
+          "localSha": "6aa53f02d7126c9e6137a003e7bbb52da8b6c8a9",
+          "prodSha": "65f44ae6f0523157f4c7fc694760e70c12caef82",
+          "action": "keep_prod"
+        },
+        "business_dashboard_engine.js": {
+          "status": "different",
+          "localSha": "af617213e8a17a7e0ce919276d126201aaccb78e",
+          "prodSha": "d4c539a293045def8a2794fad662d55ca202adf6",
+          "action": "keep_prod"
+        },
+        "business_dashboard_monthly_engine.js": {
+          "status": "different",
+          "localSha": "55448e82c14785f3b33645a8829b6fbda457b3f4",
+          "prodSha": "570cae12eb2c9604c469d26b49956e082f2dc204",
+          "action": "override_local"
+        },
+        "business_dashboard_money.js": {
+          "status": "different",
+          "localSha": "81254ea2f28f026b2ad74a5e71c8f9c4200a581b",
+          "prodSha": "605e61635431fc5b297ec5cd14a0fd7b53c1bc4e",
+          "action": "keep_prod"
+        },
+        "business_dashboard_desktop.js": {
+          "status": "different",
+          "localSha": "cd23d03b358322953d74883d2d8e964135a328b2",
+          "prodSha": "862b2a906e14878b101ab1eba97a77f7260f3614",
+          "action": "override_local"
+        },
+        "business_dashboard.css": {
+          "status": "different",
+          "localSha": "285085b9507c7af49e246221fe4e3e1450eb77f5",
+          "prodSha": "3269bb9918d6bf51ffc395db2d5a0299efe9afd3",
+          "action": "override_local"
+        }
+      },
+      "dailyEngineKeepProd": true
+    },
+    "deploy": {
+      "ok": true,
+      "deploy": {
+        "app": "82",
+        "status": "SUCCESS"
+      },
+      "js": [
+        "business_dashboard_config.js",
+        "ar_config.js",
+        "payment_create.js",
+        "ar_engine.js",
+        "business_dashboard_engine.js",
+        "business_dashboard_monthly_engine.js",
+        "business_dashboard_money.js",
+        "business_dashboard_desktop.js"
+      ],
+      "css": [
+        "business_dashboard.css"
+      ],
+      "restore": false
+    },
+    "orderOk": true,
+    "verify": {
+      "ok": true,
+      "checks": {
+        "ver172": true,
+        "monthly120": true,
+        "customerApp8": true,
+        "declineApi": true,
+        "dailySections": true,
+        "monthlyTab": true,
+        "chart12": true,
+        "subtabs": true,
+        "routes": true,
+        "conflictSection": true,
+        "filters": true,
+        "matrix": true,
+        "monthlyCounts": true,
+        "months": true,
+        "conflictManageNo": true,
+        "declineWindows": true,
+        "declineSummary": true,
+        "declineConflicts": true,
+        "declineUiControls": true,
+        "declineRanking": true,
+        "declineDetailTrend": true,
+        "declineApp16Link": true,
+        "csvClick": true,
+        "dailyAfter": true,
+        "jsOrder": true
+      },
+      "dailyReady": {
+        "ver": "1.7.2",
+        "monthlyVer": "1.2.0",
+        "hasMonthly": true,
+        "hasEngine": true,
+        "hasCustomerApp": true,
+        "hasDeclineApi": true,
+        "root": true,
+        "tabs": [
+          {
+            "id": "daily",
+            "text": "日次",
+            "active": true
+          },
+          {
+            "id": "monthly",
+            "text": "経営月次",
+            "active": false
+          }
+        ],
+        "sections": 9,
+        "title": "業務ダッシュボード"
+      },
+      "monthly": {
+        "loading": false,
+        "hasChart": true,
+        "bars": 12,
+        "subtabs": [
+          "overview",
+          "decline"
+        ],
+        "title": "経営月次分析",
+        "err": "",
+        "yearNote": "年度累計: 海外 947\n    / 国内着物 30\n    / 帯 102\n    / 仕立て合計 1,079 枚\n    / 分類競合 1 件\n    （全体 1,080 ＝ 仕立て合計 1,079 ＋ 競合 1）",
+        "conflictSection": true,
+        "routeButtons": [
+          "all",
+          "overseas",
+          "domestic",
+          "obi"
+        ],
+        "filters": true,
+        "matrixRows": 46,
+        "sectionTitles": [
+          "12か月 受注枚数推移",
+          "月別一覧（8月〜翌7月）",
+          "金額・単価（選択月）（11月）",
+          "着物種類別 受注枚数",
+          "得意先ランキング（選択月）",
+          "得意先×月別 受注枚数",
+          "未納品の受注残",
+          "仕立て分類の競合"
+        ]
+      },
+      "probe": {
+        "ver": "1.2.0",
+        "dashVer": "1.7.2",
+        "customerApp": 8,
+        "timingMs": {
+          "prepare": 3834,
+          "monthly": 2,
+          "decline": 2,
+          "total": 3838
+        },
+        "yearTotals": {
+          "overseasKimono": 947,
+          "domesticKimono": 30,
+          "obiKimono": 102,
+          "tailorKimono": 1079,
+          "conflictCount": 1
+        },
+        "overall": 1080,
+        "conflicts": [
+          {
+            "manageNo": "090526327",
+            "orderDate": "2026-09-05",
+            "cats": [
+              "overseas",
+              "obi"
+            ]
+          }
+        ],
+        "series": [
+          {
+            "key": "2026-08",
+            "overseas": 263,
+            "domestic": 8,
+            "obi": 26,
+            "total": 297
+          },
+          {
+            "key": "2026-09",
+            "overseas": 215,
+            "domestic": 9,
+            "obi": 26,
+            "total": 250
+          },
+          {
+            "key": "2026-10",
+            "overseas": 304,
+            "domestic": 12,
+            "obi": 19,
+            "total": 335
+          },
+          {
+            "key": "2026-11",
+            "overseas": 165,
+            "domestic": 1,
+            "obi": 31,
+            "total": 197
+          }
+        ],
+        "selected": {
+          "key": "2026-11",
+          "overseas": 165,
+          "domestic": 1,
+          "obi": 31,
+          "total": 197,
+          "orderTotal": 2296500,
+          "tailorAmount": 2034050,
+          "addonAmount": 262450
+        },
+        "decline": {
+          "windows": {
+            "recent": "2026-08〜2026-10",
+            "prior": "2026-05〜2026-07",
+            "recentEnd": "2026-10",
+            "insufficient": false
+          },
+          "summary": {
+            "totalCustomers": 57,
+            "stopped": 13,
+            "majorDown": 12,
+            "down": 7,
+            "stable": 8,
+            "up": 17
+          },
+          "conflictCount": 1,
+          "top": [
+            {
+              "code": "M074",
+              "name": "株式会社松葉　橋本店",
+              "prior": 51,
+              "recent": 13,
+              "delta": -38,
+              "status": "major_down",
+              "trendLen": 12,
+              "app16": "customer_code = \"M074\""
+            },
+            {
+              "code": "A645",
+              "name": "株式会社Office K",
+              "prior": 42,
+              "recent": 14,
+              "delta": -28,
+              "status": "major_down",
+              "trendLen": 12,
+              "app16": "customer_code = \"A645\""
+            },
+            {
+              "code": "M061",
+              "name": "株式会社西織",
+              "prior": 18,
+              "recent": 0,
+              "delta": -18,
+              "status": "stopped",
+              "trendLen": 12,
+              "app16": "customer_code = \"M061\""
+            },
+            {
+              "code": "A611",
+              "name": "合資会社三國屋呉服店",
+              "prior": 21,
+              "recent": 3,
+              "delta": -18,
+              "status": "major_down",
+              "trendLen": 12,
+              "app16": "customer_code = \"A611\""
+            },
+            {
+              "code": "A623",
+              "name": "株式会社きものあさ川",
+              "prior": 37,
+              "recent": 20,
+              "delta": -17,
+              "status": "down",
+              "trendLen": 12,
+              "app16": "customer_code = \"A623\""
+            }
+          ],
+          "hasCsvHelpers": true
+        }
+      },
+      "declineUi": {
+        "loading": false,
+        "title": "受注減少得意先",
+        "hasEnd": true,
+        "hasMajor": true,
+        "hasMild": true,
+        "hasGrowth": true,
+        "hasSearch": true,
+        "hasSort": true,
+        "hasCsv": true,
+        "routeButtons": [
+          "all",
+          "overseas",
+          "domestic",
+          "obi"
+        ],
+        "statusButtons": [
+          "all",
+          "stopped",
+          "major_down",
+          "down",
+          "stable",
+          "up"
+        ],
+        "rankingRows": 57,
+        "detail": true,
+        "trendBars": 12,
+        "app16Link": "https://o5nppg7kb4ly.cybozu.com/k/16/?query=customer_code%20%3D%20%22M074%22",
+        "conflictSection": true,
+        "noteText": "比較前 2026-05〜2026-07 /\n  直近 2026-08〜2026-10 /\n  停止 13・大幅減少 12・減少 7・安定 8・増加 17\n  / 分類競合 1 件 | 分類競合は仕立て枚数に含めず、別途報告します（v1.7.1ルール維持）。 | コード M074 /\n    比較前 51 /\n    直近 13 /\n    増減 -38 /\n    -74.5% /\n    大幅減少 | 内訳（直近）: 海外 7\n    / 国内着物 0\n    / 帯 6\n    / 金額 138,960\n    / 最終受注日 2026-11-07\n    / 競合 0"
+      },
+      "csvClick": {
+        "ok": true
+      },
+      "dailyAfter": {
+        "activeDaily": true,
+        "sections": 9,
+        "title": "業務ダッシュボード",
+        "ver": "1.7.2"
+      },
+      "customize": {
+        "js": [
+          "business_dashboard_config.js",
+          "ar_config.js",
+          "payment_create.js",
+          "ar_engine.js",
+          "business_dashboard_engine.js",
+          "business_dashboard_monthly_engine.js",
+          "business_dashboard_money.js",
+          "business_dashboard_desktop.js"
+        ],
+        "css": [
+          "business_dashboard.css"
+        ]
+      }
+    }
+  },
+  "ok": true
+}

@@ -1,0 +1,16 @@
+{
+  "status": "SUCCESS",
+  "revision": "41",
+  "desktopJs": [
+    "app_nav_banner_config.js",
+    "app_nav_banner.js",
+    "payment_create.js",
+    "invoice_balance_desktop.js"
+  ],
+  "mobileJs": [
+    "payment_create.js",
+    "invoice_balance_desktop.js"
+  ],
+  "payIdx": 2,
+  "balIdx": 3
+}

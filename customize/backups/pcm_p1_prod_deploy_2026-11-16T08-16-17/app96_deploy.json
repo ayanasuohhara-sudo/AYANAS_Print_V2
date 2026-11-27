@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "96",
+    "status": "SUCCESS"
+  },
+  "desktopJs": [
+    "pcm_config.js",
+    "pcm_numbering.js",
+    "pcm_engine.js",
+    "pcm_measure_engine.js",
+    "pcm_desktop.js",
+    "pcm_order_history.js",
+    "pcm_measure_panel.js"
+  ],
+  "desktopCss": [
+    "pcm.css"
+  ]
+}

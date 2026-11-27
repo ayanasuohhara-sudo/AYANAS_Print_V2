@@ -14,7 +14,7 @@
     const OVERSEAS_APP_ID = 28;
     const ORDER_APP_ID = 16;
 
-    const SERVICE_VERSION = '7';
+    const SERVICE_VERSION = '9';
 
     const FIELDS = {
         shipDate: 'ship_date',
@@ -595,40 +595,6 @@
 
     };
 
-    const getClientName = (record, orderRecord, subtableRow = null) => {
-
-        if (!orderRecord) {
-            return '';
-        }
-
-        const clientName = String(getFieldValue(orderRecord, FIELDS.clientName) ?? '').trim();
-
-        if (clientName === '') {
-            return '';
-        }
-
-        const orderCustomerName = String(
-            getFieldValue(orderRecord, FIELDS.customerName) ?? ''
-        ).trim();
-        const orderSlipNo = String(getFieldValue(orderRecord, FIELDS.slipNo) ?? '').trim();
-        const orderInCharge = String(getFieldValue(orderRecord, FIELDS.inCharge) ?? '').trim();
-
-        if (orderSlipNo !== '' && clientName === orderSlipNo) {
-            return '';
-        }
-
-        if (orderInCharge !== '' && clientName === orderInCharge) {
-            return '';
-        }
-
-        if (orderCustomerName !== '' && clientName === orderCustomerName) {
-            return '';
-        }
-
-        return clientName;
-
-    };
-
     const getDetailFieldValue = (record, orderRecord, fieldCode, subtableRow = null) => {
 
         const subtableValue = getSubtableFieldValue(subtableRow, fieldCode);
@@ -637,14 +603,36 @@
             return subtableValue;
         }
 
+        if (fieldCode === FIELDS.clientName && subtableRow) {
+            const subtableCustomerName = getSubtableFieldValue(subtableRow, FIELDS.customerName);
+
+            if (subtableCustomerName !== '') {
+                return subtableCustomerName;
+            }
+
+        }
+
         const localValue = String(getFieldValue(record, fieldCode) ?? '').trim();
 
         if (localValue !== '') {
             return localValue;
         }
 
+        if (fieldCode === FIELDS.clientName) {
+            const localCustomerName = String(getFieldValue(record, FIELDS.customerName) ?? '').trim();
+
+            if (localCustomerName !== '') {
+                return localCustomerName;
+            }
+
+        }
+
         if (!orderRecord) {
             return '';
+        }
+
+        if (fieldCode === FIELDS.clientName) {
+            return getOrderFieldValue(orderRecord, [FIELDS.clientName, FIELDS.customerName]);
         }
 
         return String(getFieldValue(orderRecord, fieldCode) ?? '').trim();
@@ -727,7 +715,7 @@
         return {
             manage_no: manageNo,
             customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode, subtableRow),
-            client_name: getClientName(record, orderRecord, subtableRow),
+            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName, subtableRow),
             kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType, subtableRow),
             kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec, subtableRow),
             deadline: normalizeDateValue(
@@ -852,7 +840,7 @@
             carton_no: getDetailFieldValue(record, orderRecord, FIELDS.cartonNo, subtableRow),
             manage_no: manageNo,
             customer_code: getDetailFieldValue(record, orderRecord, FIELDS.customerCode, subtableRow),
-            client_name: getClientName(record, orderRecord, subtableRow),
+            client_name: getDetailFieldValue(record, orderRecord, FIELDS.clientName, subtableRow),
             kimono_type: getDetailFieldValue(record, orderRecord, FIELDS.kimonoType, subtableRow),
             kimono_spec: getDetailFieldValue(record, orderRecord, FIELDS.kimonoSpec, subtableRow),
             scheduled_arrival_date: normalizeDateValue(
@@ -1056,6 +1044,73 @@
     };
 
     /**
+     * 指定出庫日の印刷データを調査する（ブラウザコンソール用）
+     * @param {string} shipDate
+     * @returns {Promise<Object>}
+     */
+    OverseasOutbound.inspectShipDate = async (shipDate) => {
+
+        const normalizedDate = normalizeDateValue(shipDate);
+
+        if (!normalizedDate) {
+            throw new Error('出庫日が指定されていません。');
+        }
+
+        const records = dedupeRecordsById(
+            await fetchAllRecordsWithFallback(
+                buildOutboundSheetQueries(normalizedDate),
+                normalizedDate
+            )
+        );
+        const flattenedRecords = flattenOutboundRecords(records);
+        const manageNos = flattenedRecords.flatMap((item) => (
+            getManageNoCandidates(item.record, item.subtableRow)
+        ));
+        const orderMap = await fetchOrderMapByManageNos(manageNos);
+        const details = (await Promise.all(
+            flattenedRecords.map(async (item) => {
+
+                const orderRecord = await resolveOrderRecord(
+                    item.record,
+                    item.subtableRow,
+                    orderMap
+                );
+
+                return buildOutboundSheetRow(
+                    item.record,
+                    orderRecord,
+                    item.subtableRow
+                );
+
+            })
+        ))
+            .filter((detail) => detail.manage_no !== '');
+
+        return {
+            ship_date: normalizedDate,
+            app28_record_count: records.length,
+            print_detail_count: details.length,
+            manage_nos: details.map((detail) => detail.manage_no),
+            records: records.map((record) => ({
+                record_id: String(record?.$id?.value ?? ''),
+                ship_date: getShipDate(record),
+                carton_no: String(getFieldValue(record, FIELDS.cartonNo) ?? '').trim(),
+                top_manage_no: String(getFieldValue(record, FIELDS.manageNo) ?? '').trim(),
+                subtable_count: Array.isArray(record?.overseas_details?.value)
+                    ? record.overseas_details.value.length
+                    : 0,
+                subtable_manage_nos: Array.isArray(record?.overseas_details?.value)
+                    ? record.overseas_details.value.map((row) => (
+                        getSubtableFieldValue(row, FIELDS.manageNo)
+                    ))
+                    : [],
+            })),
+            details,
+        };
+
+    };
+
+    /**
      * 管理番号ごとのお客様名データを調査する（ブラウザコンソール用）
      * @param {string[]} manageNos
      * @returns {Promise<Array<Object>>}
@@ -1116,9 +1171,10 @@
 
                 printRows.push({
                     manage_no: getManageNo(item.record, item.subtableRow),
-                    print_client_name: getClientName(
+                    print_client_name: getDetailFieldValue(
                         item.record,
                         resolvedOrder,
+                        FIELDS.clientName,
                         item.subtableRow
                     ),
                     order_found: resolvedOrder !== null,
@@ -1139,7 +1195,12 @@
             if (printRows.length === 0 && orderRecord) {
                 printRows.push({
                     manage_no: manageNo,
-                    print_client_name: getClientName(null, orderRecord, null),
+                    print_client_name: getDetailFieldValue(
+                        null,
+                        orderRecord,
+                        FIELDS.clientName,
+                        null
+                    ),
                     order_found: true,
                     app28_top: null,
                     app28_subtable: null,

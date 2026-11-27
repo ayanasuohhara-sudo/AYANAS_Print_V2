@@ -1,0 +1,95 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216125486A8FE24414E4E7F8B2FD0E9810C7E46328",
+          "name": "app_nav_banner_config.js",
+          "contentType": "text/javascript",
+          "size": "2747"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021612548EB866512CAD4B6FA3574EE3C1FFCEB3251",
+          "name": "app_nav_banner.js",
+          "contentType": "text/javascript",
+          "size": "6659"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161255DFEF94B2C5484BB191989B9B231E7995043",
+          "name": "work_status_labels.js",
+          "contentType": "text/javascript",
+          "size": "2771"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161255AA1CB9C53DA24BF1B49BF7181CF4AF96039",
+          "name": "internal_ops_config.js",
+          "contentType": "text/javascript",
+          "size": "4315"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161255409BE4344E3043F9A39E55FAFBCDCB3B217",
+          "name": "barcode_batch_core.js",
+          "contentType": "text/javascript",
+          "size": "1549"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021612555814F64300F04F719051D17164282F5B269",
+          "name": "barcode_batch_ui.js",
+          "contentType": "text/javascript",
+          "size": "2237"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021612553A80678FF85E4AEBA18E8008D7679EC4336",
+          "name": "complete_register_engine.js",
+          "contentType": "text/javascript",
+          "size": "17573"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161255C0F7DE52DFA54F45A4518271F0CC7260050",
+          "name": "complete_register_desktop.js",
+          "contentType": "text/javascript",
+          "size": "15472"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102161254DECD1B1214184AACAD0877C4F5345CC9012",
+          "name": "app_nav_banner.css",
+          "contentType": "text/css",
+          "size": "4473"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "37"
+}

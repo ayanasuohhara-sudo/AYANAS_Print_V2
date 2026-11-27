@@ -1,0 +1,224 @@
+(() => {
+    'use strict';
+
+    /**
+     * AYANAS Print V3
+     * templates/delivery_matsuba.js
+     *
+     * 納品書（松葉店用）— 単価・金額・税集計なし、同一管理番号は先頭行のみ表示
+     */
+
+    const DETAILS_PER_PAGE = Core.Report.DETAILS_PER_PAGE;
+
+    const DEFAULT_COMPANY = {
+        name: '株式会社ayanasu',
+        postalCode: '〒631-0078',
+        address: '奈良県奈良市富雄元町1-13-41',
+        tel: 'TEL 0742-47-8390',
+        fax: 'FAX 0742-47-8391',
+    };
+
+    const esc = (value) => Format.escapeHtml(value);
+
+    const getCompanyInfo = (layout = {}) => {
+
+        const source = layout.company ?? DEFAULT_COMPANY;
+
+        return {
+            name: source.name ?? DEFAULT_COMPANY.name,
+            postalCode: source.postalCode ?? DEFAULT_COMPANY.postalCode,
+            address: source.address ?? DEFAULT_COMPANY.address,
+            tel: source.tel ?? DEFAULT_COMPANY.tel,
+            fax: source.fax ?? DEFAULT_COMPANY.fax,
+        };
+
+    };
+
+    const formatCustomerName = (name) => `${String(name ?? '').trim()} 様`;
+
+    const formatKimonoSubHtml = (type, spec) => {
+
+        const kimonoType = String(type ?? '').trim();
+        const kimonoSpec = String(spec ?? '').trim();
+
+        if (kimonoType && kimonoSpec) {
+            return `<span class="detail-kimono-type">${esc(kimonoType)}</span>`
+                + `<span class="detail-kimono-spec">${esc(kimonoSpec)}</span>`;
+        }
+
+        return esc(kimonoType || kimonoSpec);
+
+    };
+
+    const buildHeaderLeftHtml = (header, layout) => {
+
+        if (layout.recipientMode === 'general') {
+            return `
+        <h1 class="delivery-title">納 品 書</h1>
+        <p class="delivery-customer-name">${esc(formatCustomerName(header.general_client_name))}</p>`;
+        }
+
+        return `
+        <h1 class="delivery-title">納 品 書</h1>
+        <dl class="delivery-meta">
+            <div class="delivery-meta__item">
+                <dt>お得意様コード</dt>
+                <dd>${esc(header.customer_code)}</dd>
+            </div>
+        </dl>
+        <p class="delivery-customer-name">${esc(formatCustomerName(header.customer_name))}</p>`;
+
+    };
+
+    const buildHeaderHtml = (header, layout) => {
+
+        const company = getCompanyInfo(layout);
+
+        return `
+<header class="delivery-header">
+    <div class="delivery-header__left">
+${buildHeaderLeftHtml(header, layout)}
+    </div>
+    <div class="delivery-header__right">
+        <div class="delivery-header__info">
+            <div class="delivery-header__doc">
+                <p class="delivery-doc-item">納品番号：${esc(header.delivery_no)}</p>
+                <p class="delivery-doc-item">納品日：${esc(Format.formatDate(header.delivery_date))}</p>
+            </div>
+            <div class="delivery-header__company">
+                <p class="company-name">${esc(company.name)}</p>
+                <p class="company-address">${esc(company.postalCode)} ${esc(company.address)}</p>
+                <p class="company-contact">${esc(company.tel)}</p>
+                <p class="company-contact">${esc(company.fax)}</p>
+            </div>
+        </div>
+    </div>
+</header>`;
+
+    };
+
+    const buildPageNoHtml = (pageNumber, totalPages) => (
+        `<p class="delivery-page-no">${pageNumber} / ${totalPages}</p>`
+    );
+
+    const buildEmptyDetailPairHtml = () => (
+        `<tr class="detail-row detail-row--primary detail-row--empty">`
+        + `<td class="detail-cell--merged" rowspan="2"></td>`
+        + `<td class="detail-cell--merged" rowspan="2"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `<td class="num detail-cell--merged" rowspan="2"></td>`
+        + `</tr>`
+        + `<tr class="detail-row detail-row--secondary detail-row--empty">`
+        + `<td class="detail-cell--stack detail-cell--item-sub"></td>`
+        + `<td class="detail-cell--stack"></td>`
+        + `</tr>`
+    );
+
+    const buildDetailPairHtml = (detail) => {
+
+        if (!detail) {
+            return buildEmptyDetailPairHtml();
+        }
+
+        const manageNoText = detail._showManageNo ? detail.manage_no : '';
+
+        return `<tr class="detail-row detail-row--primary">`
+            + `<td class="detail-cell--merged" rowspan="2">${esc(manageNoText)}</td>`
+            + `<td class="detail-cell--merged" rowspan="2">${esc(detail.client_name)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.item_name)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.slip_no)}</td>`
+            + `<td class="num detail-cell--merged" rowspan="2">${esc(detail.qty)}</td>`
+            + `</tr>`
+            + `<tr class="detail-row detail-row--secondary">`
+            + `<td class="detail-cell--stack detail-cell--item-sub">${formatKimonoSubHtml(detail.kimono_type, detail.kimono_spec)}</td>`
+            + `<td class="detail-cell--stack">${esc(detail.in_charge)}</td>`
+            + `</tr>`;
+
+    };
+
+    const buildDetailRowsHtml = (details) => details.map((detail) => buildDetailPairHtml(detail)).join('');
+
+    const buildDetailTableHtml = (details) => `
+
+<table class="delivery-detail-table delivery-detail-table--matsuba">
+    <thead>
+        <tr class="detail-head">
+            <th>管理番号</th>
+            <th>お客様名</th>
+            <th>加工内容</th>
+            <th>伝票番号 / 係</th>
+            <th>数量</th>
+        </tr>
+    </thead>
+    <tbody>
+${buildDetailRowsHtml(details)}
+    </tbody>
+</table>`;
+
+    const buildSummaryHtml = (summary) => {
+
+        const deliveryCount = summary.totalCount ?? 0;
+
+        return `
+<footer class="delivery-footer delivery-footer--matsuba">
+    <p class="delivery-matsuba-count">納品点数：<span class="delivery-matsuba-count__value">${esc(String(deliveryCount))}</span></p>
+</footer>`;
+
+    };
+
+    const buildPageHtml = (header, pageDetails, summary, layout, options = {}) => {
+
+        const {
+            showSummary = false,
+            pageNumber = 1,
+            totalPages = 1,
+        } = options;
+
+        return `
+    ${buildHeaderHtml(header, layout)}
+    ${buildDetailTableHtml(pageDetails)}
+    ${showSummary ? buildSummaryHtml(summary) : ''}
+    ${buildPageNoHtml(pageNumber, totalPages)}`;
+
+    };
+
+    const DeliveryMatsubaTemplate = TemplateInterface.create('DeliveryMatsubaTemplate', (data, config = {}, layout = {}) => {
+
+        if (typeof Format === 'undefined') {
+            throw new Error('Format モジュールが読み込まれていません。');
+        }
+
+        Validation.assertDetailReportData(data);
+
+        const { header, summary } = data;
+        const details = Core.Report.annotateManageNoVisibility(data.details);
+        const detailPages = Core.Report.buildDetailPages(details, DETAILS_PER_PAGE);
+        const totalPages = detailPages.length;
+        const pagesHtml = detailPages.map((pageDetails, index) => (
+            `<div class="page">${buildPageHtml(
+                header,
+                pageDetails,
+                summary,
+                layout,
+                {
+                    showSummary: index === totalPages - 1,
+                    pageNumber: index + 1,
+                    totalPages,
+                }
+            )}
+</div>`
+        )).join('\n');
+
+        return Common.buildDocumentHtml({
+            title: '納品書（松葉店用）',
+            bodyClass: Common.getBodyClass(layout),
+            content: pagesHtml,
+            multiPage: true,
+        });
+
+    });
+
+    window.DeliveryMatsubaTemplate = DeliveryMatsubaTemplate;
+
+})();

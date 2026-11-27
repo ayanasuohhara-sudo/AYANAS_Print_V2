@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "87",
+    "status": "SUCCESS"
+  },
+  "desktopJs": [
+    "work_status_labels.js",
+    "floor_portal_config.js",
+    "floor_portal_engine.js",
+    "floor_portal_desktop.js"
+  ],
+  "desktopCss": [
+    "floor_portal.css"
+  ]
+}

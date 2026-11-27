@@ -1,0 +1,10 @@
+{
+  "ver": "1.4.2",
+  "links": [
+    "保管場所移動",
+    "社内作業登録",
+    "検品・仕上げ完了"
+  ],
+  "hasLocationMove": true,
+  "noOldInbound": true
+}

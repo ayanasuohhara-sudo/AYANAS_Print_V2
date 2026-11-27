@@ -1,0 +1,78 @@
+{
+  "name": "店舗ポータル",
+  "customize": {
+    "scope": "ALL",
+    "desktop": {
+      "js": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102152749F9781E383313416A99039FADAB738D02255",
+            "name": "work_status_labels.js",
+            "contentType": "text/javascript",
+            "size": "2771"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "202611021527498D1F5C20A39C43328276207AF9147E9B182",
+            "name": "floor_portal_config.js",
+            "contentType": "text/javascript",
+            "size": "9450"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102152749EB717C6851FB484C99E817BD5B9C60A4004",
+            "name": "floor_portal_engine.js",
+            "contentType": "text/javascript",
+            "size": "19150"
+          }
+        },
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102152750BFB07A138A574DA888912AAEC2F78D20088",
+            "name": "floor_portal_desktop.js",
+            "contentType": "text/javascript",
+            "size": "24076"
+          }
+        }
+      ],
+      "css": [
+        {
+          "type": "FILE",
+          "file": {
+            "fileKey": "20261102152749DE2CE57F502640508D317B8758345E57224",
+            "name": "floor_portal.css",
+            "contentType": "text/css",
+            "size": "6454"
+          }
+        }
+      ]
+    },
+    "mobile": {
+      "js": [],
+      "css": []
+    },
+    "revision": "14"
+  },
+  "aclSummary": [
+    {
+      "type": "CREATOR",
+      "code": null,
+      "view": true,
+      "add": true,
+      "edit": true
+    },
+    {
+      "type": "GROUP",
+      "code": "everyone",
+      "view": true,
+      "add": true,
+      "edit": true
+    }
+  ]
+}

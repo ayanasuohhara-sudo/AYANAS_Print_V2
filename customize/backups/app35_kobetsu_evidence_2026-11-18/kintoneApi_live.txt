@@ -1,0 +1,9 @@
+(path, method, body) => new Promise((resolve, reject) => {
+        kintone.api(path, method, body, resolve, (error) => {
+            console.log('[AYANAS Invoice] kintone API error');
+            console.log('error.code:', error?.code);
+            console.log('error.message:', error?.message);
+            console.log('error.errors:', JSON.stringify(error?.errors ?? null, null, 2));
+            reject(error);
+        });
+    })

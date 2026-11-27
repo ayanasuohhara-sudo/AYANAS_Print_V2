@@ -1,0 +1,66 @@
+{
+  "fieldCount": 27,
+  "hasMonthlyCapacity": false,
+  "capacityLike": [],
+  "allCodes": [
+    "address",
+    "bank_account_holder",
+    "bank_account_no",
+    "bank_account_type",
+    "bank_branch",
+    "bank_name",
+    "building",
+    "city",
+    "email",
+    "payment_closing_date",
+    "payment_due_rule",
+    "post_no",
+    "prefecture",
+    "registration_statu",
+    "remarks",
+    "tel",
+    "trade_name",
+    "wasai_code",
+    "wasai_name",
+    "カテゴリー",
+    "ステータス",
+    "レコード番号",
+    "作成日時",
+    "作成者",
+    "作業者",
+    "更新日時",
+    "更新者"
+  ],
+  "masters": [
+    {
+      "id": "1",
+      "code": "001",
+      "name": "髙田まや",
+      "status": "有効"
+    },
+    {
+      "id": "2",
+      "code": "002",
+      "name": "西口陽子",
+      "status": "有効"
+    },
+    {
+      "id": "3",
+      "code": "003",
+      "name": "秋津　京",
+      "status": "有効"
+    },
+    {
+      "id": "4",
+      "code": "004",
+      "name": "中田路子",
+      "status": "有効"
+    },
+    {
+      "id": "5",
+      "code": "005",
+      "name": "中村紅美",
+      "status": "有効"
+    }
+  ]
+}

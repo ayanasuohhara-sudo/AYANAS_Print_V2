@@ -39,6 +39,7 @@
         return {
             billingFrom: formatLocalDate(firstOfPrev),
             billingTo: formatLocalDate(lastOfPrev),
+            invoiceDate: formatLocalDate(today),
         };
 
     };
@@ -64,6 +65,10 @@
         <p class="ayanas-matsuba-summary-dialog__lead">請求対象期間を確認してください。対象顧客（${Format.escapeHtml(codes)}）を集計して印刷プレビューを表示します。</p>
         <p class="ayanas-matsuba-summary-dialog__note">この帳票は集計・印刷専用です。請求済ステータス・納品書・入金状態は変更しません。</p>
         <div class="ayanas-matsuba-summary-dialog__field">
+            <label for="ayanas-matsuba-invoice-date">請求日</label>
+            <input type="date" id="ayanas-matsuba-invoice-date" value="${Format.escapeHtml(period.invoiceDate)}">
+        </div>
+        <div class="ayanas-matsuba-summary-dialog__field">
             <label>請求対象期間</label>
             <div class="ayanas-matsuba-summary-dialog__period">
                 <input type="date" id="ayanas-matsuba-billing-from" aria-label="開始日" value="${Format.escapeHtml(period.billingFrom)}">
@@ -84,6 +89,7 @@
 
         const billingFrom = String(document.getElementById('ayanas-matsuba-billing-from')?.value ?? '').trim();
         const billingTo = String(document.getElementById('ayanas-matsuba-billing-to')?.value ?? '').trim();
+        const invoiceDate = String(document.getElementById('ayanas-matsuba-invoice-date')?.value ?? '').trim();
         const originalLabel = button.textContent;
 
         button.disabled = true;
@@ -93,7 +99,7 @@
 
             assertModulesLoaded();
 
-            const data = await MatsubaSummaryInvoice.fetchReportData({ billingFrom, billingTo });
+            const data = await MatsubaSummaryInvoice.fetchReportData({ billingFrom, billingTo, invoiceDate });
 
             await Preview.open(data, { reportType: MatsubaSummaryInvoice.REPORT_TYPE });
             removeDialog();

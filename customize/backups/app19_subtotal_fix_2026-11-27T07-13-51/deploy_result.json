@@ -1,0 +1,6 @@
+{
+  "beforeExpr": "SUM(unit_price)",
+  "afterExpr": "SUM(amount)",
+  "revision": "286",
+  "status": "SUCCESS"
+}

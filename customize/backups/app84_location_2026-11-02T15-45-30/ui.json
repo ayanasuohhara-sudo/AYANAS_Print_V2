@@ -1,0 +1,24 @@
+{
+  "url": "https://o5nppg7kb4ly.cybozu.com/k/84/edit",
+  "hasPanel": true,
+  "mode": true,
+  "location": true,
+  "work": true,
+  "modes": [
+    "work",
+    "work_with_location",
+    "location_only"
+  ],
+  "locs": [
+    "",
+    "工場",
+    "本社",
+    "店舗"
+  ],
+  "engineModes": {
+    "work": "work",
+    "workWithLocation": "work_with_location",
+    "locationOnly": "location_only"
+  },
+  "hint": "工場・店舗の作業を手動選択し、バーコード連続読取→一括更新。初期は「作業登録のみ」。保管場所は必要なときだけ変更します（完了登録と同型）。 process / delivery は変更しません。"
+}

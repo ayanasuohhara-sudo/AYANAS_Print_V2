@@ -1,0 +1,231 @@
+{
+  "stamp": "2026-11-16T06-21-02",
+  "work": "/agent/repos/AYANAS_Print_V2/customize/backups/app82_monthly_deploy_2026-11-16T06-21-02",
+  "backup": "/agent/repos/AYANAS_Print_V2/customize/backups/app82_monthly_prod_2026-11-16T06-19-44",
+  "steps": {
+    "deploy": {
+      "ok": true,
+      "deploy": {
+        "app": "82",
+        "status": "SUCCESS"
+      },
+      "js": [
+        "business_dashboard_config.js",
+        "ar_config.js",
+        "payment_create.js",
+        "ar_engine.js",
+        "business_dashboard_engine.js",
+        "business_dashboard_monthly_engine.js",
+        "business_dashboard_money.js",
+        "business_dashboard_desktop.js"
+      ],
+      "css": [
+        "business_dashboard.css"
+      ]
+    },
+    "orderOk": true,
+    "verify": {
+      "daily": {
+        "ver": "1.7.0",
+        "hasMonthly": true,
+        "hasEngine": true,
+        "tabs": [],
+        "root": true
+      },
+      "monthly": {
+        "loading": false,
+        "hasChart": false,
+        "bars": 0,
+        "rows": [],
+        "title": "業務ダッシュボード",
+        "err": "",
+        "monthlyVer": "1.0.0"
+      },
+      "obiProbe": {
+        "ok": true,
+        "canSeparate": {
+          "domesticOnly": true,
+          "obiOnly": true,
+          "both": true,
+          "note": "現状エンジンは帯仕立をdomesticに合算。サブカテゴリ別カウントはデータ上可能だがUI未分離。"
+        },
+        "fiscal": {
+          "startYear": 2025,
+          "label": "2025年度",
+          "startDate": "2025-08-01",
+          "endDate": "2026-07-31",
+          "months": [
+            {
+              "key": "2025-08",
+              "year": 2025,
+              "month": 8,
+              "label": "8月",
+              "start": "2025-08-01",
+              "end": "2025-08-31"
+            },
+            {
+              "key": "2025-09",
+              "year": 2025,
+              "month": 9,
+              "label": "9月",
+              "start": "2025-09-01",
+              "end": "2025-09-30"
+            },
+            {
+              "key": "2025-10",
+              "year": 2025,
+              "month": 10,
+              "label": "10月",
+              "start": "2025-10-01",
+              "end": "2025-10-31"
+            },
+            {
+              "key": "2025-11",
+              "year": 2025,
+              "month": 11,
+              "label": "11月",
+              "start": "2025-11-01",
+              "end": "2025-11-30"
+            },
+            {
+              "key": "2025-12",
+              "year": 2025,
+              "month": 12,
+              "label": "12月",
+              "start": "2025-12-01",
+              "end": "2025-12-31"
+            },
+            {
+              "key": "2026-01",
+              "year": 2026,
+              "month": 1,
+              "label": "1月",
+              "start": "2026-01-01",
+              "end": "2026-01-31"
+            },
+            {
+              "key": "2026-02",
+              "year": 2026,
+              "month": 2,
+              "label": "2月",
+              "start": "2026-02-01",
+              "end": "2026-02-28"
+            },
+            {
+              "key": "2026-03",
+              "year": 2026,
+              "month": 3,
+              "label": "3月",
+              "start": "2026-03-01",
+              "end": "2026-03-31"
+            },
+            {
+              "key": "2026-04",
+              "year": 2026,
+              "month": 4,
+              "label": "4月",
+              "start": "2026-04-01",
+              "end": "2026-04-30"
+            },
+            {
+              "key": "2026-05",
+              "year": 2026,
+              "month": 5,
+              "label": "5月",
+              "start": "2026-05-01",
+              "end": "2026-05-31"
+            },
+            {
+              "key": "2026-06",
+              "year": 2026,
+              "month": 6,
+              "label": "6月",
+              "start": "2026-06-01",
+              "end": "2026-06-30"
+            },
+            {
+              "key": "2026-07",
+              "year": 2026,
+              "month": 7,
+              "label": "7月",
+              "start": "2026-07-01",
+              "end": "2026-07-31"
+            }
+          ]
+        },
+        "dataStartDate": "2026-03-24",
+        "yearTotalKimono": 1036,
+        "months": [
+          {
+            "key": "2026-03",
+            "label": "3月",
+            "overseas": 2,
+            "domesticInclObi": 0,
+            "total": 2,
+            "status": "ready"
+          },
+          {
+            "key": "2026-04",
+            "label": "4月",
+            "overseas": 15,
+            "domesticInclObi": 3,
+            "total": 18,
+            "status": "ready"
+          },
+          {
+            "key": "2026-05",
+            "label": "5月",
+            "overseas": 235,
+            "domesticInclObi": 29,
+            "total": 264,
+            "status": "ready"
+          },
+          {
+            "key": "2026-06",
+            "label": "6月",
+            "overseas": 379,
+            "domesticInclObi": 26,
+            "total": 405,
+            "status": "ready"
+          },
+          {
+            "key": "2026-07",
+            "label": "7月",
+            "overseas": 311,
+            "domesticInclObi": 36,
+            "total": 347,
+            "status": "ready"
+          }
+        ],
+        "selected": {
+          "key": "2026-07",
+          "label": "7月",
+          "status": "ready",
+          "overseasKimono": 311,
+          "domesticKimono": 36,
+          "tailorKimono": 347,
+          "filteredKimono": 347,
+          "orderTotal": 4645510,
+          "tailorAmount": 3942300,
+          "addonAmount": 684310,
+          "inseparableCount": 1,
+          "amountSeparable": false,
+          "avgOrderUnitPrice": 13387.636887608069,
+          "avgTailorUnitPrice": null
+        },
+        "backlog": 469,
+        "amountSeparable": false,
+        "tailorAmount": 3942300,
+        "addonAmount": 684310,
+        "orderTotal": 4645510
+      },
+      "dailyAfter": {
+        "hasOverview": true,
+        "activeDaily": true,
+        "title": "業務ダッシュボード",
+        "ver": "1.7.0"
+      }
+    }
+  },
+  "ok": false
+}

@@ -1,0 +1,32 @@
+{
+  "stamp": "2026-11-16T08-27-18",
+  "workDir": "/workspace/customize/backups/app82_m032_probe_2026-11-16T08-27-18",
+  "summary": {
+    "total": 303,
+    "cancelled": 0,
+    "beforeDataStart": 0,
+    "outsideFy": 153,
+    "tailorRoutes": 251,
+    "countedInDashboard": 119,
+    "other": 51,
+    "conflict": 1,
+    "byRoute": {
+      "overseas": 217,
+      "other": 51,
+      "domestic": 34,
+      "conflict": 1
+    },
+    "byMonth": {
+      "2026-05": 40,
+      "2026-06": 42,
+      "2026-07": 37
+    }
+  },
+  "customer": {
+    "code": "M032",
+    "name": "大進ホンダ株式会社"
+  },
+  "counted": 119,
+  "other": 51,
+  "monthlyVersion": "1.2.0"
+}

@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "88",
+    "status": "SUCCESS"
+  },
+  "desktopJs": [
+    "app_nav_banner_config.js",
+    "app_nav_banner.js",
+    "kana_normalize.js",
+    "order_search_config.js",
+    "order_search_engine.js",
+    "order_search_desktop.js"
+  ],
+  "desktopCss": [
+    "app_nav_banner.css",
+    "order_search.css"
+  ]
+}

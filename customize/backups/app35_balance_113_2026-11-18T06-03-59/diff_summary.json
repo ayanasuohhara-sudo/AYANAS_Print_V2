@@ -1,0 +1,16 @@
+{
+  "prodVer": "1.1.2",
+  "localVer": "1.1.3",
+  "same": false,
+  "prodBytes": 19369,
+  "localBytes": 21072,
+  "order": [
+    "app_nav_banner_config.js",
+    "app_nav_banner.js",
+    "payment_create.js",
+    "invoice_balance_desktop.js"
+  ],
+  "payIdx": 2,
+  "balIdx": 3,
+  "revision": "41"
+}

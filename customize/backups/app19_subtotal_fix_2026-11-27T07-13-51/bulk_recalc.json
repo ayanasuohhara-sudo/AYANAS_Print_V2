@@ -1,0 +1,81 @@
+{
+  "scanned": 500,
+  "mismatchedCount": 4,
+  "mismatched": [
+    {
+      "id": "635",
+      "delivery_no": "N20261030-635",
+      "invoice_status": "請求済",
+      "delivery_date": "2026-10-30",
+      "subtotal": 107800,
+      "sumAmount": 109500,
+      "sumUnit": 107800,
+      "diff": 1700
+    },
+    {
+      "id": "619",
+      "delivery_no": "N20261027-619",
+      "invoice_status": "請求済",
+      "delivery_date": "2026-10-27",
+      "subtotal": 22800,
+      "sumAmount": 24300,
+      "sumUnit": 22800,
+      "diff": 1500
+    },
+    {
+      "id": "585",
+      "delivery_no": "N20261020-585",
+      "invoice_status": "請求済",
+      "delivery_date": "2026-10-20",
+      "subtotal": 43150,
+      "sumAmount": 43450,
+      "sumUnit": 43150,
+      "diff": 300
+    },
+    {
+      "id": "433",
+      "delivery_no": "N20260909-433",
+      "invoice_status": "請求済",
+      "delivery_date": "2026-09-09",
+      "subtotal": 13630,
+      "sumAmount": 13890,
+      "sumUnit": 13630,
+      "diff": 260
+    }
+  ],
+  "touched": [
+    {
+      "id": "635",
+      "delivery_no": "N20261030-635",
+      "invoice_status": "請求済",
+      "before": 107800,
+      "after": 109500,
+      "expected": 109500
+    },
+    {
+      "id": "619",
+      "delivery_no": "N20261027-619",
+      "invoice_status": "請求済",
+      "before": 22800,
+      "after": 24300,
+      "expected": 24300
+    },
+    {
+      "id": "585",
+      "delivery_no": "N20261020-585",
+      "invoice_status": "請求済",
+      "before": 43150,
+      "after": 43450,
+      "expected": 43450
+    },
+    {
+      "id": "433",
+      "delivery_no": "N20260909-433",
+      "invoice_status": "請求済",
+      "before": 13630,
+      "after": 13890,
+      "expected": 13890
+    }
+  ],
+  "errors": []
+}

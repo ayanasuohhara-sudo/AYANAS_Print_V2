@@ -1,0 +1,299 @@
+{
+  "totalCount": "638",
+  "dateish": [
+    {
+      "code": "delivery_detail",
+      "label": "納品明細テーブル",
+      "type": "SUBTABLE",
+      "sub": [
+        {
+          "code": "amount",
+          "label": "金額",
+          "type": "CALC"
+        },
+        {
+          "code": "slip_no",
+          "label": "得意先伝票番号",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "qty",
+          "label": "数量",
+          "type": "NUMBER"
+        },
+        {
+          "code": "in_charge",
+          "label": "担当・係",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "manage_no",
+          "label": "管理番号",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "kimono_spec",
+          "label": "着物仕様",
+          "type": "DROP_DOWN"
+        },
+        {
+          "code": "item_name",
+          "label": "商品名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "kimono_type",
+          "label": "着物種類名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "unit_price",
+          "label": "単価",
+          "type": "NUMBER"
+        },
+        {
+          "code": "client_name",
+          "label": "お客様名",
+          "type": "SINGLE_LINE_TEXT"
+        }
+      ]
+    },
+    {
+      "code": "sales_date",
+      "label": "納品書作成日",
+      "type": "DATE",
+      "sub": null
+    },
+    {
+      "code": "delivery_no",
+      "label": "納品番号",
+      "type": "SINGLE_LINE_TEXT",
+      "sub": null
+    },
+    {
+      "code": "更新日時",
+      "label": "更新日時",
+      "type": "UPDATED_TIME",
+      "sub": null
+    },
+    {
+      "code": "delivery_date",
+      "label": "納品日",
+      "type": "DATE",
+      "sub": null
+    },
+    {
+      "code": "delivery_type",
+      "label": "納品方法",
+      "type": "DROP_DOWN",
+      "sub": null
+    },
+    {
+      "code": "作成日時",
+      "label": "作成日時",
+      "type": "CREATED_TIME",
+      "sub": null
+    }
+  ],
+  "sampleKeys": [
+    "レコード番号",
+    "delivery_detail",
+    "更新者",
+    "sales_date",
+    "作成者",
+    "tax",
+    "$revision",
+    "delivery_no",
+    "更新日時",
+    "barcode_input",
+    "delivery_date",
+    "total_amount",
+    "delivery_type",
+    "subtotal",
+    "aggregation_status",
+    "customer_name",
+    "customer_code",
+    "作成日時",
+    "invoice_status",
+    "$id"
+  ],
+  "fields": [
+    {
+      "code": "レコード番号",
+      "label": "レコード番号",
+      "type": "RECORD_NUMBER",
+      "sub": null
+    },
+    {
+      "code": "作業者",
+      "label": "作業者",
+      "type": "STATUS_ASSIGNEE",
+      "sub": null
+    },
+    {
+      "code": "delivery_detail",
+      "label": "納品明細テーブル",
+      "type": "SUBTABLE",
+      "sub": [
+        {
+          "code": "amount",
+          "label": "金額",
+          "type": "CALC"
+        },
+        {
+          "code": "slip_no",
+          "label": "得意先伝票番号",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "qty",
+          "label": "数量",
+          "type": "NUMBER"
+        },
+        {
+          "code": "in_charge",
+          "label": "担当・係",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "manage_no",
+          "label": "管理番号",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "kimono_spec",
+          "label": "着物仕様",
+          "type": "DROP_DOWN"
+        },
+        {
+          "code": "item_name",
+          "label": "商品名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "kimono_type",
+          "label": "着物種類名",
+          "type": "SINGLE_LINE_TEXT"
+        },
+        {
+          "code": "unit_price",
+          "label": "単価",
+          "type": "NUMBER"
+        },
+        {
+          "code": "client_name",
+          "label": "お客様名",
+          "type": "SINGLE_LINE_TEXT"
+        }
+      ]
+    },
+    {
+      "code": "更新者",
+      "label": "更新者",
+      "type": "MODIFIER",
+      "sub": null
+    },
+    {
+      "code": "sales_date",
+      "label": "納品書作成日",
+      "type": "DATE",
+      "sub": null
+    },
+    {
+      "code": "作成者",
+      "label": "作成者",
+      "type": "CREATOR",
+      "sub": null
+    },
+    {
+      "code": "ステータス",
+      "label": "ステータス",
+      "type": "STATUS",
+      "sub": null
+    },
+    {
+      "code": "tax",
+      "label": "消費税",
+      "type": "CALC",
+      "sub": null
+    },
+    {
+      "code": "delivery_no",
+      "label": "納品番号",
+      "type": "SINGLE_LINE_TEXT",
+      "sub": null
+    },
+    {
+      "code": "更新日時",
+      "label": "更新日時",
+      "type": "UPDATED_TIME",
+      "sub": null
+    },
+    {
+      "code": "barcode_input",
+      "label": "バーコード入力",
+      "type": "SINGLE_LINE_TEXT",
+      "sub": null
+    },
+    {
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "type": "CATEGORY",
+      "sub": null
+    },
+    {
+      "code": "delivery_date",
+      "label": "納品日",
+      "type": "DATE",
+      "sub": null
+    },
+    {
+      "code": "total_amount",
+      "label": "税込合計",
+      "type": "CALC",
+      "sub": null
+    },
+    {
+      "code": "delivery_type",
+      "label": "納品方法",
+      "type": "DROP_DOWN",
+      "sub": null
+    },
+    {
+      "code": "subtotal",
+      "label": "税抜合計",
+      "type": "CALC",
+      "sub": null
+    },
+    {
+      "code": "aggregation_status",
+      "label": "集計状態",
+      "type": "DROP_DOWN",
+      "sub": null
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT",
+      "sub": null
+    },
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT",
+      "sub": null
+    },
+    {
+      "code": "作成日時",
+      "label": "作成日時",
+      "type": "CREATED_TIME",
+      "sub": null
+    },
+    {
+      "code": "invoice_status",
+      "label": "請求状態",
+      "type": "DROP_DOWN",
+      "sub": null
+    }
+  ]
+}

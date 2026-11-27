@@ -1,0 +1,62 @@
+{
+  "86": {
+    "ok": true,
+    "deploy": {
+      "app": "86",
+      "status": "SUCCESS"
+    },
+    "desktopJs": [
+      "work_status_labels.js",
+      "floor_portal_config.js",
+      "floor_portal_engine.js",
+      "floor_portal_desktop.js"
+    ],
+    "desktopCss": [
+      "floor_portal.css"
+    ]
+  },
+  "87": {
+    "ok": true,
+    "deploy": {
+      "app": "87",
+      "status": "SUCCESS"
+    },
+    "desktopJs": [
+      "work_status_labels.js",
+      "floor_portal_config.js",
+      "floor_portal_engine.js",
+      "floor_portal_desktop.js"
+    ],
+    "desktopCss": [
+      "floor_portal.css"
+    ]
+  },
+  "90": {
+    "ok": true,
+    "deploy": {
+      "app": "90",
+      "status": "SUCCESS"
+    },
+    "desktopJs": [
+      "factory_menu_config.js",
+      "factory_menu_desktop.js"
+    ],
+    "desktopCss": [
+      "factory_menu.css"
+    ]
+  },
+  "91": {
+    "ok": true,
+    "deploy": {
+      "app": "91",
+      "status": "SUCCESS"
+    },
+    "desktopJs": [
+      "business_menu_config.js",
+      "business_menu_desktop.js"
+    ],
+    "desktopCss": [
+      "business_menu.css"
+    ]
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "count": 8,
+  "fields": [
+    {
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "type": "CATEGORY",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "ステータス",
+      "label": "ステータス",
+      "type": "STATUS",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "レコード番号",
+      "label": "レコード番号",
+      "type": "RECORD_NUMBER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作成日時",
+      "label": "作成日時",
+      "type": "CREATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作成者",
+      "label": "作成者",
+      "type": "CREATOR",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作業者",
+      "label": "作業者",
+      "type": "STATUS_ASSIGNEE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "更新日時",
+      "label": "更新日時",
+      "type": "UPDATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "更新者",
+      "label": "更新者",
+      "type": "MODIFIER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    }
+  ],
+  "interesting": []
+}

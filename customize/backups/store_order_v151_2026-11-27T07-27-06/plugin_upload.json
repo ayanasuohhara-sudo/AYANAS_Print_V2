@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "verify": {
+    "has151": true,
+    "sample": [
+      "AYANAS Print",
+      "AYANAS Print Plugin V151 (store order payment status from App16)"
+    ],
+    "versions": [
+      "Version: 151",
+      "Version: 725",
+      "Version: 3",
+      "Version: 3",
+      "Version: 2",
+      "Version: 1",
+      "Version: 1",
+      "Version: 1"
+    ]
+  },
+  "zip": "/tmp/ayanas-print-v151.zip",
+  "work": "/agent/repos/AYANAS_Print_V2/customize/backups/store_order_v151_2026-11-27T07-27-06",
+  "at": "2026-11-27T07:27:19.456Z"
+}

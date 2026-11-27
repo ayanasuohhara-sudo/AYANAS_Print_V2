@@ -1,0 +1,44 @@
+{
+  "id": "735",
+  "delivery_no": "N20261126-735",
+  "invoice_status": "未請求",
+  "stored": {
+    "subtotal": "5510",
+    "tax": "551",
+    "total_amount": "6061"
+  },
+  "rows": [
+    {
+      "manage_no": "112626949",
+      "qty": 10,
+      "unit_price": 160,
+      "amount": 1600,
+      "qtyTimesUnit": 1600
+    },
+    {
+      "manage_no": "112626949",
+      "qty": 10,
+      "unit_price": 150,
+      "amount": 1500,
+      "qtyTimesUnit": 1500
+    },
+    {
+      "manage_no": "110726576",
+      "qty": 1,
+      "unit_price": 3000,
+      "amount": 3000,
+      "qtyTimesUnit": 3000
+    },
+    {
+      "manage_no": "110726577",
+      "qty": 1,
+      "unit_price": 2200,
+      "amount": 2200,
+      "qtyTimesUnit": 2200
+    }
+  ],
+  "sumUnitPrice": 5510,
+  "sumAmount": 8300,
+  "storedEqualsSumUnit": true,
+  "storedEqualsSumAmount": false
+}

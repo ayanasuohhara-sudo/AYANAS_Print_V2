@@ -1,0 +1,86 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202610051413166C2908E8F1F14237BF12DBD6F60F3C94021",
+          "name": "business_dashboard_config.js",
+          "contentType": "text/javascript",
+          "size": "11148"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026100514131648FF216338F64A3780224A6C8F076A0D322",
+          "name": "ar_config.js",
+          "contentType": "text/javascript",
+          "size": "1886"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261005141316D72E8288796D42D78D0190880F02A269093",
+          "name": "payment_create.js",
+          "contentType": "text/javascript",
+          "size": "49476"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026100514131690539B6DCF094B41B72221FA3B0F5182291",
+          "name": "ar_engine.js",
+          "contentType": "text/javascript",
+          "size": "17148"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261005141316BFB610B9E4044A41826E4AE20BD14458283",
+          "name": "business_dashboard_engine.js",
+          "contentType": "text/javascript",
+          "size": "64912"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026100514131649AE9903BCA24F0BB0F85004DBE4CB3B314",
+          "name": "business_dashboard_money.js",
+          "contentType": "text/javascript",
+          "size": "19266"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261005141316FDD9D3665F0D45DD9D24658937A5F014130",
+          "name": "business_dashboard_desktop.js",
+          "contentType": "text/javascript",
+          "size": "43253"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261005141316A2D39B0AD2EA4DFFB3BE56A35E7AEDCF006",
+          "name": "business_dashboard.css",
+          "contentType": "text/css",
+          "size": "6525"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "16"
+}

@@ -1,0 +1,112 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102115614CC764D1687D244E0AB558C112BEA5868254",
+          "name": "internal_ops_config.js",
+          "contentType": "text/javascript",
+          "size": "4315"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102115614B05AD98E98B747298242BAC484D92BC1050",
+          "name": "complete_register_engine.js",
+          "contentType": "text/javascript",
+          "size": "17573"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102115615D0967B2F341D4D2D806C4882658E7CB9316",
+          "name": "delivery_completion_guard.js",
+          "contentType": "text/javascript",
+          "size": "5932"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021156155124F088480341BEB59C5F4914C559E6104",
+          "name": "store_delivery_pcm.js",
+          "contentType": "text/javascript",
+          "size": "7786"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102115615CFFB536EABB6435387BA0B463BBDCADD154",
+          "name": "barcode_delivery.js",
+          "contentType": "text/javascript",
+          "size": "8060"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021156152500A6C525CB4DFB88DDF3EA6CD99AD5025",
+          "name": "store_pickup_shared.js",
+          "contentType": "text/javascript",
+          "size": "9988"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110211561551E4B23821B04B7F9ACF638C75D08E5E282",
+          "name": "delivery_complete_sync.js",
+          "contentType": "text/javascript",
+          "size": "17790"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102115615603B7B6B3CA74C4CA34DBE2A246ABBBE048",
+          "name": "delivery_a550_edit_guard.js",
+          "contentType": "text/javascript",
+          "size": "3106"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102115615FBC11A4006DB4833A6B05D8DCFF624E1266",
+          "name": "price_master_register.js",
+          "contentType": "text/javascript",
+          "size": "12890"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102115615862225082FC04E73AF43062591DCE810003",
+          "name": "delivery_additional_item_guard.js",
+          "contentType": "text/javascript",
+          "size": "1851"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110211561518840478BFFD4933B36122583B631F5F321",
+          "name": "additional_item_engine.js",
+          "contentType": "text/javascript",
+          "size": "26476"
+        }
+      }
+    ],
+    "css": []
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "282"
+}

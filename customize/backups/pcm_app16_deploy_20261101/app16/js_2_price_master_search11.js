@@ -1,0 +1,143 @@
+(function() {
+  "use strict";
+
+  kintone.events.on([
+    'app.record.create.change.item_name',
+    'app.record.edit.change.item_name'
+  ], async function(event) {
+
+    const record = event.record;
+    const row = event.changes.row;
+
+    if (!row) {
+      return event;
+    }
+
+    const customerCode =
+      record.customer_code.value || '';
+
+    const kimonoTypeCode =
+      record.kimono_type_code.value || '';
+
+    const kimonoSpec =
+      record.kimono_spec.value || '';
+
+    const itemCode =
+      row.value.item_code.value || '';
+
+    const keys = [
+
+      customerCode + '_' + kimonoTypeCode + '_' + itemCode + '_' + kimonoSpec,
+      customerCode + '_' + kimonoTypeCode + '_' + itemCode + '_',
+      customerCode + '__' + itemCode + '_',
+      '_' + kimonoTypeCode + '_' + itemCode + '_',
+      '__' + itemCode + '_'
+
+    ];
+
+    let price = null;
+
+    for (const key of keys) {
+
+      const resp = await kintone.api(
+        kintone.api.url('/k/v1/records.json', true),
+        'GET',
+        {
+          app: 14,
+          query: 'price_key = "' + key + '"'
+        }
+      );
+
+      if (resp.records.length > 0) {
+
+        price = Number(
+          resp.records[0].unit_price.value || 0
+        );
+
+        break;
+      }
+    }
+
+    if (price !== null) {
+
+      row.value.unit_price.value = price;
+
+      const rec = kintone.app.record.get();
+
+      rec.record.detail_table.value =
+        event.record.detail_table.value;
+
+      kintone.app.record.set(rec);
+
+    }
+
+    return event;
+
+  });
+
+})();
+
+kintone.events.on([
+  'app.record.create.change.kimono_spec',
+  'app.record.edit.change.kimono_spec'
+], async function(event) {
+
+  const record = event.record;
+
+  for (const rowData of record.detail_table.value) {
+
+    const itemCode =
+      rowData.value.item_code.value || '';
+
+    if (!itemCode) {
+      continue;
+    }
+
+    const customerCode =
+      record.customer_code.value || '';
+
+    const kimonoTypeCode =
+      record.kimono_type_code.value || '';
+
+    const kimonoSpec =
+      record.kimono_spec.value || '';
+
+    const keys = [
+
+      customerCode + '_' + kimonoTypeCode + '_' + itemCode + '_' + kimonoSpec,
+      customerCode + '_' + kimonoTypeCode + '_' + itemCode + '_',
+      customerCode + '__' + itemCode + '_',
+      '_' + kimonoTypeCode + '_' + itemCode + '_',
+      '__' + itemCode + '_'
+
+    ];
+
+    for (const key of keys) {
+
+      const resp = await kintone.api(
+        kintone.api.url('/k/v1/records.json', true),
+        'GET',
+        {
+          app: 14,
+          query: 'price_key = "' + key + '"'
+        }
+      );
+
+      if (resp.records.length > 0) {
+
+        const price =
+          Number(resp.records[0].unit_price.value || 0);
+
+        rowData.value.unit_price.value = price;
+
+        break;
+
+      }
+
+    }
+
+  }
+
+  return event;
+
+});

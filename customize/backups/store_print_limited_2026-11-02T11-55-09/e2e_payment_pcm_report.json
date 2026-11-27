@@ -1,0 +1,178 @@
+{
+  "summary": {
+    "passed": 11,
+    "failed": 0,
+    "total": 11
+  },
+  "checks": [
+    {
+      "name": "prep ok",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "found": {
+          "U": {
+            "id": "3492",
+            "mn": "TSP801856U",
+            "ex": "3000"
+          },
+          "P": {
+            "id": "3493",
+            "mn": "TSP801856P",
+            "ex": "5000"
+          },
+          "F": {
+            "id": "3494",
+            "mn": "TSP801856F",
+            "ex": "2000"
+          },
+          "X": {
+            "id": "3495",
+            "mn": "TSP801856X",
+            "ex": "1500"
+          }
+        },
+        "pPay": {
+          "id": "12",
+          "manage_no": "TSP801856P",
+          "amount": 2000
+        },
+        "fPay": {
+          "id": "13",
+          "manage_no": "TSP801856F",
+          "amount": 2200
+        },
+        "timingOpts": [
+          "引き取り時",
+          "受付時",
+          "その他"
+        ],
+        "other": {
+          "id": "3497",
+          "mn": "TSPX95191"
+        }
+      }
+    },
+    {
+      "name": "found U/P/F",
+      "ok": true,
+      "detail": {
+        "U": {
+          "id": "3492",
+          "mn": "TSP801856U",
+          "ex": "3000"
+        },
+        "P": {
+          "id": "3493",
+          "mn": "TSP801856P",
+          "ex": "5000"
+        },
+        "F": {
+          "id": "3494",
+          "mn": "TSP801856F",
+          "ex": "2000"
+        },
+        "X": {
+          "id": "3495",
+          "mn": "TSP801856X",
+          "ex": "1500"
+        }
+      }
+    },
+    {
+      "name": "payments ready",
+      "ok": true,
+      "detail": {
+        "p": {
+          "id": "12",
+          "manage_no": "TSP801856P",
+          "amount": 2000
+        },
+        "f": {
+          "id": "13",
+          "manage_no": "TSP801856F",
+          "amount": 2200
+        }
+      }
+    },
+    {
+      "name": "repay U = 未入金",
+      "ok": true,
+      "detail": {
+        "state": "未入金",
+        "text": " @page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP801856U TSP801856U お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 単衣 納期 2026/11/05 受注日 2026/11/02 加工内容 身揚げ 3,000 入金状況（App97・印刷時点） 未入金 税抜 税 税込 入金額 残額 3,000 300 3,300 0 3,300 作業・保管・引き取り管理用（印刷のみ・状態は更新しません） □ 受付 □ 作業中 □ 店舗保管 □ 引取済 印刷 閉じる (function () { var barcodeValue = \"TSP801856U\"; var barcodeType = \"CODE39\"; var barcodeDrawOptions = {\"barcode_type\":\"CODE39\",\"format\":\"CODE39\",\"height\":32,\"width\":1.3,\"mar"
+      }
+    },
+    {
+      "name": "repay P = 一部入金",
+      "ok": true,
+      "detail": {
+        "state": "一部入金",
+        "text": " @page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP801856P TSP801856P お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 単衣 納期 2026/11/05 受注日 2026/11/02 加工内容 身揚げ 5,000 入金状況（App97・印刷時点） 一部入金 税抜 税 税込 入金額 残額 5,000 500 5,500 2,000 3,500 作業・保管・引き取り管理用（印刷のみ・状態は更新しません） □ 受付 □ 作業中 □ 店舗保管 □ 引取済 印刷 閉じる (function () { var barcodeValue = \"TSP801856P\"; var barcodeType = \"CODE39\"; var barcodeDrawOptions = {\"barcode_type\":\"CODE39\",\"format\":\"CODE39\",\"height\":32,\"width\":1.3"
+      }
+    },
+    {
+      "name": "repay F = 入金済",
+      "ok": true,
+      "detail": {
+        "state": "入金済",
+        "text": " @page { size: A4 portrait; margin: 0; } A550 店舗 店舗受注表 管理番号： TSP801856F TSP801856F お客様 お名前 [TEST]山田花子 様 PCM P000002 電話 090-1111-2222 顧客コード A550 商品・納期 着物種類 — 仕様 単衣 納期 2026/11/05 受注日 2026/11/02 加工内容 身揚げ 2,000 入金状況（App97・印刷時点） 入金済 税抜 税 税込 入金額 残額 2,000 200 2,200 2,200 0 作業・保管・引き取り管理用（印刷のみ・状態は更新しません） □ 受付 □ 作業中 □ 店舗保管 □ 引取済 印刷 閉じる (function () { var barcodeValue = \"TSP801856F\"; var barcodeType = \"CODE39\"; var barcodeDrawOptions = {\"barcode_type\":\"CODE39\",\"format\":\"CODE39\",\"height\":32,\"width\":1.3,\"mar"
+      }
+    },
+    {
+      "name": "pcm evaluate suite",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "first": {
+          "ok": true,
+          "setContext": true
+        },
+        "second": {
+          "ok": true,
+          "setContext": false
+        },
+        "mixed": {
+          "ok": false,
+          "reason": "別のお客様（PCM不一致）の商品は同じ納品書に追加できません。"
+        },
+        "saveGate": {
+          "ok": false,
+          "reason": "同一PCMの商品のみ保存できます。別お客様の商品が混在しています。"
+        }
+      }
+    },
+    {
+      "name": "pcm first ok",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "setContext": true
+      }
+    },
+    {
+      "name": "pcm second same ok",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "setContext": false
+      }
+    },
+    {
+      "name": "pcm mixed scan rejected",
+      "ok": true,
+      "detail": {
+        "ok": false,
+        "reason": "別のお客様（PCM不一致）の商品は同じ納品書に追加できません。"
+      }
+    },
+    {
+      "name": "pcm mixed save rejected",
+      "ok": true,
+      "detail": {
+        "ok": false,
+        "reason": "同一PCMの商品のみ保存できます。別お客様の商品が混在しています。"
+      }
+    }
+  ]
+}

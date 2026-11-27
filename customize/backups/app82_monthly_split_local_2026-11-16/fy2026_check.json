@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "monthlyVersion": "1.1.0",
+  "exclusive": {
+    "overseas": 936,
+    "domestic": 30,
+    "obi": 102,
+    "total": 1068,
+    "conflicts": 1
+  },
+  "conflicts": [
+    {
+      "manageNo": "090526327",
+      "orderDate": "2026-09-05",
+      "cats": [
+        "overseas",
+        "obi"
+      ],
+      "customerName": "大進ホンダ株式会社"
+    }
+  ],
+  "series": [
+    {
+      "key": "2026-08",
+      "overseas": 263,
+      "domestic": 8,
+      "obi": 26,
+      "total": 297
+    },
+    {
+      "key": "2026-09",
+      "overseas": 215,
+      "domestic": 9,
+      "obi": 26,
+      "total": 250
+    },
+    {
+      "key": "2026-10",
+      "overseas": 304,
+      "domestic": 12,
+      "obi": 19,
+      "total": 335
+    },
+    {
+      "key": "2026-11",
+      "overseas": 154,
+      "domestic": 1,
+      "obi": 31,
+      "total": 186
+    }
+  ],
+  "expected": {
+    "overseas": 937,
+    "domestic": 30,
+    "obi": 102,
+    "total": 1069
+  },
+  "compare": {
+    "domesticMatch": true,
+    "obiMatch": true,
+    "exclusivePlusConflictEquals1069": true,
+    "oldOverseasEqualsExclusivePlusConflict": true,
+    "note": "新ルール: 競合除外。旧937=海外936+競合1(090526327 海外+帯)。"
+  },
+  "selected": {
+    "key": "2026-11",
+    "overseas": 154,
+    "domestic": 1,
+    "obi": 31,
+    "total": 186
+  }
+}

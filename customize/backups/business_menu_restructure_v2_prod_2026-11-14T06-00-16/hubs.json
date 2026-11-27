@@ -1,0 +1,74 @@
+{
+  "86": {
+    "ok": true,
+    "deploy": {
+      "app": "86",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "work_status_labels.js",
+      "hub_nav_config.js",
+      "hub_nav.js",
+      "floor_portal_config.js",
+      "floor_portal_engine.js",
+      "floor_portal_desktop.js"
+    ],
+    "css": [
+      "hub_nav.css",
+      "floor_portal.css"
+    ]
+  },
+  "87": {
+    "ok": true,
+    "deploy": {
+      "app": "87",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "work_status_labels.js",
+      "hub_nav_config.js",
+      "hub_nav.js",
+      "floor_portal_config.js",
+      "floor_portal_engine.js",
+      "floor_portal_desktop.js"
+    ],
+    "css": [
+      "hub_nav.css",
+      "floor_portal.css"
+    ]
+  },
+  "90": {
+    "ok": true,
+    "deploy": {
+      "app": "90",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "hub_nav_config.js",
+      "hub_nav.js",
+      "factory_menu_config.js",
+      "factory_menu_desktop.js"
+    ],
+    "css": [
+      "hub_nav.css",
+      "factory_menu.css"
+    ]
+  },
+  "91": {
+    "ok": true,
+    "deploy": {
+      "app": "91",
+      "status": "SUCCESS"
+    },
+    "js": [
+      "hub_nav_config.js",
+      "hub_nav.js",
+      "business_menu_config.js",
+      "business_menu_desktop.js"
+    ],
+    "css": [
+      "hub_nav.css",
+      "business_menu.css"
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611140602236F0520AABF0B47479C7AE49726B9648A257",
+          "name": "app_nav_banner_config.js",
+          "contentType": "text/javascript",
+          "size": "2635"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060224188644388E8C41F3869165C61E9071E6245",
+          "name": "app_nav_banner.js",
+          "contentType": "text/javascript",
+          "size": "6659"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060224E3E94CED7B39436DB219523A33497A2A301",
+          "name": "payment_create.js",
+          "contentType": "text/javascript",
+          "size": "48035"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060224B486FEDC9D7342F2877572F85A8C6BB6047",
+          "name": "invoice_balance_desktop.js",
+          "contentType": "text/javascript",
+          "size": "6679"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060223E5AAA70FD7F248FEA8B94320A2F8E380002",
+          "name": "app_nav_banner.css",
+          "contentType": "text/css",
+          "size": "4473"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261114060224D83063749B904BF2BC71ECAC8485B1EE151",
+          "name": "payment_create.js",
+          "contentType": "text/javascript",
+          "size": "48035"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611140602242863B84C5DC2423399799FF3ADA70A1D145",
+          "name": "invoice_balance_desktop.js",
+          "contentType": "text/javascript",
+          "size": "6679"
+        }
+      }
+    ],
+    "css": []
+  },
+  "revision": "38"
+}

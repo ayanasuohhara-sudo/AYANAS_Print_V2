@@ -1,0 +1,25 @@
+{
+  "name": "個人顧客マスタ",
+  "description": "",
+  "icon": {
+    "type": "PRESET",
+    "key": "APP39"
+  },
+  "theme": "WHITE",
+  "titleField": {
+    "selectionMode": "AUTO",
+    "code": "personal_customer_id"
+  },
+  "enableThumbnails": true,
+  "enableBulkDeletion": false,
+  "enableComments": true,
+  "enableDuplicateRecord": true,
+  "enableInlineRecordEditing": true,
+  "numberPrecision": {
+    "digits": "16",
+    "decimalPlaces": "4",
+    "roundingMode": "HALF_EVEN"
+  },
+  "firstMonthOfFiscalYear": "4",
+  "revision": "11"
+}

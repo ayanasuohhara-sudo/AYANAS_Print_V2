@@ -1,0 +1,196 @@
+{
+  "views": {
+    "顧客別納期スケジュール": {
+      "type": "LIST",
+      "name": "顧客別納期スケジュール",
+      "id": "5521026",
+      "filterCond": "delivery_status in (\"未納品\", \"納品待ち\", \"\")",
+      "sort": "customer_name asc, deadline asc",
+      "index": "1",
+      "fields": [
+        "order_date",
+        "deadline",
+        "customer_code",
+        "customer_name",
+        "in_charge",
+        "client_name",
+        "kimono_type",
+        "kimono_spec",
+        "process_status",
+        "location_status",
+        "detail_table",
+        "manage_no"
+      ]
+    },
+    "外注中": {
+      "type": "LIST",
+      "name": "外注中",
+      "id": "5521018",
+      "filterCond": "process_status in (\"外注中\")",
+      "sort": "deadline asc",
+      "index": "6",
+      "fields": [
+        "order_date",
+        "deadline",
+        "customer_name",
+        "in_charge",
+        "client_name",
+        "kimono_type",
+        "kimono_spec",
+        "process_status",
+        "location_status",
+        "detail_table",
+        "manage_no"
+      ]
+    },
+    "今週納品予定": {
+      "type": "LIST",
+      "name": "今週納品予定",
+      "id": "5521013",
+      "filterCond": "process_status in (\"受注\", \"問合中\", \"外注中\", \"外注戻り\", \"海外外注中\", \"工場作業中\", \"店舗作業中\", \"検品仕上中\", \"\") and deadline = THIS_WEEK()",
+      "sort": "deadline asc",
+      "index": "4",
+      "fields": [
+        "order_date",
+        "deadline",
+        "customer_name",
+        "in_charge",
+        "client_name",
+        "kimono_type",
+        "kimono_spec",
+        "process_status",
+        "location_status",
+        "detail_table",
+        "manage_no"
+      ]
+    },
+    "海外外注中": {
+      "type": "LIST",
+      "name": "海外外注中",
+      "id": "5521022",
+      "filterCond": "process_status in (\"海外外注中\")",
+      "sort": "deadline asc",
+      "index": "7",
+      "fields": [
+        "order_date",
+        "deadline",
+        "customer_name",
+        "in_charge",
+        "client_name",
+        "kimono_type",
+        "kimono_spec",
+        "process_status",
+        "location_status",
+        "detail_table",
+        "manage_no"
+      ]
+    },
+    "本日納品分（納期遅延）": {
+      "type": "LIST",
+      "name": "本日納品分（納期遅延）",
+      "id": "5521011",
+      "filterCond": "process_status in (\"受注\", \"問合中\", \"外注中\", \"外注戻り\", \"海外外注中\", \"工場作業中\", \"店舗作業中\", \"検品仕上中\", \"\") and deadline = TODAY()",
+      "sort": "deadline asc",
+      "index": "2",
+      "fields": [
+        "order_date",
+        "deadline",
+        "customer_name",
+        "in_charge",
+        "client_name",
+        "kimono_type",
+        "kimono_spec",
+        "process_status",
+        "location_status",
+        "detail_table",
+        "manage_no"
+      ]
+    },
+    "明日納品予定": {
+      "type": "LIST",
+      "name": "明日納品予定",
+      "id": "5521015",
+      "filterCond": "process_status in (\"受注\", \"問合中\", \"外注中\", \"外注戻り\", \"海外外注中\", \"工場作業中\", \"店舗作業中\", \"検品仕上中\", \"\") and deadline = TOMORROW()",
+      "sort": "deadline asc",
+      "index": "3",
+      "fields": [
+        "order_date",
+        "deadline",
+        "customer_name",
+        "in_charge",
+        "client_name",
+        "kimono_type",
+        "kimono_spec",
+        "process_status",
+        "location_status",
+        "detail_table",
+        "manage_no"
+      ]
+    },
+    "完了待ち（検品仕上）": {
+      "type": "LIST",
+      "name": "完了待ち（検品仕上）",
+      "id": "5521020",
+      "filterCond": "process_status in (\"検品仕上中\")",
+      "sort": "deadline asc",
+      "index": "8",
+      "fields": [
+        "order_date",
+        "deadline",
+        "customer_name",
+        "in_charge",
+        "client_name",
+        "kimono_type",
+        "kimono_spec",
+        "process_status",
+        "location_status",
+        "detail_table",
+        "manage_no"
+      ]
+    },
+    "受注登録順": {
+      "type": "LIST",
+      "name": "受注登録順",
+      "id": "5521032",
+      "filterCond": "",
+      "sort": "order_date desc",
+      "index": "0",
+      "fields": [
+        "manage_no",
+        "order_date",
+        "deadline",
+        "customer_code",
+        "customer_name",
+        "client_name",
+        "slip_no",
+        "kimono_type",
+        "process_status",
+        "location_status",
+        "work_status",
+        "detail_table"
+      ]
+    },
+    "全体スケジュール": {
+      "type": "LIST",
+      "name": "全体スケジュール",
+      "id": "5521030",
+      "filterCond": "process_status in (\"受注\", \"問合中\", \"外注中\", \"外注戻り\", \"海外外注中\", \"工場作業中\", \"店舗作業中\", \"検品仕上中\", \"\")",
+      "sort": "deadline asc",
+      "index": "5",
+      "fields": [
+        "order_date",
+        "deadline",
+        "customer_name",
+        "in_charge",
+        "client_name",
+        "kimono_type",
+        "kimono_spec",
+        "process_status",
+        "location_status",
+        "detail_table",
+        "manage_no"
+      ]
+    }
+  },
+  "revision": "504"
+}

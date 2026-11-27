@@ -1,0 +1,41 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021608235569835F90114F84BEE1A96A985C32E7080",
+          "name": "factory_menu_config.js",
+          "contentType": "text/javascript",
+          "size": "3168"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110216082363BF90F5DE154A0DACC548F540CE9B20030",
+          "name": "factory_menu_desktop.js",
+          "contentType": "text/javascript",
+          "size": "12259"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021608235453031C13EB4A93B2D2ECA50F0478F9128",
+          "name": "factory_menu.css",
+          "contentType": "text/css",
+          "size": "3195"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "8"
+}

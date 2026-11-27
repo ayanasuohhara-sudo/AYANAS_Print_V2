@@ -1,0 +1,86 @@
+{
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021706375093425C304F444D84C4913A32804840312",
+          "name": "app_nav_banner_config.js",
+          "contentType": "text/javascript",
+          "size": "2747"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102170637268B0F8002C545FEA6B469C0410377F5202",
+          "name": "app_nav_banner.js",
+          "contentType": "text/javascript",
+          "size": "6659"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102170637C331076B9AEC42BB924931CB8E4F05A1153",
+          "name": "kana_normalize.js",
+          "contentType": "text/javascript",
+          "size": "1922"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "2026110217063731CDBC35F7204389B57315A73EC771D1270",
+          "name": "order_search_config.js",
+          "contentType": "text/javascript",
+          "size": "3017"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021706379985B9310CF14A09A329DF3B539595BF243",
+          "name": "order_search_engine.js",
+          "contentType": "text/javascript",
+          "size": "17912"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "20261102170637B6B33E7B31B8446C844F5ADD9D22C23E214",
+          "name": "order_search_desktop.js",
+          "contentType": "text/javascript",
+          "size": "18908"
+        }
+      }
+    ],
+    "css": [
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021706379FEF62A7F76B47FAB56FFE2E312CDBD5249",
+          "name": "app_nav_banner.css",
+          "contentType": "text/css",
+          "size": "4473"
+        }
+      },
+      {
+        "type": "FILE",
+        "file": {
+          "fileKey": "202611021706375EDC373AAA6F4D36B6D990EF4636108A032",
+          "name": "order_search.css",
+          "contentType": "text/css",
+          "size": "4744"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  },
+  "revision": "9"
+}

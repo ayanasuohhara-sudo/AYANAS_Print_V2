@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "84",
+    "status": "SUCCESS"
+  },
+  "desktopJs": [
+    "work_status_labels.js",
+    "internal_ops_config.js",
+    "barcode_batch_core.js",
+    "barcode_batch_ui.js",
+    "internal_work_engine.js",
+    "internal_work_desktop.js"
+  ]
+}

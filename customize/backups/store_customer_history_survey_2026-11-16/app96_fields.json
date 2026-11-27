@@ -1,0 +1,690 @@
+{
+  "count": 39,
+  "fields": [
+    {
+      "code": "address_line",
+      "label": "番地以下",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "Assignee",
+      "label": "Assignee",
+      "type": "STATUS_ASSIGNEE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "birthday",
+      "label": "生年月日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "building_name",
+      "label": "建物名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "Categories",
+      "label": "Categories",
+      "type": "CATEGORY",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "city",
+      "label": "市区町村",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "Created_by",
+      "label": "Created by",
+      "type": "CREATOR",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "Created_datetime",
+      "label": "Created datetime",
+      "type": "CREATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_kana",
+      "label": "ふりがな",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_name",
+      "label": "氏名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": true,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_note",
+      "label": "顧客メモ",
+      "type": "MULTI_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "dm_permission",
+      "label": "DM郵送可否",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "未設定",
+        "不可",
+        "可"
+      ],
+      "fields": null
+    },
+    {
+      "code": "dormant_status",
+      "label": "休眠区分",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "休眠",
+        "休眠候補",
+        "通常"
+      ],
+      "fields": null
+    },
+    {
+      "code": "email",
+      "label": "メールアドレス",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "email_permission",
+      "label": "メール配信同意",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "未設定",
+        "同意",
+        "不同意"
+      ],
+      "fields": null
+    },
+    {
+      "code": "first_order_date",
+      "label": "初回利用日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "gender",
+      "label": "性別",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "回答しない",
+        "未設定",
+        "男性",
+        "その他",
+        "女性"
+      ],
+      "fields": null
+    },
+    {
+      "code": "last_order_date",
+      "label": "最終利用日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "lifetime_amount",
+      "label": "累計利用金額(App16未連携)",
+      "type": "NUMBER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "line_account_id",
+      "label": "LINE連携ID",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "line_permission",
+      "label": "LINE配信同意",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "未設定",
+        "同意",
+        "不同意"
+      ],
+      "fields": null
+    },
+    {
+      "code": "member_expiry_date",
+      "label": "有効期限",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "member_no",
+      "label": "会員番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "member_start_date",
+      "label": "入会日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "member_status",
+      "label": "会員状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "非会員",
+        "退会",
+        "停止",
+        "会員"
+      ],
+      "fields": null
+    },
+    {
+      "code": "member_type",
+      "label": "会員区分",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "優待",
+        "一般",
+        "店舗会員",
+        "その他"
+      ],
+      "fields": null
+    },
+    {
+      "code": "mobile_phone",
+      "label": "携帯電話",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "order_count",
+      "label": "利用回数(App16未連携)",
+      "type": "NUMBER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "personal_customer_id",
+      "label": "個人顧客ID",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "phone",
+      "label": "電話番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "postal_code",
+      "label": "郵便番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "prefecture",
+      "label": "都道府県",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "島根県",
+        "埼玉県",
+        "長崎県",
+        "兵庫県",
+        "高知県",
+        "東京都",
+        "石川県",
+        "鳥取県",
+        "福岡県",
+        "鹿児島県",
+        "宮城県",
+        "宮崎県",
+        "茨城県",
+        "京都府",
+        "北海道",
+        "愛知県",
+        "奈良県",
+        "愛媛県",
+        "熊本県",
+        "三重県",
+        "山口県",
+        "岩手県",
+        "富山県",
+        "香川県",
+        "滋賀県",
+        "静岡県",
+        "佐賀県",
+        "岐阜県",
+        "千葉県",
+        "秋田県",
+        "福島県",
+        "栃木県",
+        "福井県",
+        "大分県",
+        "青森県",
+        "群馬県",
+        "新潟県",
+        "長野県",
+        "和歌山県",
+        "広島県",
+        "大阪府",
+        "沖縄県",
+        "岡山県",
+        "徳島県",
+        "山形県",
+        "山梨県",
+        "神奈川県"
+      ],
+      "fields": null
+    },
+    {
+      "code": "Record_number",
+      "label": "Record number",
+      "type": "RECORD_NUMBER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "registration_source",
+      "label": "初回登録経路",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "WEB",
+        "店舗",
+        "移行",
+        "その他"
+      ],
+      "fields": null
+    },
+    {
+      "code": "Status",
+      "label": "Status",
+      "type": "STATUS",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "Updated_by",
+      "label": "Updated by",
+      "type": "MODIFIER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "Updated_datetime",
+      "label": "Updated datetime",
+      "type": "UPDATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "web_account_id",
+      "label": "WEBアカウントID",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "web_verified",
+      "label": "WEB本人確認状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "未連携",
+        "本人確認済",
+        "停止"
+      ],
+      "fields": null
+    }
+  ],
+  "interesting": [
+    {
+      "code": "building_name",
+      "label": "建物名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_kana",
+      "label": "ふりがな",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_name",
+      "label": "氏名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": true,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_note",
+      "label": "顧客メモ",
+      "type": "MULTI_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "email",
+      "label": "メールアドレス",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "email_permission",
+      "label": "メール配信同意",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "未設定",
+        "同意",
+        "不同意"
+      ],
+      "fields": null
+    },
+    {
+      "code": "first_order_date",
+      "label": "初回利用日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "last_order_date",
+      "label": "最終利用日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "lifetime_amount",
+      "label": "累計利用金額(App16未連携)",
+      "type": "NUMBER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "member_expiry_date",
+      "label": "有効期限",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "member_no",
+      "label": "会員番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "member_start_date",
+      "label": "入会日",
+      "type": "DATE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "member_status",
+      "label": "会員状態",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "非会員",
+        "退会",
+        "停止",
+        "会員"
+      ],
+      "fields": null
+    },
+    {
+      "code": "member_type",
+      "label": "会員区分",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "優待",
+        "一般",
+        "店舗会員",
+        "その他"
+      ],
+      "fields": null
+    },
+    {
+      "code": "mobile_phone",
+      "label": "携帯電話",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "order_count",
+      "label": "利用回数(App16未連携)",
+      "type": "NUMBER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "personal_customer_id",
+      "label": "個人顧客ID",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "phone",
+      "label": "電話番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "postal_code",
+      "label": "郵便番号",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    }
+  ]
+}

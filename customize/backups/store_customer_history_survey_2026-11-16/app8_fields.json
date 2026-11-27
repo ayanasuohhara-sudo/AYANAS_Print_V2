@@ -1,0 +1,274 @@
+{
+  "count": 23,
+  "fields": [
+    {
+      "code": "address",
+      "label": "番地以下",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "building",
+      "label": "ビル名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "city",
+      "label": "市区町村",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "closing_date",
+      "label": "締日",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "10.20.月末",
+        "３０日",
+        "１０日",
+        "２０日",
+        "１５日",
+        "月末",
+        "都度払い"
+      ],
+      "fields": null
+    },
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "post_no",
+      "label": "〒",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "prefecture",
+      "label": "都道府県",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "type": "CATEGORY",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "ステータス",
+      "label": "ステータス",
+      "type": "STATUS",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "ドロップダウン",
+      "label": "顧客区分",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "一般",
+        "法人"
+      ],
+      "fields": null
+    },
+    {
+      "code": "ドロップダウン_0",
+      "label": "部門",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "店舗",
+        "本社"
+      ],
+      "fields": null
+    },
+    {
+      "code": "ドロップダウン_2",
+      "label": "支払区分",
+      "type": "DROP_DOWN",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": [
+        "締め払い",
+        "都度払い"
+      ],
+      "fields": null
+    },
+    {
+      "code": "レコード番号",
+      "label": "レコード番号",
+      "type": "RECORD_NUMBER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作成日時",
+      "label": "作成日時",
+      "type": "CREATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作成者",
+      "label": "作成者",
+      "type": "CREATOR",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "作業者",
+      "label": "作業者",
+      "type": "STATUS_ASSIGNEE",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "文字列__1行_",
+      "label": "担当者",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "文字列__1行__2",
+      "label": "電話",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "文字列__1行__3",
+      "label": "携帯電話",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "文字列__1行__8",
+      "label": "FAX",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "更新日時",
+      "label": "更新日時",
+      "type": "UPDATED_TIME",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "更新者",
+      "label": "更新者",
+      "type": "MODIFIER",
+      "required": false,
+      "unique": false,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    }
+  ],
+  "interesting": [
+    {
+      "code": "customer_code",
+      "label": "顧客コード",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    },
+    {
+      "code": "customer_name",
+      "label": "顧客名",
+      "type": "SINGLE_LINE_TEXT",
+      "required": false,
+      "unique": true,
+      "lookup": null,
+      "options": null,
+      "fields": null
+    }
+  ]
+}

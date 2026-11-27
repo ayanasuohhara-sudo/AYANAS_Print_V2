@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title> </title>
+<link rel="stylesheet" href="https://o5nppg7kb4ly.cybozu.com/k/api/plugin/content/download.do?pluginId=pblhdbfbejjlplejiiihlnabolagcfhh&type=DESKTOP_CSS&contentId=14096">
+<style>@page { size: A4 portrait; margin: 0; }</style>
+</head>
+<body class="report-store-order">
+<div class="page page--a4 page--portrait">
+
+<div class="page store-order-page">
+  <header class="store-order-header">
+    <div class="store-order-header__left">
+      <p class="store-order-eyebrow">A550 店舗</p>
+      <h1 class="store-order-title">店舗受注表</h1>
+      <p class="store-order-manage">管理番号：<strong>TSP801856F</strong></p>
+    </div>
+    <div class="store-order-header__right">
+      <div class="store-order-barcode">
+        <svg class="barcode"></svg>
+        <p class="store-order-barcode__value">TSP801856F</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="store-order-section">
+    <h2 class="store-order-section__title">お客様</h2>
+    <dl class="store-order-dl">
+      <div><dt>お名前</dt><dd>[TEST]山田花子 様</dd></div>
+      <div><dt>PCM</dt><dd>P000002</dd></div>
+      <div><dt>電話</dt><dd>090-1111-2222</dd></div>
+      <div><dt>顧客コード</dt><dd>A550</dd></div>
+    </dl>
+  </section>
+
+  <section class="store-order-section">
+    <h2 class="store-order-section__title">商品・納期</h2>
+    <dl class="store-order-dl">
+      <div><dt>着物種類</dt><dd>—</dd></div>
+      <div><dt>仕様</dt><dd>単衣</dd></div>
+      <div><dt>納期</dt><dd>2026/11/05</dd></div>
+      <div><dt>受注日</dt><dd>2026/11/02</dd></div>
+    </dl>
+  </section>
+
+  <section class="store-order-section">
+    <h2 class="store-order-section__title">加工内容</h2>
+    <ul class="store-order-processing"><li><span class="store-order-processing__name">身揚げ</span><span class="store-order-processing__amount">2,000</span></li></ul>
+  </section>
+
+  <section class="store-order-section store-order-section--payment">
+    <h2 class="store-order-section__title">入金状況（App97・印刷時点）</h2>
+    <p class="store-order-payment-state is-paid">入金済</p>
+    <table class="store-order-payment-table">
+      <thead>
+        <tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2,000</td>
+          <td>200</td>
+          <td>2,200</td>
+          <td>2,200</td>
+          <td>0</td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </section>
+
+  <footer class="store-order-footer">
+    <p>作業・保管・引き取り管理用（印刷のみ・状態は更新しません）</p>
+    <div class="store-order-checks">
+      <span>□ 受付</span><span>□ 作業中</span><span>□ 店舗保管</span><span>□ 引取済</span>
+    </div>
+  </footer>
+</div>
+</div>
+
+
+<div class="buttons">
+    <button type="button" id="ayanas-print-btn">印刷</button>
+    <button type="button" id="ayanas-close-btn">閉じる</button>
+</div>
+
+
+<script>
+(function () {
+
+    var barcodeValue = "TSP801856F";
+    var barcodeType = "CODE39";
+    var barcodeDrawOptions = {"barcode_type":"CODE39","format":"CODE39","height":32,"width":1.3,"margin":6,"displayValue":false,"textAlign":"center","background":"#ffffff","lineColor":"#000000"};
+    var jsBarcodeUrl = "https://o5nppg7kb4ly.cybozu.com/k/api/plugin/content/download.do?pluginId=pblhdbfbejjlplejiiihlnabolagcfhh&type=DESKTOP_JS&contentId=14066";
+    var barcodeJsUrl = "https://o5nppg7kb4ly.cybozu.com/k/api/plugin/content/download.do?pluginId=pblhdbfbejjlplejiiihlnabolagcfhh&type=DESKTOP_JS&contentId=14072";
+
+    function initButtons() {
+
+
+    function runPrint() {
+        var savedTitle = document.title;
+        document.title = ' ';
+        var restoreTitle = function () {
+            document.title = savedTitle;
+            window.removeEventListener('afterprint', restoreTitle);
+        };
+        window.addEventListener('afterprint', restoreTitle);
+        window.print();
+    }
+
+    document.getElementById('ayanas-print-btn').addEventListener('click', runPrint);
+
+    document.getElementById('ayanas-close-btn').addEventListener('click', function () {
+        window.close();
+    });
+    }
+
+    function drawBarcode() {
+
+        if (typeof window.JsBarcode !== 'function') {
+            return;
+        }
+
+        if (!window.Barcode || typeof window.Barcode.draw !== 'function') {
+            return;
+        }
+
+        if (!barcodeValue) {
+            initButtons();
+            return;
+        }
+
+        var svgNodes = document.querySelectorAll('.order-detail-barcode__svg, #barcode');
+
+        if (!svgNodes.length) {
+            initButtons();
+            return;
+        }
+
+        try {
+            svgNodes.forEach(function (svg) {
+                var nodeValue = svg.getAttribute('data-barcode-value');
+                var value = nodeValue && String(nodeValue).trim() !== '' ? nodeValue : barcodeValue;
+                if (!value) {
+                    return;
+                }
+                window.Barcode.draw(svg, value, barcodeDrawOptions);
+            });
+        } catch (error) {
+            console.error(error);
+            alert('バーコード描画エラー\n\n' + String(error));
+        }
+
+    }
+
+    function loadBarcodeJs() {
+
+        var script = document.createElement('script');
+        script.src = barcodeJsUrl;
+        script.onload = function () {
+            drawBarcode();
+            initButtons();
+        };
+        script.onerror = function () {
+            console.error('barcode.js の読み込みに失敗しました。', barcodeJsUrl);
+            initButtons();
+        };
+        document.head.appendChild(script);
+
+    }
+
+    function loadJsBarcode() {
+
+        var script = document.createElement('script');
+        script.src = jsBarcodeUrl;
+        script.onload = function () {
+            loadBarcodeJs();
+        };
+        script.onerror = function () {
+            console.error('JsBarcode.all.min.js の読み込みに失敗しました。', jsBarcodeUrl);
+            initButtons();
+        };
+        document.head.appendChild(script);
+
+    }
+
+    loadJsBarcode();
+
+})();
+</script>
+</body>
+</html>

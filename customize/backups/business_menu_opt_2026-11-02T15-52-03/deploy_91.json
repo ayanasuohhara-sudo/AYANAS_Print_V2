@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "91",
+    "status": "SUCCESS"
+  },
+  "desktopJs": [
+    "business_menu_config.js",
+    "business_menu_desktop.js"
+  ],
+  "desktopCss": [
+    "business_menu.css"
+  ]
+}

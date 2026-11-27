@@ -1,0 +1,95 @@
+/* A550 App16 入金状況（一覧・詳細） */
+.cayan-sps-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  margin: 8px 0 12px;
+  padding: 8px 12px;
+  background: #f7f5f1;
+  border: 1px solid #e2ddd4;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.cayan-sps-bar__label {
+  font-weight: 600;
+  color: #333;
+}
+
+.cayan-sps-bar__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cayan-sps-bar__btn {
+  appearance: none;
+  border: 1px solid #c8c0b4;
+  background: #fff;
+  color: #333;
+  border-radius: 3px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.cayan-sps-bar__btn:hover {
+  background: #f0ebe3;
+}
+
+.cayan-sps-bar__btn.is-active {
+  border-color: #6b5b4a;
+  background: #6b5b4a;
+  color: #fff;
+}
+
+.cayan-sps-bar__hint {
+  color: #666;
+  font-size: 12px;
+}
+
+.cayan-sps-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cayan-sps-cell select {
+  min-width: 7.5em;
+  font-size: 12px;
+}
+
+.cayan-sps-cell.is-busy select {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.cayan-sps-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.cayan-sps-badge.is-unpaid {
+  background: #f5e6e6;
+  color: #8a3030;
+}
+
+.cayan-sps-badge.is-partial {
+  background: #f5efd9;
+  color: #7a5c10;
+}
+
+.cayan-sps-badge.is-paid {
+  background: #e3efe6;
+  color: #2a6b3c;
+}
+
+.cayan-sps-warn {
+  margin-top: 6px;
+  color: #8a3030;
+  font-size: 12px;
+}

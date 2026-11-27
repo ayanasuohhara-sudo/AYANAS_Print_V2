@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "deploy": {
+    "app": "90",
+    "status": "SUCCESS"
+  },
+  "desktopJs": [
+    "factory_menu_config.js",
+    "factory_menu_desktop.js"
+  ],
+  "desktopCss": [
+    "factory_menu.css"
+  ]
+}

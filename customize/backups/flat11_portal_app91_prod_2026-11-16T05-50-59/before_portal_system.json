@@ -1,0 +1,44 @@
+{
+  "result": {
+    "executable": true,
+    "configurable": true,
+    "scripts": [
+      {
+        "id": "56",
+        "type": "DESKTOP",
+        "locationType": "BLOB",
+        "contentId": "15383",
+        "hash": "4d26c2960dcf84a4e2277cf889aff79ff1a713a4",
+        "name": "portal_business_banners_config.js",
+        "size": 3422,
+        "contentUrl": null,
+        "sortOrder": 0
+      },
+      {
+        "id": "57",
+        "type": "DESKTOP",
+        "locationType": "BLOB",
+        "contentId": "15384",
+        "hash": "24e7a537a5253515f875dc5fa3c0ae813a6414cc",
+        "name": "portal_business_banners.js",
+        "size": 9022,
+        "contentUrl": null,
+        "sortOrder": 1
+      },
+      {
+        "id": "58",
+        "type": "DESKTOP_CSS",
+        "locationType": "BLOB",
+        "contentId": "15385",
+        "hash": "5427520482f442416a273a5a2f403289edf2e19f",
+        "name": "portal_business_banners.css",
+        "size": 3001,
+        "contentUrl": null,
+        "sortOrder": 0
+      }
+    ],
+    "scope": "ALL",
+    "active": true
+  },
+  "success": true
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>店舗ポータル（A550）v1.3.0 画面イメージ</title>
+  <link rel="stylesheet" href="../../../customize/floor_portal.css" />
+  <style>
+    body { margin: 0; background: #cbd5e1; }
+    .preview-frame {
+      max-width: 1100px;
+      margin: 16px auto;
+      background: #f1f5f9;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    }
+    .preview-frame--ipad {
+      max-width: 820px;
+    }
+    .preview-label {
+      max-width: 1100px;
+      margin: 24px auto 0;
+      padding: 0 12px;
+      font: 600 14px/1.4 sans-serif;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+  <p class="preview-label">PC（約1100px）— 本番未反映のローカル画面イメージ</p>
+  <div class="preview-frame">
+    <div class="cayan-fp-root">
+      <header class="cayan-fp-header">
+        <h1 class="cayan-fp-title">店舗ポータル（A550）</h1>
+        <div class="cayan-fp-header__side">
+          <span class="cayan-fp-updated">最終更新 00:00</span>
+          <button type="button" class="cayan-fp-btn">更新</button>
+        </div>
+      </header>
+      <section class="cayan-fp-menu">
+        <h2 class="cayan-fp-menu__title">店舗メニュー</h2>
+        <p class="cayan-fp-note">A550 専用。保管場所移動＝App34、社内作業登録＝work_status のみ、仕上げ完了＝工程完了。メニューはショートカットであり権限付与ではありません。</p>
+        <p class="cayan-fp-note cayan-fp-note--warn">App92／App97 など権限制限のあるアプリは、権限のあるユーザーのみ利用できます。</p>
+        <div class="cayan-fp-menu__groups">
+          <div class="cayan-fp-menu-group"><h3 class="cayan-fp-menu-group__title">受付</h3>
+            <div class="cayan-fp-menu-group__links">
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">個人顧客マスタ</span></a>
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">受注登録</span></a>
+            </div>
+          </div>
+          <div class="cayan-fp-menu-group"><h3 class="cayan-fp-menu-group__title">作業</h3>
+            <div class="cayan-fp-menu-group__links">
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">保管場所移動</span><span class="cayan-fp-menu__note">App34</span></a>
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">社内作業登録</span><span class="cayan-fp-menu__note">work_status のみ</span></a>
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">検品・仕上げ完了</span><span class="cayan-fp-menu__note">工程完了</span></a>
+            </div>
+          </div>
+          <div class="cayan-fp-menu-group"><h3 class="cayan-fp-menu-group__title">納品・在庫</h3>
+            <div class="cayan-fp-menu-group__links">
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">納品書作成</span></a>
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">納期・引き取り在庫</span></a>
+            </div>
+          </div>
+          <div class="cayan-fp-menu-group"><h3 class="cayan-fp-menu-group__title">会計・引き取り</h3>
+            <div class="cayan-fp-menu-group__links">
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">店舗入金管理</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="cayan-fp-summary">
+        <h2 class="cayan-fp-summary__title">本日の店舗状況</h2>
+        <div class="cayan-fp-summary__cards">
+          <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">本日の店舗受注</span><span class="cayan-fp-summary-card__value">3件</span></div>
+          <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">本日納期</span><span class="cayan-fp-summary-card__value">2件</span></div>
+          <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">引き取り待ち</span><span class="cayan-fp-summary-card__value">5件</span></div>
+          <div class="cayan-fp-summary-card is-unavailable"><span class="cayan-fp-summary-card__label">本日入金金額</span><span class="cayan-fp-summary-card__value">未取得</span></div>
+          <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">納期超過</span><span class="cayan-fp-summary-card__value">1件</span></div>
+        </div>
+      </section>
+      <section class="cayan-fp-section"><h2>現在状況</h2><p class="cayan-fp-note">A550・店舗現物のみ（カード／一覧は従来どおり）</p></section>
+    </div>
+  </div>
+
+  <p class="preview-label">iPad 幅（約820px）</p>
+  <div class="preview-frame preview-frame--ipad">
+    <div class="cayan-fp-root">
+      <header class="cayan-fp-header">
+        <h1 class="cayan-fp-title">店舗ポータル（A550）</h1>
+        <button type="button" class="cayan-fp-btn">更新</button>
+      </header>
+      <section class="cayan-fp-summary">
+        <h2 class="cayan-fp-summary__title">本日の店舗状況</h2>
+        <div class="cayan-fp-summary__cards">
+          <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">本日の店舗受注</span><span class="cayan-fp-summary-card__value">0件</span></div>
+          <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">本日納期</span><span class="cayan-fp-summary-card__value">0件</span></div>
+          <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">引き取り待ち</span><span class="cayan-fp-summary-card__value">4件</span></div>
+          <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">本日入金金額</span><span class="cayan-fp-summary-card__value">12,345円</span></div>
+          <div class="cayan-fp-summary-card"><span class="cayan-fp-summary-card__label">納期超過</span><span class="cayan-fp-summary-card__value">2件</span></div>
+        </div>
+      </section>
+      <section class="cayan-fp-menu">
+        <h2 class="cayan-fp-menu__title">店舗メニュー</h2>
+        <div class="cayan-fp-menu__groups">
+          <div class="cayan-fp-menu-group"><h3 class="cayan-fp-menu-group__title">作業</h3>
+            <div class="cayan-fp-menu-group__links">
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">保管場所移動</span><span class="cayan-fp-menu__note">App34</span></a>
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">社内作業登録</span><span class="cayan-fp-menu__note">work_status のみ</span></a>
+              <a class="cayan-fp-btn cayan-fp-btn--menu" href="#"><span class="cayan-fp-menu__label">検品・仕上げ完了</span><span class="cayan-fp-menu__note">工程完了</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

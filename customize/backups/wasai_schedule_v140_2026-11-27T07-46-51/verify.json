@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "deploy": {
+    "ok": true,
+    "deploy": {
+      "app": "98",
+      "status": "SUCCESS"
+    },
+    "beforeJs": [
+      "wasai_schedule_config.js",
+      "wasai_schedule_engine.js",
+      "wasai_schedule_desktop.js"
+    ],
+    "js": [
+      "wasai_schedule_config.js",
+      "wasai_schedule_engine.js",
+      "wasai_schedule_desktop.js"
+    ],
+    "css": [
+      "wasai_schedule.css"
+    ]
+  },
+  "verify": {
+    "version": "1.4.0",
+    "hasRoot": true,
+    "itemCount": 0,
+    "sample": [],
+    "hasOldCountChip": false,
+    "snippet": "和裁士入庫予定カレンダー\n\n和裁士ごとの入庫予定日に、顧客名・お客様名・商品名を確認します。日をクリックすると明細一覧を表示します。\n\n和裁士\n和裁士を選択\n001 髙田まや\n002 西口陽子\n003 秋津　京\n004 中田路子\n005 中村紅美\n返却済を表示\n予約を表示\n月間処理可能 未設定\n変更は和裁士マスタ（App73）で行います\n出庫中 0枚\n予約 0枚\n返却済 0枚\n＜ 前月\n2026年11月\n翌月 ＞\n今日\n月\n火\n水\n木\n金\n土\n日\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n2026年11月27日\n\n入庫予定明細 0件\n\nこの入庫予定日の明細はありません。\n\n未出庫予定を登録\n\n登録元は事務所。将来の本人スマホ入力は source=本人 を使用します。取消は"
+  },
+  "at": "2026-11-27T07:47:10.028Z",
+  "work": "/agent/repos/AYANAS_Print_V2/customize/backups/wasai_schedule_v140_2026-11-27T07-46-51"
+}
