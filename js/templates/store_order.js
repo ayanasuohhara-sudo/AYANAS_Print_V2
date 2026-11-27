@@ -4,12 +4,14 @@
     /**
      * 店舗受注表（A550専用）
      * 構成は受注明細表（order_detail）と同じ A4横・左右2面。
-     * 追加: 作業チェック3項目、入金状態（入金済／未入金）。
+     * 追加: 作業チェック3項目、入金状態（黒字／入金済み／未入金／一部入金）。
      * 主表から顧客名／得意先伝票番号／得意先担当・係を除外。
      * 左右とも下部はバーコードのみ（袖タグ表なし）。
      */
 
-    const STORE_ORDER_TEMPLATE_VERSION = '149';
+    const STORE_ORDER_TEMPLATE_VERSION = '150';
+
+    const PAYMENT_CHECK_OPTIONS = ['黒字', '入金済み', '未入金', '一部入金'];
 
     const esc = (value) => Format.escapeHtml(value);
 
@@ -20,30 +22,31 @@
         return String(value ?? '');
     };
 
-    /** 受注表レイアウトは入金済 / 未入金の2値（一部入金・未入金は未入金扱い＝未完済） */
-    const toBinaryPaymentState = (state, balance) => {
+    /** 店舗受注表の入金状態（黒字／入金済み／未入金／一部入金） */
+    const toPaymentCheckState = (state, balance) => {
         const s = String(state ?? '').trim();
-        if (s === '入金済' || s === '入金済み') {
-            return '入金済';
+        if (s === '黒字' || s === '過剰入金') {
+            return '黒字';
         }
-        if (s === '未入金' || s === '一部入金') {
+        if (s === '入金済' || s === '入金済み') {
+            return '入金済み';
+        }
+        if (s === '一部入金') {
+            return '一部入金';
+        }
+        if (s === '未入金') {
             return '未入金';
         }
         const bal = Number(balance);
-        if (Number.isFinite(bal) && bal <= 0.0001 && s !== '') {
-            return '入金済';
+        if (Number.isFinite(bal)) {
+            if (bal < -0.0001) {
+                return '黒字';
+            }
+            if (bal <= 0.0001 && s !== '') {
+                return '入金済み';
+            }
         }
         return '未入金';
-    };
-
-    const paymentClass = (state) => {
-        if (state === '入金済' || state === '入金済み') {
-            return 'is-paid';
-        }
-        if (state === '未入金' || state === '一部入金') {
-            return 'is-unpaid';
-        }
-        return 'is-unknown';
     };
 
     const normalizeHeaderForOrderDetail = (header) => {
@@ -161,11 +164,19 @@
         + '</div>'
     );
 
+    const buildPaymentChecksHtml = (paymentState) => {
+        const items = PAYMENT_CHECK_OPTIONS.map((label) => {
+            const mark = label === paymentState ? '☑' : '□';
+            return `<span class="store-order-payment__check">${mark} ${esc(label)}</span>`;
+        }).join('');
+        return '<div class="store-order-payment__checks">' + items + '</div>';
+    };
+
     const buildPaymentBlockHtml = (header, paymentState) => (
         '<div class="store-order-payment">'
         + '<div class="store-order-payment__head">'
         + '<span class="store-order-payment__label">入金状態</span>'
-        + `<span class="store-order-payment__state ${paymentClass(paymentState)}">${esc(paymentState)}</span>`
+        + buildPaymentChecksHtml(paymentState)
         + '</div>'
         + '<table class="store-order-payment-table">'
         + '<thead><tr><th>税抜</th><th>税</th><th>税込</th><th>入金額</th><th>残額</th></tr></thead>'
@@ -209,7 +220,7 @@
         const header = normalizeHeaderForOrderDetail(data.header || {});
         const details = normalizeDetailsForOrderDetail(data.details || []);
         const manageNo = String(header.manage_no ?? '').trim();
-        const paymentState = toBinaryPaymentState(header.payment_state, header.payment_balance);
+        const paymentState = toPaymentCheckState(header.payment_state, header.payment_balance);
 
         return Common.buildDocumentHtml({
             title: '店舗受注表',

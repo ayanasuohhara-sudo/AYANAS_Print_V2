@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "verify": {
+    "has150": true,
+    "sample": [
+      "AYANAS Print",
+      "AYANAS Print Plugin V150 (store order payment status checkboxes)"
+    ],
+    "versions": [
+      "Version: 150",
+      "Version: 725",
+      "Version: 3",
+      "Version: 3",
+      "Version: 2",
+      "Version: 1",
+      "Version: 1",
+      "Version: 1"
+    ]
+  },
+  "zip": "/tmp/ayanas-print-v150.zip",
+  "work": "/agent/repos/AYANAS_Print_V2/customize/backups/store_order_v150_2026-11-27T07-20-29",
+  "at": "2026-11-27T07:20:41.449Z"
+}

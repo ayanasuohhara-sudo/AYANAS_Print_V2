@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "record": {
+    "id": "3963",
+    "manage_no": "112626963",
+    "customer_code": "A550",
+    "store_payment_status": "未入金",
+    "url": "https://o5nppg7kb4ly.cybozu.com/k/16/show#record=3963"
+  },
+  "checks": {
+    "title": true,
+    "label": true,
+    "optionKuroji": true,
+    "optionPaid": true,
+    "optionUnpaid": true,
+    "optionPartial": true,
+    "hasChecked": true,
+    "noOldBadge": true,
+    "templateV150": true
+  },
+  "htmlLength": 10897,
+  "checkedMatch": "☑ 未入金",
+  "shot": "/opt/cursor/artifacts/store_order_v150/store_order_112626963_payment_checks.png",
+  "at": "2026-11-27T07:22:10.626Z"
+}

@@ -3777,7 +3777,8 @@ body {
 .report-store-order .store-order-payment__head {
     display: flex;
     align-items: center;
-    gap: 6px;
+    flex-wrap: wrap;
+    gap: 4px 8px;
     margin-bottom: 0.8mm;
 }
 
@@ -3786,23 +3787,17 @@ body {
     font-weight: 700;
 }
 
-.report-store-order .store-order-payment__state {
-    display: inline-block;
-    padding: 0 8px;
-    font-size: 12pt;
-    font-weight: 800;
-    border: 2px solid #000000;
-    line-height: 1.15;
+.report-store-order .store-order-payment__checks {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2px 10px;
 }
 
-.report-store-order .store-order-payment__state.is-paid {
-    color: #166534;
-    border-color: #166534;
-}
-
-.report-store-order .store-order-payment__state.is-unpaid {
-    color: #9f1239;
-    border-color: #9f1239;
+.report-store-order .store-order-payment__check {
+    font-size: 10pt;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
 .report-store-order .store-order-payment-table {
