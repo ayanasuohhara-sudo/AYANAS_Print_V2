@@ -2,12 +2,13 @@
   'use strict';
 
   /**
-   * 和裁士入庫予定カレンダー — 定数（v1.3.0 / 納期負荷カレンダー同仕様）
+   * 和裁士入庫予定カレンダー — 定数（v1.4.0 / 納期負荷カレンダー同仕様）
    * 軸: App74 入庫予定日（return_date）。App73/74/78 は参照のみ。
    * PLAN_APP_ID=99（予定管理）。出庫・入庫・受注の処理は変更しない。
+   * v1.4.0: カレンダーセルに顧客名・お客様名・商品名を表示（「出庫中」件数ラベル廃止）。
    */
 
-  const WASAI_SCHEDULE_VERSION = '1.3.0';
+  const WASAI_SCHEDULE_VERSION = '1.4.0';
 
   const CAYANAS_WASAI_SCHEDULE = {
     VERSION: WASAI_SCHEDULE_VERSION,
@@ -69,7 +70,9 @@
     ],
     MESSAGES: {
       title: '和裁士入庫予定カレンダー',
-      lead: '和裁士ごとの入庫予定日に、出庫中／予約／返却済の点数を確認します（納期負荷カレンダーと同じ見方）。',
+      lead: '和裁士ごとの入庫予定日に、顧客名・お客様名・商品名を確認します。日をクリックすると明細一覧を表示します。',
+      cellMoreSuffix: '件ほか',
+      cellItemFallback: '（名称未設定）',
       loading: '読み込み中…',
       failed: '読み込みに失敗しました。再度お試しください。',
       selectWasai: '和裁士を選択してください。',

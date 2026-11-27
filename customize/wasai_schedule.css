@@ -260,6 +260,40 @@ body.ayanas-wasai-schedule-active .gaia-argoui-app-index-pager {
   font-variant-numeric: tabular-nums;
 }
 
+.cayan-ws-item {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 1.25;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.cayan-ws-item.is-outbound {
+  color: #1e3a8a;
+}
+
+.cayan-ws-item.is-planned {
+  color: #9a3412;
+}
+
+.cayan-ws-item.is-returned {
+  color: #475569;
+  font-weight: 500;
+}
+
+.cayan-ws-item.is-rework {
+  color: #9d174d;
+}
+
+.cayan-ws-item.is-more {
+  color: #64748b;
+  font-weight: 500;
+}
+
 .cayan-ws-detail {
   padding: 4px 0 24px;
 }

@@ -81,7 +81,7 @@ const master = (code, name, status, field, capacity) => {
 };
 
 const run = async () => {
-  assert('VERSION', C.VERSION === '1.3.0');
+  assert('VERSION', C.VERSION === '1.4.0');
   assert('HOST_APP_ID は本番ホスト', C.HOST_APP_ID === 98);
   assert('PLAN_APP_ID は本番予定 App', C.PLAN_APP_ID === 99);
   assert('参照 App', C.WASAI_MASTER_APP_ID === 73
@@ -99,10 +99,11 @@ const run = async () => {
   assert('desktop は records GET を使う', desktop.indexOf('/k/v1/records.json') !== -1);
   assert('desktop の POST/PUT は record.json（予定用）',
     desktop.indexOf('/k/v1/record.json') !== -1);
-  assert('desktop は納期負荷型セル(cayan-ws-count)', desktop.indexOf('cayan-ws-count') !== -1);
+  assert('desktop は名称セル(cayan-ws-item)', desktop.indexOf('cayan-ws-item') !== -1
+    && desktop.indexOf('visibleItemLines') !== -1);
   assert('desktop は detailGroups を使う', desktop.indexOf('detailGroups') !== -1);
   assert('css にカレンダー根がある', css.indexOf('.cayan-ws-root') !== -1);
-  assert('css は納期負荷と同型の count 行', css.indexOf('.cayan-ws-count') !== -1);
+  assert('css は名称行スタイル', css.indexOf('.cayan-ws-item') !== -1);
 
   const bounds = E.monthBounds(2026, 11);
   assert('monthBounds', bounds.start === '2026-11-01' && bounds.end === '2026-11-30');
@@ -385,6 +386,42 @@ const run = async () => {
   }, []);
   assert('枠予定は重複チェック対象外', good.ok === true);
 
+  assert('セルラベルは顧客名/お客様名/商品名',
+    E.formatCellItemLabel({
+      customerName: '大進',
+      clientName: '山田',
+      itemSummary: '袷仕立',
+    }) === '大進 / 山田 / 袷仕立');
+  assert('セルラベル空欄は省略',
+    E.formatCellItemLabel({
+      customerName: '',
+      clientName: '花子',
+      itemSummary: '丸洗い',
+    }) === '花子 / 丸洗い');
+  assert('セルラベル全て空なら管理番号',
+    E.formatCellItemLabel({ manageNo: 'M99' }) === 'M99');
+
+  const named = E.aggregateMonth([
+    outbound({
+      id: 'n1',
+      code: '002',
+      ret: '2026-11-18',
+      lines: [line({
+        manageNo: 'N1',
+        status: '出庫中',
+        item: '国内仕立',
+        customer: '得意先A',
+        client: 'お客様B',
+      })],
+    }),
+  ], [], '002', 2026, 11, { planRecords: [] });
+  const cellLines = E.visibleItemLines(named, '2026-11-18', { includeReturned: false, includePlanned: true });
+  assert('セルに名称行が出る', cellLines.totalCount === 1
+    && cellLines.lines[0].label === '得意先A / お客様B / 国内仕立'
+    && cellLines.lines[0].kind === 'outbound');
+  assert('desktop が visibleItemLines を使う', desktop.indexOf('visibleItemLines') !== -1
+    && desktop.indexOf('顧客名') !== -1
+    && desktop.indexOf('お客様名') !== -1);
   const payload = E.buildPlanRecordPayload({
     wasaiCode: '002',
     wasaiName: '西口陽子',

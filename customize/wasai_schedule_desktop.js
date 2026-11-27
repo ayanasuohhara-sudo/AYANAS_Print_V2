@@ -140,18 +140,26 @@
     if (!cell) {
       return '<div class="cayan-ws-cell is-blank"></div>';
     }
-    const summary = model
-      ? Engine.daySummary(model, cell.ymd, viewOptions())
-      : { counts: {}, totalPieces: 0 };
-    const lines = Engine.visibleCountLines(summary, viewOptions());
+    const itemView = model
+      ? Engine.visibleItemLines(model, cell.ymd, Object.assign({}, viewOptions(), { maxItems: 4 }))
+      : { lines: [], moreCount: 0, totalCount: 0 };
     const weekend = cell.isSunday ? ' is-sun' : (cell.isSaturday ? ' is-sat' : '');
     const today = cell.ymd === Engine.todayParts(new Date()).ymd ? ' is-today' : '';
     const selected = cell.ymd === selectedYmd ? ' is-selected' : '';
-    const lineHtml = lines.map((line) => (
-      '<span class="cayan-ws-count"><span>' + escapeHtml(line.label) + '</span>'
-      + '<span>' + escapeHtml(String(line.count)) + '</span></span>'
-    )).join('');
-    const aria = lines.map((line) => line.label + line.count).join(' ');
+    const lineHtml = itemView.lines.map((line) => (
+      '<span class="cayan-ws-item is-' + escapeHtml(line.kind || '') + '" title="'
+      + escapeHtml(line.label) + '">'
+      + escapeHtml(line.label)
+      + '</span>'
+    )).join('')
+      + (itemView.moreCount > 0
+        ? '<span class="cayan-ws-item is-more">+'
+          + escapeHtml(String(itemView.moreCount))
+          + escapeHtml(cfg().MESSAGES.cellMoreSuffix || '件ほか')
+          + '</span>'
+        : '');
+    const aria = itemView.lines.map((line) => line.label).join(' ')
+      + (itemView.moreCount > 0 ? ' ほか' + itemView.moreCount + '件' : '');
 
     return '<button type="button" class="cayan-ws-cell' + weekend + today + selected + '"'
       + ' data-ymd="' + escapeHtml(cell.ymd) + '"'
@@ -203,6 +211,8 @@
 
     return '<tr>'
       + '<td class="cayan-ws-key">' + manageCell + '</td>'
+      + '<td class="cayan-ws-key">' + escapeHtml(row.customerName || '—') + '</td>'
+      + '<td class="cayan-ws-key">' + escapeHtml(row.clientName || '—') + '</td>'
       + '<td class="cayan-ws-key">' + escapeHtml(row.itemSummary || '—') + '</td>'
       + '<td>' + escapeHtml(String(row.pieceCount)) + '</td>'
       + '<td class="cayan-ws-key">' + escapeHtml(row.kindLabel) + '</td>'
@@ -221,7 +231,7 @@
     + escapeHtml(String(group.count))
     + '枚】</h3>'
     + '<div class="cayan-ws-table-wrap"><table class="cayan-ws-table"><thead><tr>'
-    + '<th>管理番号</th><th>品目</th><th>枚数</th><th>状態</th>'
+    + '<th>管理番号</th><th>顧客名</th><th>お客様名</th><th>商品名</th><th>枚数</th><th>状態</th>'
     + '<th>出庫日</th><th>入庫予定日</th><th>入庫日</th><th>操作</th>'
     + '</tr></thead><tbody>'
     + group.rows.map(detailRowHtml).join('')

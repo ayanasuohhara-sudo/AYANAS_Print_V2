@@ -802,7 +802,7 @@
     };
   };
 
-  /** 納期負荷カレンダーの visibleCountLines と同型 */
+  /** 納期負荷カレンダーの visibleCountLines と同型（集計チップ用・互換） */
   const visibleCountLines = (summary, options) => {
     const opts = options || {};
     const counts = summary && summary.counts ? summary.counts : summary;
@@ -821,6 +821,49 @@
         label: kind.shortLabel,
         count: Number(counts[kind.key] || 0),
       }));
+  };
+
+  /**
+   * カレンダーセル用ラベル: 顧客名 / お客様名 / 商品名
+   * （空欄は省略。全て空ならフォールバック）
+   */
+  const formatCellItemLabel = (row) => {
+    const item = row || {};
+    const parts = [
+      String(item.customerName || '').trim(),
+      String(item.clientName || '').trim(),
+      String(item.itemSummary || '').trim(),
+    ].filter(Boolean);
+    if (parts.length) {
+      return parts.join(' / ');
+    }
+    const manageNo = String(item.manageNo || '').trim();
+    if (manageNo) {
+      return manageNo;
+    }
+    return cfg().MESSAGES.cellItemFallback || '（名称未設定）';
+  };
+
+  /**
+   * カレンダーセルに出す明細行（状態ラベル「出庫中」ではなく名称表示）。
+   * maxItems を超える分は moreCount で返す。
+   */
+  const visibleItemLines = (model, date, options) => {
+    const opts = options || {};
+    const maxItems = Number.isFinite(Number(opts.maxItems)) ? Number(opts.maxItems) : 4;
+    const rows = dayRows(model, date, opts);
+    const shown = rows.slice(0, Math.max(0, maxItems));
+    const moreCount = Math.max(0, rows.length - shown.length);
+    return {
+      lines: shown.map((row) => ({
+        key: row.key || row.manageNo || '',
+        kind: row.kind,
+        label: formatCellItemLabel(row),
+        pieceCount: row.pieceCount,
+      })),
+      moreCount: moreCount,
+      totalCount: rows.length,
+    };
   };
 
   /** 納期負荷カレンダーの detailGroups と同型（状態ごと） */
@@ -956,6 +999,8 @@
     dayRows,
     daySummary,
     visibleCountLines,
+    formatCellItemLabel,
+    visibleItemLines,
     detailGroups,
     detailCountText,
     formatLongDate,
